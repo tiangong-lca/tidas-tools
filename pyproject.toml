@@ -1,0 +1,21 @@
+[project]
+name = "tidas-tools"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Nan",email = "linanenv@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+"jsonschema==4.23.0",
+"xmltodict==0.14.2",
+]
+
+[tool.poetry]
+packages = [{include = "tidas_tools", from = "src"}]
+include = ["src/tidas_tools/schemas/*.json"]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,268 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "flowDataSet": {
+      "type": "object",
+      "properties": {
+        "@xmlns": { "type": "string" },
+        "@xmlns:common": { "type": "string" },
+        "@xmlns:ecn": { "type": "string" },
+        "@xmlns:xsi": { "type": "string" },
+        "@version": { "type": "string" },
+        "@locations": { "type": "string" },
+        "@xsi:schemaLocation": { "type": "string" },
+        "flowInformation": {
+          "type": "object",
+          "properties": {
+            "dataSetInformation": {
+              "type": "object",
+              "properties": {
+                "common:UUID": { "type": "string", "format": "uuid" },
+                "name": {
+                  "type": "object",
+                  "properties": {
+                    "baseName": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "@xml:lang": { "type": "string" },
+                          "#text": { "type": "string" }
+                        },
+                        "required": ["@xml:lang", "#text"]
+                      }
+                    },
+                    "treatmentStandardsRoutes": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "@xml:lang": { "type": "string" },
+                          "#text": { "type": "string" }
+                        },
+                        "required": ["@xml:lang", "#text"]
+                      }
+                    },
+                    "flowProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "@xml:lang": { "type": "string" },
+                          "#text": { "type": "string" }
+                        },
+                        "required": ["@xml:lang", "#text"]
+                      }
+                    }
+                  },
+                  "required": ["baseName", "treatmentStandardsRoutes", "flowProperties"]
+                },
+                "classificationInformation": {
+                  "type": "object",
+                  "properties": {
+                    "common:elementaryFlowCategorization": {
+                      "type": "object",
+                      "properties": {
+                        "common:category": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "@level": { "type": "string" },
+                              "@catId": { "type": "string" },
+                              "#text": { "type": "string" }
+                            },
+                            "required": ["@level", "@catId", "#text"]
+                          }
+                        }
+                      },
+                      "required": ["common:category"]
+                    }
+                  },
+                  "required": ["common:elementaryFlowCategorization"]
+                },
+                "common:generalComment": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "@xml:lang": { "type": "string" },
+                      "#text": { "type": "string" }
+                    }
+                  }
+                }
+              },
+              "required": ["common:UUID", "name", "classificationInformation"]
+            },
+            "quantitativeReference": {
+              "type": "object",
+              "properties": {
+                "referenceToReferenceFlowProperty": { "type": "string" }
+              },
+              "required": ["referenceToReferenceFlowProperty"]
+            },
+            "geography": {
+              "type": "object",
+              "properties": {
+                "locationOfSupply": { "type": "string" }
+              },
+              "required": ["locationOfSupply"]
+            }
+          },
+          "required": ["dataSetInformation", "quantitativeReference", "geography"]
+        },
+        "modellingAndValidation": {
+          "type": "object",
+          "properties": {
+            "LCIMethod": {
+              "type": "object",
+              "properties": {
+                "typeOfDataSet": { "type": "string" }
+              },
+              "required": ["typeOfDataSet"]
+            },
+            "complianceDeclarations": {
+              "type": "object",
+              "properties": {
+                "compliance": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "common:referenceToComplianceSystem": {
+                        "type": "object",
+                        "properties": {
+                          "@refObjectId": { "type": "string" },
+                          "@type": { "type": "string" },
+                          "@uri": { "type": "string" },
+                          "common:shortDescription": {
+                            "type": "object",
+                            "properties": {
+                              "@xml:lang": { "type": "string" },
+                              "#text": { "type": "string" }
+                            },
+                            "required": ["@xml:lang", "#text"]
+                          }
+                        },
+                        "required": ["@refObjectId", "@type", "@uri", "common:shortDescription"]
+                      },
+                      "common:approvalOfOverallCompliance": { "type": "string" }
+                    },
+                    "required": ["common:referenceToComplianceSystem", "common:approvalOfOverallCompliance"]
+                  }
+                }
+              },
+              "required": ["compliance"]
+            }
+          },
+          "required": ["LCIMethod", "complianceDeclarations"]
+        },
+        "administrativeInformation": {
+          "type": "object",
+          "properties": {
+            "dataEntryBy": {
+              "type": "object",
+              "properties": {
+                "common:timeStamp": { "type": "string", "format": "date-time" },
+                "common:referenceToDataSetFormat": {
+                  "type": "object",
+                  "properties": {
+                    "@refObjectId": { "type": "string" },
+                    "@type": { "type": "string" },
+                    "@uri": { "type": "string" },
+                    "common:shortDescription": {
+                      "type": "object",
+                      "properties": {
+                        "@xml:lang": { "type": "string" },
+                        "#text": { "type": "string" }
+                      },
+                      "required": ["@xml:lang", "#text"]
+                    }
+                  },
+                  "required": ["@refObjectId", "@type", "@uri", "common:shortDescription"]
+                },
+                "common:referenceToPersonOrEntityEnteringTheData": { "type": "string" }
+              },
+              "required": ["common:timeStamp", "common:referenceToDataSetFormat"]
+            },
+            "publicationAndOwnership": {
+              "type": "object",
+              "properties": {
+                "common:dataSetVersion": { "type": "string" },
+                "common:referenceToOwnershipOfDataSet": {
+                  "type": "object",
+                  "properties": {
+                    "@refObjectId": { "type": "string" },
+                    "@type": { "type": "string" },
+                    "@uri": { "type": "string" },
+                    "@version": { "type": "string" },
+                    "common:shortDescription": {
+                      "type": "object",
+                      "properties": {
+                        "@xml:lang": { "type": "string" },
+                        "#text": { "type": "string" }
+                      },
+                      "required": ["@xml:lang", "#text"]
+                    }
+                  },
+                  "required": ["@refObjectId", "@type", "@uri", "@version", "common:shortDescription"]
+                }
+              },
+              "required": ["common:dataSetVersion", "common:referenceToOwnershipOfDataSet"]
+            }
+          },
+          "required": ["dataEntryBy", "publicationAndOwnership"]
+        },
+        "flowProperties": {
+          "type": "object",
+          "properties": {
+            "flowProperty": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "@dataSetInternalID": { "type": "string" },
+                  "referenceToFlowPropertyDataSet": {
+                    "type": "object",
+                    "properties": {
+                      "@refObjectId": { "type": "string" },
+                      "@type": { "type": "string" },
+                      "@uri": { "type": "string" },
+                      "common:shortDescription": {
+                        "type": "object",
+                        "properties": {
+                          "@xml:lang": { "type": "string" },
+                          "#text": { "type": "string" }
+                        },
+                        "required": ["@xml:lang", "#text"]
+                      }
+                    },
+                    "required": ["@refObjectId", "@type", "@uri", "common:shortDescription"]
+                  },
+                  "meanValue": { "type": "number" }
+                },
+                "required": ["@dataSetInternalID", "referenceToFlowPropertyDataSet", "meanValue"]
+              }
+            }
+          },
+          "required": ["flowProperty"]
+        }
+      },
+      "required": [
+        "@xmlns",
+        "@xmlns:common",
+        "@xmlns:ecn",
+        "@xmlns:xsi",
+        "@version",
+        "@locations",
+        "@xsi:schemaLocation",
+        "flowInformation",
+        "modellingAndValidation",
+        "administrativeInformation",
+        "flowProperties"
+      ]
+    }
+  },
+  "required": ["flowDataSet"]
+}

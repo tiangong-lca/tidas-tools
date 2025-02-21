@@ -1,0 +1,142 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "sourceDataSet": {
+      "type": "object",
+      "properties": {
+        "@xmlns:common": {
+          "type": "string"
+        },
+        "@xmlns": {
+          "type": "string"
+        },
+        "@xmlns:xsi": {
+          "type": "string"
+        },
+        "@version": {
+          "type": "string"
+        },
+        "@xsi:schemaLocation": {
+          "type": "string"
+        },
+        "sourceInformation": {
+          "type": "object",
+          "properties": {
+            "dataSetInformation": {
+              "type": "object",
+              "properties": {
+                "common:UUID": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "common:shortName": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "@xml:lang": {
+                        "type": "string"
+                      },
+                      "#text": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["@xml:lang", "#text"]
+                  }
+                },
+                "classificationInformation": {
+                  "type": "object",
+                  "properties": {
+                    "common:classification": {
+                      "type": "object",
+                      "properties": {
+                        "common:class": {
+                          "type": "object",
+                          "properties": {
+                            "@level": {
+                              "type": "string"
+                            },
+                            "#text": {
+                              "type": "string"
+                            }
+                          },
+                          "required": ["@level", "#text"]
+                        }
+                      }
+                    }
+                  }
+                },
+                "sourceCitation": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "publicationType": {
+                  "type": "string"
+                }
+              },
+              "required": ["common:UUID", "common:shortName", "sourceCitation", "publicationType"]
+            }
+          }
+        },
+        "administrativeInformation": {
+          "type": "object",
+          "properties": {
+            "dataEntryBy": {
+              "type": "object",
+              "properties": {
+                "common:timeStamp": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "common:referenceToDataSetFormat": {
+                  "type": "object",
+                  "properties": {
+                    "@type": {
+                      "type": "string"
+                    },
+                    "@refObjectId": {
+                      "type": "string"
+                    },
+                    "@uri": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "common:shortDescription": {
+                      "type": "object",
+                      "properties": {
+                        "@xml:lang": {
+                          "type": "string"
+                        },
+                        "#text": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["@xml:lang", "#text"]
+                    }
+                  },
+                  "required": ["@type", "@refObjectId", "@uri", "common:shortDescription"]
+                }
+              },
+              "required": ["common:timeStamp", "common:referenceToDataSetFormat"]
+            },
+            "publicationAndOwnership": {
+              "type": "object",
+              "properties": {
+                "common:dataSetVersion": {
+                  "type": "string"
+                }
+              },
+              "required": ["common:dataSetVersion"]
+            }
+          }
+        }
+      },
+      "required": [
+        "@xmlns:common", "@xmlns", "@xmlns:xsi", "@version", "@xsi:schemaLocation",
+        "sourceInformation", "administrativeInformation"
+      ]
+    }
+  },
+  "required": ["sourceDataSet"]
+}
