@@ -1,9 +1,9 @@
 [project]
 name = "tidas-tools"
-version = "0.1.0"
+version = "0.0.1"
 description = ""
 authors = [
-    {name = "Nan",email = "linanenv@gmail.com"}
+    {name = "Nan",email = "li-nan@tsinghua.edu.cn"}
 ]
 readme = "README.md"
 requires-python = ">=3.9"
