@@ -28,6 +28,7 @@ poetry env activate
 
 poetry env info
 
+poetry lock
 poetry install
 
 ```
@@ -49,6 +50,5 @@ git push origin v0.0.1
 ### Lint and Format
 
 ```bash
-make lint
-make format
+black .
 ```

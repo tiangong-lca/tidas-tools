@@ -16,6 +16,9 @@ dependencies = [
 packages = [{include = "tidas_tools", from = "src"}]
 include = ["src/tidas_tools/schemas/*.json"]
 
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"

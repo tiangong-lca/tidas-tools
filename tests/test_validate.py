@@ -3,6 +3,7 @@ import json
 import os
 from src.tidas_tools.validate import category_validate
 
+
 def test_category_validate():
     # Setup: Create a schema file with an empty schema (allows any data)
     schema_filename = os.path.join(os.getcwd(), "tidas_sources.json")
@@ -12,7 +13,9 @@ def test_category_validate():
     try:
         # Collect all JSON test files from tests/test_data/sources
         test_data = []
-        sources_path = os.path.join(os.path.dirname(__file__), "test_data", "sources", "*.json")
+        sources_path = os.path.join(
+            os.path.dirname(__file__), "test_data", "sources", "*.json"
+        )
         for filepath in glob.glob(sources_path):
             with open(filepath, "r", encoding="utf-8") as f:
                 test_data.append(json.load(f))
