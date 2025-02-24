@@ -37,5 +37,5 @@ def category_validate(json_file_path: str, category: str):
                         print(f"{RED}ERROR: {full_path} {e.message}{RESET}")
                         logging.error(f"ERROR: {full_path} {e.message}")
                     else:
-                        print(f"{GREEN}INFO: {full_path}{RESET}")
-                        logging.info(f"INFO: {full_path}")
+                        print(f"{GREEN}INFO: {full_path} PASSED.{RESET}")
+                        logging.info(f"INFO: {full_path} PASSED.")
