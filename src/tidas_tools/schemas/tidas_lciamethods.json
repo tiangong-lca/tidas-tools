@@ -1,142 +1,227 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "properties": {
-      "LCIAMethodDataSet": {
-        "type": "object",
-        "properties": {
-          "@xmlns": { "type": "string" },
-          "@xmlns:common": { "type": "string" },
-          "@xmlns:xsi": { "type": "string" },
-          "@version": { "type": "string" },
-          "@xsi:schemaLocation": { "type": "string" },
-          "LCIAMethodInformation": {
-            "type": "object",
-            "properties": {
-              "dataSetInformation": {
-                "type": "object",
-                "properties": {
-                  "common:UUID": { "type": "string" },
-                  "common:name": {
-                    "type": "object",
-                    "properties": {
-                      "@xml:lang": { "type": "string" },
-                      "#text": { "type": "string" }
-                    }
-                  },
-                  "methodology": { "type": "string" },
-                  "impactCategory": { "type": "string" },
-                  "impactIndicator": { "type": "string" },
-                  "common:generalComment": {
-                    "type": "object",
-                    "properties": {
-                      "@xml:lang": { "type": "string" },
-                      "#text": { "type": "string" }
-                    }
-                  },
-                  "referenceToExternalDocumentation": {
-                    "type": "object",
-                    "properties": {
-                      "@refObjectId": { "type": "string" },
-                      "@type": { "type": "string" },
-                      "@uri": { "type": "string" },
-                      "common:shortDescription": {
-                        "type": "object",
-                        "properties": {
-                          "@xml:lang": { "type": "string" }
-                        }
-                      }
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "LCIAMethodDataSet": {
+      "type": "object",
+      "properties": {
+        "@xmlns": {
+          "type": "string"
+        },
+        "@xmlns:common": {
+          "type": "string"
+        },
+        "@xmlns:xsi": {
+          "type": "string"
+        },
+        "@version": {
+          "type": "string"
+        },
+        "@xsi:schemaLocation": {
+          "type": "string"
+        },
+        "LCIAMethodInformation": {
+          "type": "object",
+          "properties": {
+            "dataSetInformation": {
+              "type": "object",
+              "properties": {
+                "common:UUID": {
+                  "type": "string"
+                },
+                "common:name": {
+                  "type": "object",
+                  "properties": {
+                    "@xml:lang": {
+                      "type": "string"
+                    },
+                    "#text": {
+                      "type": "string"
                     }
                   }
                 },
-                "required": ["common:UUID", "common:name", "methodology", "impactCategory", "impactIndicator"]
-              },
-              "quantitativeReference": {
-                "type": "object",
-                "properties": {
-                  "referenceQuantity": {
-                    "type": "object",
-                    "properties": {
-                      "@refObjectId": { "type": "string" },
-                      "@type": { "type": "string" },
-                      "@uri": { "type": "string" },
-                      "common:shortDescription": {
-                        "type": "object",
-                        "properties": {
-                          "@xml:lang": { "type": "string" },
-                          "#text": { "type": "string" }
+                "methodology": {
+                  "type": "string"
+                },
+                "impactCategory": {
+                  "type": "string"
+                },
+                "impactIndicator": {
+                  "type": "string"
+                },
+                "common:generalComment": {
+                  "type": "object",
+                  "properties": {
+                    "@xml:lang": {
+                      "type": "string"
+                    },
+                    "#text": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "referenceToExternalDocumentation": {
+                  "type": "object",
+                  "properties": {
+                    "@refObjectId": {
+                      "type": "string"
+                    },
+                    "@type": {
+                      "type": "string"
+                    },
+                    "@uri": {
+                      "type": "string"
+                    },
+                    "common:shortDescription": {
+                      "type": "object",
+                      "properties": {
+                        "@xml:lang": {
+                          "type": "string"
                         }
                       }
                     }
                   }
                 }
               },
-              "time": {
-                "type": "object",
-                "properties": {
-                  "referenceYear": {
-                    "type": "object",
-                    "properties": {
-                      "@xml:lang": { "type": "string" },
-                      "#text": { "type": "string" }
-                    }
-                  },
-                  "duration": {
-                    "type": "object",
-                    "properties": {
-                      "@xml:lang": { "type": "string" },
-                      "#text": { "type": "string" }
+              "required": [
+                "common:UUID",
+                "common:name",
+                "methodology",
+                "impactCategory",
+                "impactIndicator"
+              ]
+            },
+            "quantitativeReference": {
+              "type": "object",
+              "properties": {
+                "referenceQuantity": {
+                  "type": "object",
+                  "properties": {
+                    "@refObjectId": {
+                      "type": "string"
+                    },
+                    "@type": {
+                      "type": "string"
+                    },
+                    "@uri": {
+                      "type": "string"
+                    },
+                    "common:shortDescription": {
+                      "type": "object",
+                      "properties": {
+                        "@xml:lang": {
+                          "type": "string"
+                        },
+                        "#text": {
+                          "type": "string"
+                        }
+                      }
                     }
                   }
                 }
-              },
-              "geography": {
-                "type": "object",
-                "properties": {
-                  "interventionLocation": { "type": "string" },
-                  "impactLocation": { "type": "string" },
-                  "geographicalRepresentativenessDescription": {
-                    "type": "object",
-                    "properties": {
-                      "@xml:lang": { "type": "string" },
-                      "#text": { "type": "string" }
+              }
+            },
+            "time": {
+              "type": "object",
+              "properties": {
+                "referenceYear": {
+                  "type": "object",
+                  "properties": {
+                    "@xml:lang": {
+                      "type": "string"
+                    },
+                    "#text": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "duration": {
+                  "type": "object",
+                  "properties": {
+                    "@xml:lang": {
+                      "type": "string"
+                    },
+                    "#text": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "geography": {
+              "type": "object",
+              "properties": {
+                "interventionLocation": {
+                  "type": "string"
+                },
+                "impactLocation": {
+                  "type": "string"
+                },
+                "geographicalRepresentativenessDescription": {
+                  "type": "object",
+                  "properties": {
+                    "@xml:lang": {
+                      "type": "string"
+                    },
+                    "#text": {
+                      "type": "string"
                     }
                   }
                 }
               }
             }
-          },
-          "modellingAndValidation": {
-            "type": "object",
-            "properties": {
-              "useAdviceForDataSet": {
-                "type": "object",
-                "properties": {
-                  "@xml:lang": { "type": "string" },
-                  "#text": { "type": "string" }
+          }
+        },
+        "modellingAndValidation": {
+          "type": "object",
+          "properties": {
+            "useAdviceForDataSet": {
+              "type": "object",
+              "properties": {
+                "@xml:lang": {
+                  "type": "string"
+                },
+                "#text": {
+                  "type": "string"
                 }
-              },
-              "LCIAMethodNormalisationAndWeighting": {
-                "type": "object",
-                "properties": {
-                  "typeOfDataSet": { "type": "string" },
-                  "LCIAMethodPrinciple": { "type": "string" },
-                  "deviationsFromLCIAMethodPrinciple": {
-                    "type": "object",
-                    "properties": {
-                      "@xml:lang": { "type": "string" },
-                      "#text": { "type": "string" }
+              }
+            },
+            "LCIAMethodNormalisationAndWeighting": {
+              "type": "object",
+              "properties": {
+                "typeOfDataSet": {
+                  "type": "string"
+                },
+                "LCIAMethodPrinciple": {
+                  "type": "string"
+                },
+                "deviationsFromLCIAMethodPrinciple": {
+                  "type": "object",
+                  "properties": {
+                    "@xml:lang": {
+                      "type": "string"
+                    },
+                    "#text": {
+                      "type": "string"
                     }
-                  },
-                  "normalisation": { "type": "boolean" },
-                  "weighting": { "type": "boolean" }
+                  }
+                },
+                "normalisation": {
+                  "type": "boolean"
+                },
+                "weighting": {
+                  "type": "boolean"
                 }
-              },
-              "dataSources": { "type": "null" },
-              "completeness": {
-                "type": "object",
-                "properties": {
-                  "inventoryItems": { "type": "string" }
+              }
+            },
+            "dataSources": {
+              "type": "null"
+            },
+            "completeness": {
+              "type": "object",
+              "properties": {
+                "inventoryItems": {
+                  "type": "string"
                 }
               }
             }
@@ -145,4 +230,4 @@
       }
     }
   }
-  
+}

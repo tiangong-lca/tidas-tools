@@ -42,7 +42,10 @@
                         "type": "string"
                       }
                     },
-                    "required": ["@xml:lang", "#text"]
+                    "required": [
+                      "@xml:lang",
+                      "#text"
+                    ]
                   }
                 },
                 "common:name": {
@@ -57,7 +60,10 @@
                         "type": "string"
                       }
                     },
-                    "required": ["@xml:lang", "#text"]
+                    "required": [
+                      "@xml:lang",
+                      "#text"
+                    ]
                   }
                 },
                 "classificationInformation": {
@@ -76,23 +82,37 @@
                               "type": "string"
                             }
                           },
-                          "required": ["@level", "#text"]
+                          "required": [
+                            "@level",
+                            "#text"
+                          ]
                         }
                       },
-                      "required": ["common:class"]
+                      "required": [
+                        "common:class"
+                      ]
                     }
                   },
-                  "required": ["common:classification"]
+                  "required": [
+                    "common:classification"
+                  ]
                 },
                 "email": {
                   "type": "string",
                   "format": "email"
                 }
               },
-              "required": ["common:UUID", "common:shortName", "common:name", "email"]
+              "required": [
+                "common:UUID",
+                "common:shortName",
+                "common:name",
+                "email"
+              ]
             }
           },
-          "required": ["dataSetInformation"]
+          "required": [
+            "dataSetInformation"
+          ]
         },
         "administrativeInformation": {
           "type": "object",
@@ -104,10 +124,14 @@
                   "type": "string"
                 }
               },
-              "required": ["common:dataSetVersion"]
+              "required": [
+                "common:dataSetVersion"
+              ]
             }
           },
-          "required": ["publicationAndOwnership"]
+          "required": [
+            "publicationAndOwnership"
+          ]
         }
       },
       "required": [
@@ -121,5 +145,7 @@
       ]
     }
   },
-  "required": ["contactDataSet"]
+  "required": [
+    "contactDataSet"
+  ]
 }

@@ -1,0 +1,9964 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "process_classification_dependencies.json",
+  "oneOf": [
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "A"
+        },
+        "#text": {
+          "const": "Agriculture, forestry and fishing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "01"
+        },
+        "#text": {
+          "const": "Crop and animal production, hunting and related service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "011"
+        },
+        "#text": {
+          "const": "Growing of non-perennial crops"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0111"
+        },
+        "#text": {
+          "const": "Growing of cereals (except rice), leguminous crops and oil seeds"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0112"
+        },
+        "#text": {
+          "const": "Growing of rice"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0113"
+        },
+        "#text": {
+          "const": "Growing of vegetables and melons, roots and tubers"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0114"
+        },
+        "#text": {
+          "const": "Growing of sugar cane"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0115"
+        },
+        "#text": {
+          "const": "Growing of tobacco"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0116"
+        },
+        "#text": {
+          "const": "Growing of fibre crops"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0119"
+        },
+        "#text": {
+          "const": "Growing of other non-perennial crops"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "012"
+        },
+        "#text": {
+          "const": "Growing of perennial crops"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0121"
+        },
+        "#text": {
+          "const": "Growing of grapes"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0122"
+        },
+        "#text": {
+          "const": "Growing of tropical and subtropical fruits"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0123"
+        },
+        "#text": {
+          "const": "Growing of citrus fruits"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0124"
+        },
+        "#text": {
+          "const": "Growing of pome fruits and stone fruits"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0125"
+        },
+        "#text": {
+          "const": "Growing of other tree and bush fruits and nuts"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0126"
+        },
+        "#text": {
+          "const": "Growing of oleaginous fruits"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0127"
+        },
+        "#text": {
+          "const": "Growing of beverage crops"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0128"
+        },
+        "#text": {
+          "const": "Growing of spices, aromatic, drug and pharmaceutical crops"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0129"
+        },
+        "#text": {
+          "const": "Growing of other perennial crops"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "013"
+        },
+        "#text": {
+          "const": "Plant propagation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0130"
+        },
+        "#text": {
+          "const": "Plant propagation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "014"
+        },
+        "#text": {
+          "const": "Animal production"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0141"
+        },
+        "#text": {
+          "const": "Raising of cattle and buffaloes"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0142"
+        },
+        "#text": {
+          "const": "Raising of horses and other equines"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0143"
+        },
+        "#text": {
+          "const": "Raising of camels and camelids"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0144"
+        },
+        "#text": {
+          "const": "Raising of sheep and goats"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0145"
+        },
+        "#text": {
+          "const": "Raising of swine/pigs"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0146"
+        },
+        "#text": {
+          "const": "Raising of poultry"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0149"
+        },
+        "#text": {
+          "const": "Raising of other animals"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "015"
+        },
+        "#text": {
+          "const": "Mixed farming"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0150"
+        },
+        "#text": {
+          "const": "Mixed farming"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "016"
+        },
+        "#text": {
+          "const": "Support activities to agriculture and post-harvest crop activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0161"
+        },
+        "#text": {
+          "const": "Support activities for crop production"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0162"
+        },
+        "#text": {
+          "const": "Support activities for animal production"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0163"
+        },
+        "#text": {
+          "const": "Post-harvest crop activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0164"
+        },
+        "#text": {
+          "const": "Seed processing for propagation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "017"
+        },
+        "#text": {
+          "const": "Hunting, trapping and related service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0170"
+        },
+        "#text": {
+          "const": "Hunting, trapping and related service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "02"
+        },
+        "#text": {
+          "const": "Forestry and logging"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "021"
+        },
+        "#text": {
+          "const": "Silviculture and other forestry activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0210"
+        },
+        "#text": {
+          "const": "Silviculture and other forestry activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "022"
+        },
+        "#text": {
+          "const": "Logging"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0220"
+        },
+        "#text": {
+          "const": "Logging"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "023"
+        },
+        "#text": {
+          "const": "Gathering of non-wood forest products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0230"
+        },
+        "#text": {
+          "const": "Gathering of non-wood forest products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "024"
+        },
+        "#text": {
+          "const": "Support services to forestry"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0240"
+        },
+        "#text": {
+          "const": "Support services to forestry"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "03"
+        },
+        "#text": {
+          "const": "Fishing and aquaculture"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "031"
+        },
+        "#text": {
+          "const": "Fishing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0311"
+        },
+        "#text": {
+          "const": "Marine fishing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0312"
+        },
+        "#text": {
+          "const": "Freshwater fishing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "032"
+        },
+        "#text": {
+          "const": "Aquaculture"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0321"
+        },
+        "#text": {
+          "const": "Marine aquaculture"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0322"
+        },
+        "#text": {
+          "const": "Freshwater aquaculture"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "B"
+        },
+        "#text": {
+          "const": "Mining and quarrying"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "05"
+        },
+        "#text": {
+          "const": "Mining of coal and lignite"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "051"
+        },
+        "#text": {
+          "const": "Mining of hard coal"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0510"
+        },
+        "#text": {
+          "const": "Mining of hard coal"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "052"
+        },
+        "#text": {
+          "const": "Mining of lignite"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0520"
+        },
+        "#text": {
+          "const": "Mining of lignite"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "06"
+        },
+        "#text": {
+          "const": "Extraction of crude petroleum and natural gas"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "061"
+        },
+        "#text": {
+          "const": "Extraction of crude petroleum"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0610"
+        },
+        "#text": {
+          "const": "Extraction of crude petroleum"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "062"
+        },
+        "#text": {
+          "const": "Extraction of natural gas"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0620"
+        },
+        "#text": {
+          "const": "Extraction of natural gas"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "07"
+        },
+        "#text": {
+          "const": "Mining of metal ores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "071"
+        },
+        "#text": {
+          "const": "Mining of iron ores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0710"
+        },
+        "#text": {
+          "const": "Mining of iron ores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "072"
+        },
+        "#text": {
+          "const": "Mining of non-ferrous metal ores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0721"
+        },
+        "#text": {
+          "const": "Mining of uranium and thorium ores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0729"
+        },
+        "#text": {
+          "const": "Mining of other non-ferrous metal ores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "08"
+        },
+        "#text": {
+          "const": "Other mining and quarrying"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "081"
+        },
+        "#text": {
+          "const": "Quarrying of stone, sand and clay"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0810"
+        },
+        "#text": {
+          "const": "Quarrying of stone, sand and clay"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "089"
+        },
+        "#text": {
+          "const": "Mining and quarrying n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0891"
+        },
+        "#text": {
+          "const": "Mining of chemical and fertilizer minerals"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0892"
+        },
+        "#text": {
+          "const": "Extraction of peat"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0893"
+        },
+        "#text": {
+          "const": "Extraction of salt"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0899"
+        },
+        "#text": {
+          "const": "Other mining and quarrying n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "09"
+        },
+        "#text": {
+          "const": "Mining support service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "091"
+        },
+        "#text": {
+          "const": "Support activities for petroleum and natural gas extraction"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0910"
+        },
+        "#text": {
+          "const": "Support activities for petroleum and natural gas extraction"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "099"
+        },
+        "#text": {
+          "const": "Support activities for other mining and quarrying"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "0990"
+        },
+        "#text": {
+          "const": "Support activities for other mining and quarrying"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "C"
+        },
+        "#text": {
+          "const": "Manufacturing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "10"
+        },
+        "#text": {
+          "const": "Manufacture of food products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "101"
+        },
+        "#text": {
+          "const": "Processing and preserving of meat"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1010"
+        },
+        "#text": {
+          "const": "Processing and preserving of meat"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "102"
+        },
+        "#text": {
+          "const": "Processing and preserving of fish, crustaceans and molluscs"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1020"
+        },
+        "#text": {
+          "const": "Processing and preserving of fish, crustaceans and molluscs"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "103"
+        },
+        "#text": {
+          "const": "Processing and preserving of fruit and vegetables"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1030"
+        },
+        "#text": {
+          "const": "Processing and preserving of fruit and vegetables"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "104"
+        },
+        "#text": {
+          "const": "Manufacture of vegetable and animal oils and fats"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1040"
+        },
+        "#text": {
+          "const": "Manufacture of vegetable and animal oils and fats"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "105"
+        },
+        "#text": {
+          "const": "Manufacture of dairy products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1050"
+        },
+        "#text": {
+          "const": "Manufacture of dairy products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "106"
+        },
+        "#text": {
+          "const": "Manufacture of grain mill products, starches and starch products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1061"
+        },
+        "#text": {
+          "const": "Manufacture of grain mill products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1062"
+        },
+        "#text": {
+          "const": "Manufacture of starches and starch products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "107"
+        },
+        "#text": {
+          "const": "Manufacture of other food products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1071"
+        },
+        "#text": {
+          "const": "Manufacture of bakery products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1072"
+        },
+        "#text": {
+          "const": "Manufacture of sugar"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1073"
+        },
+        "#text": {
+          "const": "Manufacture of cocoa, chocolate and sugar confectionery"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1074"
+        },
+        "#text": {
+          "const": "Manufacture of macaroni, noodles, couscous and similar farinaceous products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1075"
+        },
+        "#text": {
+          "const": "Manufacture of prepared meals and dishes"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1079"
+        },
+        "#text": {
+          "const": "Manufacture of other food products n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "108"
+        },
+        "#text": {
+          "const": "Manufacture of prepared animal feeds"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1080"
+        },
+        "#text": {
+          "const": "Manufacture of prepared animal feeds"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "11"
+        },
+        "#text": {
+          "const": "Manufacture of beverages"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "110"
+        },
+        "#text": {
+          "const": "Manufacture of beverages"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1101"
+        },
+        "#text": {
+          "const": "Distilling, rectifying and blending of spirits"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1102"
+        },
+        "#text": {
+          "const": "Manufacture of wines"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1103"
+        },
+        "#text": {
+          "const": "Manufacture of malt liquors and malt"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1104"
+        },
+        "#text": {
+          "const": "Manufacture of soft drinks; production of mineral waters and other bottled waters"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "12"
+        },
+        "#text": {
+          "const": "Manufacture of tobacco products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "120"
+        },
+        "#text": {
+          "const": "Manufacture of tobacco products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1200"
+        },
+        "#text": {
+          "const": "Manufacture of tobacco products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "13"
+        },
+        "#text": {
+          "const": "Manufacture of textiles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "131"
+        },
+        "#text": {
+          "const": "Spinning, weaving and finishing of textiles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1311"
+        },
+        "#text": {
+          "const": "Preparation and spinning of textile fibres"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1312"
+        },
+        "#text": {
+          "const": "Weaving of textiles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1313"
+        },
+        "#text": {
+          "const": "Finishing of textiles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "139"
+        },
+        "#text": {
+          "const": "Manufacture of other textiles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1391"
+        },
+        "#text": {
+          "const": "Manufacture of knitted and crocheted fabrics"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1392"
+        },
+        "#text": {
+          "const": "Manufacture of made-up textile articles, except apparel"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1393"
+        },
+        "#text": {
+          "const": "Manufacture of carpets and rugs"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1394"
+        },
+        "#text": {
+          "const": "Manufacture of cordage, rope, twine and netting"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1399"
+        },
+        "#text": {
+          "const": "Manufacture of other textiles n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "14"
+        },
+        "#text": {
+          "const": "Manufacture of wearing apparel"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "141"
+        },
+        "#text": {
+          "const": "Manufacture of wearing apparel, except fur apparel"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1410"
+        },
+        "#text": {
+          "const": "Manufacture of wearing apparel, except fur apparel"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "142"
+        },
+        "#text": {
+          "const": "Manufacture of articles of fur"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1420"
+        },
+        "#text": {
+          "const": "Manufacture of articles of fur"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "143"
+        },
+        "#text": {
+          "const": "Manufacture of knitted and crocheted apparel"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1430"
+        },
+        "#text": {
+          "const": "Manufacture of knitted and crocheted apparel"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "15"
+        },
+        "#text": {
+          "const": "Manufacture of leather and related products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "151"
+        },
+        "#text": {
+          "const": "Tanning and dressing of leather; manufacture of luggage, handbags, saddlery and harness; dressing and dyeing of fur"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1511"
+        },
+        "#text": {
+          "const": "Tanning and dressing of leather; dressing and dyeing of fur"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1512"
+        },
+        "#text": {
+          "const": "Manufacture of luggage, handbags and the like, saddlery and harness"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "152"
+        },
+        "#text": {
+          "const": "Manufacture of footwear"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1520"
+        },
+        "#text": {
+          "const": "Manufacture of footwear"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "16"
+        },
+        "#text": {
+          "const": "Manufacture of wood and of products of wood and cork, except furniture; manufacture of articles of straw and plaiting materials"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "161"
+        },
+        "#text": {
+          "const": "Sawmilling and planing of wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1610"
+        },
+        "#text": {
+          "const": "Sawmilling and planing of wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "162"
+        },
+        "#text": {
+          "const": "Manufacture of products of wood, cork, straw and plaiting materials"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1621"
+        },
+        "#text": {
+          "const": "Manufacture of veneer sheets and wood-based panels"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1622"
+        },
+        "#text": {
+          "const": "Manufacture of builders' carpentry and joinery"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1623"
+        },
+        "#text": {
+          "const": "Manufacture of wooden containers"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1629"
+        },
+        "#text": {
+          "const": "Manufacture of other products of wood; manufacture of articles of cork, straw and plaiting materials"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "17"
+        },
+        "#text": {
+          "const": "Manufacture of paper and paper products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "170"
+        },
+        "#text": {
+          "const": "Manufacture of paper and paper products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1701"
+        },
+        "#text": {
+          "const": "Manufacture of pulp, paper and paperboard"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1702"
+        },
+        "#text": {
+          "const": "Manufacture of corrugated paper and paperboard and of containers of paper and paperboard"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1709"
+        },
+        "#text": {
+          "const": "Manufacture of other articles of paper and paperboard"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "18"
+        },
+        "#text": {
+          "const": "Printing and reproduction of recorded media"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "181"
+        },
+        "#text": {
+          "const": "Printing and service activities related to printing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1811"
+        },
+        "#text": {
+          "const": "Printing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1812"
+        },
+        "#text": {
+          "const": "Service activities related to printing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "182"
+        },
+        "#text": {
+          "const": "Reproduction of recorded media"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1820"
+        },
+        "#text": {
+          "const": "Reproduction of recorded media"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "19"
+        },
+        "#text": {
+          "const": "Manufacture of coke and refined petroleum products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "191"
+        },
+        "#text": {
+          "const": "Manufacture of coke oven products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1910"
+        },
+        "#text": {
+          "const": "Manufacture of coke oven products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "192"
+        },
+        "#text": {
+          "const": "Manufacture of refined petroleum products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "1920"
+        },
+        "#text": {
+          "const": "Manufacture of refined petroleum products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "20"
+        },
+        "#text": {
+          "const": "Manufacture of chemicals and chemical products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "201"
+        },
+        "#text": {
+          "const": "Manufacture of basic chemicals, fertilizers and nitrogen compounds, plastics and synthetic rubber in primary forms"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2011"
+        },
+        "#text": {
+          "const": "Manufacture of basic chemicals"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2012"
+        },
+        "#text": {
+          "const": "Manufacture of fertilizers and nitrogen compounds"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2013"
+        },
+        "#text": {
+          "const": "Manufacture of plastics and synthetic rubber in primary forms"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "202"
+        },
+        "#text": {
+          "const": "Manufacture of other chemical products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2021"
+        },
+        "#text": {
+          "const": "Manufacture of pesticides and other agrochemical products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2022"
+        },
+        "#text": {
+          "const": "Manufacture of paints, varnishes and similar coatings, printing ink and mastics"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2023"
+        },
+        "#text": {
+          "const": "Manufacture of soap and detergents, cleaning and polishing preparations, perfumes and toilet preparations"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2029"
+        },
+        "#text": {
+          "const": "Manufacture of other chemical products n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "203"
+        },
+        "#text": {
+          "const": "Manufacture of man-made fibres"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2030"
+        },
+        "#text": {
+          "const": "Manufacture of man-made fibres"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "21"
+        },
+        "#text": {
+          "const": "Manufacture of basic pharmaceutical products and pharmaceutical preparations"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "210"
+        },
+        "#text": {
+          "const": "Manufacture of pharmaceuticals, medicinal chemical and botanical products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2100"
+        },
+        "#text": {
+          "const": "Manufacture of pharmaceuticals, medicinal chemical and botanical products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "22"
+        },
+        "#text": {
+          "const": "Manufacture of rubber and plastics products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "221"
+        },
+        "#text": {
+          "const": "Manufacture of rubber products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2211"
+        },
+        "#text": {
+          "const": "Manufacture of rubber tyres and tubes; retreading and rebuilding of rubber tyres"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2219"
+        },
+        "#text": {
+          "const": "Manufacture of other rubber products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "222"
+        },
+        "#text": {
+          "const": "Manufacture of plastics products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2220"
+        },
+        "#text": {
+          "const": "Manufacture of plastics products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "23"
+        },
+        "#text": {
+          "const": "Manufacture of other non-metallic mineral products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "231"
+        },
+        "#text": {
+          "const": "Manufacture of glass and glass products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2310"
+        },
+        "#text": {
+          "const": "Manufacture of glass and glass products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "239"
+        },
+        "#text": {
+          "const": "Manufacture of non-metallic mineral products n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2391"
+        },
+        "#text": {
+          "const": "Manufacture of refractory products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2392"
+        },
+        "#text": {
+          "const": "Manufacture of clay building materials"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2393"
+        },
+        "#text": {
+          "const": "Manufacture of other porcelain and ceramic products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2394"
+        },
+        "#text": {
+          "const": "Manufacture of cement, lime and plaster"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2395"
+        },
+        "#text": {
+          "const": "Manufacture of articles of concrete, cement and plaster"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2396"
+        },
+        "#text": {
+          "const": "Cutting, shaping and finishing of stone"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2399"
+        },
+        "#text": {
+          "const": "Manufacture of other non-metallic mineral products n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "24"
+        },
+        "#text": {
+          "const": "Manufacture of basic metals"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "241"
+        },
+        "#text": {
+          "const": "Manufacture of basic iron and steel"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2410"
+        },
+        "#text": {
+          "const": "Manufacture of basic iron and steel"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "242"
+        },
+        "#text": {
+          "const": "Manufacture of basic precious and other non-ferrous metals"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2420"
+        },
+        "#text": {
+          "const": "Manufacture of basic precious and other non-ferrous metals"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "243"
+        },
+        "#text": {
+          "const": "Casting of metals"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2431"
+        },
+        "#text": {
+          "const": "Casting of iron and steel"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2432"
+        },
+        "#text": {
+          "const": "Casting of non-ferrous metals"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "25"
+        },
+        "#text": {
+          "const": "Manufacture of fabricated metal products, except machinery and equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "251"
+        },
+        "#text": {
+          "const": "Manufacture of structural metal products, tanks, reservoirs and steam generators"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2511"
+        },
+        "#text": {
+          "const": "Manufacture of structural metal products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2512"
+        },
+        "#text": {
+          "const": "Manufacture of tanks, reservoirs and containers of metal"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2513"
+        },
+        "#text": {
+          "const": "Manufacture of steam generators, except central heating hot water boilers"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "252"
+        },
+        "#text": {
+          "const": "Manufacture of weapons and ammunition"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2520"
+        },
+        "#text": {
+          "const": "Manufacture of weapons and ammunition"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "259"
+        },
+        "#text": {
+          "const": "Manufacture of other fabricated metal products; metalworking service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2591"
+        },
+        "#text": {
+          "const": "Forging, pressing, stamping and roll-forming of metal; powder metallurgy"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2592"
+        },
+        "#text": {
+          "const": "Treatment and coating of metals; machining"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2593"
+        },
+        "#text": {
+          "const": "Manufacture of cutlery, hand tools and general hardware"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2599"
+        },
+        "#text": {
+          "const": "Manufacture of other fabricated metal products n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "26"
+        },
+        "#text": {
+          "const": "Manufacture of computer, electronic and optical products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "261"
+        },
+        "#text": {
+          "const": "Manufacture of electronic components and boards"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2610"
+        },
+        "#text": {
+          "const": "Manufacture of electronic components and boards"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "262"
+        },
+        "#text": {
+          "const": "Manufacture of computers and peripheral equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2620"
+        },
+        "#text": {
+          "const": "Manufacture of computers and peripheral equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "263"
+        },
+        "#text": {
+          "const": "Manufacture of communication equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2630"
+        },
+        "#text": {
+          "const": "Manufacture of communication equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "264"
+        },
+        "#text": {
+          "const": "Manufacture of consumer electronics"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2640"
+        },
+        "#text": {
+          "const": "Manufacture of consumer electronics"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "265"
+        },
+        "#text": {
+          "const": "Manufacture of measuring, testing, navigating and control equipment; watches and clocks"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2651"
+        },
+        "#text": {
+          "const": "Manufacture of measuring, testing, navigating and control equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2652"
+        },
+        "#text": {
+          "const": "Manufacture of watches and clocks"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "266"
+        },
+        "#text": {
+          "const": "Manufacture of irradiation, electromedical and electrotherapeutic equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2660"
+        },
+        "#text": {
+          "const": "Manufacture of irradiation, electromedical and electrotherapeutic equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "267"
+        },
+        "#text": {
+          "const": "Manufacture of optical instruments and photographic equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2670"
+        },
+        "#text": {
+          "const": "Manufacture of optical instruments and photographic equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "268"
+        },
+        "#text": {
+          "const": "Manufacture of magnetic and optical media"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2680"
+        },
+        "#text": {
+          "const": "Manufacture of magnetic and optical media"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "27"
+        },
+        "#text": {
+          "const": "Manufacture of electrical equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "271"
+        },
+        "#text": {
+          "const": "Manufacture of electric motors, generators, transformers and electricity distribution and control apparatus"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2710"
+        },
+        "#text": {
+          "const": "Manufacture of electric motors, generators, transformers and electricity distribution and control apparatus"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "272"
+        },
+        "#text": {
+          "const": "Manufacture of batteries and accumulators"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2720"
+        },
+        "#text": {
+          "const": "Manufacture of batteries and accumulators"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "273"
+        },
+        "#text": {
+          "const": "Manufacture of wiring and wiring devices"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2731"
+        },
+        "#text": {
+          "const": "Manufacture of fibre optic cables"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2732"
+        },
+        "#text": {
+          "const": "Manufacture of other electronic and electric wires and cables"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2733"
+        },
+        "#text": {
+          "const": "Manufacture of wiring devices"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "274"
+        },
+        "#text": {
+          "const": "Manufacture of electric lighting equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2740"
+        },
+        "#text": {
+          "const": "Manufacture of electric lighting equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "275"
+        },
+        "#text": {
+          "const": "Manufacture of domestic appliances"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2750"
+        },
+        "#text": {
+          "const": "Manufacture of domestic appliances"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "279"
+        },
+        "#text": {
+          "const": "Manufacture of other electrical equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2790"
+        },
+        "#text": {
+          "const": "Manufacture of other electrical equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "28"
+        },
+        "#text": {
+          "const": "Manufacture of machinery and equipment n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "281"
+        },
+        "#text": {
+          "const": "Manufacture of general-purpose machinery"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2811"
+        },
+        "#text": {
+          "const": "Manufacture of engines and turbines, except aircraft, vehicle and cycle engines"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2812"
+        },
+        "#text": {
+          "const": "Manufacture of fluid power equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2813"
+        },
+        "#text": {
+          "const": "Manufacture of other pumps, compressors, taps and valves"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2814"
+        },
+        "#text": {
+          "const": "Manufacture of bearings, gears, gearing and driving elements"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2815"
+        },
+        "#text": {
+          "const": "Manufacture of ovens, furnaces and furnace burners"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2816"
+        },
+        "#text": {
+          "const": "Manufacture of lifting and handling equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2817"
+        },
+        "#text": {
+          "const": "Manufacture of office machinery and equipment (except computers and peripheral equipment)"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2818"
+        },
+        "#text": {
+          "const": "Manufacture of power-driven hand tools"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2819"
+        },
+        "#text": {
+          "const": "Manufacture of other general-purpose machinery"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "282"
+        },
+        "#text": {
+          "const": "Manufacture of special-purpose machinery"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2821"
+        },
+        "#text": {
+          "const": "Manufacture of agricultural and forestry machinery"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2822"
+        },
+        "#text": {
+          "const": "Manufacture of metal-forming machinery and machine tools"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2823"
+        },
+        "#text": {
+          "const": "Manufacture of machinery for metallurgy"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2824"
+        },
+        "#text": {
+          "const": "Manufacture of machinery for mining, quarrying and construction"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2825"
+        },
+        "#text": {
+          "const": "Manufacture of machinery for food, beverage and tobacco processing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2826"
+        },
+        "#text": {
+          "const": "Manufacture of machinery for textile, apparel and leather production"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2829"
+        },
+        "#text": {
+          "const": "Manufacture of other special-purpose machinery"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "29"
+        },
+        "#text": {
+          "const": "Manufacture of motor vehicles, trailers and semi-trailers"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "291"
+        },
+        "#text": {
+          "const": "Manufacture of motor vehicles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2910"
+        },
+        "#text": {
+          "const": "Manufacture of motor vehicles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "292"
+        },
+        "#text": {
+          "const": "Manufacture of bodies (coachwork) for motor vehicles; manufacture of trailers and semi-trailers"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2920"
+        },
+        "#text": {
+          "const": "Manufacture of bodies (coachwork) for motor vehicles; manufacture of trailers and semi-trailers"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "293"
+        },
+        "#text": {
+          "const": "Manufacture of parts and accessories for motor vehicles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "2930"
+        },
+        "#text": {
+          "const": "Manufacture of parts and accessories for motor vehicles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "30"
+        },
+        "#text": {
+          "const": "Manufacture of other transport equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "301"
+        },
+        "#text": {
+          "const": "Building of ships and boats"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3011"
+        },
+        "#text": {
+          "const": "Building of ships and floating structures"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3012"
+        },
+        "#text": {
+          "const": "Building of pleasure and sporting boats"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "302"
+        },
+        "#text": {
+          "const": "Manufacture of railway locomotives and rolling stock"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3020"
+        },
+        "#text": {
+          "const": "Manufacture of railway locomotives and rolling stock"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "303"
+        },
+        "#text": {
+          "const": "Manufacture of air and spacecraft and related machinery"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3030"
+        },
+        "#text": {
+          "const": "Manufacture of air and spacecraft and related machinery"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "304"
+        },
+        "#text": {
+          "const": "Manufacture of military fighting vehicles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3040"
+        },
+        "#text": {
+          "const": "Manufacture of military fighting vehicles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "309"
+        },
+        "#text": {
+          "const": "Manufacture of transport equipment n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3091"
+        },
+        "#text": {
+          "const": "Manufacture of motorcycles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3092"
+        },
+        "#text": {
+          "const": "Manufacture of bicycles and invalid carriages"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3099"
+        },
+        "#text": {
+          "const": "Manufacture of other transport equipment n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "31"
+        },
+        "#text": {
+          "const": "Manufacture of furniture"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "310"
+        },
+        "#text": {
+          "const": "Manufacture of furniture"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3100"
+        },
+        "#text": {
+          "const": "Manufacture of furniture"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "32"
+        },
+        "#text": {
+          "const": "Other manufacturing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "321"
+        },
+        "#text": {
+          "const": "Manufacture of jewellery, bijouterie and related articles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3211"
+        },
+        "#text": {
+          "const": "Manufacture of jewellery and related articles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3212"
+        },
+        "#text": {
+          "const": "Manufacture of imitation jewellery and related articles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "322"
+        },
+        "#text": {
+          "const": "Manufacture of musical instruments"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3220"
+        },
+        "#text": {
+          "const": "Manufacture of musical instruments"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "323"
+        },
+        "#text": {
+          "const": "Manufacture of sports goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3230"
+        },
+        "#text": {
+          "const": "Manufacture of sports goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "324"
+        },
+        "#text": {
+          "const": "Manufacture of games and toys"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3240"
+        },
+        "#text": {
+          "const": "Manufacture of games and toys"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "325"
+        },
+        "#text": {
+          "const": "Manufacture of medical and dental instruments and supplies"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3250"
+        },
+        "#text": {
+          "const": "Manufacture of medical and dental instruments and supplies"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "329"
+        },
+        "#text": {
+          "const": "Other manufacturing n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3290"
+        },
+        "#text": {
+          "const": "Other manufacturing n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "33"
+        },
+        "#text": {
+          "const": "Repair and installation of machinery and equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "331"
+        },
+        "#text": {
+          "const": "Repair of fabricated metal products, machinery and equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3311"
+        },
+        "#text": {
+          "const": "Repair of fabricated metal products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3312"
+        },
+        "#text": {
+          "const": "Repair of machinery"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3313"
+        },
+        "#text": {
+          "const": "Repair of electronic and optical equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3314"
+        },
+        "#text": {
+          "const": "Repair of electrical equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3315"
+        },
+        "#text": {
+          "const": "Repair of transport equipment, except motor vehicles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3319"
+        },
+        "#text": {
+          "const": "Repair of other equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "332"
+        },
+        "#text": {
+          "const": "Installation of industrial machinery and equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3320"
+        },
+        "#text": {
+          "const": "Installation of industrial machinery and equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "D"
+        },
+        "#text": {
+          "const": "Electricity, gas, steam and air conditioning supply"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "35"
+        },
+        "#text": {
+          "const": "Electricity, gas, steam and air conditioning supply"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "351"
+        },
+        "#text": {
+          "const": "Electric power generation, transmission and distribution"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3510"
+        },
+        "#text": {
+          "const": "Electric power generation, transmission and distribution"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "352"
+        },
+        "#text": {
+          "const": "Manufacture of gas; distribution of gaseous fuels through mains"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3520"
+        },
+        "#text": {
+          "const": "Manufacture of gas; distribution of gaseous fuels through mains"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "353"
+        },
+        "#text": {
+          "const": "Steam and air conditioning supply"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3530"
+        },
+        "#text": {
+          "const": "Steam and air conditioning supply"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "E"
+        },
+        "#text": {
+          "const": "Water supply; sewerage, waste management and remediation activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "36"
+        },
+        "#text": {
+          "const": "Water collection, treatment and supply"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "360"
+        },
+        "#text": {
+          "const": "Water collection, treatment and supply"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3600"
+        },
+        "#text": {
+          "const": "Water collection, treatment and supply"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "37"
+        },
+        "#text": {
+          "const": "Sewerage"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "370"
+        },
+        "#text": {
+          "const": "Sewerage"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3700"
+        },
+        "#text": {
+          "const": "Sewerage"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "38"
+        },
+        "#text": {
+          "const": "Waste collection, treatment and disposal activities; materials recovery"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "381"
+        },
+        "#text": {
+          "const": "Waste collection"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3811"
+        },
+        "#text": {
+          "const": "Collection of non-hazardous waste"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3812"
+        },
+        "#text": {
+          "const": "Collection of hazardous waste"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "382"
+        },
+        "#text": {
+          "const": "Waste treatment and disposal"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3821"
+        },
+        "#text": {
+          "const": "Treatment and disposal of non-hazardous waste"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3822"
+        },
+        "#text": {
+          "const": "Treatment and disposal of hazardous waste"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "383"
+        },
+        "#text": {
+          "const": "Materials recovery"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3830"
+        },
+        "#text": {
+          "const": "Materials recovery"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "39"
+        },
+        "#text": {
+          "const": "Remediation activities and other waste management services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "390"
+        },
+        "#text": {
+          "const": "Remediation activities and other waste management services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "3900"
+        },
+        "#text": {
+          "const": "Remediation activities and other waste management services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "F"
+        },
+        "#text": {
+          "const": "Construction"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "41"
+        },
+        "#text": {
+          "const": "Construction of buildings"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "410"
+        },
+        "#text": {
+          "const": "Construction of buildings"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4100"
+        },
+        "#text": {
+          "const": "Construction of buildings"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "42"
+        },
+        "#text": {
+          "const": "Civil engineering"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "421"
+        },
+        "#text": {
+          "const": "Construction of roads and railways"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4210"
+        },
+        "#text": {
+          "const": "Construction of roads and railways"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "422"
+        },
+        "#text": {
+          "const": "Construction of utility projects"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4220"
+        },
+        "#text": {
+          "const": "Construction of utility projects"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "429"
+        },
+        "#text": {
+          "const": "Construction of other civil engineering projects"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4290"
+        },
+        "#text": {
+          "const": "Construction of other civil engineering projects"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "43"
+        },
+        "#text": {
+          "const": "Specialized construction activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "431"
+        },
+        "#text": {
+          "const": "Demolition and site preparation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4311"
+        },
+        "#text": {
+          "const": "Demolition"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4312"
+        },
+        "#text": {
+          "const": "Site preparation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "432"
+        },
+        "#text": {
+          "const": "Electrical, plumbing and other construction installation activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4321"
+        },
+        "#text": {
+          "const": "Electrical installation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4322"
+        },
+        "#text": {
+          "const": "Plumbing, heat and air-conditioning installation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4329"
+        },
+        "#text": {
+          "const": "Other construction installation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "433"
+        },
+        "#text": {
+          "const": "Building completion and finishing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4330"
+        },
+        "#text": {
+          "const": "Building completion and finishing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "439"
+        },
+        "#text": {
+          "const": "Other specialized construction activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4390"
+        },
+        "#text": {
+          "const": "Other specialized construction activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "G"
+        },
+        "#text": {
+          "const": "Wholesale and retail trade; repair of motor vehicles and motorcycles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "45"
+        },
+        "#text": {
+          "const": "Wholesale and retail trade and repair of motor vehicles and motorcycles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "451"
+        },
+        "#text": {
+          "const": "Sale of motor vehicles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4510"
+        },
+        "#text": {
+          "const": "Sale of motor vehicles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "452"
+        },
+        "#text": {
+          "const": "Maintenance and repair of motor vehicles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4520"
+        },
+        "#text": {
+          "const": "Maintenance and repair of motor vehicles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "453"
+        },
+        "#text": {
+          "const": "Sale of motor vehicle parts and accessories"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4530"
+        },
+        "#text": {
+          "const": "Sale of motor vehicle parts and accessories"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "454"
+        },
+        "#text": {
+          "const": "Sale, maintenance and repair of motorcycles and related parts and accessories"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4540"
+        },
+        "#text": {
+          "const": "Sale, maintenance and repair of motorcycles and related parts and accessories"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "46"
+        },
+        "#text": {
+          "const": "Wholesale trade, except of motor vehicles and motorcycles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "461"
+        },
+        "#text": {
+          "const": "Wholesale on a fee or contract basis"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4610"
+        },
+        "#text": {
+          "const": "Wholesale on a fee or contract basis"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "462"
+        },
+        "#text": {
+          "const": "Wholesale of agricultural raw materials and live animals"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4620"
+        },
+        "#text": {
+          "const": "Wholesale of agricultural raw materials and live animals"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "463"
+        },
+        "#text": {
+          "const": "Wholesale of food, beverages and tobacco"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4630"
+        },
+        "#text": {
+          "const": "Wholesale of food, beverages and tobacco"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "464"
+        },
+        "#text": {
+          "const": "Wholesale of household goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4641"
+        },
+        "#text": {
+          "const": "Wholesale of textiles, clothing and footwear"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4649"
+        },
+        "#text": {
+          "const": "Wholesale of other household goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "465"
+        },
+        "#text": {
+          "const": "Wholesale of machinery, equipment and supplies"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4651"
+        },
+        "#text": {
+          "const": "Wholesale of computers, computer peripheral equipment and software"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4652"
+        },
+        "#text": {
+          "const": "Wholesale of electronic and telecommunications equipment and parts"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4653"
+        },
+        "#text": {
+          "const": "Wholesale of agricultural machinery, equipment and supplies"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4659"
+        },
+        "#text": {
+          "const": "Wholesale of other machinery and equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "466"
+        },
+        "#text": {
+          "const": "Other specialized wholesale"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4661"
+        },
+        "#text": {
+          "const": "Wholesale of solid, liquid and gaseous fuels and related products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4662"
+        },
+        "#text": {
+          "const": "Wholesale of metals and metal ores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4663"
+        },
+        "#text": {
+          "const": "Wholesale of construction materials, hardware, plumbing and heating equipment and supplies"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4669"
+        },
+        "#text": {
+          "const": "Wholesale of waste and scrap and other products n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "469"
+        },
+        "#text": {
+          "const": "Non-specialized wholesale trade"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4690"
+        },
+        "#text": {
+          "const": "Non-specialized wholesale trade"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "47"
+        },
+        "#text": {
+          "const": "Retail trade, except of motor vehicles and motorcycles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "471"
+        },
+        "#text": {
+          "const": "Retail sale in non-specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4711"
+        },
+        "#text": {
+          "const": "Retail sale in non-specialized stores with food, beverages or tobacco predominating"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4719"
+        },
+        "#text": {
+          "const": "Other retail sale in non-specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "472"
+        },
+        "#text": {
+          "const": "Retail sale of food, beverages and tobacco in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4721"
+        },
+        "#text": {
+          "const": "Retail sale of food in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4722"
+        },
+        "#text": {
+          "const": "Retail sale of beverages in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4723"
+        },
+        "#text": {
+          "const": "Retail sale of tobacco products in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "473"
+        },
+        "#text": {
+          "const": "Retail sale of automotive fuel in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4730"
+        },
+        "#text": {
+          "const": "Retail sale of automotive fuel in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "474"
+        },
+        "#text": {
+          "const": "Retail sale of information and communications equipment in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4741"
+        },
+        "#text": {
+          "const": "Retail sale of computers, peripheral units, software and telecommunications equipment in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4742"
+        },
+        "#text": {
+          "const": "Retail sale of audio and video equipment in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "475"
+        },
+        "#text": {
+          "const": "Retail sale of other household equipment in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4751"
+        },
+        "#text": {
+          "const": "Retail sale of textiles in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4752"
+        },
+        "#text": {
+          "const": "Retail sale of hardware, paints and glass in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4753"
+        },
+        "#text": {
+          "const": "Retail sale of carpets, rugs, wall and floor coverings in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4759"
+        },
+        "#text": {
+          "const": "Retail sale of electrical household appliances, furniture, lighting equipment and other household articles in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "476"
+        },
+        "#text": {
+          "const": "Retail sale of cultural and recreation goods in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4761"
+        },
+        "#text": {
+          "const": "Retail sale of books, newspapers and stationary in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4762"
+        },
+        "#text": {
+          "const": "Retail sale of music and video recordings in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4763"
+        },
+        "#text": {
+          "const": "Retail sale of sporting equipment in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4764"
+        },
+        "#text": {
+          "const": "Retail sale of games and toys in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "477"
+        },
+        "#text": {
+          "const": "Retail sale of other goods in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4771"
+        },
+        "#text": {
+          "const": "Retail sale of clothing, footwear and leather articles in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4772"
+        },
+        "#text": {
+          "const": "Retail sale of pharmaceutical and medical goods, cosmetic and toilet articles in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4773"
+        },
+        "#text": {
+          "const": "Other retail sale of new goods in specialized stores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4774"
+        },
+        "#text": {
+          "const": "Retail sale of second-hand goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "478"
+        },
+        "#text": {
+          "const": "Retail sale via stalls and markets"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4781"
+        },
+        "#text": {
+          "const": "Retail sale via stalls and markets of food, beverages and tobacco products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4782"
+        },
+        "#text": {
+          "const": "Retail sale via stalls and markets of textiles, clothing and footwear"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4789"
+        },
+        "#text": {
+          "const": "Retail sale via stalls and markets of other goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "479"
+        },
+        "#text": {
+          "const": "Retail trade not in stores, stalls or markets"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4791"
+        },
+        "#text": {
+          "const": "Retail sale via mail order houses or via Internet"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4799"
+        },
+        "#text": {
+          "const": "Other retail sale not in stores, stalls or markets"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "H"
+        },
+        "#text": {
+          "const": "Transportation and storage"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "49"
+        },
+        "#text": {
+          "const": "Land transport and transport via pipelines"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "491"
+        },
+        "#text": {
+          "const": "Transport via railways"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4911"
+        },
+        "#text": {
+          "const": "Passenger rail transport, interurban"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4912"
+        },
+        "#text": {
+          "const": "Freight rail transport"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "492"
+        },
+        "#text": {
+          "const": "Other land transport"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4921"
+        },
+        "#text": {
+          "const": "Urban and suburban passenger land transport"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4922"
+        },
+        "#text": {
+          "const": "Other passenger land transport"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4923"
+        },
+        "#text": {
+          "const": "Freight transport by road"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "493"
+        },
+        "#text": {
+          "const": "Transport via pipeline"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "4930"
+        },
+        "#text": {
+          "const": "Transport via pipeline"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "50"
+        },
+        "#text": {
+          "const": "Water transport"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "501"
+        },
+        "#text": {
+          "const": "Sea and coastal water transport"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5011"
+        },
+        "#text": {
+          "const": "Sea and coastal passenger water transport"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5012"
+        },
+        "#text": {
+          "const": "Sea and coastal freight water transport"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "502"
+        },
+        "#text": {
+          "const": "Inland water transport"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5021"
+        },
+        "#text": {
+          "const": "Inland passenger water transport"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5022"
+        },
+        "#text": {
+          "const": "Inland freight water transport"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "51"
+        },
+        "#text": {
+          "const": "Air transport"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "511"
+        },
+        "#text": {
+          "const": "Passenger air transport"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5110"
+        },
+        "#text": {
+          "const": "Passenger air transport"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "512"
+        },
+        "#text": {
+          "const": "Freight air transport"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5120"
+        },
+        "#text": {
+          "const": "Freight air transport"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "52"
+        },
+        "#text": {
+          "const": "Warehousing and support activities for transportation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "521"
+        },
+        "#text": {
+          "const": "Warehousing and storage"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5210"
+        },
+        "#text": {
+          "const": "Warehousing and storage"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "522"
+        },
+        "#text": {
+          "const": "Support activities for transportation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5221"
+        },
+        "#text": {
+          "const": "Service activities incidental to land transportation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5222"
+        },
+        "#text": {
+          "const": "Service activities incidental to water transportation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5223"
+        },
+        "#text": {
+          "const": "Service activities incidental to air transportation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5224"
+        },
+        "#text": {
+          "const": "Cargo handling"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5229"
+        },
+        "#text": {
+          "const": "Other transportation support activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "53"
+        },
+        "#text": {
+          "const": "Postal and courier activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "531"
+        },
+        "#text": {
+          "const": "Postal activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5310"
+        },
+        "#text": {
+          "const": "Postal activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "532"
+        },
+        "#text": {
+          "const": "Courier activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5320"
+        },
+        "#text": {
+          "const": "Courier activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "I"
+        },
+        "#text": {
+          "const": "Accommodation and food service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "55"
+        },
+        "#text": {
+          "const": "Accommodation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "551"
+        },
+        "#text": {
+          "const": "Short term accommodation activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5510"
+        },
+        "#text": {
+          "const": "Short term accommodation activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "552"
+        },
+        "#text": {
+          "const": "Camping grounds, recreational vehicle parks and trailer parks"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5520"
+        },
+        "#text": {
+          "const": "Camping grounds, recreational vehicle parks and trailer parks"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "559"
+        },
+        "#text": {
+          "const": "Other accommodation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5590"
+        },
+        "#text": {
+          "const": "Other accommodation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "56"
+        },
+        "#text": {
+          "const": "Food and beverage service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "561"
+        },
+        "#text": {
+          "const": "Restaurants and mobile food service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5610"
+        },
+        "#text": {
+          "const": "Restaurants and mobile food service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "562"
+        },
+        "#text": {
+          "const": "Event catering and other food service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5621"
+        },
+        "#text": {
+          "const": "Event catering"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5629"
+        },
+        "#text": {
+          "const": "Other food service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "563"
+        },
+        "#text": {
+          "const": "Beverage serving activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5630"
+        },
+        "#text": {
+          "const": "Beverage serving activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "J"
+        },
+        "#text": {
+          "const": "Information and communication"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "58"
+        },
+        "#text": {
+          "const": "Publishing activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "581"
+        },
+        "#text": {
+          "const": "Publishing of books, periodicals and other publishing activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5811"
+        },
+        "#text": {
+          "const": "Book publishing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5812"
+        },
+        "#text": {
+          "const": "Publishing of directories and mailing lists"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5813"
+        },
+        "#text": {
+          "const": "Publishing of newspapers, journals and periodicals"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5819"
+        },
+        "#text": {
+          "const": "Other publishing activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "582"
+        },
+        "#text": {
+          "const": "Software publishing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5820"
+        },
+        "#text": {
+          "const": "Software publishing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "59"
+        },
+        "#text": {
+          "const": "Motion picture, video and television programme production, sound recording and music publishing activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "591"
+        },
+        "#text": {
+          "const": "Motion picture, video and television programme activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5911"
+        },
+        "#text": {
+          "const": "Motion picture, video and television programme production activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5912"
+        },
+        "#text": {
+          "const": "Motion picture, video and television programme post-production activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5913"
+        },
+        "#text": {
+          "const": "Motion picture, video and television programme distribution activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5914"
+        },
+        "#text": {
+          "const": "Motion picture projection activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "592"
+        },
+        "#text": {
+          "const": "Sound recording and music publishing activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "5920"
+        },
+        "#text": {
+          "const": "Sound recording and music publishing activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "60"
+        },
+        "#text": {
+          "const": "Programming and broadcasting activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "601"
+        },
+        "#text": {
+          "const": "Radio broadcasting"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6010"
+        },
+        "#text": {
+          "const": "Radio broadcasting"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "602"
+        },
+        "#text": {
+          "const": "Television programming and broadcasting activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6020"
+        },
+        "#text": {
+          "const": "Television programming and broadcasting activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "61"
+        },
+        "#text": {
+          "const": "Telecommunications"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "611"
+        },
+        "#text": {
+          "const": "Wired telecommunications activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6110"
+        },
+        "#text": {
+          "const": "Wired telecommunications activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "612"
+        },
+        "#text": {
+          "const": "Wireless telecommunications activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6120"
+        },
+        "#text": {
+          "const": "Wireless telecommunications activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "613"
+        },
+        "#text": {
+          "const": "Satellite telecommunications activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6130"
+        },
+        "#text": {
+          "const": "Satellite telecommunications activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "619"
+        },
+        "#text": {
+          "const": "Other telecommunications activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6190"
+        },
+        "#text": {
+          "const": "Other telecommunications activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "62"
+        },
+        "#text": {
+          "const": "Computer programming, consultancy and related activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "620"
+        },
+        "#text": {
+          "const": "Computer programming, consultancy and related activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6201"
+        },
+        "#text": {
+          "const": "Computer programming activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6202"
+        },
+        "#text": {
+          "const": "Computer consultancy and computer facilities management activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6209"
+        },
+        "#text": {
+          "const": "Other information technology and computer service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "63"
+        },
+        "#text": {
+          "const": "Information service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "631"
+        },
+        "#text": {
+          "const": "Data processing, hosting and related activities; web portals"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6311"
+        },
+        "#text": {
+          "const": "Data processing, hosting and related activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6312"
+        },
+        "#text": {
+          "const": "Web portals"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "639"
+        },
+        "#text": {
+          "const": "Other information service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6391"
+        },
+        "#text": {
+          "const": "News agency activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6399"
+        },
+        "#text": {
+          "const": "Other information service activities n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "K"
+        },
+        "#text": {
+          "const": "Financial and insurance activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "64"
+        },
+        "#text": {
+          "const": "Financial service activities, except insurance and pension funding"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "641"
+        },
+        "#text": {
+          "const": "Monetary intermediation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6411"
+        },
+        "#text": {
+          "const": "Central banking"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6419"
+        },
+        "#text": {
+          "const": "Other monetary intermediation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "642"
+        },
+        "#text": {
+          "const": "Activities of holding companies"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6420"
+        },
+        "#text": {
+          "const": "Activities of holding companies"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "643"
+        },
+        "#text": {
+          "const": "Trusts, funds and similar financial entities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6430"
+        },
+        "#text": {
+          "const": "Trusts, funds and similar financial entities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "649"
+        },
+        "#text": {
+          "const": "Other financial service activities, except insurance and pension funding activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6491"
+        },
+        "#text": {
+          "const": "Financial leasing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6492"
+        },
+        "#text": {
+          "const": "Other credit granting"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6499"
+        },
+        "#text": {
+          "const": "Other financial service activities, except insurance and pension funding activities, n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "65"
+        },
+        "#text": {
+          "const": "Insurance, reinsurance and pension funding, except compulsory social security"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "651"
+        },
+        "#text": {
+          "const": "Insurance"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6511"
+        },
+        "#text": {
+          "const": "Life insurance"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6512"
+        },
+        "#text": {
+          "const": "Non-life insurance"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "652"
+        },
+        "#text": {
+          "const": "Reinsurance"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6520"
+        },
+        "#text": {
+          "const": "Reinsurance"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "653"
+        },
+        "#text": {
+          "const": "Pension funding"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6530"
+        },
+        "#text": {
+          "const": "Pension funding"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "66"
+        },
+        "#text": {
+          "const": "Activities auxiliary to financial service and insurance activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "661"
+        },
+        "#text": {
+          "const": "Activities auxiliary to financial service activities, except insurance and pension funding"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6611"
+        },
+        "#text": {
+          "const": "Administration of financial markets"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6612"
+        },
+        "#text": {
+          "const": "Security and commodity contracts brokerage"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6619"
+        },
+        "#text": {
+          "const": "Other activities auxiliary to financial service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "662"
+        },
+        "#text": {
+          "const": "Activities auxiliary to insurance and pension funding"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6621"
+        },
+        "#text": {
+          "const": "Risk and damage evaluation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6622"
+        },
+        "#text": {
+          "const": "Activities of insurance agents and brokers"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6629"
+        },
+        "#text": {
+          "const": "Other activities auxiliary to insurance and pension funding"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "663"
+        },
+        "#text": {
+          "const": "Fund management activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6630"
+        },
+        "#text": {
+          "const": "Fund management activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "L"
+        },
+        "#text": {
+          "const": "Real estate activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "68"
+        },
+        "#text": {
+          "const": "Real estate activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "681"
+        },
+        "#text": {
+          "const": "Real estate activities with own or leased property"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6810"
+        },
+        "#text": {
+          "const": "Real estate activities with own or leased property"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "682"
+        },
+        "#text": {
+          "const": "Real estate activities on a fee or contract basis"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6820"
+        },
+        "#text": {
+          "const": "Real estate activities on a fee or contract basis"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "M"
+        },
+        "#text": {
+          "const": "Professional, scientific and technical activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "69"
+        },
+        "#text": {
+          "const": "Legal and accounting activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "691"
+        },
+        "#text": {
+          "const": "Legal activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6910"
+        },
+        "#text": {
+          "const": "Legal activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "692"
+        },
+        "#text": {
+          "const": "Accounting, bookkeeping and auditing activities; tax consultancy"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "6920"
+        },
+        "#text": {
+          "const": "Accounting, bookkeeping and auditing activities; tax consultancy"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "70"
+        },
+        "#text": {
+          "const": "Activities of head offices; management consultancy activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "701"
+        },
+        "#text": {
+          "const": "Activities of head offices"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7010"
+        },
+        "#text": {
+          "const": "Activities of head offices"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "702"
+        },
+        "#text": {
+          "const": "Management consultancy activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7020"
+        },
+        "#text": {
+          "const": "Management consultancy activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "71"
+        },
+        "#text": {
+          "const": "Architectural and engineering activities; technical testing and analysis"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "711"
+        },
+        "#text": {
+          "const": "Architectural and engineering activities and related technical consultancy"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7110"
+        },
+        "#text": {
+          "const": "Architectural and engineering activities and related technical consultancy"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "712"
+        },
+        "#text": {
+          "const": "Technical testing and analysis"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7120"
+        },
+        "#text": {
+          "const": "Technical testing and analysis"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "72"
+        },
+        "#text": {
+          "const": "Scientific research and development"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "721"
+        },
+        "#text": {
+          "const": "Research and experimental development on natural sciences and engineering"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7210"
+        },
+        "#text": {
+          "const": "Research and experimental development on natural sciences and engineering"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "722"
+        },
+        "#text": {
+          "const": "Research and experimental development on social sciences and humanities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7220"
+        },
+        "#text": {
+          "const": "Research and experimental development on social sciences and humanities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "73"
+        },
+        "#text": {
+          "const": "Advertising and market research"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "731"
+        },
+        "#text": {
+          "const": "Advertising"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7310"
+        },
+        "#text": {
+          "const": "Advertising"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "732"
+        },
+        "#text": {
+          "const": "Market research and public opinion polling"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7320"
+        },
+        "#text": {
+          "const": "Market research and public opinion polling"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "74"
+        },
+        "#text": {
+          "const": "Other professional, scientific and technical activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "741"
+        },
+        "#text": {
+          "const": "Specialized design activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7410"
+        },
+        "#text": {
+          "const": "Specialized design activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "742"
+        },
+        "#text": {
+          "const": "Photographic activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7420"
+        },
+        "#text": {
+          "const": "Photographic activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "749"
+        },
+        "#text": {
+          "const": "Other professional, scientific and technical activities n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7490"
+        },
+        "#text": {
+          "const": "Other professional, scientific and technical activities n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "75"
+        },
+        "#text": {
+          "const": "Veterinary activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "750"
+        },
+        "#text": {
+          "const": "Veterinary activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7500"
+        },
+        "#text": {
+          "const": "Veterinary activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "N"
+        },
+        "#text": {
+          "const": "Administrative and support service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "77"
+        },
+        "#text": {
+          "const": "Rental and leasing activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "771"
+        },
+        "#text": {
+          "const": "Renting and leasing of motor vehicles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7710"
+        },
+        "#text": {
+          "const": "Renting and leasing of motor vehicles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "772"
+        },
+        "#text": {
+          "const": "Renting and leasing of personal and household goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7721"
+        },
+        "#text": {
+          "const": "Renting and leasing of recreational and sports goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7722"
+        },
+        "#text": {
+          "const": "Renting of video tapes and disks"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7729"
+        },
+        "#text": {
+          "const": "Renting and leasing of other personal and household goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "773"
+        },
+        "#text": {
+          "const": "Renting and leasing of other machinery, equipment and tangible goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7730"
+        },
+        "#text": {
+          "const": "Renting and leasing of other machinery, equipment and tangible goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "774"
+        },
+        "#text": {
+          "const": "Leasing of intellectual property and similar products, except copyrighted works"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7740"
+        },
+        "#text": {
+          "const": "Leasing of intellectual property and similar products, except copyrighted works"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "78"
+        },
+        "#text": {
+          "const": "Employment activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "781"
+        },
+        "#text": {
+          "const": "Activities of employment placement agencies"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7810"
+        },
+        "#text": {
+          "const": "Activities of employment placement agencies"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "782"
+        },
+        "#text": {
+          "const": "Temporary employment agency activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7820"
+        },
+        "#text": {
+          "const": "Temporary employment agency activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "783"
+        },
+        "#text": {
+          "const": "Other human resources provision"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7830"
+        },
+        "#text": {
+          "const": "Other human resources provision"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "79"
+        },
+        "#text": {
+          "const": "Travel agency, tour operator, reservation service and related activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "791"
+        },
+        "#text": {
+          "const": "Travel agency and tour operator activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7911"
+        },
+        "#text": {
+          "const": "Travel agency activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7912"
+        },
+        "#text": {
+          "const": "Tour operator activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "799"
+        },
+        "#text": {
+          "const": "Other reservation service and related activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "7990"
+        },
+        "#text": {
+          "const": "Other reservation service and related activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "80"
+        },
+        "#text": {
+          "const": "Security and investigation activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "801"
+        },
+        "#text": {
+          "const": "Private security activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8010"
+        },
+        "#text": {
+          "const": "Private security activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "802"
+        },
+        "#text": {
+          "const": "Security systems service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8020"
+        },
+        "#text": {
+          "const": "Security systems service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "803"
+        },
+        "#text": {
+          "const": "Investigation activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8030"
+        },
+        "#text": {
+          "const": "Investigation activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "81"
+        },
+        "#text": {
+          "const": "Services to buildings and landscape activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "811"
+        },
+        "#text": {
+          "const": "Combined facilities support activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8110"
+        },
+        "#text": {
+          "const": "Combined facilities support activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "812"
+        },
+        "#text": {
+          "const": "Cleaning activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8121"
+        },
+        "#text": {
+          "const": "General cleaning of buildings"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8129"
+        },
+        "#text": {
+          "const": "Other building and industrial cleaning activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "813"
+        },
+        "#text": {
+          "const": "Landscape care and maintenance service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8130"
+        },
+        "#text": {
+          "const": "Landscape care and maintenance service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "82"
+        },
+        "#text": {
+          "const": "Office administrative, office support and other business support activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "821"
+        },
+        "#text": {
+          "const": "Office administrative and support activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8211"
+        },
+        "#text": {
+          "const": "Combined office administrative service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8219"
+        },
+        "#text": {
+          "const": "Photocopying, document preparation and other specialized office support activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "822"
+        },
+        "#text": {
+          "const": "Activities of call centres"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8220"
+        },
+        "#text": {
+          "const": "Activities of call centres"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "823"
+        },
+        "#text": {
+          "const": "Organization of conventions and trade shows"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8230"
+        },
+        "#text": {
+          "const": "Organization of conventions and trade shows"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "829"
+        },
+        "#text": {
+          "const": "Business support service activities n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8291"
+        },
+        "#text": {
+          "const": "Activities of collection agencies and credit bureaus"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8292"
+        },
+        "#text": {
+          "const": "Packaging activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8299"
+        },
+        "#text": {
+          "const": "Other business support service activities n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "O"
+        },
+        "#text": {
+          "const": "Public administration and defence; compulsory social security"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "84"
+        },
+        "#text": {
+          "const": "Public administration and defence; compulsory social security"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "841"
+        },
+        "#text": {
+          "const": "Administration of the State and the economic and social policy of the community"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8411"
+        },
+        "#text": {
+          "const": "General public administration activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8412"
+        },
+        "#text": {
+          "const": "Regulation of the activities of providing health care, education, cultural services and other social services, excluding social security"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8413"
+        },
+        "#text": {
+          "const": "Regulation of and contribution to more efficient operation of businesses"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "842"
+        },
+        "#text": {
+          "const": "Provision of services to the community as a whole"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8421"
+        },
+        "#text": {
+          "const": "Foreign affairs"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8422"
+        },
+        "#text": {
+          "const": "Defence activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8423"
+        },
+        "#text": {
+          "const": "Public order and safety activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "843"
+        },
+        "#text": {
+          "const": "Compulsory social security activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8430"
+        },
+        "#text": {
+          "const": "Compulsory social security activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "P"
+        },
+        "#text": {
+          "const": "Education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "85"
+        },
+        "#text": {
+          "const": "Education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "851"
+        },
+        "#text": {
+          "const": "Pre-primary and primary education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8510"
+        },
+        "#text": {
+          "const": "Pre-primary and primary education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "852"
+        },
+        "#text": {
+          "const": "Secondary education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8521"
+        },
+        "#text": {
+          "const": "General secondary education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8522"
+        },
+        "#text": {
+          "const": "Technical and vocational secondary education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "853"
+        },
+        "#text": {
+          "const": "Higher education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8530"
+        },
+        "#text": {
+          "const": "Higher education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "854"
+        },
+        "#text": {
+          "const": "Other education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8541"
+        },
+        "#text": {
+          "const": "Sports and recreation education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8542"
+        },
+        "#text": {
+          "const": "Cultural education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8549"
+        },
+        "#text": {
+          "const": "Other education n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "855"
+        },
+        "#text": {
+          "const": "Educational support activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8550"
+        },
+        "#text": {
+          "const": "Educational support activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "Q"
+        },
+        "#text": {
+          "const": "Human health and social work activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "86"
+        },
+        "#text": {
+          "const": "Human health activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "861"
+        },
+        "#text": {
+          "const": "Hospital activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8610"
+        },
+        "#text": {
+          "const": "Hospital activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "862"
+        },
+        "#text": {
+          "const": "Medical and dental practice activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8620"
+        },
+        "#text": {
+          "const": "Medical and dental practice activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "869"
+        },
+        "#text": {
+          "const": "Other human health activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8690"
+        },
+        "#text": {
+          "const": "Other human health activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "87"
+        },
+        "#text": {
+          "const": "Residential care activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "871"
+        },
+        "#text": {
+          "const": "Residential nursing care facilities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8710"
+        },
+        "#text": {
+          "const": "Residential nursing care facilities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "872"
+        },
+        "#text": {
+          "const": "Residential care activities for mental retardation, mental health and substance abuse"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8720"
+        },
+        "#text": {
+          "const": "Residential care activities for mental retardation, mental health and substance abuse"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "873"
+        },
+        "#text": {
+          "const": "Residential care activities for the elderly and disabled"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8730"
+        },
+        "#text": {
+          "const": "Residential care activities for the elderly and disabled"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "879"
+        },
+        "#text": {
+          "const": "Other residential care activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8790"
+        },
+        "#text": {
+          "const": "Other residential care activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "88"
+        },
+        "#text": {
+          "const": "Social work activities without accommodation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "881"
+        },
+        "#text": {
+          "const": "Social work activities without accommodation for the elderly and disabled"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8810"
+        },
+        "#text": {
+          "const": "Social work activities without accommodation for the elderly and disabled"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "889"
+        },
+        "#text": {
+          "const": "Other social work activities without accommodation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "8890"
+        },
+        "#text": {
+          "const": "Other social work activities without accommodation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "R"
+        },
+        "#text": {
+          "const": "Arts, entertainment and recreation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "90"
+        },
+        "#text": {
+          "const": "Creative, arts and entertainment activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "900"
+        },
+        "#text": {
+          "const": "Creative, arts and entertainment activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9000"
+        },
+        "#text": {
+          "const": "Creative, arts and entertainment activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "91"
+        },
+        "#text": {
+          "const": "Libraries, archives, museums and other cultural activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "910"
+        },
+        "#text": {
+          "const": "Libraries, archives, museums and other cultural activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9101"
+        },
+        "#text": {
+          "const": "Library and archives activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9102"
+        },
+        "#text": {
+          "const": "Museums activities and operation of historical sites and buildings"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9103"
+        },
+        "#text": {
+          "const": "Botanical and zoological gardens and nature reserves activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "92"
+        },
+        "#text": {
+          "const": "Gambling and betting activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "920"
+        },
+        "#text": {
+          "const": "Gambling and betting activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9200"
+        },
+        "#text": {
+          "const": "Gambling and betting activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "93"
+        },
+        "#text": {
+          "const": "Sports activities and amusement and recreation activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "931"
+        },
+        "#text": {
+          "const": "Sports activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9311"
+        },
+        "#text": {
+          "const": "Operation of sports facilities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9312"
+        },
+        "#text": {
+          "const": "Activities of sports clubs"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9319"
+        },
+        "#text": {
+          "const": "Other sports activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "932"
+        },
+        "#text": {
+          "const": "Other amusement and recreation activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9321"
+        },
+        "#text": {
+          "const": "Activities of amusement parks and theme parks"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9329"
+        },
+        "#text": {
+          "const": "Other amusement and recreation activities n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "S"
+        },
+        "#text": {
+          "const": "Other service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "94"
+        },
+        "#text": {
+          "const": "Activities of membership organizations"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "941"
+        },
+        "#text": {
+          "const": "Activities of business, employers and professional membership organizations"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9411"
+        },
+        "#text": {
+          "const": "Activities of business and employers membership organizations"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9412"
+        },
+        "#text": {
+          "const": "Activities of professional membership organizations"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "942"
+        },
+        "#text": {
+          "const": "Activities of trade unions"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9420"
+        },
+        "#text": {
+          "const": "Activities of trade unions"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "949"
+        },
+        "#text": {
+          "const": "Activities of other membership organizations"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9491"
+        },
+        "#text": {
+          "const": "Activities of religious organizations"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9492"
+        },
+        "#text": {
+          "const": "Activities of political organizations"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9499"
+        },
+        "#text": {
+          "const": "Activities of other membership organizations n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "95"
+        },
+        "#text": {
+          "const": "Repair of computers and personal and household goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "951"
+        },
+        "#text": {
+          "const": "Repair of computers and communication equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9511"
+        },
+        "#text": {
+          "const": "Repair of computers and peripheral equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9512"
+        },
+        "#text": {
+          "const": "Repair of communication equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "952"
+        },
+        "#text": {
+          "const": "Repair of personal and household goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9521"
+        },
+        "#text": {
+          "const": "Repair of consumer electronics"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9522"
+        },
+        "#text": {
+          "const": "Repair of household appliances and home and garden equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9523"
+        },
+        "#text": {
+          "const": "Repair of footwear and leather goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9524"
+        },
+        "#text": {
+          "const": "Repair of furniture and home furnishings"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9529"
+        },
+        "#text": {
+          "const": "Repair of other personal and household goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "96"
+        },
+        "#text": {
+          "const": "Other personal service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "960"
+        },
+        "#text": {
+          "const": "Other personal service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9601"
+        },
+        "#text": {
+          "const": "Washing and (dry-) cleaning of textile and fur products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9602"
+        },
+        "#text": {
+          "const": "Hairdressing and other beauty treatment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9603"
+        },
+        "#text": {
+          "const": "Funeral and related activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9609"
+        },
+        "#text": {
+          "const": "Other personal service activities n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "T"
+        },
+        "#text": {
+          "const": "Activities of households as employers; undifferentiated goods- and services-producing activities of households for own use"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "97"
+        },
+        "#text": {
+          "const": "Activities of households as employers of domestic personnel"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "970"
+        },
+        "#text": {
+          "const": "Activities of households as employers of domestic personnel"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9700"
+        },
+        "#text": {
+          "const": "Activities of households as employers of domestic personnel"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "98"
+        },
+        "#text": {
+          "const": "Undifferentiated goods- and services-producing activities of private households for own use"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "981"
+        },
+        "#text": {
+          "const": "Undifferentiated goods-producing activities of private households for own use"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9810"
+        },
+        "#text": {
+          "const": "Undifferentiated goods-producing activities of private households for own use"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "982"
+        },
+        "#text": {
+          "const": "Undifferentiated service-producing activities of private households for own use"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9820"
+        },
+        "#text": {
+          "const": "Undifferentiated service-producing activities of private households for own use"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@catId": {
+          "const": "U"
+        },
+        "#text": {
+          "const": "Activities of extraterritorial organizations and bodies"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "1"
+        },
+        "@catId": {
+          "const": "99"
+        },
+        "#text": {
+          "const": "Activities of extraterritorial organizations and bodies"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@catId": {
+          "const": "990"
+        },
+        "#text": {
+          "const": "Activities of extraterritorial organizations and bodies"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@catId": {
+          "const": "9900"
+        },
+        "#text": {
+          "const": "Activities of extraterritorial organizations and bodies"
+        }
+      }
+    }
+  ]
+}

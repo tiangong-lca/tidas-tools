@@ -5,27 +5,46 @@
     "unitGroupDataSet": {
       "type": "object",
       "properties": {
-        "@xmlns": { "type": "string" },
-        "@xmlns:common": { "type": "string" },
-        "@xmlns:xsi": { "type": "string" },
-        "@version": { "type": "string" },
-        "@xsi:schemaLocation": { "type": "string" },
+        "@xmlns": {
+          "type": "string"
+        },
+        "@xmlns:common": {
+          "type": "string"
+        },
+        "@xmlns:xsi": {
+          "type": "string"
+        },
+        "@version": {
+          "type": "string"
+        },
+        "@xsi:schemaLocation": {
+          "type": "string"
+        },
         "unitGroupInformation": {
           "type": "object",
           "properties": {
             "dataSetInformation": {
               "type": "object",
               "properties": {
-                "common:UUID": { "type": "string" },
+                "common:UUID": {
+                  "type": "string"
+                },
                 "common:name": {
                   "type": "array",
                   "items": {
                     "type": "object",
                     "properties": {
-                      "@xml:lang": { "type": "string" },
-                      "#text": { "type": "string" }
+                      "@xml:lang": {
+                        "type": "string"
+                      },
+                      "#text": {
+                        "type": "string"
+                      }
                     },
-                    "required": ["@xml:lang", "#text"]
+                    "required": [
+                      "@xml:lang",
+                      "#text"
+                    ]
                   }
                 },
                 "classificationInformation": {
@@ -37,27 +56,44 @@
                         "common:class": {
                           "type": "object",
                           "properties": {
-                            "@level": { "type": "string" },
-                            "#text": { "type": "string" }
+                            "@level": {
+                              "type": "string"
+                            },
+                            "#text": {
+                              "type": "string"
+                            }
                           },
-                          "required": ["@level", "#text"]
+                          "required": [
+                            "@level",
+                            "#text"
+                          ]
                         }
                       }
                     }
                   }
                 }
               },
-              "required": ["common:UUID", "common:name"]
+              "required": [
+                "common:UUID",
+                "common:name"
+              ]
             },
             "quantitativeReference": {
               "type": "object",
               "properties": {
-                "referenceToReferenceUnit": { "type": "integer" }
+                "referenceToReferenceUnit": {
+                  "type": "integer"
+                }
               },
-              "required": ["referenceToReferenceUnit"]
+              "required": [
+                "referenceToReferenceUnit"
+              ]
             }
           },
-          "required": ["dataSetInformation", "quantitativeReference"]
+          "required": [
+            "dataSetInformation",
+            "quantitativeReference"
+          ]
         },
         "modellingAndValidation": {
           "type": "object",
@@ -73,24 +109,49 @@
                       "common:referenceToComplianceSystem": {
                         "type": "object",
                         "properties": {
-                          "@refObjectId": { "type": "string" },
-                          "@type": { "type": "string" },
-                          "@uri": { "type": "string" },
-                          "@version": { "type": "string" },
+                          "@refObjectId": {
+                            "type": "string"
+                          },
+                          "@type": {
+                            "type": "string"
+                          },
+                          "@uri": {
+                            "type": "string"
+                          },
+                          "@version": {
+                            "type": "string"
+                          },
                           "common:shortDescription": {
                             "type": "object",
                             "properties": {
-                              "@xml:lang": { "type": "string" },
-                              "#text": { "type": "string" }
+                              "@xml:lang": {
+                                "type": "string"
+                              },
+                              "#text": {
+                                "type": "string"
+                              }
                             },
-                            "required": ["@xml:lang", "#text"]
+                            "required": [
+                              "@xml:lang",
+                              "#text"
+                            ]
                           }
                         },
-                        "required": ["@refObjectId", "@type", "@uri", "@version"]
+                        "required": [
+                          "@refObjectId",
+                          "@type",
+                          "@uri",
+                          "@version"
+                        ]
                       },
-                      "common:approvalOfOverallCompliance": { "type": "string" }
+                      "common:approvalOfOverallCompliance": {
+                        "type": "string"
+                      }
                     },
-                    "required": ["common:referenceToComplianceSystem", "common:approvalOfOverallCompliance"]
+                    "required": [
+                      "common:referenceToComplianceSystem",
+                      "common:approvalOfOverallCompliance"
+                    ]
                   }
                 }
               }
@@ -105,21 +166,39 @@
               "items": {
                 "type": "object",
                 "properties": {
-                  "@dataSetInternalID": { "type": "string" },
-                  "name": { "type": "string" },
-                  "meanValue": { "type": "number" }
+                  "@dataSetInternalID": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "meanValue": {
+                    "type": "number"
+                  }
                 },
-                "required": ["@dataSetInternalID", "name", "meanValue"]
+                "required": [
+                  "@dataSetInternalID",
+                  "name",
+                  "meanValue"
+                ]
               }
             }
           }
         }
       },
       "required": [
-        "@xmlns", "@xmlns:common", "@xmlns:xsi", "@version", "@xsi:schemaLocation",
-        "unitGroupInformation", "modellingAndValidation", "units"
+        "@xmlns",
+        "@xmlns:common",
+        "@xmlns:xsi",
+        "@version",
+        "@xsi:schemaLocation",
+        "unitGroupInformation",
+        "modellingAndValidation",
+        "units"
       ]
     }
   },
-  "required": ["unitGroupDataSet"]
+  "required": [
+    "unitGroupDataSet"
+  ]
 }

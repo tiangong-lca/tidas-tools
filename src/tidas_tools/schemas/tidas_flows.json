@@ -5,20 +5,37 @@
     "flowDataSet": {
       "type": "object",
       "properties": {
-        "@xmlns": { "type": "string" },
-        "@xmlns:common": { "type": "string" },
-        "@xmlns:ecn": { "type": "string" },
-        "@xmlns:xsi": { "type": "string" },
-        "@version": { "type": "string" },
-        "@locations": { "type": "string" },
-        "@xsi:schemaLocation": { "type": "string" },
+        "@xmlns": {
+          "type": "string"
+        },
+        "@xmlns:common": {
+          "type": "string"
+        },
+        "@xmlns:ecn": {
+          "type": "string"
+        },
+        "@xmlns:xsi": {
+          "type": "string"
+        },
+        "@version": {
+          "type": "string"
+        },
+        "@locations": {
+          "type": "string"
+        },
+        "@xsi:schemaLocation": {
+          "type": "string"
+        },
         "flowInformation": {
           "type": "object",
           "properties": {
             "dataSetInformation": {
               "type": "object",
               "properties": {
-                "common:UUID": { "type": "string", "format": "uuid" },
+                "common:UUID": {
+                  "type": "string",
+                  "format": "uuid"
+                },
                 "name": {
                   "type": "object",
                   "properties": {
@@ -27,10 +44,17 @@
                       "items": {
                         "type": "object",
                         "properties": {
-                          "@xml:lang": { "type": "string" },
-                          "#text": { "type": "string" }
+                          "@xml:lang": {
+                            "type": "string"
+                          },
+                          "#text": {
+                            "type": "string"
+                          }
                         },
-                        "required": ["@xml:lang", "#text"]
+                        "required": [
+                          "@xml:lang",
+                          "#text"
+                        ]
                       }
                     },
                     "treatmentStandardsRoutes": {
@@ -38,10 +62,17 @@
                       "items": {
                         "type": "object",
                         "properties": {
-                          "@xml:lang": { "type": "string" },
-                          "#text": { "type": "string" }
+                          "@xml:lang": {
+                            "type": "string"
+                          },
+                          "#text": {
+                            "type": "string"
+                          }
                         },
-                        "required": ["@xml:lang", "#text"]
+                        "required": [
+                          "@xml:lang",
+                          "#text"
+                        ]
                       }
                     },
                     "flowProperties": {
@@ -49,14 +80,25 @@
                       "items": {
                         "type": "object",
                         "properties": {
-                          "@xml:lang": { "type": "string" },
-                          "#text": { "type": "string" }
+                          "@xml:lang": {
+                            "type": "string"
+                          },
+                          "#text": {
+                            "type": "string"
+                          }
                         },
-                        "required": ["@xml:lang", "#text"]
+                        "required": [
+                          "@xml:lang",
+                          "#text"
+                        ]
                       }
                     }
                   },
-                  "required": ["baseName", "treatmentStandardsRoutes", "flowProperties"]
+                  "required": [
+                    "baseName",
+                    "treatmentStandardsRoutes",
+                    "flowProperties"
+                  ]
                 },
                 "classificationInformation": {
                   "type": "object",
@@ -69,48 +111,187 @@
                           "items": {
                             "type": "object",
                             "properties": {
-                              "@level": { "type": "string" },
-                              "@catId": { "type": "string" },
-                              "#text": { "type": "string" }
+                              "@level": {
+                                "type": "string"
+                              },
+                              "#text": {
+                                "type": "string"
+                              }
                             },
-                            "required": ["@level", "@catId", "#text"]
+                            "required": [
+                              "@level",
+                              "#text"
+                            ]
                           }
                         }
                       },
-                      "required": ["common:category"]
+                      "required": [
+                        "common:category"
+                      ]
+                    },
+                    "common:classification": {
+                      "type": "object",
+                      "properties": {
+                        "common:class": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "@level": {
+                                "type": "string",
+                                "enum": [
+                                  "0",
+                                  "1",
+                                  "2",
+                                  "3",
+                                  "4"
+                                ]
+                              },
+                              "@classId": {
+                                "type": "string"
+                              },
+                              "#text": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "@level",
+                              "@classId",
+                              "#text"
+                            ],
+                            "dependencies": {
+                              "@level": {
+                                "$ref": "./tidas_flows_product_category.json"
+                              }
+                            }
+                          },
+                          "uniqueItems": true,
+                          "allOf": [
+                            {
+                              "maxContains": 1,
+                              "minContains": 0,
+                              "contains": {
+                                "properties": {
+                                  "@level": {
+                                    "const": "0"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "maxContains": 1,
+                              "minContains": 0,
+                              "contains": {
+                                "properties": {
+                                  "@level": {
+                                    "const": "1"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "maxContains": 1,
+                              "minContains": 0,
+                              "contains": {
+                                "properties": {
+                                  "@level": {
+                                    "const": "2"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "maxContains": 1,
+                              "minContains": 0,
+                              "contains": {
+                                "properties": {
+                                  "@level": {
+                                    "const": "3"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "maxContains": 1,
+                              "minContains": 0,
+                              "contains": {
+                                "properties": {
+                                  "@level": {
+                                    "const": "4"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "common:class"
+                      ]
                     }
                   },
-                  "required": ["common:elementaryFlowCategorization"]
+                  "oneOf": [
+                    {
+                      "required": [
+                        "common:elementaryFlowCategorization"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "common:classification"
+                      ]
+                    }
+                  ]
                 },
                 "common:generalComment": {
                   "type": "array",
                   "items": {
                     "type": "object",
                     "properties": {
-                      "@xml:lang": { "type": "string" },
-                      "#text": { "type": "string" }
+                      "@xml:lang": {
+                        "type": "string"
+                      },
+                      "#text": {
+                        "type": "string"
+                      }
                     }
                   }
                 }
               },
-              "required": ["common:UUID", "name", "classificationInformation"]
+              "required": [
+                "common:UUID",
+                "name",
+                "classificationInformation"
+              ]
             },
             "quantitativeReference": {
               "type": "object",
               "properties": {
-                "referenceToReferenceFlowProperty": { "type": "string" }
+                "referenceToReferenceFlowProperty": {
+                  "type": "string"
+                }
               },
-              "required": ["referenceToReferenceFlowProperty"]
+              "required": [
+                "referenceToReferenceFlowProperty"
+              ]
             },
             "geography": {
               "type": "object",
               "properties": {
-                "locationOfSupply": { "type": "string" }
+                "locationOfSupply": {
+                  "type": "string"
+                }
               },
-              "required": ["locationOfSupply"]
+              "required": [
+                "locationOfSupply"
+              ]
             }
           },
-          "required": ["dataSetInformation", "quantitativeReference", "geography"]
+          "required": [
+            "dataSetInformation",
+            "quantitativeReference",
+            "geography"
+          ]
         },
         "modellingAndValidation": {
           "type": "object",
@@ -118,9 +299,18 @@
             "LCIMethod": {
               "type": "object",
               "properties": {
-                "typeOfDataSet": { "type": "string" }
+                "typeOfDataSet": {
+                  "type": "string",
+                  "enum": [
+                    "Elementary flow",
+                    "Product flow",
+                    "Waste flow"
+                  ]
+                }
               },
-              "required": ["typeOfDataSet"]
+              "required": [
+                "typeOfDataSet"
+              ]
             },
             "complianceDeclarations": {
               "type": "object",
@@ -133,30 +323,58 @@
                       "common:referenceToComplianceSystem": {
                         "type": "object",
                         "properties": {
-                          "@refObjectId": { "type": "string" },
-                          "@type": { "type": "string" },
-                          "@uri": { "type": "string" },
+                          "@refObjectId": {
+                            "type": "string"
+                          },
+                          "@type": {
+                            "type": "string"
+                          },
+                          "@uri": {
+                            "type": "string"
+                          },
                           "common:shortDescription": {
                             "type": "object",
                             "properties": {
-                              "@xml:lang": { "type": "string" },
-                              "#text": { "type": "string" }
+                              "@xml:lang": {
+                                "type": "string"
+                              },
+                              "#text": {
+                                "type": "string"
+                              }
                             },
-                            "required": ["@xml:lang", "#text"]
+                            "required": [
+                              "@xml:lang",
+                              "#text"
+                            ]
                           }
                         },
-                        "required": ["@refObjectId", "@type", "@uri", "common:shortDescription"]
+                        "required": [
+                          "@refObjectId",
+                          "@type",
+                          "@uri",
+                          "common:shortDescription"
+                        ]
                       },
-                      "common:approvalOfOverallCompliance": { "type": "string" }
+                      "common:approvalOfOverallCompliance": {
+                        "type": "string"
+                      }
                     },
-                    "required": ["common:referenceToComplianceSystem", "common:approvalOfOverallCompliance"]
+                    "required": [
+                      "common:referenceToComplianceSystem",
+                      "common:approvalOfOverallCompliance"
+                    ]
                   }
                 }
               },
-              "required": ["compliance"]
+              "required": [
+                "compliance"
+              ]
             }
           },
-          "required": ["LCIMethod", "complianceDeclarations"]
+          "required": [
+            "LCIMethod",
+            "complianceDeclarations"
+          ]
         },
         "administrativeInformation": {
           "type": "object",
@@ -164,55 +382,110 @@
             "dataEntryBy": {
               "type": "object",
               "properties": {
-                "common:timeStamp": { "type": "string", "format": "date-time" },
+                "common:timeStamp": {
+                  "type": "string",
+                  "format": "date-time"
+                },
                 "common:referenceToDataSetFormat": {
                   "type": "object",
                   "properties": {
-                    "@refObjectId": { "type": "string" },
-                    "@type": { "type": "string" },
-                    "@uri": { "type": "string" },
+                    "@refObjectId": {
+                      "type": "string"
+                    },
+                    "@type": {
+                      "type": "string"
+                    },
+                    "@uri": {
+                      "type": "string"
+                    },
                     "common:shortDescription": {
                       "type": "object",
                       "properties": {
-                        "@xml:lang": { "type": "string" },
-                        "#text": { "type": "string" }
+                        "@xml:lang": {
+                          "type": "string"
+                        },
+                        "#text": {
+                          "type": "string"
+                        }
                       },
-                      "required": ["@xml:lang", "#text"]
+                      "required": [
+                        "@xml:lang",
+                        "#text"
+                      ]
                     }
                   },
-                  "required": ["@refObjectId", "@type", "@uri", "common:shortDescription"]
+                  "required": [
+                    "@refObjectId",
+                    "@type",
+                    "@uri",
+                    "common:shortDescription"
+                  ]
                 },
-                "common:referenceToPersonOrEntityEnteringTheData": { "type": "string" }
+                "common:referenceToPersonOrEntityEnteringTheData": {
+                  "type": "string"
+                }
               },
-              "required": ["common:timeStamp", "common:referenceToDataSetFormat"]
+              "required": [
+                "common:timeStamp",
+                "common:referenceToDataSetFormat"
+              ]
             },
             "publicationAndOwnership": {
               "type": "object",
               "properties": {
-                "common:dataSetVersion": { "type": "string" },
+                "common:dataSetVersion": {
+                  "type": "string"
+                },
                 "common:referenceToOwnershipOfDataSet": {
                   "type": "object",
                   "properties": {
-                    "@refObjectId": { "type": "string" },
-                    "@type": { "type": "string" },
-                    "@uri": { "type": "string" },
-                    "@version": { "type": "string" },
+                    "@refObjectId": {
+                      "type": "string"
+                    },
+                    "@type": {
+                      "type": "string"
+                    },
+                    "@uri": {
+                      "type": "string"
+                    },
+                    "@version": {
+                      "type": "string"
+                    },
                     "common:shortDescription": {
                       "type": "object",
                       "properties": {
-                        "@xml:lang": { "type": "string" },
-                        "#text": { "type": "string" }
+                        "@xml:lang": {
+                          "type": "string"
+                        },
+                        "#text": {
+                          "type": "string"
+                        }
                       },
-                      "required": ["@xml:lang", "#text"]
+                      "required": [
+                        "@xml:lang",
+                        "#text"
+                      ]
                     }
                   },
-                  "required": ["@refObjectId", "@type", "@uri", "@version", "common:shortDescription"]
+                  "required": [
+                    "@refObjectId",
+                    "@type",
+                    "@uri",
+                    "@version",
+                    "common:shortDescription"
+                  ]
                 }
               },
-              "required": ["common:dataSetVersion", "common:referenceToOwnershipOfDataSet"]
+              "required": [
+                "common:dataSetVersion",
+                "common:referenceToOwnershipOfDataSet"
+              ]
             }
           },
-          "required": ["dataEntryBy", "publicationAndOwnership"]
+          "required": [
+            "dataEntryBy",
+            "publicationAndOwnership"
+          ]
         },
         "flowProperties": {
           "type": "object",
@@ -222,31 +495,59 @@
               "items": {
                 "type": "object",
                 "properties": {
-                  "@dataSetInternalID": { "type": "string" },
+                  "@dataSetInternalID": {
+                    "type": "string"
+                  },
                   "referenceToFlowPropertyDataSet": {
                     "type": "object",
                     "properties": {
-                      "@refObjectId": { "type": "string" },
-                      "@type": { "type": "string" },
-                      "@uri": { "type": "string" },
+                      "@refObjectId": {
+                        "type": "string"
+                      },
+                      "@type": {
+                        "type": "string"
+                      },
+                      "@uri": {
+                        "type": "string"
+                      },
                       "common:shortDescription": {
                         "type": "object",
                         "properties": {
-                          "@xml:lang": { "type": "string" },
-                          "#text": { "type": "string" }
+                          "@xml:lang": {
+                            "type": "string"
+                          },
+                          "#text": {
+                            "type": "string"
+                          }
                         },
-                        "required": ["@xml:lang", "#text"]
+                        "required": [
+                          "@xml:lang",
+                          "#text"
+                        ]
                       }
                     },
-                    "required": ["@refObjectId", "@type", "@uri", "common:shortDescription"]
+                    "required": [
+                      "@refObjectId",
+                      "@type",
+                      "@uri",
+                      "common:shortDescription"
+                    ]
                   },
-                  "meanValue": { "type": "number" }
+                  "meanValue": {
+                    "type": "number"
+                  }
                 },
-                "required": ["@dataSetInternalID", "referenceToFlowPropertyDataSet", "meanValue"]
+                "required": [
+                  "@dataSetInternalID",
+                  "referenceToFlowPropertyDataSet",
+                  "meanValue"
+                ]
               }
             }
           },
-          "required": ["flowProperty"]
+          "required": [
+            "flowProperty"
+          ]
         }
       },
       "required": [
@@ -264,5 +565,7 @@
       ]
     }
   },
-  "required": ["flowDataSet"]
+  "required": [
+    "flowDataSet"
+  ]
 }
