@@ -150,3 +150,5 @@ tidas_validate.log
 test_data/*
 
 /*.py
+
+poetry.lock
