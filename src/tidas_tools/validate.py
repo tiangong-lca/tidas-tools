@@ -28,7 +28,7 @@ def validate_product_flows_classification_hierarchy(class_items):
         level = int(item["@level"])
         if level != i:
             errors.append(
-                f"Product flow classification level error: at index {i}, expected level {i}, got {level}"
+                f"Product flow classification level sorting error: at index {i}, expected level {i}, got {level}"
             )
 
     for i in range(1, len(class_items)):
@@ -45,6 +45,65 @@ def validate_product_flows_classification_hierarchy(class_items):
     else:
         return {"valid": True}
 
+def validate_processes_classification_hierarchy(class_items):
+    errors = []
+
+    level0_to_level1_mapping = {
+        "A": ["01", "02", "03"],
+        "B": ["05", "06", "07", "08", "09"],
+        "C": [f"{i:02d}" for i in range(10, 34)],  # 10 to 33
+        "D": ["35"],
+        "F": ["41", "42", "43"],
+        "G": ["45", "46", "47"],
+        "H": ["49", "50", "51", "52", "53"],
+        "I": ["55", "56"],
+        "J": [f"{i:02d}" for i in range(58, 67)],  # 58 to 66
+        "L": ["68"],
+        "M": [f"{i:02d}" for i in range(69, 76)],  # 69 to 75
+        "N": [f"{i:02d}" for i in range(77, 83)],  # 77 to 82
+        "O": ["84"],
+        "P": ["85"],
+        "Q": ["86", "87", "88"],
+        "R": ["90", "91", "92", "93"],
+        "S": ["94", "95", "96"],
+        "T": ["97", "98"],
+        "U": ["99"]
+    }
+
+    for i, item in enumerate(class_items):
+        level = int(item["@level"])
+        if level != i:
+            errors.append(
+                f"Processes classification level sorting error: at index {i}, expected level {i}, got {level}"
+            )
+
+    for i in range(1, len(class_items)):
+        parent = class_items[i - 1]
+        child = class_items[i]
+        
+        parent_level = int(parent["@level"])
+        child_level = int(child["@level"])
+        
+        parent_id = parent["@catId"]
+        child_id = child["@catId"]
+        
+        if parent_level == 0 and child_level == 1:
+            valid_level1_codes = level0_to_level1_mapping.get(parent_id, [])
+            if child_id not in valid_level1_codes:
+                errors.append(
+                    f"Processes classification code error: level 1 code '{child_id}' does not correspond to level 0 code '{parent_id}'"
+                )
+
+        else:
+            if not child_id.startswith(parent_id):
+                errors.append(
+                    f"Processes classification code error: child code '{child_id}' does not start with parent code '{parent_id}'"
+                )
+
+    if errors:
+        return {"valid": False, "errors": errors}
+    else:
+        return {"valid": True}
 
 def category_validate(json_file_path: str, category: str):
 
