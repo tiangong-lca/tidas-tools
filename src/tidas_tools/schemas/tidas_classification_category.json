@@ -1,0 +1,2946 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "tidas_classification_category_dependencies.json",
+    "$defs": {
+        "LifeCycleModel": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "1"
+                        },
+                        "#text": {
+                            "const": "Energy carriers and technologies"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.1"
+                        },
+                        "#text": {
+                            "const": "Energetic raw materials"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.2"
+                        },
+                        "#text": {
+                            "const": "Electricity"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.3"
+                        },
+                        "#text": {
+                            "const": "Heat and steam"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.4"
+                        },
+                        "#text": {
+                            "const": "Mechanical energy"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.5"
+                        },
+                        "#text": {
+                            "const": "Hard coal based fuels"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.6"
+                        },
+                        "#text": {
+                            "const": "Lignite based fuels"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.7"
+                        },
+                        "#text": {
+                            "const": "Crude oil based fuels"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.8"
+                        },
+                        "#text": {
+                            "const": "Natural gas based fuels"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.9"
+                        },
+                        "#text": {
+                            "const": "Nuclear fuels"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.10"
+                        },
+                        "#text": {
+                            "const": "Other non-renewable fuels"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.11"
+                        },
+                        "#text": {
+                            "const": "Renewable fuels"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "2"
+                        },
+                        "#text": {
+                            "const": "Materials production"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.1"
+                        },
+                        "#text": {
+                            "const": "Non-energetic raw materials"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.2"
+                        },
+                        "#text": {
+                            "const": "Metals and semimetals"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.3"
+                        },
+                        "#text": {
+                            "const": "Organic chemicals"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.4"
+                        },
+                        "#text": {
+                            "const": "Inorganic chemicals"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.5"
+                        },
+                        "#text": {
+                            "const": "Glass and ceramics"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.6"
+                        },
+                        "#text": {
+                            "const": "Other mineralic materials"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.7"
+                        },
+                        "#text": {
+                            "const": "Plastics"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.8"
+                        },
+                        "#text": {
+                            "const": "Paper and cardboards"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.9"
+                        },
+                        "#text": {
+                            "const": "Water"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.10"
+                        },
+                        "#text": {
+                            "const": "Agricultural production means"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.11"
+                        },
+                        "#text": {
+                            "const": "Food and renewable raw materials"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.12"
+                        },
+                        "#text": {
+                            "const": "Wood"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.13"
+                        },
+                        "#text": {
+                            "const": "Other materials"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "3"
+                        },
+                        "#text": {
+                            "const": "Systems"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.1"
+                        },
+                        "#text": {
+                            "const": "Packaging"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.2"
+                        },
+                        "#text": {
+                            "const": "Electrics and electronics"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.3"
+                        },
+                        "#text": {
+                            "const": "Vehicles"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.4"
+                        },
+                        "#text": {
+                            "const": "Other machines"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.5"
+                        },
+                        "#text": {
+                            "const": "Construction"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.6"
+                        },
+                        "#text": {
+                            "const": "White goods"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.7"
+                        },
+                        "#text": {
+                            "const": "Textiles, furnitures and other interiors"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.8"
+                        },
+                        "#text": {
+                            "const": "Unspecific parts"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.9"
+                        },
+                        "#text": {
+                            "const": "Paints and chemical preparations"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.10"
+                        },
+                        "#text": {
+                            "const": "Other systems"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "4"
+                        },
+                        "#text": {
+                            "const": "End-of-life treatment"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.1"
+                        },
+                        "#text": {
+                            "const": "Reuse or further use"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.2"
+                        },
+                        "#text": {
+                            "const": "Material recycling"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.3"
+                        },
+                        "#text": {
+                            "const": "Raw material recycling"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.4"
+                        },
+                        "#text": {
+                            "const": "Energy recycling"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.5"
+                        },
+                        "#text": {
+                            "const": "Landfilling"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.6"
+                        },
+                        "#text": {
+                            "const": "Waste collection"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.7"
+                        },
+                        "#text": {
+                            "const": "Waste water treatment"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.8"
+                        },
+                        "#text": {
+                            "const": "Raw gas treatment"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.9"
+                        },
+                        "#text": {
+                            "const": "Other end-of-life services"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "5"
+                        },
+                        "#text": {
+                            "const": "Transport services"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "5.1"
+                        },
+                        "#text": {
+                            "const": "Road"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "5.2"
+                        },
+                        "#text": {
+                            "const": "Rail"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "5.3"
+                        },
+                        "#text": {
+                            "const": "Water"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "5.4"
+                        },
+                        "#text": {
+                            "const": "Air"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "5.5"
+                        },
+                        "#text": {
+                            "const": "Other transport"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "6"
+                        },
+                        "#text": {
+                            "const": "Other Services"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.1"
+                        },
+                        "#text": {
+                            "const": "Cleaning"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.2"
+                        },
+                        "#text": {
+                            "const": "Storage"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.3"
+                        },
+                        "#text": {
+                            "const": "Health, social services, beauty and wellness"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.4"
+                        },
+                        "#text": {
+                            "const": "Repair and maintenance"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.5"
+                        },
+                        "#text": {
+                            "const": "Sale and whole sale"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.6"
+                        },
+                        "#text": {
+                            "const": "Communication and information services"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.7"
+                        },
+                        "#text": {
+                            "const": "Financial, legal, and insurance"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.8"
+                        },
+                        "#text": {
+                            "const": "Administration and government"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.9"
+                        },
+                        "#text": {
+                            "const": "Defence"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.10"
+                        },
+                        "#text": {
+                            "const": "Lodging and gastronomy"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.11"
+                        },
+                        "#text": {
+                            "const": "Education"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.12"
+                        },
+                        "#text": {
+                            "const": "Research and development"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.13"
+                        },
+                        "#text": {
+                            "const": "Entertainment"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.14"
+                        },
+                        "#text": {
+                            "const": "Renting"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.15"
+                        },
+                        "#text": {
+                            "const": "Engineering and consulting"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.16"
+                        },
+                        "#text": {
+                            "const": "Other services"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "7"
+                        },
+                        "#text": {
+                            "const": "Use and consumption"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "7.1"
+                        },
+                        "#text": {
+                            "const": "Consumption of goods"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "7.2"
+                        },
+                        "#text": {
+                            "const": "Use of energy-using products"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "7.3"
+                        },
+                        "#text": {
+                            "const": "Other use and consumption"
+                        }
+                    }
+                }
+            ]
+        },
+        "Process": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "1"
+                        },
+                        "#text": {
+                            "const": "Energy carriers and technologies"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.1"
+                        },
+                        "#text": {
+                            "const": "Energetic raw materials"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.2"
+                        },
+                        "#text": {
+                            "const": "Electricity"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.3"
+                        },
+                        "#text": {
+                            "const": "Heat and steam"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.4"
+                        },
+                        "#text": {
+                            "const": "Mechanical energy"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.5"
+                        },
+                        "#text": {
+                            "const": "Hard coal based fuels"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.6"
+                        },
+                        "#text": {
+                            "const": "Lignite based fuels"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.7"
+                        },
+                        "#text": {
+                            "const": "Crude oil based fuels"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.8"
+                        },
+                        "#text": {
+                            "const": "Natural gas based fuels"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.9"
+                        },
+                        "#text": {
+                            "const": "Nuclear fuels"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.10"
+                        },
+                        "#text": {
+                            "const": "Other non-renewable fuels"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.11"
+                        },
+                        "#text": {
+                            "const": "Renewable fuels"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "2"
+                        },
+                        "#text": {
+                            "const": "Materials production"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.1"
+                        },
+                        "#text": {
+                            "const": "Non-energetic raw materials"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.2"
+                        },
+                        "#text": {
+                            "const": "Metals and semimetals"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.3"
+                        },
+                        "#text": {
+                            "const": "Organic chemicals"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.4"
+                        },
+                        "#text": {
+                            "const": "Inorganic chemicals"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.5"
+                        },
+                        "#text": {
+                            "const": "Glass and ceramics"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.6"
+                        },
+                        "#text": {
+                            "const": "Other mineralic materials"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.7"
+                        },
+                        "#text": {
+                            "const": "Plastics"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.8"
+                        },
+                        "#text": {
+                            "const": "Paper and cardboards"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.9"
+                        },
+                        "#text": {
+                            "const": "Water"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.10"
+                        },
+                        "#text": {
+                            "const": "Agricultural production means"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.11"
+                        },
+                        "#text": {
+                            "const": "Food and renewable raw materials"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.12"
+                        },
+                        "#text": {
+                            "const": "Wood"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.13"
+                        },
+                        "#text": {
+                            "const": "Other materials"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "3"
+                        },
+                        "#text": {
+                            "const": "Systems"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.1"
+                        },
+                        "#text": {
+                            "const": "Packaging"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.2"
+                        },
+                        "#text": {
+                            "const": "Electrics and electronics"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.3"
+                        },
+                        "#text": {
+                            "const": "Vehicles"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.4"
+                        },
+                        "#text": {
+                            "const": "Other machines"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.5"
+                        },
+                        "#text": {
+                            "const": "Construction"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.6"
+                        },
+                        "#text": {
+                            "const": "White goods"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.7"
+                        },
+                        "#text": {
+                            "const": "Textiles, furnitures and other interiors"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.8"
+                        },
+                        "#text": {
+                            "const": "Unspecific parts"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.9"
+                        },
+                        "#text": {
+                            "const": "Paints and chemical preparations"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "3.10"
+                        },
+                        "#text": {
+                            "const": "Other systems"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "4"
+                        },
+                        "#text": {
+                            "const": "End-of-life treatment"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.1"
+                        },
+                        "#text": {
+                            "const": "Reuse or further use"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.2"
+                        },
+                        "#text": {
+                            "const": "Material recycling"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.3"
+                        },
+                        "#text": {
+                            "const": "Raw material recycling"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.4"
+                        },
+                        "#text": {
+                            "const": "Energy recycling"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.5"
+                        },
+                        "#text": {
+                            "const": "Landfilling"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.6"
+                        },
+                        "#text": {
+                            "const": "Waste collection"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.7"
+                        },
+                        "#text": {
+                            "const": "Waste water treatment"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.8"
+                        },
+                        "#text": {
+                            "const": "Raw gas treatment"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "4.9"
+                        },
+                        "#text": {
+                            "const": "Other end-of-life services"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "5"
+                        },
+                        "#text": {
+                            "const": "Transport services"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "5.1"
+                        },
+                        "#text": {
+                            "const": "Road"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "5.2"
+                        },
+                        "#text": {
+                            "const": "Rail"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "5.3"
+                        },
+                        "#text": {
+                            "const": "Water"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "5.4"
+                        },
+                        "#text": {
+                            "const": "Air"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "5.5"
+                        },
+                        "#text": {
+                            "const": "Other transport"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "6"
+                        },
+                        "#text": {
+                            "const": "Other Services"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.1"
+                        },
+                        "#text": {
+                            "const": "Cleaning"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.2"
+                        },
+                        "#text": {
+                            "const": "Storage"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.3"
+                        },
+                        "#text": {
+                            "const": "Health, social services, beauty and wellness"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.4"
+                        },
+                        "#text": {
+                            "const": "Repair and maintenance"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.5"
+                        },
+                        "#text": {
+                            "const": "Sale and whole sale"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.6"
+                        },
+                        "#text": {
+                            "const": "Communication and information services"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.7"
+                        },
+                        "#text": {
+                            "const": "Financial, legal, and insurance"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.8"
+                        },
+                        "#text": {
+                            "const": "Administration and government"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.9"
+                        },
+                        "#text": {
+                            "const": "Defence"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.10"
+                        },
+                        "#text": {
+                            "const": "Lodging and gastronomy"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.11"
+                        },
+                        "#text": {
+                            "const": "Education"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.12"
+                        },
+                        "#text": {
+                            "const": "Research and development"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.13"
+                        },
+                        "#text": {
+                            "const": "Entertainment"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.14"
+                        },
+                        "#text": {
+                            "const": "Renting"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.15"
+                        },
+                        "#text": {
+                            "const": "Engineering and consulting"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "6.16"
+                        },
+                        "#text": {
+                            "const": "Other services"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "7"
+                        },
+                        "#text": {
+                            "const": "Use and consumption"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "7.1"
+                        },
+                        "#text": {
+                            "const": "Consumption of goods"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "7.2"
+                        },
+                        "#text": {
+                            "const": "Use of energy-using products"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "7.3"
+                        },
+                        "#text": {
+                            "const": "Other use and consumption"
+                        }
+                    }
+                }
+            ]
+        },
+        "LCIAMethod": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "1"
+                        },
+                        "#text": {
+                            "const": "Damage level LCIA methods"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.1"
+                        },
+                        "#text": {
+                            "const": "Total impact across areas of protection"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.2"
+                        },
+                        "#text": {
+                            "const": "Human health"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.2.1"
+                        },
+                        "#text": {
+                            "const": "Total human health, combined"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.2.2"
+                        },
+                        "#text": {
+                            "const": "Human health, toxicity"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.2.3"
+                        },
+                        "#text": {
+                            "const": "Human health, climate change"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.2.4"
+                        },
+                        "#text": {
+                            "const": "Human health, ionising radiation"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.2.5"
+                        },
+                        "#text": {
+                            "const": "Human health, ozone depletion"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.2.6"
+                        },
+                        "#text": {
+                            "const": "Human health, photooxidant creation"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.2.7"
+                        },
+                        "#text": {
+                            "const": "Human health, other"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.3"
+                        },
+                        "#text": {
+                            "const": "Natural environment"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.1"
+                        },
+                        "#text": {
+                            "const": "Total natural environment, combined"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.2"
+                        },
+                        "#text": {
+                            "const": "Natural environment, climate change"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.3"
+                        },
+                        "#text": {
+                            "const": "Natural environment, ozone depletion"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.4"
+                        },
+                        "#text": {
+                            "const": "Natural environment, land use"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.5"
+                        },
+                        "#text": {
+                            "const": "Natural environment, freshwater ecotoxicity"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.6"
+                        },
+                        "#text": {
+                            "const": "Natural environment, seawater ecotoxicity"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.7"
+                        },
+                        "#text": {
+                            "const": "Natural environment, terrestric ecotoxicity"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.8"
+                        },
+                        "#text": {
+                            "const": "Natural environment, acidification"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.9"
+                        },
+                        "#text": {
+                            "const": "Natural environment, eutrophication"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.10"
+                        },
+                        "#text": {
+                            "const": "Natural environment, photooxidant creation"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.11"
+                        },
+                        "#text": {
+                            "const": "Natural environment, ionising radiation"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.12"
+                        },
+                        "#text": {
+                            "const": "Natural environment, other"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.4"
+                        },
+                        "#text": {
+                            "const": "Man-made environment"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.4.1"
+                        },
+                        "#text": {
+                            "const": "Total man-made environment, combined"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.4.2"
+                        },
+                        "#text": {
+                            "const": "Man-made environment, acidification"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.4.3"
+                        },
+                        "#text": {
+                            "const": "Man-made environment, climate change"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.4.4"
+                        },
+                        "#text": {
+                            "const": "Man-made environment, eutrophication"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.4.5"
+                        },
+                        "#text": {
+                            "const": "Man-made environment, other"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.5"
+                        },
+                        "#text": {
+                            "const": "Resource availability"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.5.1"
+                        },
+                        "#text": {
+                            "const": "Total resource depletion, combined"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.5.2"
+                        },
+                        "#text": {
+                            "const": "Resource depletion, minerals and metals"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.5.3"
+                        },
+                        "#text": {
+                            "const": "Resource depletion, non-renewable energy resourcess"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.5.4"
+                        },
+                        "#text": {
+                            "const": "Resource depletion, land use"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.5.5"
+                        },
+                        "#text": {
+                            "const": "Resource depletion, renewable energy resources"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.5.6"
+                        },
+                        "#text": {
+                            "const": "Resource depletion, renewable non-energy resources"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.5.6"
+                        },
+                        "#text": {
+                            "const": "Resource depletion, other"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "2"
+                        },
+                        "#text": {
+                            "const": "Midpoint level LCIA methods"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.1"
+                        },
+                        "#text": {
+                            "const": "Combined methods"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.2"
+                        },
+                        "#text": {
+                            "const": "Climate change"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.3"
+                        },
+                        "#text": {
+                            "const": "Ozone depletion"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.4"
+                        },
+                        "#text": {
+                            "const": "Land use"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.5"
+                        },
+                        "#text": {
+                            "const": "Ecotoxicity"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.6"
+                        },
+                        "#text": {
+                            "const": "Acidification"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.7"
+                        },
+                        "#text": {
+                            "const": "Eutrophication"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.8"
+                        },
+                        "#text": {
+                            "const": "Photooxidant creation"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.9"
+                        },
+                        "#text": {
+                            "const": "Nuclear radiation"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.10"
+                        },
+                        "#text": {
+                            "const": "Human toxicity"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.11"
+                        },
+                        "#text": {
+                            "const": "Respiratory effects"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.12"
+                        },
+                        "#text": {
+                            "const": "Noise"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.13"
+                        },
+                        "#text": {
+                            "const": "Resource depletion"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.14"
+                        },
+                        "#text": {
+                            "const": "Other midpoint categories"
+                        }
+                    }
+                }
+            ]
+        },
+        "FlowProperty": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "1"
+                        },
+                        "#text": {
+                            "const": "Technical flow properties"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "2"
+                        },
+                        "#text": {
+                            "const": "Chemical composition of flows"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "3"
+                        },
+                        "#text": {
+                            "const": "Economic flow properties"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "4"
+                        },
+                        "#text": {
+                            "const": "Other flow properties"
+                        }
+                    }
+                }
+            ]
+        },
+        "UnitGroup": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "1"
+                        },
+                        "#text": {
+                            "const": "Technical unit groups"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "2"
+                        },
+                        "#text": {
+                            "const": "Chemical composition unit groups"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "3"
+                        },
+                        "#text": {
+                            "const": "Economic unit groups"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "4"
+                        },
+                        "#text": {
+                            "const": "Other unit groups"
+                        }
+                    }
+                }
+            ]
+        },
+        "Contact": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "1"
+                        },
+                        "#text": {
+                            "const": "Group of organisations, project"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "2"
+                        },
+                        "#text": {
+                            "const": "Organisations"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.1"
+                        },
+                        "#text": {
+                            "const": "Private companies"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.2"
+                        },
+                        "#text": {
+                            "const": "Governmental organisations"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.3"
+                        },
+                        "#text": {
+                            "const": "Non-governmental organisations"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.4"
+                        },
+                        "#text": {
+                            "const": "Other organisations"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "3"
+                        },
+                        "#text": {
+                            "const": "Working groups within organisation"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "4"
+                        },
+                        "#text": {
+                            "const": "Persons"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "5"
+                        },
+                        "#text": {
+                            "const": "Other"
+                        }
+                    }
+                }
+            ]
+        },
+        "Source": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "0"
+                        },
+                        "#text": {
+                            "const": "Images"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "1"
+                        },
+                        "#text": {
+                            "const": "Data set formats"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "2"
+                        },
+                        "#text": {
+                            "const": "Databases"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "3"
+                        },
+                        "#text": {
+                            "const": "Compliance systems"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "4"
+                        },
+                        "#text": {
+                            "const": "Statistical classifications"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "5"
+                        },
+                        "#text": {
+                            "const": "Publications and communications"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "6"
+                        },
+                        "#text": {
+                            "const": "Other source types"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
