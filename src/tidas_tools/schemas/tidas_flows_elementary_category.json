@@ -1,0 +1,721 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "flows_elementary_category_dependencies.json",
+    "oneOf": [
+        {
+            "properties": {
+                "@level": {
+                    "const": "0"
+                },
+                "@catId": {
+                    "const": "1"
+                },
+                "#text": {
+                    "const": "Emissions"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "1"
+                },
+                "@catId": {
+                    "const": "1.1"
+                },
+                "#text": {
+                    "const": "Emissions to water"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "1.1.1"
+                },
+                "#text": {
+                    "const": "Emissions to fresh water"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "1.1.2"
+                },
+                "#text": {
+                    "const": "Emissions to sea water"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "1.1.3"
+                },
+                "#text": {
+                    "const": "Emissions to water, unspecified"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "1.1.4"
+                },
+                "#text": {
+                    "const": "Emissions to water, unspecified (long-term)"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "1"
+                },
+                "@catId": {
+                    "const": "1.2"
+                },
+                "#text": {
+                    "const": "Emissions to soil"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "1.2.1"
+                },
+                "#text": {
+                    "const": "Emissions to agricultural soil"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "1.2.2"
+                },
+                "#text": {
+                    "const": "Emissions to non-agricultural soil"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "1.2.3"
+                },
+                "#text": {
+                    "const": "Emissions to soil, unspecified"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "1.2.4"
+                },
+                "#text": {
+                    "const": "Emissions to soil, unspecified (long-term)"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "1"
+                },
+                "@catId": {
+                    "const": "1.3"
+                },
+                "#text": {
+                    "const": "Emissions to air"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "1.3.1"
+                },
+                "#text": {
+                    "const": "Emissions to urban air close to ground"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "1.3.2"
+                },
+                "#text": {
+                    "const": "Emissions to non-urban air or from high stacks"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "1.3.3"
+                },
+                "#text": {
+                    "const": "Emissions to lower stratosphere and upper troposphere"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "1.3.4"
+                },
+                "#text": {
+                    "const": "Emissions to air, unspecified"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "1.3.5"
+                },
+                "#text": {
+                    "const": "Emissions to air, unspecified (long-term)"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "0"
+                },
+                "@catId": {
+                    "const": "2"
+                },
+                "#text": {
+                    "const": "Resources"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "1"
+                },
+                "@catId": {
+                    "const": "2.1"
+                },
+                "#text": {
+                    "const": "Resources from ground"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.1.1"
+                },
+                "#text": {
+                    "const": "Non-renewable material resources from ground"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.1.2"
+                },
+                "#text": {
+                    "const": "Non-renewable element resources from ground"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.1.3"
+                },
+                "#text": {
+                    "const": "Non-renewable energy resources from ground"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.1.4"
+                },
+                "#text": {
+                    "const": "Renewable element resources from ground"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.1.5"
+                },
+                "#text": {
+                    "const": "Renewable energy resources from ground"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.1.6"
+                },
+                "#text": {
+                    "const": "Renewable material resources from ground"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.1.7"
+                },
+                "#text": {
+                    "const": "Renewable resources from ground, unspecified"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.1.8"
+                },
+                "#text": {
+                    "const": "Non-renewable resources from ground, unspecified"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "1"
+                },
+                "@catId": {
+                    "const": "2.2"
+                },
+                "#text": {
+                    "const": "Resources from water"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.2.1"
+                },
+                "#text": {
+                    "const": "Non-renewable material resources from water"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.2.2"
+                },
+                "#text": {
+                    "const": "Non-renewable element resources from water"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.2.3"
+                },
+                "#text": {
+                    "const": "Non-renewable energy resources from water"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.2.4"
+                },
+                "#text": {
+                    "const": "Renewable element resources from water"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.2.5"
+                },
+                "#text": {
+                    "const": "Renewable energy resources from water"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.2.6"
+                },
+                "#text": {
+                    "const": "Renewable material resources from water"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.2.7"
+                },
+                "#text": {
+                    "const": "Renewable resources from water, unspecified"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.2.8"
+                },
+                "#text": {
+                    "const": "Non-renewable resources from water, unspecified"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "1"
+                },
+                "@catId": {
+                    "const": "2.3"
+                },
+                "#text": {
+                    "const": "Resources from air"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.3.1"
+                },
+                "#text": {
+                    "const": "Non-renewable material resources from air"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.3.2"
+                },
+                "#text": {
+                    "const": "Non-renewable element resources from air"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.3.3"
+                },
+                "#text": {
+                    "const": "Non-renewable energy resources from air"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.3.4"
+                },
+                "#text": {
+                    "const": "Renewable element resources from air"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.3.5"
+                },
+                "#text": {
+                    "const": "Renewable energy resources from air"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.3.6"
+                },
+                "#text": {
+                    "const": "Renewable material resources from air"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.3.7"
+                },
+                "#text": {
+                    "const": "Renewable resources from air, unspecified"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.3.8"
+                },
+                "#text": {
+                    "const": "Non-renewable resources from air, unspecified"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "1"
+                },
+                "@catId": {
+                    "const": "2.4"
+                },
+                "#text": {
+                    "const": "Resources from biosphere"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.4.1"
+                },
+                "#text": {
+                    "const": "Renewable element resources from biosphere"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.4.2"
+                },
+                "#text": {
+                    "const": "Renewable energy resources from biosphere"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.4.3"
+                },
+                "#text": {
+                    "const": "Renewable material resources from biosphere"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.4.4"
+                },
+                "#text": {
+                    "const": "Renewable genetic resources from biosphere"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "2"
+                },
+                "@catId": {
+                    "const": "2.4.5"
+                },
+                "#text": {
+                    "const": "Renewable resources from biosphere, unspecified"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "0"
+                },
+                "@catId": {
+                    "const": "3"
+                },
+                "#text": {
+                    "const": "Land use"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "1"
+                },
+                "@catId": {
+                    "const": "3.1"
+                },
+                "#text": {
+                    "const": "Land occupation"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "1"
+                },
+                "@catId": {
+                    "const": "3.2"
+                },
+                "#text": {
+                    "const": "Land transformation"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "0"
+                },
+                "@catId": {
+                    "const": "4"
+                },
+                "#text": {
+                    "const": "Other elementary flows"
+                }
+            }
+        }
+    ]
+}

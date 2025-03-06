@@ -1,0 +1,2594 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "tidas_locations_category_dependencies.json",
+  "oneOf": [
+    {
+      "const": "NULL",
+      "description": "None"
+    },
+    {
+      "const": "GLO",
+      "description": "Global"
+    },
+    {
+      "const": "RAF",
+      "description": "Africa"
+    },
+    {
+      "const": "RAM",
+      "description": "Americas"
+    },
+    {
+      "const": "RAS",
+      "description": "Asia and Pacific"
+    },
+    {
+      "const": "RER",
+      "description": "Europe"
+    },
+    {
+      "const": "OCE",
+      "description": "Oceania"
+    },
+    {
+      "const": "MEA",
+      "description": "Middle East and North Africa"
+    },
+    {
+      "const": "AFR",
+      "description": "Sub-Saharan Africa"
+    },
+    {
+      "const": "RLA",
+      "description": "Latin America & the Caribbean"
+    },
+    {
+      "const": "RNA",
+      "description": "Northern America"
+    },
+    {
+      "const": "CPA",
+      "description": "Centrally Planned Asia and China"
+    },
+    {
+      "const": "EAS",
+      "description": "Eastern Asia"
+    },
+    {
+      "const": "PAS",
+      "description": "Other Pacific Asia"
+    },
+    {
+      "const": "SAS",
+      "description": "South Asia"
+    },
+    {
+      "const": "EEU",
+      "description": "Central and Eastern Europe"
+    },
+    {
+      "const": "WEU",
+      "description": "Western Europe"
+    },
+    {
+      "const": "RNE",
+      "description": "Near East"
+    },
+    {
+      "const": "RME",
+      "description": "Middle East"
+    },
+    {
+      "const": "EU-15",
+      "description": "EU 15"
+    },
+    {
+      "const": "EU-NMC",
+      "description": "EU New Member Countries 2004"
+    },
+    {
+      "const": "EU-25",
+      "description": "EU 25"
+    },
+    {
+      "const": "EC-CC",
+      "description": "EU Candidate Countries 2005"
+    },
+    {
+      "const": "EU-25&CC",
+      "description": "EU 25 Plus Candidate Countries 2005"
+    },
+    {
+      "const": "EU-AC",
+      "description": "EU Associated Countries 2005"
+    },
+    {
+      "const": "EU-25&CC&AC",
+      "description": "EU 25 Plus Candidate Countries and Associated Countries 2005"
+    },
+    {
+      "const": "EU-27",
+      "description": "EU 27"
+    },
+    {
+      "const": "PAO",
+      "description": "Pacific OECD (Japan, Australia, New Zealand)"
+    },
+    {
+      "const": "FSU",
+      "description": "Independent States of the Former Soviet Union"
+    },
+    {
+      "const": "UCTE",
+      "description": "Union for the Co-ordination of Transmission of Electricity"
+    },
+    {
+      "const": "CENTREL",
+      "description": "Central european power association"
+    },
+    {
+      "const": "NORDEL",
+      "description": "Nordic countries power association"
+    },
+    {
+      "const": "EU+EFTA+UK",
+      "description": "complete EU"
+    },
+    {
+      "const": "AD",
+      "description": "Andorra"
+    },
+    {
+      "const": "AE",
+      "description": "United Arab Emirates"
+    },
+    {
+      "const": "AF",
+      "description": "Afghanistan"
+    },
+    {
+      "const": "AG",
+      "description": "Antigua and Barbuda"
+    },
+    {
+      "const": "AI",
+      "description": "Anguilla"
+    },
+    {
+      "const": "AL",
+      "description": "Albania"
+    },
+    {
+      "const": "AM",
+      "description": "Armenia"
+    },
+    {
+      "const": "AO",
+      "description": "Angola"
+    },
+    {
+      "const": "AQ",
+      "description": "Antarctica"
+    },
+    {
+      "const": "AR",
+      "description": "Argentina"
+    },
+    {
+      "const": "AS",
+      "description": "American Samoa"
+    },
+    {
+      "const": "AT",
+      "description": "Austria"
+    },
+    {
+      "const": "AU",
+      "description": "Australia"
+    },
+    {
+      "const": "AW",
+      "description": "Aruba"
+    },
+    {
+      "const": "AX",
+      "description": "Åland Islands"
+    },
+    {
+      "const": "AZ",
+      "description": "Azerbaijan"
+    },
+    {
+      "const": "BA",
+      "description": "Bosnia and Herzegovina"
+    },
+    {
+      "const": "BB",
+      "description": "Barbados"
+    },
+    {
+      "const": "BD",
+      "description": "Bangladesh"
+    },
+    {
+      "const": "BE",
+      "description": "Belgium"
+    },
+    {
+      "const": "BF",
+      "description": "Burkina Faso"
+    },
+    {
+      "const": "BG",
+      "description": "Bulgaria"
+    },
+    {
+      "const": "BH",
+      "description": "Bahrain"
+    },
+    {
+      "const": "BI",
+      "description": "Burundi"
+    },
+    {
+      "const": "BJ",
+      "description": "Benin"
+    },
+    {
+      "const": "BL",
+      "description": "Saint Barthélemy"
+    },
+    {
+      "const": "BM",
+      "description": "Bermuda"
+    },
+    {
+      "const": "BN",
+      "description": "Brunei Darussalam"
+    },
+    {
+      "const": "BO",
+      "description": "Bolivia (Plurinational State of)"
+    },
+    {
+      "const": "BQ",
+      "description": "Bonaire, Sint Eustatius and Saba"
+    },
+    {
+      "const": "BR",
+      "description": "Brazil"
+    },
+    {
+      "const": "BS",
+      "description": "Bahamas"
+    },
+    {
+      "const": "BT",
+      "description": "Bhutan"
+    },
+    {
+      "const": "BV",
+      "description": "Bouvet Island"
+    },
+    {
+      "const": "BW",
+      "description": "Botswana"
+    },
+    {
+      "const": "BY",
+      "description": "Belarus"
+    },
+    {
+      "const": "BZ",
+      "description": "Belize"
+    },
+    {
+      "const": "CA",
+      "description": "Canada"
+    },
+    {
+      "const": "CC",
+      "description": "Cocos (Keeling) Islands"
+    },
+    {
+      "const": "CD",
+      "description": "Congo, Democratic Republic of the"
+    },
+    {
+      "const": "CF",
+      "description": "Central African Republic"
+    },
+    {
+      "const": "CG",
+      "description": "Congo"
+    },
+    {
+      "const": "CH",
+      "description": "Switzerland"
+    },
+    {
+      "const": "CI",
+      "description": "Côte d'Ivoire"
+    },
+    {
+      "const": "CK",
+      "description": "Cook Islands"
+    },
+    {
+      "const": "CL",
+      "description": "Chile"
+    },
+    {
+      "const": "CM",
+      "description": "Cameroon"
+    },
+    {
+      "const": "CO",
+      "description": "Colombia"
+    },
+    {
+      "const": "CR",
+      "description": "Costa Rica"
+    },
+    {
+      "const": "CU",
+      "description": "Cuba"
+    },
+    {
+      "const": "CV",
+      "description": "Cabo Verde"
+    },
+    {
+      "const": "CW",
+      "description": "Curaçao"
+    },
+    {
+      "const": "CX",
+      "description": "Christmas Island"
+    },
+    {
+      "const": "CY",
+      "description": "Cyprus"
+    },
+    {
+      "const": "CZ",
+      "description": "Czechia"
+    },
+    {
+      "const": "DE",
+      "description": "Germany"
+    },
+    {
+      "const": "DJ",
+      "description": "Djibouti"
+    },
+    {
+      "const": "DK",
+      "description": "Denmark"
+    },
+    {
+      "const": "DM",
+      "description": "Dominica"
+    },
+    {
+      "const": "DO",
+      "description": "Dominican Republic"
+    },
+    {
+      "const": "DZ",
+      "description": "Algeria"
+    },
+    {
+      "const": "EC",
+      "description": "Ecuador"
+    },
+    {
+      "const": "EE",
+      "description": "Estonia"
+    },
+    {
+      "const": "EG",
+      "description": "Egypt"
+    },
+    {
+      "const": "EH",
+      "description": "Western Sahara"
+    },
+    {
+      "const": "ER",
+      "description": "Eritrea"
+    },
+    {
+      "const": "ES",
+      "description": "Spain"
+    },
+    {
+      "const": "ET",
+      "description": "Ethiopia"
+    },
+    {
+      "const": "FI",
+      "description": "Finland"
+    },
+    {
+      "const": "FJ",
+      "description": "Fiji"
+    },
+    {
+      "const": "FK",
+      "description": "Falkland Islands (Malvinas)"
+    },
+    {
+      "const": "FM",
+      "description": "Micronesia (Federated States of)"
+    },
+    {
+      "const": "FO",
+      "description": "Faroe Islands"
+    },
+    {
+      "const": "FR",
+      "description": "France"
+    },
+    {
+      "const": "GA",
+      "description": "Gabon"
+    },
+    {
+      "const": "GB",
+      "description": "United Kingdom of Great Britain and Northern Ireland"
+    },
+    {
+      "const": "GD",
+      "description": "Grenada"
+    },
+    {
+      "const": "GE",
+      "description": "Georgia"
+    },
+    {
+      "const": "GF",
+      "description": "French Guiana"
+    },
+    {
+      "const": "GG",
+      "description": "Guernsey"
+    },
+    {
+      "const": "GH",
+      "description": "Ghana"
+    },
+    {
+      "const": "GI",
+      "description": "Gibraltar"
+    },
+    {
+      "const": "GL",
+      "description": "Greenland"
+    },
+    {
+      "const": "GM",
+      "description": "Gambia"
+    },
+    {
+      "const": "GN",
+      "description": "Guinea"
+    },
+    {
+      "const": "GP",
+      "description": "Guadeloupe"
+    },
+    {
+      "const": "GQ",
+      "description": "Equatorial Guinea"
+    },
+    {
+      "const": "GR",
+      "description": "Greece"
+    },
+    {
+      "const": "GS",
+      "description": "South Georgia and the South Sandwich Islands"
+    },
+    {
+      "const": "GT",
+      "description": "Guatemala"
+    },
+    {
+      "const": "GU",
+      "description": "Guam"
+    },
+    {
+      "const": "GW",
+      "description": "Guinea-Bissau"
+    },
+    {
+      "const": "GY",
+      "description": "Guyana"
+    },
+    {
+      "const": "HM",
+      "description": "Heard Island and McDonald Islands"
+    },
+    {
+      "const": "HN",
+      "description": "Honduras"
+    },
+    {
+      "const": "HR",
+      "description": "Croatia"
+    },
+    {
+      "const": "HT",
+      "description": "Haiti"
+    },
+    {
+      "const": "HU",
+      "description": "Hungary"
+    },
+    {
+      "const": "ID",
+      "description": "Indonesia"
+    },
+    {
+      "const": "IE",
+      "description": "Ireland"
+    },
+    {
+      "const": "IL",
+      "description": "Israel"
+    },
+    {
+      "const": "IM",
+      "description": "Isle of Man"
+    },
+    {
+      "const": "IN",
+      "description": "India"
+    },
+    {
+      "const": "IO",
+      "description": "British Indian Ocean Territory"
+    },
+    {
+      "const": "IQ",
+      "description": "Iraq"
+    },
+    {
+      "const": "IR",
+      "description": "Iran (Islamic Republic of)"
+    },
+    {
+      "const": "IS",
+      "description": "Iceland"
+    },
+    {
+      "const": "IT",
+      "description": "Italy"
+    },
+    {
+      "const": "JE",
+      "description": "Jersey"
+    },
+    {
+      "const": "JM",
+      "description": "Jamaica"
+    },
+    {
+      "const": "JO",
+      "description": "Jordan"
+    },
+    {
+      "const": "JP",
+      "description": "Japan"
+    },
+    {
+      "const": "KE",
+      "description": "Kenya"
+    },
+    {
+      "const": "KG",
+      "description": "Kyrgyzstan"
+    },
+    {
+      "const": "KH",
+      "description": "Cambodia"
+    },
+    {
+      "const": "KI",
+      "description": "Kiribati"
+    },
+    {
+      "const": "KM",
+      "description": "Comoros"
+    },
+    {
+      "const": "KN",
+      "description": "Saint Kitts and Nevis"
+    },
+    {
+      "const": "KP",
+      "description": "Korea (Democratic People's Republic of)"
+    },
+    {
+      "const": "KR",
+      "description": "Korea, Republic of"
+    },
+    {
+      "const": "KW",
+      "description": "Kuwait"
+    },
+    {
+      "const": "KY",
+      "description": "Cayman Islands"
+    },
+    {
+      "const": "KZ",
+      "description": "Kazakhstan"
+    },
+    {
+      "const": "LA",
+      "description": "Lao People's Democratic Republic"
+    },
+    {
+      "const": "LB",
+      "description": "Lebanon"
+    },
+    {
+      "const": "LC",
+      "description": "Saint Lucia"
+    },
+    {
+      "const": "LI",
+      "description": "Liechtenstein"
+    },
+    {
+      "const": "LK",
+      "description": "Sri Lanka"
+    },
+    {
+      "const": "LR",
+      "description": "Liberia"
+    },
+    {
+      "const": "LS",
+      "description": "Lesotho"
+    },
+    {
+      "const": "LT",
+      "description": "Lithuania"
+    },
+    {
+      "const": "LU",
+      "description": "Luxembourg"
+    },
+    {
+      "const": "LV",
+      "description": "Latvia"
+    },
+    {
+      "const": "LY",
+      "description": "Libya"
+    },
+    {
+      "const": "MA",
+      "description": "Morocco"
+    },
+    {
+      "const": "MC",
+      "description": "Monaco"
+    },
+    {
+      "const": "MD",
+      "description": "Moldova, Republic of"
+    },
+    {
+      "const": "ME",
+      "description": "Montenegro"
+    },
+    {
+      "const": "MF",
+      "description": "Saint Martin (French part)"
+    },
+    {
+      "const": "MG",
+      "description": "Madagascar"
+    },
+    {
+      "const": "MH",
+      "description": "Marshall Islands"
+    },
+    {
+      "const": "MK",
+      "description": "North Macedonia"
+    },
+    {
+      "const": "ML",
+      "description": "Mali"
+    },
+    {
+      "const": "MM",
+      "description": "Myanmar"
+    },
+    {
+      "const": "MN",
+      "description": "Mongolia"
+    },
+    {
+      "const": "MP",
+      "description": "Northern Mariana Islands"
+    },
+    {
+      "const": "MQ",
+      "description": "Martinique"
+    },
+    {
+      "const": "MR",
+      "description": "Mauritania"
+    },
+    {
+      "const": "MS",
+      "description": "Montserrat"
+    },
+    {
+      "const": "MT",
+      "description": "Malta"
+    },
+    {
+      "const": "MU",
+      "description": "Mauritius"
+    },
+    {
+      "const": "MV",
+      "description": "Maldives"
+    },
+    {
+      "const": "MW",
+      "description": "Malawi"
+    },
+    {
+      "const": "MX",
+      "description": "Mexico"
+    },
+    {
+      "const": "MY",
+      "description": "Malaysia"
+    },
+    {
+      "const": "MZ",
+      "description": "Mozambique"
+    },
+    {
+      "const": "NA",
+      "description": "Namibia"
+    },
+    {
+      "const": "NC",
+      "description": "New Caledonia"
+    },
+    {
+      "const": "NE",
+      "description": "Niger"
+    },
+    {
+      "const": "NF",
+      "description": "Norfolk Island"
+    },
+    {
+      "const": "NG",
+      "description": "Nigeria"
+    },
+    {
+      "const": "NI",
+      "description": "Nicaragua"
+    },
+    {
+      "const": "NL",
+      "description": "Netherlands"
+    },
+    {
+      "const": "NO",
+      "description": "Norway"
+    },
+    {
+      "const": "NP",
+      "description": "Nepal"
+    },
+    {
+      "const": "NR",
+      "description": "Nauru"
+    },
+    {
+      "const": "NU",
+      "description": "Niue"
+    },
+    {
+      "const": "NZ",
+      "description": "New Zealand"
+    },
+    {
+      "const": "OM",
+      "description": "Oman"
+    },
+    {
+      "const": "PA",
+      "description": "Panama"
+    },
+    {
+      "const": "PE",
+      "description": "Peru"
+    },
+    {
+      "const": "PF",
+      "description": "French Polynesia"
+    },
+    {
+      "const": "PG",
+      "description": "Papua New Guinea"
+    },
+    {
+      "const": "PH",
+      "description": "Philippines"
+    },
+    {
+      "const": "PK",
+      "description": "Pakistan"
+    },
+    {
+      "const": "PL",
+      "description": "Poland"
+    },
+    {
+      "const": "PM",
+      "description": "Saint Pierre and Miquelon"
+    },
+    {
+      "const": "PN",
+      "description": "Pitcairn"
+    },
+    {
+      "const": "PR",
+      "description": "Puerto Rico"
+    },
+    {
+      "const": "PS",
+      "description": "Palestine, State of"
+    },
+    {
+      "const": "PT",
+      "description": "Portugal"
+    },
+    {
+      "const": "PW",
+      "description": "Palau"
+    },
+    {
+      "const": "PY",
+      "description": "Paraguay"
+    },
+    {
+      "const": "QA",
+      "description": "Qatar"
+    },
+    {
+      "const": "RE",
+      "description": "Réunion"
+    },
+    {
+      "const": "RO",
+      "description": "Romania"
+    },
+    {
+      "const": "RS",
+      "description": "Serbia"
+    },
+    {
+      "const": "RU",
+      "description": "Russian Federation"
+    },
+    {
+      "const": "RW",
+      "description": "Rwanda"
+    },
+    {
+      "const": "SA",
+      "description": "Saudi Arabia"
+    },
+    {
+      "const": "SB",
+      "description": "Solomon Islands"
+    },
+    {
+      "const": "SC",
+      "description": "Seychelles"
+    },
+    {
+      "const": "SD",
+      "description": "Sudan"
+    },
+    {
+      "const": "SE",
+      "description": "Sweden"
+    },
+    {
+      "const": "SG",
+      "description": "Singapore"
+    },
+    {
+      "const": "SH",
+      "description": "Saint Helena, Ascension and Tristan da Cunha"
+    },
+    {
+      "const": "SI",
+      "description": "Slovenia"
+    },
+    {
+      "const": "SJ",
+      "description": "Svalbard and Jan Mayen"
+    },
+    {
+      "const": "SK",
+      "description": "Slovakia"
+    },
+    {
+      "const": "SL",
+      "description": "Sierra Leone"
+    },
+    {
+      "const": "SM",
+      "description": "San Marino"
+    },
+    {
+      "const": "SN",
+      "description": "Senegal"
+    },
+    {
+      "const": "SO",
+      "description": "Somalia"
+    },
+    {
+      "const": "SR",
+      "description": "Suriname"
+    },
+    {
+      "const": "SS",
+      "description": "South Sudan"
+    },
+    {
+      "const": "ST",
+      "description": "Sao Tome and Principe"
+    },
+    {
+      "const": "SV",
+      "description": "El Salvador"
+    },
+    {
+      "const": "SX",
+      "description": "Sint Maarten (Dutch part)"
+    },
+    {
+      "const": "SY",
+      "description": "Syrian Arab Republic"
+    },
+    {
+      "const": "SZ",
+      "description": "Eswatini"
+    },
+    {
+      "const": "TC",
+      "description": "Turks and Caicos Islands"
+    },
+    {
+      "const": "TD",
+      "description": "Chad"
+    },
+    {
+      "const": "TF",
+      "description": "French Southern Territories"
+    },
+    {
+      "const": "TG",
+      "description": "Togo"
+    },
+    {
+      "const": "TH",
+      "description": "Thailand"
+    },
+    {
+      "const": "TJ",
+      "description": "Tajikistan"
+    },
+    {
+      "const": "TK",
+      "description": "Tokelau"
+    },
+    {
+      "const": "TL",
+      "description": "Timor-Leste"
+    },
+    {
+      "const": "TM",
+      "description": "Turkmenistan"
+    },
+    {
+      "const": "TN",
+      "description": "Tunisia"
+    },
+    {
+      "const": "TO",
+      "description": "Tonga"
+    },
+    {
+      "const": "TR",
+      "description": "Türkiye"
+    },
+    {
+      "const": "TT",
+      "description": "Trinidad and Tobago"
+    },
+    {
+      "const": "TV",
+      "description": "Tuvalu"
+    },
+    {
+      "const": "TZ",
+      "description": "Tanzania, United Republic of"
+    },
+    {
+      "const": "UA",
+      "description": "Ukraine"
+    },
+    {
+      "const": "UG",
+      "description": "Uganda"
+    },
+    {
+      "const": "UM",
+      "description": "United States Minor Outlying Islands"
+    },
+    {
+      "const": "US",
+      "description": "United States of America"
+    },
+    {
+      "const": "UY",
+      "description": "Uruguay"
+    },
+    {
+      "const": "UZ",
+      "description": "Uzbekistan"
+    },
+    {
+      "const": "VA",
+      "description": "Holy See"
+    },
+    {
+      "const": "VC",
+      "description": "Saint Vincent and the Grenadines"
+    },
+    {
+      "const": "VE",
+      "description": "Venezuela (Bolivarian Republic of)"
+    },
+    {
+      "const": "VG",
+      "description": "Virgin Islands (British)"
+    },
+    {
+      "const": "VI",
+      "description": "Virgin Islands (U.S.)"
+    },
+    {
+      "const": "VN",
+      "description": "Viet Nam"
+    },
+    {
+      "const": "VU",
+      "description": "Vanuatu"
+    },
+    {
+      "const": "WF",
+      "description": "Wallis and Futuna"
+    },
+    {
+      "const": "WS",
+      "description": "Samoa"
+    },
+    {
+      "const": "YE",
+      "description": "Yemen"
+    },
+    {
+      "const": "YT",
+      "description": "Mayotte"
+    },
+    {
+      "const": "ZA",
+      "description": "South Africa"
+    },
+    {
+      "const": "ZM",
+      "description": "Zambia"
+    },
+    {
+      "const": "ZW",
+      "description": "Zimbabwe"
+    },
+    {
+      "const": "CIS",
+      "description": "Commonwealth of Independent States"
+    },
+    {
+      "const": "CN",
+      "description": "China"
+    },
+    {
+      "const": "CN-BJ",
+      "description": "Beijing Shi,China"
+    },
+    {
+      "const": "CN-TJ",
+      "description": "Tianjin Shi,China"
+    },
+    {
+      "const": "CN-HE",
+      "description": "Hebei Sheng,China"
+    },
+    {
+      "const": "CN-HE-SJW",
+      "description": "Shijiazhuang Shi,Hebei Sheng,China"
+    },
+    {
+      "const": "CN-HE-TGS",
+      "description": "Tangshan Shi,Hebei Sheng,China"
+    },
+    {
+      "const": "CN-HE-SHP",
+      "description": "Qinhuangdao Shi,Hebei Sheng,China"
+    },
+    {
+      "const": "CN-HE-HDS",
+      "description": "Handan Shi,Hebei Sheng,China"
+    },
+    {
+      "const": "CN-HE-XTS",
+      "description": "Xingtai Shi,Hebei Sheng,China"
+    },
+    {
+      "const": "CN-HE-BDS",
+      "description": "Baoding Shi,Hebei Sheng,China"
+    },
+    {
+      "const": "CN-HE-ZJK",
+      "description": "Zhangjiakou Shi,Hebei Sheng,China"
+    },
+    {
+      "const": "CN-HE-CDS",
+      "description": "Chengde Shi,Hebei Sheng,China"
+    },
+    {
+      "const": "CN-HE-CGZ",
+      "description": "Cangzhou Shi,Hebei Sheng,China"
+    },
+    {
+      "const": "CN-HE-LFS",
+      "description": "Langfang Shi,Hebei Sheng,China"
+    },
+    {
+      "const": "CN-HE-HGS",
+      "description": "Hengshui Shi,Hebei Sheng,China"
+    },
+    {
+      "const": "CN-SX",
+      "description": "Shanxi Sheng,China"
+    },
+    {
+      "const": "CN-SX-TYN",
+      "description": "Taiyuan Shi,Shanxi Sheng,China"
+    },
+    {
+      "const": "CN-SX-DTG",
+      "description": "Datong Shi,Shanxi Sheng,China"
+    },
+    {
+      "const": "CN-SX-YQS",
+      "description": "Yangquan Shi,Shanxi Sheng,China"
+    },
+    {
+      "const": "CN-SX-CZS",
+      "description": "Changzhi Shi,Shanxi Sheng,China"
+    },
+    {
+      "const": "CN-SX-JCG",
+      "description": "Jincheng Shi,Shanxi Sheng,China"
+    },
+    {
+      "const": "CN-SX-SZJ",
+      "description": "Shuozhou Shi,Shanxi Sheng,China"
+    },
+    {
+      "const": "CN-SX-JZN",
+      "description": "Jinzhong Shi,Shanxi Sheng,China"
+    },
+    {
+      "const": "CN-SX-YCE",
+      "description": "Yuncheng Shi,Shanxi Sheng,China"
+    },
+    {
+      "const": "CN-SX-XZS",
+      "description": "Xinzhou Shi,Shanxi Sheng,China"
+    },
+    {
+      "const": "CN-SX-LFN",
+      "description": "Linfen Shi,Shanxi Sheng,China"
+    },
+    {
+      "const": "CN-SX-LLH",
+      "description": "Lüliang Shi,Shanxi Sheng,China"
+    },
+    {
+      "const": "CN-NM",
+      "description": "Nei Mongol Zizhiqu,China"
+    },
+    {
+      "const": "CN-NM-HET",
+      "description": "Hohhot Shi,Nei Mongol Zizhiqu,China"
+    },
+    {
+      "const": "CN-NM-BTS",
+      "description": "Baotou Shi,Nei Mongol Zizhiqu,China"
+    },
+    {
+      "const": "CN-NM-WHM",
+      "description": "Wuhai Shi,Nei Mongol Zizhiqu,China"
+    },
+    {
+      "const": "CN-NM-CFS",
+      "description": "Chifeng(Ulanhad)Shi,Nei Mongol Zizhiqu,China"
+    },
+    {
+      "const": "CN-NM-TLO",
+      "description": "Tongliao Shi,Nei Mongol Zizhiqu,China"
+    },
+    {
+      "const": "CN-NM-ODS",
+      "description": "Ordos Shi,Nei Mongol Zizhiqu,China"
+    },
+    {
+      "const": "CN-NM-HBR",
+      "description": "Hulun Buir Shi,Nei Mongol Zizhiqu,China"
+    },
+    {
+      "const": "CN-NM-BYR",
+      "description": "Bayannur Shi,Nei Mongol Zizhiqu,China"
+    },
+    {
+      "const": "CN-NM-ULS",
+      "description": "Ulanqab Shi,Nei Mongol Zizhiqu,China"
+    },
+    {
+      "const": "CN-NM-HIN",
+      "description": "Hinggan Meng,Nei Mongol Zizhiqu,China"
+    },
+    {
+      "const": "CN-NM-XGO",
+      "description": "Xilin Gol Meng,Nei Mongol Zizhiqu,China"
+    },
+    {
+      "const": "CN-NM-ALM",
+      "description": "Alxa Meng,Nei Mongol Zizhiqu,China"
+    },
+    {
+      "const": "CN-LN",
+      "description": "Liaoning Sheng,China"
+    },
+    {
+      "const": "CN-LN-SHE",
+      "description": "Shenyang Shi,Liaoning Sheng,China"
+    },
+    {
+      "const": "CN-LN-DLC",
+      "description": "Dalian Shi,Liaoning Sheng,China"
+    },
+    {
+      "const": "CN-LN-ASN",
+      "description": "Anshan Shi,Liaoning Sheng,China"
+    },
+    {
+      "const": "CN-LN-FSN",
+      "description": "Fushun Shi,Liaoning Sheng,China"
+    },
+    {
+      "const": "CN-LN-BXS",
+      "description": "Benxi Shi,Liaoning Sheng,China"
+    },
+    {
+      "const": "CN-LN-DDG",
+      "description": "Dandong Shi,Liaoning Sheng,China"
+    },
+    {
+      "const": "CN-LN-JNZ",
+      "description": "Jinzhou Shi,Liaoning Sheng,China"
+    },
+    {
+      "const": "CN-LN-YIK",
+      "description": "Yingkou Shi,Liaoning Sheng,China"
+    },
+    {
+      "const": "CN-LN-FXS",
+      "description": "Fuxin Shi,Liaoning Sheng,China"
+    },
+    {
+      "const": "CN-LN-LYL",
+      "description": "Liaoyang Shi,Liaoning Sheng,China"
+    },
+    {
+      "const": "CN-LN-PJS",
+      "description": "Panjin Shi,Liaoning Sheng,China"
+    },
+    {
+      "const": "CN-LN-TLS",
+      "description": "Tieling Shi,Liaoning Sheng,China"
+    },
+    {
+      "const": "CN-LN-CYS",
+      "description": "Chaoyang Shi,Liaoning Sheng,China"
+    },
+    {
+      "const": "CN-LN-HLD",
+      "description": "Huludao Shi,Liaoning Sheng,China"
+    },
+    {
+      "const": "CN-JL",
+      "description": "Jilin Sheng,China"
+    },
+    {
+      "const": "CN-JL-CGQ",
+      "description": "Changchun Shi,Jilin Sheng,China"
+    },
+    {
+      "const": "CN-JL-JLS",
+      "description": "Jilin Shi,Jilin Sheng,China"
+    },
+    {
+      "const": "CN-JL-SPS",
+      "description": "Siping Shi,Jilin Sheng,China"
+    },
+    {
+      "const": "CN-JL-LYH",
+      "description": "Liaoyuan Shi,Jilin Sheng,China"
+    },
+    {
+      "const": "CN-JL-THS",
+      "description": "Tonghua Shi,Jilin Sheng,China"
+    },
+    {
+      "const": "CN-JL-BSN",
+      "description": "Baishan Shi,Jilin Sheng,China"
+    },
+    {
+      "const": "CN-JL-SYU",
+      "description": "Songyuan Shi,Jilin Sheng,China"
+    },
+    {
+      "const": "CN-JL-BCS",
+      "description": "Baicheng Shi,Jilin Sheng,China"
+    },
+    {
+      "const": "CN-JL-YBZ",
+      "description": "Yanbian Chosenzu Zizhizhou,Jilin Sheng,China"
+    },
+    {
+      "const": "CN-HL",
+      "description": "Heilongjiang Sheng,China"
+    },
+    {
+      "const": "CN-HL-HRB",
+      "description": "Harbin Shi,Heilongjiang Sheng,China"
+    },
+    {
+      "const": "CN-HL-NDG",
+      "description": "Qiqihar Shi,Heilongjiang Sheng,China"
+    },
+    {
+      "const": "CN-HL-JXI",
+      "description": "Jixi Shi,Heilongjiang Sheng,China"
+    },
+    {
+      "const": "CN-HL-HEG",
+      "description": "Hegang Shi,Heilongjiang Sheng,China"
+    },
+    {
+      "const": "CN-HL-SYS",
+      "description": "Shuangyashan Shi,Heilongjiang Sheng,China"
+    },
+    {
+      "const": "CN-HL-DQG",
+      "description": "Daqing Shi,Heilongjiang Sheng,China"
+    },
+    {
+      "const": "CN-HL-YCH",
+      "description": "Yichun Shi,Heilongjiang Sheng,China"
+    },
+    {
+      "const": "CN-HL-JMU",
+      "description": "Jiamusi Shi,Heilongjiang Sheng,China"
+    },
+    {
+      "const": "CN-HL-QTH",
+      "description": "Qitaihe Shi,Heilongjiang Sheng,China"
+    },
+    {
+      "const": "CN-HL-MDG",
+      "description": "Mudanjiang Shi,Heilongjiang Sheng,China"
+    },
+    {
+      "const": "CN-HL-HEK",
+      "description": "Heihe Shi,Heilongjiang Sheng,China"
+    },
+    {
+      "const": "CN-HL-SUH",
+      "description": "Suihua Shi,Heilongjiang Sheng,China"
+    },
+    {
+      "const": "CN-HL-DHL",
+      "description": "Da Hinggan Ling Diqu,Heilongjiang Sheng,China"
+    },
+    {
+      "const": "CN-SH",
+      "description": "Shanghai Shi,China"
+    },
+    {
+      "const": "CN-JS",
+      "description": "Jiangsu Sheng,China"
+    },
+    {
+      "const": "CN-JS-NKG",
+      "description": "Nanjing Shi,Jiangsu Sheng,China"
+    },
+    {
+      "const": "CN-JS-WUX",
+      "description": "Wuxi Shi,Jiangsu Sheng,China"
+    },
+    {
+      "const": "CN-JS-XUZ",
+      "description": "Xuzhou Shi,Jiangsu Sheng,China"
+    },
+    {
+      "const": "CN-JS-CZX",
+      "description": "Changzhou Shi,Jiangsu Sheng,China"
+    },
+    {
+      "const": "CN-JS-SZH",
+      "description": "Suzhou Shi,Jiangsu Sheng,China"
+    },
+    {
+      "const": "CN-JS-NTG",
+      "description": "Nantong Shi,Jiangsu Sheng,China"
+    },
+    {
+      "const": "CN-JS-LYG",
+      "description": "Lianyungang Shi,Jiangsu Sheng,China"
+    },
+    {
+      "const": "CN-JS-HAS",
+      "description": "Huai'an Shi,Jiangsu Sheng,China"
+    },
+    {
+      "const": "CN-JS-YCK",
+      "description": "Yancheng Shi,Jiangsu Sheng,China"
+    },
+    {
+      "const": "CN-JS-YZH",
+      "description": "Yangzhou Shi,Jiangsu Sheng,China"
+    },
+    {
+      "const": "CN-JS-ZHE",
+      "description": "Zhenjiang Shi,Jiangsu Sheng,China"
+    },
+    {
+      "const": "CN-JS-TZS",
+      "description": "Taizhou Shi,Jiangsu Sheng,China"
+    },
+    {
+      "const": "CN-JS-SUQ",
+      "description": "Suqian Shi,Jiangsu Sheng,China"
+    },
+    {
+      "const": "CN-ZJ",
+      "description": "Zhejiang Sheng,China"
+    },
+    {
+      "const": "CN-ZJ-HGH",
+      "description": "Hangzhou Shi,Zhejiang Sheng,China"
+    },
+    {
+      "const": "CN-ZJ-NGB",
+      "description": "Ningbo Shi,Zhejiang Sheng,China"
+    },
+    {
+      "const": "CN-ZJ-WNZ",
+      "description": "Wenzhou Shi,Zhejiang Sheng,China"
+    },
+    {
+      "const": "CN-ZJ-JIX",
+      "description": "Jiaxing Shi,Zhejiang Sheng,China"
+    },
+    {
+      "const": "CN-ZJ-HZH",
+      "description": "Huzhou Shi,Zhejiang Sheng,China"
+    },
+    {
+      "const": "CN-ZJ-SXG",
+      "description": "Shaoxing Shi,Zhejiang Sheng,China"
+    },
+    {
+      "const": "CN-ZJ-JHA",
+      "description": "Jinhua Shi,Zhejiang Sheng,China"
+    },
+    {
+      "const": "CN-ZJ-QUZ",
+      "description": "Quzhou Shi,Zhejiang Sheng,China"
+    },
+    {
+      "const": "CN-ZJ-ZOS",
+      "description": "Zhoushan Shi,Zhejiang Sheng,China"
+    },
+    {
+      "const": "CN-ZJ-TZZ",
+      "description": "Taizhou Shi,Zhejiang Sheng,China"
+    },
+    {
+      "const": "CN-ZJ-LSS",
+      "description": "Lishui Shi,Zhejiang Sheng,China"
+    },
+    {
+      "const": "CN-AH",
+      "description": "Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-HFE",
+      "description": "Hefei Sh,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-WHI",
+      "description": "Wuhu Shi,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-BBU",
+      "description": "Bengbu Shi,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-HNS",
+      "description": "Huainan Shi,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-MAA",
+      "description": "Ma'anshan Shi,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-HBE",
+      "description": "Huaibei Shi,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-TOL",
+      "description": "Tongling Shi,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-AQG",
+      "description": "Anqing Shi,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-HSN",
+      "description": "Huangshan Shi,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-CUZ",
+      "description": "Chuzhou Shi,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-FYS",
+      "description": "Fuyang Shi,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-SUZ",
+      "description": "Suzhou Shi,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-CAH",
+      "description": "Chaohu Shi,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-LAW",
+      "description": "Lu'an Shi,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-BOZ",
+      "description": "Bozhou Shi,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-CIZ",
+      "description": "Chizhou Shi,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-AH-XCI",
+      "description": "Xuancheng Shi,Anhui Sheng,China"
+    },
+    {
+      "const": "CN-FJ",
+      "description": "Fujian Sheng,China"
+    },
+    {
+      "const": "CN-FJ-FOC",
+      "description": "Fuzhou Shi,Fujian Sheng,China"
+    },
+    {
+      "const": "CN-FJ-XMN",
+      "description": "Xiamen Shi,Fujian Sheng,China"
+    },
+    {
+      "const": "CN-FJ-PUT",
+      "description": "Putian Shi,Fujian Sheng,China"
+    },
+    {
+      "const": "CN-FJ-SMS",
+      "description": "Sanming Shi,Fujian Sheng,China"
+    },
+    {
+      "const": "CN-FJ-QZJ",
+      "description": "Quanzhou Shi,Fujian Sheng,China"
+    },
+    {
+      "const": "CN-FJ-ZZU",
+      "description": "Zhangzhou Shi,Fujian Sheng,China"
+    },
+    {
+      "const": "CN-FJ-NPS",
+      "description": "Nanping Shi,Fujian Sheng,China"
+    },
+    {
+      "const": "CN-FJ-LYF",
+      "description": "Longyan Shi,Fujian Sheng,China"
+    },
+    {
+      "const": "CN-FJ-NDS",
+      "description": "Ningde Shi,Fujian Sheng,China"
+    },
+    {
+      "const": "CN-JX",
+      "description": "Jiangxi Sheng,China"
+    },
+    {
+      "const": "CN-JX-KHN",
+      "description": "Nanchang Shi,Jiangxi Sheng,China"
+    },
+    {
+      "const": "CN-JX-JDZ",
+      "description": "Jingdezhen Shi,Jiangxi Sheng,China"
+    },
+    {
+      "const": "CN-JX-PXS",
+      "description": "Pingxiang Shi,Jiangxi Sheng,China"
+    },
+    {
+      "const": "CN-JX-JIU",
+      "description": "Jiujiang Shi,Jiangxi Sheng,China"
+    },
+    {
+      "const": "CN-JX-XYU",
+      "description": "Xinyu Shi,Jiangxi Sheng,China"
+    },
+    {
+      "const": "CN-JX-YTS",
+      "description": "Yingtan Shi,Jiangxi Sheng,China"
+    },
+    {
+      "const": "CN-JX-GZH",
+      "description": "Ganzhou Shi,Jiangxi Sheng,China"
+    },
+    {
+      "const": "CN-JX-JAS",
+      "description": "Ji'an Shi,Jiangxi Sheng,China"
+    },
+    {
+      "const": "CN-JX-YCN",
+      "description": "Yichun Shi,Jiangxi Sheng,China"
+    },
+    {
+      "const": "CN-JX-FUZ",
+      "description": "Fuzhou Shi,Jiangxi Sheng,China"
+    },
+    {
+      "const": "CN-JX-SRS",
+      "description": "Shangrao Shi,Jiangxi Sheng,China"
+    },
+    {
+      "const": "CN-SD",
+      "description": "Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-TNA",
+      "description": "Jinan Shi,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-TAO",
+      "description": "Qingdao Shi,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-ZBO",
+      "description": "Zibo Shi,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-ZZG",
+      "description": "Zaozhuang Shi,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-DYG",
+      "description": "Dongying Sh,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-YNT",
+      "description": "Yantai Shi,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-WEF",
+      "description": "Weifang Shi,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-JNG",
+      "description": "Jining Shi,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-TAI",
+      "description": "Tai'an Shi,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-WEH",
+      "description": "Weihai Shi,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-RZH",
+      "description": "Rizhao Shi,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-LWS",
+      "description": "Laiwu Shi,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-LYI",
+      "description": "Linyi Shi,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-DZS",
+      "description": "Dezhou Shi,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-LCH",
+      "description": "Liaocheng Shi,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-BZH",
+      "description": "Binzhou Shi,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-SD-HZS",
+      "description": "Heze Shi,Shandong Sheng,China"
+    },
+    {
+      "const": "CN-HA",
+      "description": "Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-CGO",
+      "description": "Zhengzhou Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-KFS",
+      "description": "Kaifeng Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-LYA",
+      "description": "Luoyang Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-PDS",
+      "description": "Pingdingshan Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-AYS",
+      "description": "Anyang Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-HBS",
+      "description": "Hebi Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-XXS",
+      "description": "Xinxiang Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-JZY",
+      "description": "Jiaozuo Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-PYS",
+      "description": "Puyang Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-XCS",
+      "description": "Xuchang Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-LHS",
+      "description": "Luohe Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-SMX",
+      "description": "Sanmenxia Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-NYS",
+      "description": "Nanyang Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-SQS",
+      "description": "Shangqiu Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-XYG",
+      "description": "Xinyang Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-ZKS",
+      "description": "Zhoukou Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HA-ZMD",
+      "description": "Zhumadian Shi,Henan Sheng,China"
+    },
+    {
+      "const": "CN-HB",
+      "description": "Hubei Sheng,China"
+    },
+    {
+      "const": "CN-HB-WUH",
+      "description": "Wuhan Shi,Hubei Sheng,China"
+    },
+    {
+      "const": "CN-HB-HSI",
+      "description": "Huangshi Shi,Hubei Sheng,China"
+    },
+    {
+      "const": "CN-HB-SYE",
+      "description": "Shiyan Shi,Hubei Sheng,China"
+    },
+    {
+      "const": "CN-HB-YCO",
+      "description": "Yichang Shi,Hubei Sheng,China"
+    },
+    {
+      "const": "CN-HB-XFN",
+      "description": "Xiangfan Shi,Hubei Sheng,China"
+    },
+    {
+      "const": "CN-HB-EZS",
+      "description": "Ezhou Sli,Hubei Sheng,China"
+    },
+    {
+      "const": "CN-HB-JMS",
+      "description": "Jingmen Shi,Hubei Sheng,China"
+    },
+    {
+      "const": "CN-HB-XGE",
+      "description": "Xiaogan Shi,Hubei Sheng,China"
+    },
+    {
+      "const": "CN-HB-JGZ",
+      "description": "Jingzhou Shi,Hubei Sheng,China"
+    },
+    {
+      "const": "CN-HB-HGE",
+      "description": "Huanggang Shi,Hubei Sheng,China"
+    },
+    {
+      "const": "CN-HB-XNS",
+      "description": "Xianning Shi,Hubei Sheng,China"
+    },
+    {
+      "const": "CN-HB-SZR",
+      "description": "Suizhou Shi,Hubei Sheng,China"
+    },
+    {
+      "const": "CN-HB-ESH",
+      "description": "Enshi Tujiazu Miaozu Zizhizhou,Hubei Sheng,China"
+    },
+    {
+      "const": "CN-HN",
+      "description": "Hunan Sheng,China"
+    },
+    {
+      "const": "CN-HN-CSX",
+      "description": "Changsha Shi,Hunan Sheng,China"
+    },
+    {
+      "const": "CN-HN-ZZS",
+      "description": "Zhuzhou Shi,Hunan Sheng,China"
+    },
+    {
+      "const": "CN-HN-XGT",
+      "description": "Xiangtan Shi,Hunan Sheng,China"
+    },
+    {
+      "const": "CN-HN-HNY",
+      "description": "Hengyang Shi,Hunan Sheng,China"
+    },
+    {
+      "const": "CN-HN-SYR",
+      "description": "Shaoyang Shi,Hunan Sheng,China"
+    },
+    {
+      "const": "CN-HN-YYG",
+      "description": "Yueyang Shi,Hunan Sheng,China"
+    },
+    {
+      "const": "CN-HN-CDE",
+      "description": "Changde Shi,Hunan Sheng,China"
+    },
+    {
+      "const": "CN-HN-ZJJ",
+      "description": "Zhangjiajie Shi,Hunan Sheng,China"
+    },
+    {
+      "const": "CN-HN-YYS",
+      "description": "Yiyang Shi,Hunan Sheng,China"
+    },
+    {
+      "const": "CN-HN-CNZ",
+      "description": "Chenzhou Shi,Hunan Sheng,China"
+    },
+    {
+      "const": "CN-HN-YZS",
+      "description": "Yongzhou Shi,Hunan Sheng,China"
+    },
+    {
+      "const": "CN-HN-HHS",
+      "description": "Huaihua Shi,Hunan Sheng,China"
+    },
+    {
+      "const": "CN-HN-LDI",
+      "description": "Loudi Shi,Hunan Sheng,China"
+    },
+    {
+      "const": "CN-HN-XXZ",
+      "description": "Xiangxi Tujiazu Miaozu Zizhizhou,Hunan Sheng,China"
+    },
+    {
+      "const": "CN-GD",
+      "description": "Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-CAN",
+      "description": "Guangzhou Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-HSC",
+      "description": "Shaoguan Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-SZX",
+      "description": "Shenzhen Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-ZUH",
+      "description": "Zhuhai Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-SWA",
+      "description": "Shantou Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-FOS",
+      "description": "Foshan Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-JMN",
+      "description": "Jiangmen Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-ZHA",
+      "description": "Zhanjiang Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-MMI",
+      "description": "Maoming Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-ZQG",
+      "description": "Zhaoqing Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-HUI",
+      "description": "Huizhou Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-MXZ",
+      "description": "Meizhou Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-SWE",
+      "description": "Shanwei Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-HEY",
+      "description": "Heyuan Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-YJI",
+      "description": "Yangjiang Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-QYN",
+      "description": "Qingyuan Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-DGG",
+      "description": "Dongguan Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-ZSN",
+      "description": "Zhongshan Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-CZY",
+      "description": "Chaozhou Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-JIY",
+      "description": "Jieyang Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GD-YFS",
+      "description": "Yunfu Shi,Guangdong Sheng,China"
+    },
+    {
+      "const": "CN-GX",
+      "description": "Guangxi Zhuangzu Zizhiqu,China"
+    },
+    {
+      "const": "CN-GX-NNG",
+      "description": "Nanning Shi,Guangxi Zhuangzu Zizhiqu,China"
+    },
+    {
+      "const": "CN-GX-LZH",
+      "description": "Liuzhou Shi,Guangxi Zhuangzu Zizhiqu,China"
+    },
+    {
+      "const": "CN-GX-KWL",
+      "description": "Guilin Shi,Guangxi Zhuangzu Zizhiqu,China"
+    },
+    {
+      "const": "CN-GX-WUZ",
+      "description": "Wuzhou Sh,Guangxi Zhuangzu Zizhiqu,China"
+    },
+    {
+      "const": "CN-GX-BHY",
+      "description": "Beihai Shi,Guangxi Zhuangzu Zizhiqu,China"
+    },
+    {
+      "const": "CN-GX-FAN",
+      "description": "Fangchenggang Shi,Guangxi Zhuangzu Zizhiqu,China"
+    },
+    {
+      "const": "CN-GX-QZH",
+      "description": "Qinzhou Shi,Guangxi Zhuangzu Zizhiqu,China"
+    },
+    {
+      "const": "CN-GX-GUG",
+      "description": "Guigang Shi,Guangxi Zhuangzu Zizhiqu,China"
+    },
+    {
+      "const": "CN-GX-YUL",
+      "description": "Yulin Shi,Guangxi Zhuangzu Zizhiqu,China"
+    },
+    {
+      "const": "CN-GX-BSS",
+      "description": "Bose Shi,Guangxi Zhuangzu Zizhiqu,China"
+    },
+    {
+      "const": "CN-GX-HZO",
+      "description": "Hezhou Shi,Guangxi Zhuangzu Zizhiqu,China"
+    },
+    {
+      "const": "CN-GX-HCS",
+      "description": "Hechi Shi,Guangxi Zhuangzu Zizhiqu,China"
+    },
+    {
+      "const": "CN-GX-LIB",
+      "description": "Laibin Shi,Guangxi Zhuangzu Zizhiqu,China"
+    },
+    {
+      "const": "CN-GX-COZ",
+      "description": "Chongzuo Shi,Guangxi Zhuangzu Zizhiqu,China"
+    },
+    {
+      "const": "CN-HI",
+      "description": "Hainan Sheng,China"
+    },
+    {
+      "const": "CN-HI-HAK",
+      "description": "Haikou Shi,Hainan Sheng,China"
+    },
+    {
+      "const": "CN-HI-SYX",
+      "description": "Sanva Shi,Hainan Sheng,China"
+    },
+    {
+      "const": "CN-CQ",
+      "description": "Chongqing Shi,China"
+    },
+    {
+      "const": "CN-SC",
+      "description": "Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-CTU",
+      "description": "Chengdu Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-ZGS",
+      "description": "Zigong Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-PZH",
+      "description": "Panzhihua Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-LUZ",
+      "description": "Luzhou Sh,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-DEY",
+      "description": "Deyang Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-MYG",
+      "description": "Mianyang Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-GYC",
+      "description": "Guangyuan Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-SNS",
+      "description": "Suining Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-NJS",
+      "description": "Neijiang Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-LES",
+      "description": "Leshan Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-NCO",
+      "description": "Nanchong Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-MSS",
+      "description": "Meishan Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-YBS",
+      "description": "Yibin Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-GAC",
+      "description": "Guang'an Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-DAZ",
+      "description": "Dazhou Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-YAS",
+      "description": "Ya'an Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-BZS",
+      "description": "Bazhong Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-ZYS",
+      "description": "Ziyang Shi,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-ABA",
+      "description": "Aba(Ngawa)Zangzu Qiangzu Zizhizhou,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-GAZ",
+      "description": "Garzê Zangzu Zizhizhou,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-SC-LSY",
+      "description": "Liangshan Yizu Zizhizhou,Sichuan Sheng,China"
+    },
+    {
+      "const": "CN-GZ",
+      "description": "Guizhou Sheng,China"
+    },
+    {
+      "const": "CN-GZ-KWE",
+      "description": "Guiyang Shi,Guizhou Sheng,China"
+    },
+    {
+      "const": "CN-GZ-LPS",
+      "description": "Lupanshui Shi,Guizhou Sheng,China"
+    },
+    {
+      "const": "CN-GZ-ZNY",
+      "description": "Zunyi Shi,Guizhou Sheng,China"
+    },
+    {
+      "const": "CN-GZ-ASS",
+      "description": "Anshun Shi,Guizhou Sheng,China"
+    },
+    {
+      "const": "CN-GZ-TRD",
+      "description": "Tongren Diqu,Guizhou Sheng,China"
+    },
+    {
+      "const": "CN-GZ-QXZ",
+      "description": "Qianxinan Buycizu Miaozu Zizhizhou,Guizhou Sheng,China"
+    },
+    {
+      "const": "CN-GZ-BJD",
+      "description": "Bijie Diqu,Guizhou Sheng,China"
+    },
+    {
+      "const": "CN-GZ-QND",
+      "description": "Qiandongnan Miaozu Dongzu Zizhizhou,Guizhou Sheng,China"
+    },
+    {
+      "const": "CN-GZ-QNZ",
+      "description": "Qiannan Buyeizu Miaozu Zizhizhou,Guizhou Sheng,China"
+    },
+    {
+      "const": "CN-YN",
+      "description": "Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-YN-KMG",
+      "description": "Kunming Shi,Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-YN-QJS",
+      "description": "Qujing Shi,Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-YN-YXS",
+      "description": "Yuxi Shi,Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-YN-BOS",
+      "description": "Baoshan Shi,Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-YN-ZTS",
+      "description": "Zhaotong Shi,Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-YN-LJH",
+      "description": "Lijiang Shi,Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-YN-PRS",
+      "description": "Pu'er Shi,Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-YN-LIH",
+      "description": "Lincang Shi,Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-YN-CXD",
+      "description": "Chuxiong Yizu Zizhizhou,Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-YN-HHZ",
+      "description": "Honghe Hanizu Yizu Zizhizhou,Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-YN-WSZ",
+      "description": "Wenshan Zhuangzu Miaozu Zizhizhou,Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-YN-XSB",
+      "description": "Xishuangbanna Daizu Zizhizhou,Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-YN-DLZ",
+      "description": "Dali Baizu Zizhizhou,Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-YN-DHG",
+      "description": "Dehong Daizu Jingpozu Zizhizhou,Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-YN-NUJ",
+      "description": "Nujiang Lisuzu Zizhizhou,Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-YN-DEZ",
+      "description": "Deqên Zangzu Zizhizhou,Yunnan Sheng,China"
+    },
+    {
+      "const": "CN-XZ",
+      "description": "Xizang Zizhiqu,China"
+    },
+    {
+      "const": "CN-XZ-LXA",
+      "description": "Lhasa Shi,Xizang Zizhiqu,China"
+    },
+    {
+      "const": "CN-XZ-QAD",
+      "description": "Qamdo Diqu,Xizang Zizhiqu,China"
+    },
+    {
+      "const": "CN-XZ-SND",
+      "description": "Shannan Diqu,Xizang Zizhiqu,China"
+    },
+    {
+      "const": "CN-XZ-XID",
+      "description": "Xigaze Diqu,Xizang Zizhiqu,China"
+    },
+    {
+      "const": "CN-XZ-NAD",
+      "description": "Nagqu Diqu,Xizang Zizhiqu,China"
+    },
+    {
+      "const": "CN-XZ-NGD",
+      "description": "Ngari Diqu,Xizang Zizhiqu,China"
+    },
+    {
+      "const": "CN-XZ-NYD",
+      "description": "Nyingchi Diqu,Xizang Zizhiqu,China"
+    },
+    {
+      "const": "CN-SN",
+      "description": "Shaanxi Sheng,China"
+    },
+    {
+      "const": "CN-SN-SIA",
+      "description": "Xi'an Shi,Shaanxi Sheng,China"
+    },
+    {
+      "const": "CN-SN-TCN",
+      "description": "Tongchuan Shi,Shaanxi Sheng,China"
+    },
+    {
+      "const": "CN-SN-BJI",
+      "description": "Baoji Shi,Shaanxi Sheng,China"
+    },
+    {
+      "const": "CN-SN-XYS",
+      "description": "Xianyang Shi,Shaanxi Sheng,China"
+    },
+    {
+      "const": "CN-SN-WNA",
+      "description": "Weinan Shi,Shaanxi Sheng,China"
+    },
+    {
+      "const": "CN-SN-YNA",
+      "description": "Yan'an Shi,Shaanxi Sheng,China"
+    },
+    {
+      "const": "CN-SN-HZJ",
+      "description": "Hanzhong Shi,Shaanxi Sheng,China"
+    },
+    {
+      "const": "CN-SN-YLN",
+      "description": "Yulin Shi,Shaanxi Sheng,China"
+    },
+    {
+      "const": "CN-SN-ANK",
+      "description": "Ankang Shi,Shaanxi Sheng,China"
+    },
+    {
+      "const": "CN-SN-SLH",
+      "description": "Shangluo Shi,Shaanxi Sheng,China"
+    },
+    {
+      "const": "CN-GS",
+      "description": "Gansu Sheng,China"
+    },
+    {
+      "const": "CN-GS-LHW",
+      "description": "Lanzhou Shi,Gansu Sheng,China"
+    },
+    {
+      "const": "CN-GS-JYG",
+      "description": "Jiayuguan Shi,Gansu Sheng,China"
+    },
+    {
+      "const": "CN-GS-JCS",
+      "description": "Jinchang Shi,Gansu Sheng,China"
+    },
+    {
+      "const": "CN-GS-BYS",
+      "description": "Baiyin Shi,Gansu Sheng,China"
+    },
+    {
+      "const": "CN-GS-TSU",
+      "description": "Tianshui Shi,Gansu Sheng,China"
+    },
+    {
+      "const": "CN-GS-WWS",
+      "description": "Wuwei Shi,Gansu Sheng,China"
+    },
+    {
+      "const": "CN-GS-ZYE",
+      "description": "Zhangye Shi,Gansu Sheng,China"
+    },
+    {
+      "const": "CN-GS-PLS",
+      "description": "Pingliang Shi,Gansu Sheng,China"
+    },
+    {
+      "const": "CN-GS-JQG",
+      "description": "Jiuquan Shi,Gansu Sheng,China"
+    },
+    {
+      "const": "CN-GS-QYI",
+      "description": "Qingyang Shi,Gansu Sheng,China"
+    },
+    {
+      "const": "CN-GS-DNX",
+      "description": "Dingxi Shi,Gansu Sheng,China"
+    },
+    {
+      "const": "CN-GS-LGN",
+      "description": "Longnan Shi,Gansu Sheng,China"
+    },
+    {
+      "const": "CN-GS-LXH",
+      "description": "Linxia Huizu Zizhizhou,Gansu Sheng,China"
+    },
+    {
+      "const": "CN-GS-GNZ",
+      "description": "Gannan Zangzu Zizhizhou,Gansu Sheng,China"
+    },
+    {
+      "const": "CN-QH",
+      "description": "Qinghai Sheng,China"
+    },
+    {
+      "const": "CN-QH-XNN",
+      "description": "Xining Shi,Qinghai Sheng,China"
+    },
+    {
+      "const": "CN-QH-HDD",
+      "description": "Haidong Diqu,Qinghai Sheng,China"
+    },
+    {
+      "const": "CN-QH-HBZ",
+      "description": "Haibei Zangzu Zizhizhou,Qinghai Sheng,China"
+    },
+    {
+      "const": "CN-QH-HN7",
+      "description": "Huangnan Zangzu Zizhizhou,Qinghai Sheng,China"
+    },
+    {
+      "const": "CN-QH-HNN",
+      "description": "Hainan Zangzu Zizhizhou,Qinghai Sheng,China"
+    },
+    {
+      "const": "CN-QH-GOL",
+      "description": "Golog Zangzu Zizhizhou,Qinghai Sheng,China"
+    },
+    {
+      "const": "CN-QH-YSZ",
+      "description": "Yushu Zangzu Zizhizhou,Qinghai Sheng,China"
+    },
+    {
+      "const": "CN-QH-HXZ",
+      "description": "Haixi Mongolzu Zangzu Zizhizhou,Qinghai Sheng,China"
+    },
+    {
+      "const": "CN-NX",
+      "description": "Ningxia Huizu Zizhiqu,China"
+    },
+    {
+      "const": "CN-NX-INC",
+      "description": "Yinchuan Shi,Ningxia Huizu Zizhiqu,China"
+    },
+    {
+      "const": "CN-NX-SZS",
+      "description": "Shizuishan Shi,Ningxia Huizu Zizhiqu,China"
+    },
+    {
+      "const": "CN-NX-WZS",
+      "description": "Wuzhong Shi,Ningxia Huizu Zizhiqu,China"
+    },
+    {
+      "const": "CN-NX-GYN",
+      "description": "Guyuan Shi,Ningxia Huizu Zizhiqu,China"
+    },
+    {
+      "const": "CN-NX-ZWS",
+      "description": "Zhongwei Shi,Ningxia Huizu Zizhiqu,China"
+    },
+    {
+      "const": "CN-XJ",
+      "description": "Xinjiang Uygur Zizhiqu,China"
+    },
+    {
+      "const": "CN-XJ-URC",
+      "description": "Urümqi  Shi,Xinjiang Uygur Zizhiqu,China"
+    },
+    {
+      "const": "CN-XJ-KAR",
+      "description": "Karamay Shi,Xinjiang Uygur Zizhiqu,China"
+    },
+    {
+      "const": "CN-XJ-TUD",
+      "description": "Turpan Diqu,Xinjiang Uygur Zizhiqu,China"
+    },
+    {
+      "const": "CN-XJ-HMD",
+      "description": "Hami(Kumul)Diqu,Xinjiang Uygur Zizhiqu,China"
+    },
+    {
+      "const": "CN-XJ-CJZ",
+      "description": "Changji Huizu Zizhizhou,Xinjiang Uygur Zizhiqu,China"
+    },
+    {
+      "const": "CN-XJ-BOR",
+      "description": "Bortala Mongol Zizhizhou,Xinjiang Uygur Zizhiqu,China"
+    },
+    {
+      "const": "CN-XJ-BAG",
+      "description": "Bayingolin Mongol Zizhizhou,Xinjiang Uygur Zizhiqu,China"
+    },
+    {
+      "const": "CN-XJ-AKD",
+      "description": "Aksu Diqu,Xinjiang Uygur Zizhiqu,China"
+    },
+    {
+      "const": "CN-XJ-KIZ",
+      "description": "Kizilsu Kirgiz Zizhizhou,Xinjiang Uygur Zizhiqu,China"
+    },
+    {
+      "const": "CN-XJ-KSI",
+      "description": "Kashi(Kaxgar)Diqu,Xinjiang Uygur Zizhiqu,China"
+    },
+    {
+      "const": "CN-XJ-HOD",
+      "description": "Hotan Diqu,Xinjiang Uygur Zizhiqu,China"
+    },
+    {
+      "const": "CN-XJ-ILD",
+      "description": "Ili Kazak Zizhizhou,Xinjiang Uygur Zizhiqu,China"
+    },
+    {
+      "const": "CN-XJ-TCD",
+      "description": "Tacheng(Qoqek)Diqu,Xinjiang Uygur Zizhiqu,China"
+    },
+    {
+      "const": "CN-XJ-ALD",
+      "description": "Altay Diqu,Xinjiang Uygur Zizhiqu,China"
+    },
+    {
+      "const": "CN-TW",
+      "description": "Taiwan Sheng,China"
+    },
+    {
+      "const": "CN-HK",
+      "description": "Hongkong Tebiexingzhengqu,China"
+    },
+    {
+      "const": "CN-MO",
+      "description": "Macau Tebiexingzhengqu,China"
+    }
+  ]
+}
