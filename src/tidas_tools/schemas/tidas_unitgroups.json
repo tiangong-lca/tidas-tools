@@ -6,19 +6,24 @@
       "type": "object",
       "properties": {
         "@xmlns": {
-          "type": "string"
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/UnitGroup"
         },
         "@xmlns:common": {
-          "type": "string"
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/Common"
         },
         "@xmlns:xsi": {
-          "type": "string"
+          "type": "string",
+          "const": "http://www.w3.org/2001/XMLSchema-instance"
         },
         "@version": {
-          "type": "string"
+          "type": "string",
+          "const": "1.1"
         },
         "@xsi:schemaLocation": {
-          "type": "string"
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/UnitGroup ../../schemas/ILCD_UnitGroupDataSet.xsd"
         },
         "unitGroupInformation": {
           "type": "object",
@@ -27,37 +32,33 @@
               "type": "object",
               "properties": {
                 "common:UUID": {
-                  "type": "string"
+                  "type": "string",
+                  "description":"Automatically generated Universally Unique Identifier of this data set. Together with the \"Data set version\", the UUID uniquely identifies each data set.",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
                 },
                 "common:name": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@xml:lang": {
-                        "type": "string"
-                      },
-                      "#text": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@xml:lang",
-                      "#text"
-                    ]
-                  }
+                  "$ref":"data_types.json#/$defs/StringMultiLang",
+                  "description":"Name of the unit group, typically indicating for which flow property or group of flow properties it is used. The individual units are named in the \"Units\" section of the \"Unit group data set\""
                 },
                 "classificationInformation": {
                   "type": "object",
+                  "description":"Hierachical classification of the Unit groups; foreseen to be used to structure the Unit group content of the database. (Note: This entry is NOT required for the identification of the Unit group data set. It should nevertheless be avoided to use identical names for Unit groups in the same class.",
                   "properties": {
                     "common:classification": {
                       "type": "object",
+                      "description":"Optional statistical or other classification of the data set. Typically also used for structuring LCA databases.",
                       "properties": {
                         "common:class": {
                           "type": "object",
                           "properties": {
                             "@level": {
-                              "type": "string"
+                              "type": "string",
+                              "const":"0",
+                              "description":"If more than one class is specified in a hierachical classification system, the hierarchy level (1,2,...) could be specified with this attribute of class."
+                            },
+                            "@classId":{
+                              "type":"string",
+                              "description":"Unique identifier for the class. [Notes: If such identifiers are also defined in the referenced category file, they should be identical. Identifiers can be UUID's, but also other forms are allowed.]"
                             },
                             "#text": {
                               "type": "string"
@@ -65,12 +66,22 @@
                           },
                           "required": [
                             "@level",
+                            "@classId",
                             "#text"
-                          ]
+                          ],
+                          "dependencies":{
+                            "@level":{
+                              "$ref": "./tidas_classification_category.json#/$defs/UnitGroup"
+                            }
+                          }
                         }
                       }
                     }
                   }
+                },
+                "common:generalComment":{
+                  "$ref":"data_types.json#/$defs/FTMultiLang",
+                  "description":"Free text for general information about the data set. E.g. coverage of different unit systems, information sources used, etc."
                 }
               },
               "required": [
@@ -82,7 +93,8 @@
               "type": "object",
               "properties": {
                 "referenceToReferenceUnit": {
-                  "type": "integer"
+                  "type": "integer",
+                   "$ref": "data_types.json#/$defs/Int5"
                 }
               },
               "required": [
@@ -91,8 +103,7 @@
             }
           },
           "required": [
-            "dataSetInformation",
-            "quantitativeReference"
+            "dataSetInformation"
           ]
         },
         "modellingAndValidation": {
@@ -102,59 +113,72 @@
               "type": "object",
               "properties": {
                 "compliance": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "common:referenceToComplianceSystem": {
-                        "type": "object",
-                        "properties": {
-                          "@refObjectId": {
-                            "type": "string"
-                          },
-                          "@type": {
-                            "type": "string"
-                          },
-                          "@uri": {
-                            "type": "string"
-                          },
-                          "@version": {
-                            "type": "string"
-                          },
-                          "common:shortDescription": {
-                            "type": "object",
-                            "properties": {
-                              "@xml:lang": {
-                                "type": "string"
-                              },
-                              "#text": {
-                                "type": "string"
-                              }
-                            },
-                            "required": [
-                              "@xml:lang",
-                              "#text"
-                            ]
-                          }
-                        },
-                        "required": [
-                          "@refObjectId",
-                          "@type",
-                          "@uri",
-                          "@version"
-                        ]
-                      },
-                      "common:approvalOfOverallCompliance": {
-                        "type": "string"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "common:referenceToComplianceSystem": {
+                      "type": "object",
+                      "$ref": "data_types.json#/$defs/GlobalReferenceType"
                     },
-                    "required": [
-                      "common:referenceToComplianceSystem",
-                      "common:approvalOfOverallCompliance"
-                    ]
-                  }
+                    "common:approvalOfOverallCompliance": {
+                      "type": "string",
+                      "enum": [
+                        "Fully compliant",
+                        "Not compliant",
+                        "Not defined"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "common:referenceToComplianceSystem",
+                    "common:approvalOfOverallCompliance"
+                  ]
                 }
               }
+            }
+          }
+        },
+        "administrativeInformation": {
+          "type": "object",
+          "properties": {
+            "dataEntryBy":{
+              "type":"object",
+               "properties":{
+                "common:timeStamp": {
+                   "type": "string",
+                   "format": "date-time"
+                },
+                "common:referenceToDataSetFormat": {
+                  "type": "object",
+                  "$ref": "data_types.json#/$defs/GlobalReferenceType"
+                }
+              },
+              "required": [
+                "common:timeStamp",
+                "common:referenceToDataSetFormat"
+              ]
+            },
+            "publicationAndOwnership": {
+              "type": "object",
+              "properties": {
+                "common:dataSetVersion": {
+                  "type": "string"
+                },
+                "common:referenceToPrecedingDataSetVersion": {
+                  "type": "object",
+                  "$ref": "data_types.json#/$defs/GlobalReferenceType"
+                },
+                "permanentDataSetURI": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "common:referenceToOwnershipOfDataSet": {
+                  "type": "object",
+                  "$ref": "data_types.json#/$defs/GlobalReferenceType"
+                }
+              },
+              "required": [
+                "common:dataSetVersion"
+              ]
             }
           }
         },
@@ -162,26 +186,47 @@
           "type": "object",
           "properties": {
             "unit": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "@dataSetInternalID": {
-                    "type": "string"
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "meanValue": {
-                    "type": "number"
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "@dataSetInternalID": {
+                      "$ref": "data_types.json#/$defs/Int5"
+                    },
+                    "name": {
+                      "$ref": "data_types.json#/$defs/String"
+                    },
+                    "meanValue": {
+                      "$ref": "data_types.json#/$defs/Real"
+                    },
+                    "generalComment":{
+                      "$ref":"data_types.json#/$defs/StringMultiLang",
+                      "description":"General comment on each single unit, typically giving the long name and unit system from which this unit stems, and (if necessary) referring to specifc data sources used, or for workflow purposes about status of \"finalisation\" of an entry etc."
+                    }
                   }
                 },
-                "required": [
-                  "@dataSetInternalID",
-                  "name",
-                  "meanValue"
-                ]
-              }
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "@dataSetInternalID": {
+                        "$ref": "data_types.json#/$defs/Int5"
+                      },
+                      "name": {
+                        "$ref": "data_types.json#/$defs/String"
+                      },
+                      "meanValue": {
+                        "$ref": "data_types.json#/$defs/Real"
+                      },
+                      "generalComment":{
+                        "$ref":"data_types.json#/$defs/StringMultiLang",
+                        "description":"General comment on each single unit, typically giving the long name and unit system from which this unit stems, and (if necessary) referring to specifc data sources used, or for workflow purposes about status of \"finalisation\" of an entry etc."
+                      }
+                    }
+                  }
+                }
+              ]
             }
           }
         }
@@ -191,10 +236,7 @@
         "@xmlns:common",
         "@xmlns:xsi",
         "@version",
-        "@xsi:schemaLocation",
-        "unitGroupInformation",
-        "modellingAndValidation",
-        "units"
+        "@xsi:schemaLocation"
       ]
     }
   },
