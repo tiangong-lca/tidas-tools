@@ -6,7 +6,7 @@ import logging
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
 
-import tidas_tools.schemas as schemas
+import tidas_tools.tidas.schemas as schemas
 
 logging.basicConfig(
     filename="tidas_validate.log",
