@@ -2,12 +2,12 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
-    "unitGroupDataSet": {
+    "flowPropertyDataSet": {
       "type": "object",
       "properties": {
         "@xmlns": {
           "type": "string",
-          "const": "http://lca.jrc.it/ILCD/UnitGroup"
+          "const": "http://lca.jrc.it/ILCD/FlowProperty"
         },
         "@xmlns:common": {
           "type": "string",
@@ -23,9 +23,9 @@
         },
         "@xsi:schemaLocation": {
           "type": "string",
-          "const": "http://lca.jrc.it/ILCD/UnitGroup ../../schemas/ILCD_UnitGroupDataSet.xsd"
+          "const": "http://lca.jrc.it/ILCD/FlowProperty ../../schemas/ILCD_FlowPropertyDataSet.xsd"
         },
-        "unitGroupInformation": {
+        "flowPropertiesInformation": {
           "type": "object",
           "properties": {
             "dataSetInformation": {
@@ -37,42 +37,43 @@
                 },
                 "common:name": {
                   "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
-                  "description": "Name of the unit group, typically indicating for which flow property or group of flow properties it is used. The individual units are named in the \"Units\" section of the \"Unit group data set\""
+                  "description": "Name of flow property."
+                },
+                "common:synonyms": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "Synonyms are alternative names for the \"Name\" of the Flow property."
                 },
                 "classificationInformation": {
+                  "description": "Hierachical classification of the Flow property foreseen to be used to structure the Flow property content of the database. (Note: This entry is NOT required for the identification of the Flow property data set. It should nevertheless be avoided to use identical names for Flow properties in the same class.",
                   "type": "object",
-                  "description": "Hierachical classification of the Unit groups; foreseen to be used to structure the Unit group content of the database. (Note: This entry is NOT required for the identification of the Unit group data set. It should nevertheless be avoided to use identical names for Unit groups in the same class.",
                   "properties": {
                     "common:classification": {
-                      "type": "object",
                       "description": "Optional statistical or other classification of the data set. Typically also used for structuring LCA databases.",
+                      "type": "object",
                       "properties": {
                         "common:class": {
                           "type": "object",
                           "properties": {
                             "@level": {
-                              "$ref": "tidas_data_types.json#/$defs/Int1",
-                              "const": "0",
-                              "description": "If more than one class is specified in a hierachical classification system, the hierarchy level (1,2,...) could be specified with this attribute of class."
+                              "$ref": "tidas_data_types.json#/$defs/Int1"
                             },
                             "@classId": {
-                              "type": "string",
-                              "description": "Unique identifier for the class. [Notes: If such identifiers are also defined in the referenced category file, they should be identical. Identifiers can be UUID's, but also other forms are allowed.]"
+                              "type": "string"
                             },
                             "#text": {
                               "type": "string"
+                            }
+                          },
+                          "dependencies": {
+                            "@level": {
+                              "$ref": "./tidas_classification_category.json#/$defs/FlowProperty"
                             }
                           },
                           "required": [
                             "@level",
                             "@classId",
                             "#text"
-                          ],
-                          "dependencies": {
-                            "@level": {
-                              "$ref": "./tidas_classification_category.json#/$defs/UnitGroup"
-                            }
-                          }
+                          ]
                         },
                         "common:other": {
                           "type": "string"
@@ -89,7 +90,7 @@
                 },
                 "common:generalComment": {
                   "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
-                  "description": "Free text for general information about the data set. E.g. coverage of different unit systems, information sources used, etc."
+                  "description": "Free text for general information about the data set. It may contain comments on e.g. information sources used as well as general (internal, not reviewed) quality statements."
                 },
                 "common:other": {
                   "type": "string"
@@ -97,21 +98,24 @@
               },
               "required": [
                 "common:UUID",
-                "common:name"
+                "common:name",
+                "classificationInformation"
               ]
             },
             "quantitativeReference": {
+              "description": "This section allows to refer to the Flow property's quantitative reference, which is always a unit (i.e. that unit, in which the property is measured, e.g. \"MJ\" for energy-related Flow properties).",
               "type": "object",
               "properties": {
-                "referenceToReferenceUnit": {
-                  "$ref": "tidas_data_types.json#/$defs/Int5"
+                "referenceToReferenceUnitGroup": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Unit group data set\" and its reference unit, in which the Flow property is measured."
                 },
                 "common:other": {
                   "type": "string"
                 }
               },
               "required": [
-                "referenceToReferenceUnit"
+                "referenceToReferenceUnitGroup"
               ]
             },
             "common:other": {
@@ -119,31 +123,46 @@
             }
           },
           "required": [
-            "dataSetInformation"
+            "dataSetInformation",
+            "quantitativeReference"
           ]
         },
         "modellingAndValidation": {
+          "description": "Covers the five sub-sections 1) LCI method (not used), 2) Data sources, treatment and representativeness (only 3 fields), 3) Completeness (not used), 4) Validation, and 5) Compliance.",
           "type": "object",
           "properties": {
+            "dataSourcesTreatmentAndRepresentativeness": {
+              "type": "object",
+              "properties": {
+                "referenceToDataSource": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Source data set\" of data source(s) used for the data set e.g. a paper, a questionnaire, a monography etc. The main raw data sources should be named, too. [Note: relevant especially for market price data.]"
+                },
+                "common:other": {
+                  "type": "string"
+                }
+              }
+            },
             "complianceDeclarations": {
               "type": "object",
+              "description": "Statements on compliance of several data set aspects with compliance requirements as defined by the referenced compliance system (e.g. an EPD scheme, handbook of a national or international data network such as the ILCD, etc.).",
               "properties": {
                 "compliance": {
                   "type": "object",
+                  "description": "one compliance declaration",
                   "properties": {
                     "common:referenceToComplianceSystem": {
-                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType"
+                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                      "description": "\"Source data set\" of the \"Compliance system\" that is declared to be met by the data set."
                     },
                     "common:approvalOfOverallCompliance": {
+                      "description": "Official approval whether or not and in how far the data set meets all the requirements of the \"Compliance system\" refered to. This approval should be issued/confirmed by the owner of that compliance system, who is identified via the respective \"Contact data set\".",
                       "type": "string",
                       "enum": [
                         "Fully compliant",
                         "Not compliant",
                         "Not defined"
                       ]
-                    },
-                    "common:other": {
-                      "type": "string"
                     }
                   },
                   "required": [
@@ -159,21 +178,28 @@
             "common:other": {
               "type": "string"
             }
-          }
+          },
+          "required": [
+            "complianceDeclarations"
+          ]
         },
         "administrativeInformation": {
+          "description": "Information on data set management and administration.",
           "type": "object",
           "properties": {
             "dataEntryBy": {
               "type": "object",
+              "description": "Staff or entity, that documented the generated data set, entering the information into the database; plus administrative information linked to the data entry activity.",
               "properties": {
                 "common:timeStamp": {
-                  "$ref": "tidas_data_types.json#/$defs/dateTime",
-                  "description": "Date and time stamp of data set generation, typically an automated entry (\"last saved\")."
+                  "type": "string",
+                  "description": "Date and time stamp of data set generation, typically an automated entry (\"last saved\").",
+                  "format": "date-time"
                 },
                 "common:referenceToDataSetFormat": {
-                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                  "description": "\"Source data set\" of the used version of the ILCD format. If additional data format fields have been integrated into the data set file, using the \"namespace\" option, the used format namespace(s) are to be given. This is the case if the data sets carries additional information as specified by other, particular LCA formats, e.g. of other database networks or LCA softwares."
+                  "type": "object",
+                  "description": "\"Source data set\" of the used version of the ILCD format. If additional data format fields have been integrated into the data set file, using the \"namespace\" option, the used format namespace(s) are to be given. This is the case if the data sets carries additional information as specified by other, particular LCA formats, e.g. of other database networks or LCA softwares.",
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType"
                 },
                 "common:other": {
                   "type": "string"
@@ -186,6 +212,7 @@
             },
             "publicationAndOwnership": {
               "type": "object",
+              "description": "Information related to publication and version management of the data set including copyright and access restrictions.",
               "properties": {
                 "common:dataSetVersion": {
                   "type": "string",
@@ -195,7 +222,7 @@
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
                   "description": "Last preceding data set, which was replaced by this version. Either a URI of that data set (i.e. an internet address) or its UUID plus version number is given (or both)."
                 },
-                "permanentDataSetURI": {
+                "common:permanentDataSetURI": {
                   "type": "string",
                   "format": "uri",
                   "description": "URI (i.e. an internet address) of the original of this data set. [Note: This equally globally unique identifier supports users and software tools to identify and retrieve the original version of a data set via the internet or to check for available updates. The URI must not represent an existing WWW address, but it should be unique and point to the data access point, e.g. by combining the data owner's www path with the data set's UUID, e.g. http://www.mycompany.com/lca/processes/50f12420-8855-12db-b606-0900210c9a66.]"
@@ -215,61 +242,11 @@
             "common:other": {
               "type": "string"
             }
-          }
-        },
-        "units": {
-          "type": "object",
-          "properties": {
-            "unit": {
-              "anyOf": [
-                {
-                  "type": "object",
-                  "properties": {
-                    "@dataSetInternalID": {
-                      "$ref": "tidas_data_types.json#/$defs/Int5"
-                    },
-                    "name": {
-                      "$ref": "tidas_data_types.json#/$defs/String"
-                    },
-                    "meanValue": {
-                      "$ref": "tidas_data_types.json#/$defs/Real"
-                    },
-                    "generalComment": {
-                      "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
-                      "description": "General comment on each single unit, typically giving the long name and unit system from which this unit stems, and (if necessary) referring to specifc data sources used, or for workflow purposes about status of \"finalisation\" of an entry etc."
-                    },
-                    "common:other": {
-                      "type": "string"
-                    }
-                  }
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@dataSetInternalID": {
-                        "$ref": "tidas_data_types.json#/$defs/Int5"
-                      },
-                      "name": {
-                        "$ref": "tidas_data_types.json#/$defs/String"
-                      },
-                      "meanValue": {
-                        "$ref": "tidas_data_types.json#/$defs/Real"
-                      },
-                      "generalComment": {
-                        "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
-                        "description": "General comment on each single unit, typically giving the long name and unit system from which this unit stems, and (if necessary) referring to specifc data sources used, or for workflow purposes about status of \"finalisation\" of an entry etc."
-                      }
-                    }
-                  }
-                }
-              ]
-            },
-            "common:other": {
-              "type": "string"
-            }
-          }
+          },
+          "required": [
+            "dataEntryBy",
+            "publicationAndOwnership"
+          ]
         },
         "common:other": {
           "type": "string"
@@ -280,11 +257,13 @@
         "@xmlns:common",
         "@xmlns:xsi",
         "@version",
-        "@xsi:schemaLocation"
+        "@xsi:schemaLocation",
+        "flowPropertiesInformation",
+        "administrativeInformation"
       ]
     }
   },
   "required": [
-    "unitGroupDataSet"
+    "flowPropertyDataSet"
   ]
 }

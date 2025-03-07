@@ -33,16 +33,15 @@
               "type": "object",
               "properties": {
                 "common:UUID": {
-                  "type": "string",
-                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                  "$ref": "tidas_data_types.json#/$defs/UUID",
                   "description": "Automatically generated Universally Unique Identifier of this data set. Together with the 'Data set version', the UUID uniquely identifies each data set."
                 },
                 "common:shortName": {
-                  "$ref": "data_types.json#/$defs/StringMultiLang",
+                  "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
                   "description": "Short name for the contact, that is used for display e.g. of links to this data set (especially in case the full name of the contact is rather long, e.g. 'FAO' for 'Food and Agriculture Organization')."
                 },
                 "common:name": {
-                  "$ref": "data_types.json#/$defs/StringMultiLang",
+                  "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
                   "description": "Name of the person, working group, organisation, or database network, which is represented by this contact data set."
                 },
                 "classificationInformation": {
@@ -53,7 +52,7 @@
                       "type": "object",
                       "description": "Optional statistical or other classification of the data set. Typically also used for structuring LCA databases.",
                       "properties": {
-                        "common:class":{
+                        "common:class": {
                           "anyOf": [
                             {
                               "type": "array",
@@ -62,8 +61,8 @@
                                   "type": "object",
                                   "properties": {
                                     "@level": {
-                                      "type": "string",
-                                      "enum": ["0"]
+                                      "$ref": "tidas_data_types.json#/$defs/Int1",
+                                      "const": "0"
                                     },
                                     "@classId": {
                                       "type": "string"
@@ -87,8 +86,8 @@
                                   "type": "object",
                                   "properties": {
                                     "@level": {
-                                      "type": "string",
-                                      "enum": ["1"]
+                                      "$ref": "tidas_data_types.json#/$defs/Int1",
+                                      "const": "1"
                                     },
                                     "@classId": {
                                       "type": "string"
@@ -139,7 +138,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "type": "string",
+                                  "$ref": "tidas_data_types.json#/$defs/Int1",
                                   "const": "0"
                                 },
                                 "@classId": {
@@ -166,57 +165,61 @@
                       "required": [
                         "common:class"
                       ]
+                    },
+                    "common:other": {
+                      "type": "string"
                     }
                   },
                   "required": [
                     "common:classification"
                   ]
                 },
-                "contactAddress":{
-                  "$ref": "data_types.json#/$defs/STMultiLang",
+                "contactAddress": {
+                  "$ref": "tidas_data_types.json#/$defs/STMultiLang",
                   "description": "Mail address of the contact; specific for the person, working group, or department. [Note: A general contact point to the organisation is to be given in 'General contact point'.]"
                 },
                 "email": {
-                  "type": "string",
-                  "$ref": "data_types.json#/$defs/String",
+                  "$ref": "tidas_data_types.json#/$defs/String",
                   "format": "email"
                 },
                 "telephone": {
-                  "type": "string",
-                  "$ref": "data_types.json#/$defs/String"
+                  "$ref": "tidas_data_types.json#/$defs/String"
                 },
                 "telefax": {
-                  "type": "string",
-                  "$ref": "data_types.json#/$defs/String"
+                  "$ref": "tidas_data_types.json#/$defs/String"
                 },
                 "WWWAddress": {
-                  "$ref": "data_types.json#/$defs/ST",
+                  "$ref": "tidas_data_types.json#/$defs/ST",
                   "description": "Web-address of the person, working group, organisation or database network."
                 },
                 "centralContactPoint": {
-                  "$ref": "data_types.json#/$defs/STMultiLang",
+                  "$ref": "tidas_data_types.json#/$defs/STMultiLang",
                   "description": "Alternative address / contact details for the contact. Provides contact information in case e.g. the person or group represented by this contact has left the organisation or changed office/telephone. This alternative contact point can hence contain also a central telephone number, e-mail, www-address etc. of the organisation."
                 },
                 "contactDescriptionOrComment": {
-                  "$ref": "data_types.json#/$defs/STMultiLang",
+                  "$ref": "tidas_data_types.json#/$defs/STMultiLang",
                   "description": "Free text for additional description of the organisation or person of the contact, such as organisational profile, person responsibilities, etc."
                 },
-                "referenceToContact":{
-                  "type":"object",
-                  "description":"\"Contact data set\"s of working groups, organisations or database networks to which EITHER this person or entity OR this database, data set format, or compliance system belongs. [Note: This does not necessarily imply a legally binding relationship, but may also be a voluntary membership.]",
-                  "$ref": "data_types.json#/$defs/GlobalReferenceType"
+                "referenceToContact": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Contact data set\"s of working groups, organisations or database networks to which EITHER this person or entity OR this database, data set format, or compliance system belongs. [Note: This does not necessarily imply a legally binding relationship, but may also be a voluntary membership.]"
                 },
-                "referenceToLogo":{
-                  "type":"object",
-                  "description":"\"Source data set\" of the logo of the organisation or source to be used in reports etc.",
-                  "$ref": "data_types.json#/$defs/GlobalReferenceType"
+                "referenceToLogo": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Source data set\" of the logo of the organisation or source to be used in reports etc."
+                },
+                "common:other": {
+                  "type": "string"
                 }
               },
               "required": [
-                "common:UUID", 
-                "common:shortName", 
+                "common:UUID",
+                "common:shortName",
                 "common:name"
               ]
+            },
+            "common:other": {
+              "type": "string"
             }
           },
           "required": [
@@ -230,17 +233,21 @@
               "type": "object",
               "properties": {
                 "common:timeStamp": {
-                  "type": "string",
-                  "format": "date-time",
+                  "$ref": "tidas_data_types.json#/$defs/dateTime",
                   "description": "Date and time stamp of data set generation, typically an automated entry ('last saved')."
                 },
                 "common:referenceToDataSetFormat": {
-                  "type": "object",
-                  "description":"\"Source data set\" of the used version of the ILCD format. If additional data format fields have been integrated into the data set file, using the \"namespace\" option, the used format namespace(s) are to be given. This is the case if the data sets carries additional information as specified by other, particular LCA formats, e.g. of other database networks or LCA softwares.",
-                  "$ref": "data_types.json#/$defs/GlobalReferenceType"
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Source data set\" of the used version of the ILCD format. If additional data format fields have been integrated into the data set file, using the \"namespace\" option, the used format namespace(s) are to be given. This is the case if the data sets carries additional information as specified by other, particular LCA formats, e.g. of other database networks or LCA softwares."
+                },
+                "common:other": {
+                  "type": "string"
                 }
               },
-              "required": ["common:timeStamp", "common:referenceToDataSetFormat"]
+              "required": [
+                "common:timeStamp",
+                "common:referenceToDataSetFormat"
+              ]
             },
             "publicationAndOwnership": {
               "type": "object",
@@ -249,24 +256,34 @@
                   "type": "string",
                   "description": "Version number of data set. First two digits refer to major updates, the second two digits to minor revisions and error corrections etc. The third three digits are intended for automatic and internal counting of versions during data set development. Together with the data set's UUID, the 'Data set version' uniquely identifies each data set."
                 },
-                "referenceToPrecedingDataSetVersion":{
-                  "description":"Last preceding data set, which was replaced by this version. Either a URI of that data set (i.e. an internet address) or its UUID plus version number is given (or both).",
-                  "$ref": "data_types.json#/$defs/GlobalReferenceType"
+                "referenceToPrecedingDataSetVersion": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "Last preceding data set, which was replaced by this version. Either a URI of that data set (i.e. an internet address) or its UUID plus version number is given (or both)."
                 },
                 "common:permanentDataSetURI": {
                   "type": "string",
+                  "format": "uri",
                   "description": "URI (i.e. an internet address) of the original of this data set. [Note: This equally globally unique identifier supports users and software tools to identify and retrieve the original version of a data set via the internet or to check for available updates. The URI must not represent an existing WWW address, but it should be unique and point to the data access point, e.g. by combining the data owner's www path with the data set's UUID, e.g. http://www.mycompany.com/lca/processes/50f12420-8855-12db-b606-0900210c9a66.]"
                 },
-                "common:referenceToOwnershipOfDataSet":{
-                  "description":"\"Contact data set\" of the person or entity who owns this data set. (Note: this is not necessarily the publisher of the data set.)",
-                  "$ref": "data_types.json#/$defs/GlobalReferenceType"
+                "common:referenceToOwnershipOfDataSet": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Contact data set\" of the person or entity who owns this data set. (Note: this is not necessarily the publisher of the data set.)"
+                },
+                "common:other": {
+                  "type": "string"
                 }
               },
               "required": [
                 "common:dataSetVersion"
               ]
+            },
+            "common:other": {
+              "type": "string"
             }
           }
+        },
+        "common:other": {
+          "type": "string"
         }
       },
       "required": [
@@ -278,6 +295,9 @@
         "contactInformation",
         "administrativeInformation"
       ]
+    },
+    "common:other": {
+      "type": "string"
     }
   },
   "required": [

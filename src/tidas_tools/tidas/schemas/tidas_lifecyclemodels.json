@@ -6,239 +6,1309 @@
       "type": "object",
       "properties": {
         "@xmlns": {
-          "type": "string"
+          "type": "string",
+          "const": "http://eplca.jrc.ec.europa.eu/ILCD/LifeCycleModel/2017"
         },
         "@xmlns:acme": {
-          "type": "string"
+          "type": "string",
+          "const": "http://acme.com/custom"
         },
         "@xmlns:common": {
-          "type": "string"
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/Common"
         },
         "@xmlns:xsi": {
-          "type": "string"
+          "type": "string",
+          "const": "http://www.w3.org/2001/XMLSchema-instance"
         },
         "@locations": {
-          "type": "string"
+          "type": "string",
+          "const": "../ILCDLocations.xml"
         },
         "@version": {
-          "type": "string"
+          "type": "string",
+          "const": "1.1"
         },
         "@xsi:schemaLocation": {
-          "type": "string"
+          "type": "string",
+          "const": "http://eplca.jrc.ec.europa.eu/ILCD/LifeCycleModel/2017 ../../schemas/ILCD_LifeCycleModelDataSet.xsd"
         },
         "lifeCycleModelInformation": {
           "type": "object",
+          "description": "This section comprises the following sub-sections: 1) \"Key data set information\", 2) \"Quantitative reference\", 3) \"Technology\".",
           "properties": {
             "dataSetInformation": {
-              "$ref": "#/definitions/dataSetInformation"
+              "description": "General data set information, to identify the life cycle model, document a general comment about it, and to reference resulting aggregated process data sets that are based on this ife cycle model and to reference a potential background report.",
+              "type": "object",
+              "properties": {
+                "common:UUID": {
+                  "$ref": "tidas_data_types.json#/$defs/UUID",
+                  "description": "Automatically generated Universally Unique Identifier of this data set. Together with the \"Data set version\", the UUID uniquely identifies each data set."
+                },
+                "name": {
+                  "type": "object",
+                  "description": "General descriptive, specifying, structured name of the Life cycle model data set. Note: Ensure proper name structuring and observe restriction to 100 characters for each of the four name fields.",
+                  "properties": {
+                    "baseName": {
+                      "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                      "description": "General descriptive name of the life cycle model and/or its main good(s), service(s) and/or functions delivered."
+                    },
+                    "treatmentStandardsRoutes": {
+                      "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                      "description": "Specifying information on the good, service, or function delivered by the life cycle model in technical term(s): treatment received, standard fulfilled, product quality, use information, production route name, educt name, primary / secondary etc. Separated by commata."
+                    },
+                    "mixAndLocationTypes": {
+                      "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                      "description": "Specifying information on the good, service, or function, whether being a production mix or consumption mix, location type of availability (such as e.g. \"to consumer\" or \"at plant\"). Separated by commata. May include information of excluded life cycle stages, if any."
+                    },
+                    "functionalUnitFlowProperties": {
+                      "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                      "description": "Further, quantitative specifying information on the good, service or function in technical term(s): qualifying constituent(s)-content and / or energy-content per unit etc. as appropriate. Separated by commata. (Note: non-qualifying flow properties, CAS No, Synonyms, Chemical formulas etc. are to be documented exclusively in the \"Flow data set\" of the reference flow of this life cycle model.)"
+                    },
+                    "common:other": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "baseName",
+                    "treatmentStandardsRoutes",
+                    "mixAndLocationTypes",
+                    "functionalUnitFlowProperties"
+                  ]
+                },
+                "classificationInformation": {
+                  "type": "object",
+                  "description": "Hierarchical or flat classification of the good, service or function that is provided by this life cycle model; typically used to structure database contents in LCA software, among other purposes. (Note: This entry is NOT required for the identification of a Life cycle model, but it should nevertheless be avoided to use identical names for Life cycle model data sets in the same class. The ILCD classifications are defined in the ILCDClassifications.xml file, for common use.)",
+                  "properties": {
+                    "common:classification": {
+                      "description": "Optional statistical or other classification of the data set. Typically also used for structuring LCA databases.",
+                      "type": "object",
+                      "properties": {
+                        "common:class": {
+                          "type": "array",
+                          "items": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "@level": {
+                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "const": "0"
+                                },
+                                "@classId": {
+                                  "type": "string"
+                                },
+                                "#text": {
+                                  "type": "string"
+                                }
+                              },
+                              "dependencies": {
+                                "@level": {
+                                  "$ref": "./tidas_processes_category.json"
+                                }
+                              },
+                              "required": [
+                                "@level",
+                                "@classId",
+                                "#text"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "@level": {
+                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "const": "1"
+                                },
+                                "@classId": {
+                                  "type": "string"
+                                },
+                                "#text": {
+                                  "type": "string"
+                                }
+                              },
+                              "dependencies": {
+                                "@level": {
+                                  "$ref": "./tidas_processes_category.json"
+                                }
+                              },
+                              "required": [
+                                "@level",
+                                "@classId",
+                                "#text"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "@level": {
+                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "const": "2"
+                                },
+                                "@classId": {
+                                  "type": "string"
+                                },
+                                "#text": {
+                                  "type": "string"
+                                }
+                              },
+                              "dependencies": {
+                                "@level": {
+                                  "$ref": "./tidas_processes_category.json"
+                                }
+                              },
+                              "required": [
+                                "@level",
+                                "@classId",
+                                "#text"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "@level": {
+                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "const": "3"
+                                },
+                                "@classId": {
+                                  "type": "string"
+                                },
+                                "#text": {
+                                  "type": "string"
+                                }
+                              },
+                              "dependencies": {
+                                "@level": {
+                                  "$ref": "./tidas_processes_category.json"
+                                }
+                              },
+                              "required": [
+                                "@level",
+                                "@classId",
+                                "#text"
+                              ]
+                            }
+                          ],
+                          "uniqueItems": true,
+                          "allOf": [
+                            {
+                              "maxContains": 1,
+                              "minContains": 0,
+                              "contains": {
+                                "properties": {
+                                  "@level": {
+                                    "const": "0"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "maxContains": 1,
+                              "minContains": 0,
+                              "contains": {
+                                "properties": {
+                                  "@level": {
+                                    "const": "1"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "maxContains": 1,
+                              "minContains": 0,
+                              "contains": {
+                                "properties": {
+                                  "@level": {
+                                    "const": "2"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "maxContains": 1,
+                              "minContains": 0,
+                              "contains": {
+                                "properties": {
+                                  "@level": {
+                                    "const": "3"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "common:other": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "common:class"
+                      ]
+                    }
+                  }
+                },
+                "referenceToResultingProcess": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "Reference to the LCI result or partly terminated system process data set(s) that is/are generated from this model."
+                },
+                "common:generalComment": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "General information about the data set."
+                },
+                "referenceToExternalDocumentation": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Source data set(s)\" of detailed LCI or LCA study or other study on the process or product represented by this data set, as well as documents / files with overarching documentative information on technology, geographical and / or time aspects etc. on the level of the life cycle model. (Note: can indirectly reference to electronic and online files.)"
+                },
+                "common:other": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "common:UUID",
+                "name",
+                "classificationInformation"
+              ]
             },
             "quantitativeReference": {
-              "$ref": "#/definitions/quantitativeReference"
+              "type": "object",
+              "description": "This section names the quantitative reference of this data set, i.e. the reference to which the inputs and outputs of all process instances of the life cycle model quantitatively relate.",
+              "properties": {
+                "referenceToReferenceProcess": {
+                  "description": "Process instance that scales the life cycle model and thereby all directly and indirectly connected process instances of the model; it is often a process instance at the \"end\" of the life cycle model chain, or the process that provides the delivered good, service or function of the model.",
+                  "type": "string",
+                  "pattern": "^-?\\d+$"
+                },
+                "common:other": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "referenceToReferenceProcess"
+              ]
             },
             "technology": {
-              "$ref": "#/definitions/technology"
+              "type": "object",
+              "description": "Provides information about the technological representativeness of the data set.",
+              "properties": {
+                "groupDeclarations": {
+                  "description": "Section to define groups to which process instances can declare to belong to, in the context of this Life cycle model data set. Groups are user-defined and could be e.g. life cycle stages, foreground/background, ...",
+                  "type": "object",
+                  "properties": {
+                    "group": {
+                      "description": "Definition for each group.",
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "@id": {
+                              "type": "string",
+                              "pattern": "^-?\\d+$"
+                            },
+                            "groupName": {
+                              "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
+                            }
+                          },
+                          "required": [
+                            "@id",
+                            "groupName"
+                          ]
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "@id": {
+                                "type": "string",
+                                "pattern": "^-?\\d+$"
+                              },
+                              "groupName": {
+                                "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
+                              }
+                            },
+                            "required": [
+                              "@id",
+                              "groupName"
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "group"
+                  ]
+                },
+                "processes": {
+                  "type": "object",
+                  "description": "\"Process data set(s)\" included in this life cycle model as separate data set(s).",
+                  "properties": {
+                    "processInstance": {
+                      "description": "Instances (occurrences) of the same process data set in this life cycle model. Each process data set may occur in different places within the model, with different parameter settings and connected to different other process instances.",
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "@dataSetInternalID": {
+                                "type": "string",
+                                "pattern": "^-?\\d+$"
+                              },
+                              "@multiplicationFactor": {
+                                "type": "string",
+                                "pattern": "^-?\\d+(\\.\\d+)?([eE][-+]?\\d+)?$",
+                                "description": "The multiplication factor corresponds to the amount of output product from the process instance that is needed over the full life cycle. In practice, the Life Cycle Inventory of a specific process instance shall be multiplied by the multiplication factor to calculate the exact amount needed over the full life cycle."
+                              },
+                              "referenceToProcess": {
+                                "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                                "description": "Reference to the process data set and (optional) identifying its version, that is included in the eILCD archive of the Life cycle model and/or accessible at a remote location, i.e. an URI or URL."
+                              },
+                              "scalingFactors": {
+                                "$ref": "tidas_data_types.json#/$defs/Real",
+                                "description": "A multiplicative scaling factor for the entire inventory of this process instance, used e.g. to scale the \"Reference process\" to the aimed-at amount of product (and thereby indirectly the entire inventory of the life cycle model). Note: Care is to be taken that models are not over- or under-specified - note that each process instance scaling is reducing the model's degree of freedom by one."
+                              },
+                              "groups": {
+                                "type": "object",
+                                "description": "Group(s) to which this process instance belongs.",
+                                "properties": {
+                                  "memberOf": {
+                                    "description": "Refers to one user-definable group, to which this process instance belongs.",
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "@groupId": {
+                                            "type": "string",
+                                            "pattern": "^-?\\d+$",
+                                            "description": "Data set internal ID of the group."
+                                          }
+                                        },
+                                        "required": [
+                                          "@groupId"
+                                        ]
+                                      },
+                                      {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "@groupId": {
+                                              "type": "string",
+                                              "pattern": "^-?\\d+$",
+                                              "description": "Data set internal ID of the group."
+                                            }
+                                          },
+                                          "required": [
+                                            "@groupId"
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              "parameters": {
+                                "description": "Set of parameters of this process instance with parameter values (changed or unchanged from those in the underlying process data set).",
+                                "type": "object",
+                                "properties": {
+                                  "parameter": {
+                                    "description": "Value of the parameter.",
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "@name": {
+                                            "$ref": "tidas_data_types.json#/$defs/MatV",
+                                            "description": "Name of free parameter"
+                                          }
+                                        },
+                                        "required": [
+                                          "@name"
+                                        ]
+                                      },
+                                      {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "@name": {
+                                              "$ref": "tidas_data_types.json#/$defs/MatV",
+                                              "description": "Name of free parameter"
+                                            }
+                                          },
+                                          "required": [
+                                            "@name"
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              "connections": {
+                                "description": "Connection information among process instances, via connecting product or waste flow exchanges.",
+                                "type": "object",
+                                "properties": {
+                                  "outputExchange": {
+                                    "description": "Reference to process data set UUID of one of the connecting output product or waste flow exchanges of this process instance. I.e. which (flow) exchange on output side of this process instance is to be connected to another process instance's input product or waste (flow) exchange?",
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "@dominant": {
+                                            "type": "string",
+                                            "description": "If the connected exchanges are based on different flow data sets, one of these can be marked as dominant. Dominant means that in cases where the connection itself carries properties (e.g. a flow name that may be used in graphical model display), the properties of the dominant flow object are used.",
+                                            "enum": [
+                                              "true",
+                                              "false"
+                                            ]
+                                          },
+                                          "@flowUUID": {
+                                            "$ref": "tidas_data_types.json#/$defs/UUID",
+                                            "description": "UUID of the connected flow exchange in the input of the downstream process instance."
+                                          },
+                                          "downstreamProcess": {
+                                            "description": "Process instance that is connected downstream with this process instance, with its connected input product or waste (flow) exchange internal ID, the flow UUID and optionally the exchange's \"location\" (if any). Finally, the dominant flow exchange may be identified, where two different flow data sets are connected, in support e.g. of graphical model display.",
+                                            "anyOf": [
+                                              {
+                                                "type": "object",
+                                                "properties": {
+                                                  "@id": {
+                                                    "type": "string",
+                                                    "pattern": "^-?\\d+$",
+                                                    "description": "Internal ID of the process instance in this model which is to be connected to this output exchange."
+                                                  },
+                                                  "@flowUUID": {
+                                                    "$ref": "tidas_data_types.json#/$defs/UUID",
+                                                    "description": "UUID of the connected flow exchange in the input of the downstream process instance."
+                                                  },
+                                                  "@location": {
+                                                    "type": "string",
+                                                    "description": "Location, e.g. country code, of the connected flow exchange in downstream process, if any."
+                                                  },
+                                                  "@dominant": {
+                                                    "type": "string",
+                                                    "description": "If the connected exchanges are based on different flow data sets, one of these can be marked as dominant. Dominant means that in cases where the connection itself carries properties (e.g. a flow name that may be used in graphical model display), the properties of the dominant flow object are used.",
+                                                    "enum": [
+                                                      "true",
+                                                      "false"
+                                                    ]
+                                                  }
+                                                },
+                                                "required": [
+                                                  "@id",
+                                                  "@flowUUID"
+                                                ]
+                                              },
+                                              {
+                                                "type": "array",
+                                                "items": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "@id": {
+                                                      "type": "string",
+                                                      "pattern": "^-?\\d+$",
+                                                      "description": "Internal ID of the process instance in this model which is to be connected to this output exchange."
+                                                    },
+                                                    "@flowUUID": {
+                                                      "$ref": "tidas_data_types.json#/$defs/UUID",
+                                                      "description": "UUID of the connected flow exchange in the input of the downstream process instance."
+                                                    },
+                                                    "@location": {
+                                                      "type": "string",
+                                                      "description": "Location, e.g. country code, of the connected flow exchange in downstream process, if any."
+                                                    },
+                                                    "@dominant": {
+                                                      "type": "string",
+                                                      "description": "If the connected exchanges are based on different flow data sets, one of these can be marked as dominant. Dominant means that in cases where the connection itself carries properties (e.g. a flow name that may be used in graphical model display), the properties of the dominant flow object are used.",
+                                                      "enum": [
+                                                        "true",
+                                                        "false"
+                                                      ]
+                                                    }
+                                                  },
+                                                  "required": [
+                                                    "@id",
+                                                    "@flowUUID"
+                                                  ]
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "@flowUUID",
+                                          "downstreamProcess"
+                                        ]
+                                      },
+                                      {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "@dominant": {
+                                              "type": "string",
+                                              "description": "If the connected exchanges are based on different flow data sets, one of these can be marked as dominant. Dominant means that in cases where the connection itself carries properties (e.g. a flow name that may be used in graphical model display), the properties of the dominant flow object are used.",
+                                              "enum": [
+                                                "true",
+                                                "false"
+                                              ]
+                                            },
+                                            "@flowUUID": {
+                                              "$ref": "tidas_data_types.json#/$defs/UUID",
+                                              "description": "UUID of the connected flow exchange in the input of the downstream process instance."
+                                            },
+                                            "downstreamProcess": {
+                                              "description": "Process instance that is connected downstream with this process instance, with its connected input product or waste (flow) exchange internal ID, the flow UUID and optionally the exchange's \"location\" (if any). Finally, the dominant flow exchange may be identified, where two different flow data sets are connected, in support e.g. of graphical model display.",
+                                              "anyOf": [
+                                                {
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "@id": {
+                                                      "type": "string",
+                                                      "pattern": "^-?\\d+$",
+                                                      "description": "Internal ID of the process instance in this model which is to be connected to this output exchange."
+                                                    },
+                                                    "@flowUUID": {
+                                                      "$ref": "tidas_data_types.json#/$defs/UUID",
+                                                      "description": "UUID of the connected flow exchange in the input of the downstream process instance."
+                                                    },
+                                                    "@location": {
+                                                      "type": "string",
+                                                      "description": "Location, e.g. country code, of the connected flow exchange in downstream process, if any."
+                                                    },
+                                                    "@dominant": {
+                                                      "type": "string",
+                                                      "description": "If the connected exchanges are based on different flow data sets, one of these can be marked as dominant. Dominant means that in cases where the connection itself carries properties (e.g. a flow name that may be used in graphical model display), the properties of the dominant flow object are used.",
+                                                      "enum": [
+                                                        "true",
+                                                        "false"
+                                                      ]
+                                                    }
+                                                  },
+                                                  "required": [
+                                                    "@id",
+                                                    "@flowUUID"
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "array",
+                                                  "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "@id": {
+                                                        "type": "string",
+                                                        "pattern": "^-?\\d+$",
+                                                        "description": "Internal ID of the process instance in this model which is to be connected to this output exchange."
+                                                      },
+                                                      "@flowUUID": {
+                                                        "$ref": "tidas_data_types.json#/$defs/UUID",
+                                                        "description": "UUID of the connected flow exchange in the input of the downstream process instance."
+                                                      },
+                                                      "@location": {
+                                                        "type": "string",
+                                                        "description": "Location, e.g. country code, of the connected flow exchange in downstream process, if any."
+                                                      },
+                                                      "@dominant": {
+                                                        "type": "string",
+                                                        "description": "If the connected exchanges are based on different flow data sets, one of these can be marked as dominant. Dominant means that in cases where the connection itself carries properties (e.g. a flow name that may be used in graphical model display), the properties of the dominant flow object are used.",
+                                                        "enum": [
+                                                          "true",
+                                                          "false"
+                                                        ]
+                                                      }
+                                                    },
+                                                    "required": [
+                                                      "@id",
+                                                      "@flowUUID"
+                                                    ]
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "@flowUUID",
+                                            "downstreamProcess"
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              "common:other": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "@dataSetInternalID",
+                              "referenceToProcess",
+                              "@multiplicationFactor",
+                              "groups",
+                              "connections"
+                            ]
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "@dataSetInternalID": {
+                              "type": "string",
+                              "pattern": "^-?\\d+$"
+                            },
+                            "@multiplicationFactor": {
+                              "type": "string",
+                              "pattern": "^-?\\d+(\\.\\d+)?([eE][-+]?\\d+)?$",
+                              "description": "The multiplication factor corresponds to the amount of output product from the process instance that is needed over the full life cycle. In practice, the Life Cycle Inventory of a specific process instance shall be multiplied by the multiplication factor to calculate the exact amount needed over the full life cycle."
+                            },
+                            "referenceToProcess": {
+                              "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                              "description": "Reference to the process data set and (optional) identifying its version, that is included in the eILCD archive of the Life cycle model and/or accessible at a remote location, i.e. an URI or URL."
+                            },
+                            "scalingFactors": {
+                              "$ref": "tidas_data_types.json#/$defs/Real",
+                              "description": "A multiplicative scaling factor for the entire inventory of this process instance, used e.g. to scale the \"Reference process\" to the aimed-at amount of product (and thereby indirectly the entire inventory of the life cycle model). Note: Care is to be taken that models are not over- or under-specified - note that each process instance scaling is reducing the model's degree of freedom by one."
+                            },
+                            "groups": {
+                              "type": "object",
+                              "description": "Group(s) to which this process instance belongs.",
+                              "properties": {
+                                "memberOf": {
+                                  "description": "Refers to one user-definable group, to which this process instance belongs.",
+                                  "anyOf": [
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "@groupId": {
+                                          "type": "string",
+                                          "pattern": "^-?\\d+$",
+                                          "description": "Data set internal ID of the group."
+                                        }
+                                      },
+                                      "required": [
+                                        "@groupId"
+                                      ]
+                                    },
+                                    {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "@groupId": {
+                                            "type": "string",
+                                            "pattern": "^-?\\d+$",
+                                            "description": "Data set internal ID of the group."
+                                          }
+                                        },
+                                        "required": [
+                                          "@groupId"
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            "parameters": {
+                              "description": "Set of parameters of this process instance with parameter values (changed or unchanged from those in the underlying process data set).",
+                              "type": "object",
+                              "properties": {
+                                "parameter": {
+                                  "description": "Value of the parameter.",
+                                  "anyOf": [
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "@name": {
+                                          "type": "string",
+                                          "description": "Name of free parameter"
+                                        },
+                                        "parameter": {
+                                          "$ref": "tidas_data_types.json#/$defs/Real",
+                                          "description": "Value of the parameter."
+                                        }
+                                      },
+                                      "required": [
+                                        "@name"
+                                      ]
+                                    },
+                                    {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "@name": {
+                                            "type": "string",
+                                            "description": "Name of free parameter"
+                                          },
+                                          "parameter": {
+                                            "$ref": "tidas_data_types.json#/$defs/Real",
+                                            "description": "Value of the parameter."
+                                          }
+                                        },
+                                        "required": [
+                                          "@name"
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            "connections": {
+                              "description": "Connection information among process instances, via connecting product or waste flow exchanges.",
+                              "type": "object",
+                              "properties": {
+                                "outputExchange": {
+                                  "description": "Reference to process data set UUID of one of the connecting output product or waste flow exchanges of this process instance. I.e. which (flow) exchange on output side of this process instance is to be connected to another process instance's input product or waste (flow) exchange?",
+                                  "anyOf": [
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "@dominant": {
+                                          "type": "string",
+                                          "description": "If the connected exchanges are based on different flow data sets, one of these can be marked as dominant. Dominant means that in cases where the connection itself carries properties (e.g. a flow name that may be used in graphical model display), the properties of the dominant flow object are used.",
+                                          "enum": [
+                                            "true",
+                                            "false"
+                                          ]
+                                        },
+                                        "@flowUUID": {
+                                          "$ref": "tidas_data_types.json#/$defs/UUID",
+                                          "description": "UUID of the connected flow exchange in the input of the downstream process instance."
+                                        },
+                                        "downstreamProcess": {
+                                          "description": "Process instance that is connected downstream with this process instance, with its connected input product or waste (flow) exchange internal ID, the flow UUID and optionally the exchange's \"location\" (if any). Finally, the dominant flow exchange may be identified, where two different flow data sets are connected, in support e.g. of graphical model display.",
+                                          "anyOf": [
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "@id": {
+                                                  "type": "string",
+                                                  "pattern": "^-?\\d+$",
+                                                  "description": "Internal ID of the process instance in this model which is to be connected to this output exchange."
+                                                },
+                                                "@flowUUID": {
+                                                  "$ref": "tidas_data_types.json#/$defs/UUID",
+                                                  "description": "UUID of the connected flow exchange in the input of the downstream process instance."
+                                                },
+                                                "@location": {
+                                                  "type": "string",
+                                                  "description": "Location, e.g. country code, of the connected flow exchange in downstream process, if any."
+                                                },
+                                                "@dominant": {
+                                                  "type": "string",
+                                                  "description": "If the connected exchanges are based on different flow data sets, one of these can be marked as dominant. Dominant means that in cases where the connection itself carries properties (e.g. a flow name that may be used in graphical model display), the properties of the dominant flow object are used.",
+                                                  "enum": [
+                                                    "true",
+                                                    "false"
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "@id",
+                                                "@flowUUID"
+                                              ]
+                                            },
+                                            {
+                                              "type": "array",
+                                              "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "@id": {
+                                                    "type": "string",
+                                                    "pattern": "^-?\\d+$",
+                                                    "description": "Internal ID of the process instance in this model which is to be connected to this output exchange."
+                                                  },
+                                                  "@flowUUID": {
+                                                    "$ref": "tidas_data_types.json#/$defs/UUID",
+                                                    "description": "UUID of the connected flow exchange in the input of the downstream process instance."
+                                                  },
+                                                  "@location": {
+                                                    "type": "string",
+                                                    "description": "Location, e.g. country code, of the connected flow exchange in downstream process, if any."
+                                                  },
+                                                  "@dominant": {
+                                                    "type": "string",
+                                                    "description": "If the connected exchanges are based on different flow data sets, one of these can be marked as dominant. Dominant means that in cases where the connection itself carries properties (e.g. a flow name that may be used in graphical model display), the properties of the dominant flow object are used.",
+                                                    "enum": [
+                                                      "true",
+                                                      "false"
+                                                    ]
+                                                  }
+                                                },
+                                                "required": [
+                                                  "@id",
+                                                  "@flowUUID"
+                                                ]
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "@flowUUID",
+                                        "downstreamProcess"
+                                      ]
+                                    },
+                                    {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "@dominant": {
+                                            "type": "string",
+                                            "description": "If the connected exchanges are based on different flow data sets, one of these can be marked as dominant. Dominant means that in cases where the connection itself carries properties (e.g. a flow name that may be used in graphical model display), the properties of the dominant flow object are used.",
+                                            "enum": [
+                                              "true",
+                                              "false"
+                                            ]
+                                          },
+                                          "@flowUUID": {
+                                            "$ref": "tidas_data_types.json#/$defs/UUID",
+                                            "description": "UUID of the connected flow exchange in the input of the downstream process instance."
+                                          },
+                                          "downstreamProcess": {
+                                            "description": "Process instance that is connected downstream with this process instance, with its connected input product or waste (flow) exchange internal ID, the flow UUID and optionally the exchange's \"location\" (if any). Finally, the dominant flow exchange may be identified, where two different flow data sets are connected, in support e.g. of graphical model display.",
+                                            "anyOf": [
+                                              {
+                                                "type": "object",
+                                                "properties": {
+                                                  "@id": {
+                                                    "type": "string",
+                                                    "pattern": "^-?\\d+$",
+                                                    "description": "Internal ID of the process instance in this model which is to be connected to this output exchange."
+                                                  },
+                                                  "@flowUUID": {
+                                                    "$ref": "tidas_data_types.json#/$defs/UUID",
+                                                    "description": "UUID of the connected flow exchange in the input of the downstream process instance."
+                                                  },
+                                                  "@location": {
+                                                    "type": "string",
+                                                    "description": "Location, e.g. country code, of the connected flow exchange in downstream process, if any."
+                                                  },
+                                                  "@dominant": {
+                                                    "type": "string",
+                                                    "description": "If the connected exchanges are based on different flow data sets, one of these can be marked as dominant. Dominant means that in cases where the connection itself carries properties (e.g. a flow name that may be used in graphical model display), the properties of the dominant flow object are used.",
+                                                    "enum": [
+                                                      "true",
+                                                      "false"
+                                                    ]
+                                                  }
+                                                },
+                                                "required": [
+                                                  "@id",
+                                                  "@flowUUID"
+                                                ]
+                                              },
+                                              {
+                                                "type": "array",
+                                                "items": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "@id": {
+                                                      "type": "string",
+                                                      "pattern": "^-?\\d+$",
+                                                      "description": "Internal ID of the process instance in this model which is to be connected to this output exchange."
+                                                    },
+                                                    "@flowUUID": {
+                                                      "$ref": "tidas_data_types.json#/$defs/UUID",
+                                                      "description": "UUID of the connected flow exchange in the input of the downstream process instance."
+                                                    },
+                                                    "@location": {
+                                                      "type": "string",
+                                                      "description": "Location, e.g. country code, of the connected flow exchange in downstream process, if any."
+                                                    },
+                                                    "@dominant": {
+                                                      "type": "string",
+                                                      "description": "If the connected exchanges are based on different flow data sets, one of these can be marked as dominant. Dominant means that in cases where the connection itself carries properties (e.g. a flow name that may be used in graphical model display), the properties of the dominant flow object are used.",
+                                                      "enum": [
+                                                        "true",
+                                                        "false"
+                                                      ]
+                                                    }
+                                                  },
+                                                  "required": [
+                                                    "@id",
+                                                    "@flowUUID"
+                                                  ]
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "@flowUUID",
+                                          "downstreamProcess"
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            "common:other": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "@dataSetInternalID",
+                            "referenceToProcess",
+                            "@multiplicationFactor",
+                            "groups",
+                            "connections"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                },
+                "referenceToDiagram": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Source data set\" of the flow diagramm(s), and/or screenshot(s) of the life cycle model represented by this data set. For clearer illustration and documentation of the model. Note: The source data set references the actual picture as jpd or png file or as e.g. pdf file with several pictures."
+                },
+                "common:other": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "groupDeclarations",
+                "processes"
+              ]
             }
           },
           "required": [
-            "dataSetInformation"
+            "dataSetInformation",
+            "quantitativeReference",
+            "technology"
           ]
         },
         "modellingAndValidation": {
           "type": "object",
+          "description": "This section covers the following sub-sections: 1) \"Data sources, treatment and representativeness\", 2) \"Validation\", and 3) \"Compliance\".",
           "properties": {
+            "dataSourcesTreatmentEtc": {
+              "type": "object",
+              "description": "Data selection, completeness, and treatment principles and procedures, data sources and market coverage information.",
+              "properties": {
+                "useAdviceForDataSet": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "Specific methodological advice for data set users that requires attention. E.g. on inclusion/exclusion of whole life cycle stages, specific use phase behavior to be modelled, and other methodological advices."
+                },
+                "common:other": {
+                  "type": "string"
+                }
+              }
+            },
             "validation": {
-              "$ref": "#/definitions/validation"
+              "description": "Review / validation information on data set.",
+              "type": "object",
+              "properties": {
+                "review": {
+                  "description": "Review information on this life cycle model data set",
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "common:referenceToNameOfReviewerAndInstitution": {
+                          "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                          "description": "\"Contact data set\" of reviewer. The full name of reviewer(s) and institution(s) as well as a contact address and/or email should be provided in that contact data set."
+                        },
+                        "common:otherReviewDetails": {
+                          "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                          "description": "Further information from the review process, especially comments received from third parties once the data set has been published or additional reviewer comments from an additional external review."
+                        },
+                        "common:referenceToCompleteReviewReport": {
+                          "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                          "description": "\"Source data set\" of the complete review report."
+                        },
+                        "common:other": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "common:referenceToNameOfReviewerAndInstitution",
+                        "common:referenceToCompleteReviewReport"
+                      ]
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "common:referenceToNameOfReviewerAndInstitution": {
+                            "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                            "description": "\"Contact data set\" of reviewer. The full name of reviewer(s) and institution(s) as well as a contact address and/or email should be provided in that contact data set."
+                          },
+                          "common:otherReviewDetails": {
+                            "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                            "description": "Further information from the review process, especially comments received from third parties once the data set has been published or additional reviewer comments from an additional external review."
+                          },
+                          "common:referenceToCompleteReviewReport": {
+                            "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                            "description": "\"Source data set\" of the complete review report."
+                          },
+                          "common:other": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "common:referenceToNameOfReviewerAndInstitution",
+                          "common:referenceToCompleteReviewReport"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "common:other": {
+                  "type": "string"
+                }
+              }
             },
             "complianceDeclarations": {
-              "$ref": "#/definitions/complianceDeclarations"
+              "description": "One or more declarations of compliance to selected standards, schemes and other references, e.g. ISO 14040, ISO 14044, ILCD, EF, EN 15804, ...",
+              "type": "object",
+              "properties": {
+                "compliance": {
+                  "properties": {
+                    "common:referenceToComplianceSystem": {
+                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                      "description": "\"Source data set\" of the \"Compliance system\" that is declared to be met by the data set."
+                    },
+                    "common:approvalOfOverallCompliance": {
+                      "type": "string",
+                      "description": "Official approval whether or not and in how far the data set meets all the requirements of the \"Compliance system\" refered to. This approval should be issued/confirmed by the owner of that compliance system, who is identified via the respective \"Contact data set\".",
+                      "enum": [
+                        "Fully compliant",
+                        "Not compliant",
+                        "Not defined"
+                      ]
+                    },
+                    "common:nomenclatureCompliance": {
+                      "type": "string",
+                      "description": "Nomenclature compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                      "enum": [
+                        "Fully compliant",
+                        "Not compliant",
+                        "Not defined"
+                      ]
+                    },
+                    "common:methodologicalCompliance": {
+                      "type": "string",
+                      "description": "Methodological compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                      "enum": [
+                        "Fully compliant",
+                        "Not compliant",
+                        "Not defined"
+                      ]
+                    },
+                    "common:reviewCompliance": {
+                      "type": "string",
+                      "description": "Review/Verification compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                      "enum": [
+                        "Fully compliant",
+                        "Not compliant",
+                        "Not defined"
+                      ]
+                    },
+                    "common:documentationCompliance": {
+                      "type": "string",
+                      "description": "Documentation/Reporting compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                      "enum": [
+                        "Fully compliant",
+                        "Not compliant",
+                        "Not defined"
+                      ]
+                    },
+                    "common:qualityCompliance": {
+                      "type": "string",
+                      "description": "Quality compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                      "enum": [
+                        "Fully compliant",
+                        "Not compliant",
+                        "Not defined"
+                      ]
+                    },
+                    "common:other": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "common:referenceToComplianceSystem",
+                    "common:approvalOfOverallCompliance",
+                    "common:nomenclatureCompliance",
+                    "common:methodologicalCompliance",
+                    "common:reviewCompliance",
+                    "common:documentationCompliance",
+                    "common:qualityCompliance"
+                  ]
+                },
+                "common:other": {
+                  "type": "string"
+                }
+              }
+            },
+            "common:other": {
+              "type": "string"
             }
           }
         },
         "administrativeInformation": {
           "type": "object",
+          "description": "Information required for data set management and administration.",
           "properties": {
             "common:commissionerAndGoal": {
-              "$ref": "#/definitions/commissionerAndGoal"
+              "description": "Extract of the information items linked to goal and scope of LCIA method modeling.",
+              "type": "object",
+              "properties": {
+                "common:referenceToCommissioner": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Contact data set\" of the commissioner / financing party of the data collection / compilation and of the data set modelling. For groups of commissioners, each single organisation should be named. For data set updates and for direct use of data from formerly commissioned studies, also the original commissioner should be named."
+                },
+                "common:project": {
+                  "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                  "description": "Project within which the data set was modelled in its present version. [Note: If the project was published e.g. as a report, this can be referenced in the \"Publication of data set in:\" field in the \"Publication and ownership\" sub-section."
+                },
+                "common:intendedApplications": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "Documentation of the intended application(s) of data collection and data set modelling. This indicates / includes information on the level of detail, the specifidity, and the quality ambition in the effort."
+                },
+                "common:other": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "common:referenceToCommissioner",
+                "common:intendedApplications"
+              ]
             },
             "dataGenerator": {
-              "$ref": "#/definitions/dataGenerator"
+              "description": "\"Contact data set\" of the person(s), working group(s), organisation(s) or database network, that generated the data set, i.e. being technically responsible for its correctness regarding methods, inventory, and documentative information.",
+              "type": "object",
+              "properties": {
+                "common:referenceToPersonOrEntityGeneratingTheDataSet": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Contact data set\" of the person(s), working group(s), organisation(s) or database network, that generated the data set, i.e. being responsible for its correctness regarding methods, inventory, and documentative information."
+                },
+                "common:other": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "common:referenceToPersonOrEntityGeneratingTheDataSet"
+              ]
             },
             "dataEntryBy": {
-              "$ref": "#/definitions/dataEntryBy"
+              "description": "\"Contact data set\" of the responsible person or entity that has documented this data set, i.e. entered the data and the descriptive information.",
+              "type": "object",
+              "properties": {
+                "common:timeStamp": {
+                  "$ref": "tidas_data_types.json#/$defs/dateTime",
+                  "description": "Date and time stamp of data set generation, typically an automated entry (\"last saved\")."
+                },
+                "common:referenceToDataSetFormat": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Source data set\" of the used version of the ILCD format. If additional data format fields have been integrated into the data set file, using the \"namespace\" option, the used format namespace(s) are to be given. This is the case if the data sets carries additional information as specified by other, particular LCA formats, e.g. of other database networks or LCA softwares."
+                },
+                "common:referenceToPersonOrEntityEnteringTheData": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Contact data set\" of the responsible person or entity that has documented this data set, i.e. entered the data and the descriptive information."
+                },
+                "common:other": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "common:referenceToPersonOrEntityEnteringTheDataSet",
+                "common:timeStamp"
+              ]
             },
             "publicationAndOwnership": {
-              "$ref": "#/definitions/publicationAndOwnership"
+              "description": "Information related to publication and version management of the data set including copyright and access restrictions.",
+              "type": "object",
+              "properties": {
+                "common:dataSetVersion": {
+                  "type": "string",
+                  "description": "Version number of data set. First two digits refer to major updates, the second two digits to minor revisions and error corrections etc. The third three digits are intended for automatic and internal counting of versions during data set development. Together with the data set's UUID, the \"Data set version\" uniquely identifies each data set."
+                },
+                "common:referenceToPrecedingDataSetVersion": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "Last preceding data set, which was replaced by this version. Either a URI of that data set (i.e. an internet address) or its UUID plus version number is given (or both)."
+                },
+                "common:permanentDataSetURI": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "URI (i.e. an internet address) of the original of this data set. [Note: This equally globally unique identifier supports users and software tools to identify and retrieve the original version of a data set via the internet or to check for available updates. The URI must not represent an existing WWW address, but it should be unique and point to the data access point, e.g. by combining the data owner's www path with the data set's UUID, e.g. http://www.mycompany.com/lca/processes/50f12420-8855-12db-b606-0900210c9a66.]"
+                },
+                "common:referenceToOwnershipOfDataSet": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "Quality compliance of this data set with the respective requirements set by the \"compliance system\" refered to."
+                },
+                "common:copyright": {
+                  "type": "string",
+                  "description": "Indicates whether or not a copyright on the data set exists. Decided upon by the \"Owner of data set\". [Note: See also field \"Access and use restrictions\".]",
+                  "enum": [
+                    "true",
+                    "false"
+                  ]
+                },
+                "referenceToEntitiesWithExclusiveAccess": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Contact data set\" of those entities or persons (or groups of these), to which an exclusive access to this data set is granted. Mainly intended to be used in confidentiality management in projects. [Note: See also field \"Access and use restrictions\".]"
+                },
+                "common:licenseType": {
+                  "description": "Type of license that applies to the access and use of this data set.",
+                  "type": "string",
+                  "enum": [
+                    "Free of charge for all users and uses",
+                    "Free of charge for some user types or use types",
+                    "Free of charge for members only",
+                    "License fee",
+                    "Other"
+                  ]
+                },
+                "common:accessRestrictions": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "Access restrictions / use conditions for this data set as free text or referring to e.g. license conditions. In case of no restrictions \"None\" is entered."
+                },
+                "common:other": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "common:dataSetVersion",
+                "common:permanentDataSetURI",
+                "common:referenceToOwnershipOfDataSet",
+                "common:copyright",
+                "common:licenseType",
+                "common:accessRestrictions"
+              ]
+            },
+            "common:other": {
+              "type": "string"
             }
           }
+        },
+        "common:other": {
+          "type": "string"
         }
       },
       "required": [
         "@xmlns",
-        "@version"
+        "@xmlns:acme",
+        "@xmlns:common",
+        "@xmlns:xsi",
+        "@locations",
+        "@version",
+        "@xsi:schemaLocation",
+        "lifeCycleModelInformation",
+        "modellingAndValidation",
+        "administrativeInformation"
       ]
     }
   },
-  "definitions": {
-    "dataSetInformation": {
-      "type": "object",
-      "properties": {
-        "common:UUID": {
-          "type": "string"
-        },
-        "name": {
-          "$ref": "#/definitions/name"
-        },
-        "classificationInformation": {
-          "$ref": "#/definitions/classificationInformation"
-        },
-        "referenceToResultingProcess": {
-          "type": "object"
-        },
-        "referenceToExternalDocumentation": {
-          "type": "object",
-          "properties": {
-            "@refObjectId": {
-              "type": "string"
-            },
-            "@type": {
-              "type": "string"
-            },
-            "@uri": {
-              "type": "string"
-            },
-            "common:shortDescription": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "required": [
-        "common:UUID",
-        "name"
-      ]
-    },
-    "quantitativeReference": {
-      "type": "object",
-      "properties": {
-        "referenceToReferenceProcess": {
-          "type": "integer"
-        }
-      }
-    },
-    "technology": {
-      "type": "object",
-      "properties": {
-        "processes": {
-          "type": "object",
-          "properties": {
-            "processInstance": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/processInstance"
-              }
-            }
-          }
-        },
-        "referenceToDiagram": {
-          "type": "object"
-        }
-      }
-    },
-    "processInstance": {
-      "type": "object",
-      "properties": {
-        "@dataSetInternalID": {
-          "type": "integer"
-        },
-        "scalingFactor": {
-          "type": "number"
-        },
-        "referenceToProcess": {
-          "type": "object",
-          "properties": {
-            "@refObjectId": {
-              "type": "string"
-            },
-            "@type": {
-              "type": "string"
-            },
-            "@uri": {
-              "type": "string"
-            },
-            "@version": {
-              "type": "string"
-            },
-            "common:shortDescription": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "#text": {
-                    "type": "string"
-                  },
-                  "@xml:lang": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "required": [
-        "@dataSetInternalID",
-        "referenceToProcess"
-      ]
-    },
-    "name": {
-      "type": "object",
-      "properties": {
-        "baseName": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "#text": {
-                "type": "string"
-              },
-              "@xml:lang": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "treatmentStandardsRoutes": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "#text": {
-                "type": "string"
-              },
-              "@xml:lang": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "mixAndLocationTypes": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "#text": {
-                "type": "string"
-              },
-              "@xml:lang": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      },
-      "required": [
-        "baseName"
-      ]
-    }
-  }
+  "required": [
+    "lifeCycleModelDataSet"
+  ]
 }

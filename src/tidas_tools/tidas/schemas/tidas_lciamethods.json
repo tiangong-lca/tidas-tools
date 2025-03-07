@@ -6,19 +6,24 @@
       "type": "object",
       "properties": {
         "@xmlns": {
-          "type": "string"
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/LCIAMethod"
         },
         "@xmlns:common": {
-          "type": "string"
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/Common"
         },
         "@xmlns:xsi": {
-          "type": "string"
+          "type": "string",
+          "const": "http://www.w3.org/2001/XMLSchema-instance"
         },
         "@version": {
-          "type": "string"
+          "type": "string",
+          "const": "1.1"
         },
         "@xsi:schemaLocation": {
-          "type": "string"
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/LCIAMethod ../../schemas/ILCD_LCIAMethodDataSet.xsd"
         },
         "LCIAMethodInformation": {
           "type": "object",
@@ -27,205 +32,1029 @@
               "type": "object",
               "properties": {
                 "common:UUID": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/UUID",
+                  "description": "Unique identifier of the data set. The UUID is a 128-bit number represented as a hexadecimal string of the form: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx. The UUID is used to uniquely identify the data set in the ILCD database."
                 },
                 "common:name": {
-                  "type": "object",
-                  "properties": {
-                    "@xml:lang": {
-                      "type": "string"
-                    },
-                    "#text": {
-                      "type": "string"
-                    }
-                  }
+                  "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                  "description": "Name of the data set. Composed as follows \"LCIA methodology short name; Impact category/ies; midpoint/endpoint; Impact indicator; Source short name\". Not applicable components are left out. Examples: \"Impacts2007+; Climate change; midpoint; Global Warming Potential; IPCC 2001\"; \"ABC 2006; Acidification; endpoint; Species diversity loss; John Doe 2006\"; \"My-indicator2009; combined; endpoint; Ecopoints; various\""
                 },
                 "methodology": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Name of the LCIA methodology/ies the data set belongs to, if any"
                 },
-                "impactCategory": {
-                  "type": "string"
-                },
-                "impactIndicator": {
-                  "type": "string"
-                },
-                "common:generalComment": {
+                "classificationInformation": {
                   "type": "object",
                   "properties": {
-                    "@xml:lang": {
-                      "type": "string"
-                    },
-                    "#text": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "referenceToExternalDocumentation": {
-                  "type": "object",
-                  "properties": {
-                    "@refObjectId": {
-                      "type": "string"
-                    },
-                    "@type": {
-                      "type": "string"
-                    },
-                    "@uri": {
-                      "type": "string"
-                    },
-                    "common:shortDescription": {
+                    "common:classification": {
                       "type": "object",
+                      "description": "Optional statistical or other classification of the data set. Typically also used for structuring LCA databases.",
                       "properties": {
-                        "@xml:lang": {
+                        "common:class": {
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "@level": {
+                                      "$ref": "tidas_data_types.json#/$defs/Int1",
+                                      "const": "0"
+                                    },
+                                    "@classId": {
+                                      "type": "string"
+                                    },
+                                    "#text": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "@level",
+                                    "@classId",
+                                    "#text"
+                                  ],
+                                  "dependencies": {
+                                    "@level": {
+                                      "$ref": "./tidas_classification_category.json#/$defs/LCIAMethod"
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "@level": {
+                                      "$ref": "tidas_data_types.json#/$defs/Int1",
+                                      "const": "1"
+                                    },
+                                    "@classId": {
+                                      "type": "string"
+                                    },
+                                    "#text": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "@level",
+                                    "@classId",
+                                    "#text"
+                                  ],
+                                  "dependencies": {
+                                    "@level": {
+                                      "$ref": "./tidas_classification_category.json#/$defs/LCIAMethod"
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "@level": {
+                                      "$ref": "tidas_data_types.json#/$defs/Int1",
+                                      "const": "2"
+                                    },
+                                    "@classId": {
+                                      "type": "string"
+                                    },
+                                    "#text": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "@level",
+                                    "@classId",
+                                    "#text"
+                                  ],
+                                  "dependencies": {
+                                    "@level": {
+                                      "$ref": "./tidas_classification_category.json#/$defs/LCIAMethod"
+                                    }
+                                  }
+                                }
+                              ],
+                              "uniqueItems": true,
+                              "allOf": [
+                                {
+                                  "maxContains": 1,
+                                  "minContains": 0,
+                                  "contains": {
+                                    "properties": {
+                                      "@level": {
+                                        "const": "0"
+                                      }
+                                    }
+                                  }
+                                },
+                                {
+                                  "maxContains": 1,
+                                  "minContains": 0,
+                                  "contains": {
+                                    "properties": {
+                                      "@level": {
+                                        "const": "1"
+                                      }
+                                    }
+                                  }
+                                },
+                                {
+                                  "maxContains": 1,
+                                  "minContains": 0,
+                                  "contains": {
+                                    "properties": {
+                                      "@level": {
+                                        "const": "2"
+                                      }
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "common:other": {
                           "type": "string"
                         }
-                      }
+                      },
+                      "required": [
+                        "common:class"
+                      ]
                     }
-                  }
+                  },
+                  "required": [
+                    "common:classification"
+                  ]
+                },
+                "impactCategory": {
+                  "type": "string",
+                  "description": "Impact category/ies covered by the LCIA method or methodology.",
+                  "enum": [
+                    "Climate change",
+                    "Ozone depletion",
+                    "Terrestrial Eutrophication",
+                    "Aquatic Eutrophication",
+                    "Acidification",
+                    "Photochemical ozone creation",
+                    "Land use",
+                    "Abiotic resource depletion",
+                    "Biotic resource depletion",
+                    "Ionizing radiation",
+                    "Cancer human health effects",
+                    "Non-cancer human health effects",
+                    "Respiratory inorganics",
+                    "Aquatic eco-toxicity",
+                    "Terrestrial eco-toxicity",
+                    "other"
+                  ]
+                },
+                "areaOfProtection": {
+                  "type": "string",
+                  "description": "For damage (endpoint) and single-point indicators only: Area(s) of Protection the data set relates to.",
+                  "enum": [
+                    "Natural resources",
+                    "Natural environment",
+                    "Human health",
+                    "Other"
+                  ]
+                },
+                "impactIndicator": {
+                  "$ref": "tidas_data_types.json#/$defs/String",
+                  "description": "Description of the meaning of the impact indicator of this data set (not applicable for LCIA methodologies data sets)."
+                },
+                "common:generalComment": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "General information about the data set, including e.g. general (internal, not reviewed) quality statements as well as information sources used. (Note: Please also check the more specific fields e.g. on \"Intended application\", \"Advice on data set use\" and the fields in the \"Modelling and validation\" section to avoid overlapping entries.)"
+                },
+                "referenceToExternalDocumentation": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Source data set(s)\" of external documents / files with further documentative information on the data set including on underlying data sources (e.g. time, geographical coverage, impact models, characterisation factors, substance property databases employed, etc.). (Note: can indirectly reference to digital file.)"
+                },
+                "common:other": {
+                  "type": "string"
                 }
               },
               "required": [
                 "common:UUID",
                 "common:name",
-                "methodology",
-                "impactCategory",
-                "impactIndicator"
+                "classification"
               ]
             },
             "quantitativeReference": {
+              "description": "This section allows to refer to the LCIA method(ology)'s quantitative reference, which is always the unit, in which the characterisation factors of the impact indicator are measured, e.g. \"kg CO2-Equivalents\".",
               "type": "object",
               "properties": {
                 "referenceQuantity": {
-                  "type": "object",
-                  "properties": {
-                    "@refObjectId": {
-                      "type": "string"
-                    },
-                    "@type": {
-                      "type": "string"
-                    },
-                    "@uri": {
-                      "type": "string"
-                    },
-                    "common:shortDescription": {
-                      "type": "object",
-                      "properties": {
-                        "@xml:lang": {
-                          "type": "string"
-                        },
-                        "#text": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Flow property data set\" of the reference quantity (flow property), in which the impact indicator values are measured."
+                },
+                "common:other": {
+                  "type": "string"
                 }
-              }
+              },
+              "required": [
+                "referenceQuantity"
+              ]
             },
             "time": {
               "type": "object",
               "properties": {
                 "referenceYear": {
-                  "type": "object",
-                  "properties": {
-                    "@xml:lang": {
-                      "type": "string"
-                    },
-                    "#text": {
-                      "type": "string"
-                    }
-                  }
+                  "$ref": "tidas_data_types.json#/$defs/STMultiLang",
+                  "description": "Reference year when the emission is assumed to take place, i.e. the start year of the time period for which the impact is modelled. For time-independent models \"time independent\" should be stated."
                 },
                 "duration": {
-                  "type": "object",
-                  "properties": {
-                    "@xml:lang": {
-                      "type": "string"
-                    },
-                    "#text": {
-                      "type": "string"
-                    }
-                  }
+                  "$ref": "tidas_data_types.json#/$defs/STMultiLang",
+                  "description": "Time period for which the impact is modelled."
+                },
+                "timeRepresentativenessDescription": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "Description of the valid time span of the data set including information on limited usability within sub-time spans, if any."
+                },
+                "common:other": {
+                  "type": "string"
                 }
-              }
+              },
+              "required": [
+                "referenceYear",
+                "duration",
+                "timeRepresentativenessDescription"
+              ]
             },
             "geography": {
               "type": "object",
               "properties": {
                 "interventionLocation": {
-                  "type": "string"
-                },
-                "impactLocation": {
-                  "type": "string"
-                },
-                "geographicalRepresentativenessDescription": {
-                  "type": "object",
-                  "properties": {
-                    "@xml:lang": {
-                      "type": "string"
+                  "description": "Specific, country, or region of the elementary flows' / exchanges' occurence for which the LCIA method(ology) is valid / modelled. [Note: Entry can be of type \"two-letter ISO 3166 country code\" for countries, \"seven-letter regional codes\" for regions or continents, or \"market areas and market organisations\", as predefined for the ILCD. Also a name for e.g. a specific plant etc. can be given here (e.g. \"FR, Lyon, XY Company, Z Site\"; user defined). ]",
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "#text": {
+                          "type": "string"
+                        },
+                        "@latitudeAndLongitude": {
+                          "$ref": "tidas_data_types.json#/$defs/GIS",
+                          "description": "Geographical latitude and longitude reference of \"Location\" / \"Sub-location\". For area-type locations (e.g. countries, continents) the field is empty."
+                        }
+                      }
                     },
-                    "#text": {
+                    {
                       "type": "string"
                     }
-                  }
+                  ]
+                },
+                "intervensionSubLocation": {
+                  "description": "Geographical sub-unit(s) of \"Intervention location(s)\" that further specify the specifically modelled sub-locations. Such sub-locations can be e.g. sites of a company, specific catchments modleled, countries of a continent, or locations in a country. Information on limited representativeness should be provided if applicable.",
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "#text": {
+                          "type": "string"
+                        },
+                        "@latitudeAndLongitude": {
+                          "$ref": "tidas_data_types.json#/$defs/GIS",
+                          "description": "Geographical latitude and longitude reference of \"Location\" / \"Sub-location\". For area-type locations (e.g. countries, continents) the field is empty."
+                        }
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "impactLocation": {
+                  "description": "Location or region where the impact is modelled to take place. [Note: Entry can be of type \"two-letter ISO 3166 country code\" for countries, \"seven-letter regional codes\" for regions or continents, or \"market areas and market organisations\", as predefined for the ILCD. Also a name for e.g. a specific catchment etc. can be given here, user defined).]",
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "#text": {
+                          "type": "string"
+                        },
+                        "@latitudeAndLongitude": {
+                          "$ref": "tidas_data_types.json#/$defs/GIS",
+                          "description": "Geographical latitude and longitude reference of \"Location\" / \"Sub-location\". For area-type locations (e.g. countries, continents) the field is empty."
+                        }
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "geographicalRepresentativenessDescription": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "Further explanation on additional aspects of the location, both regarding the intervention and the impact: whether certain areas are exempted from the location, whether data is only valid for certain sub-locations within the location indicated, or whether impact indicator values for certain elementary flows are extrapolated from another geographical area than indicated. Information on the use of generic intervention and/or impact locations, and other restrictions."
+                }
+              }
+            },
+            "impactModel": {
+              "description": "Provides information about the general representativiness of the data set and about its composition of single LCIA-methods.",
+              "type": "object",
+              "properties": {
+                "modelName": {
+                  "$ref": "tidas_data_types.json#/$defs/ST",
+                  "description": "Name(s) of the model(s) used for calculating the LCIA impact indicator values (if any)"
+                },
+                "modelDescription": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "Description of the model used for calculating the LCIA impact indicator values, including underlying substance property data sources, background concentrations, etc. If an LCIA methodology comprises several LCIA methods, these are explicitly included in the description. Professional nomenclature is used for the description. Note that eventually included Normalisation and Weighting factors are described in the dedicated separate fields."
+                },
+                "referenceToModelSource": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Source data set(s)\" of data sources concerning the characterisation model (guidelines, supporting documentation etc)"
+                },
+                "referenceToIncludedMethods": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"LCIA method data set(s)\" of LCIA characterisation methods included in this data set or used to derive this LCIA methodology"
+                },
+                "consideredMechanisms": {
+                  "$ref": "tidas_data_types.json#/$defs/STMultiLang",
+                  "description": "Description of the environmental or other mechanisms included in the explicitly considered part of the impact chain. Can relate to (ilustrative): For emissions e.g.: transport, conversion / degradation, exposure, effect(s), damage(s) on humans and the natural environment. For material and energy resources: scarcity or other impact concept. For land use: soil, area, biocoenosis related meachanisms, effect(s), damage(s)."
+                },
+                "referenceToMethodologyFlowChart": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Source data set(s)\" of flowchart(s) and/or pictures depicting the LCIA method(ology)."
                 }
               }
             }
-          }
+          },
+          "required": [
+            "dataSetInformation",
+            "geography"
+          ]
         },
         "modellingAndValidation": {
+          "description": "Covers the five sub-sections 1) LCIA method, normalisation, weighting 2) Data sources 3) Completeness, 4) Validation, and 5) Compliance declarations.",
           "type": "object",
           "properties": {
             "useAdviceForDataSet": {
-              "type": "object",
-              "properties": {
-                "@xml:lang": {
-                  "type": "string"
-                },
-                "#text": {
-                  "type": "string"
-                }
-              }
+              "$ref": "tidas_data_types.json#/$defs/STMultiLang",
+              "description": "Methodological advice for the use and application of this data set, such as limits in applicability or representativeness as well as recommendations to use it together with others from the same LCIA methodology to ensure consistency."
             },
             "LCIAMethodNormalisationAndWeighting": {
+              "description": "LCIA methodological modelling aspects",
               "type": "object",
               "properties": {
                 "typeOfDataSet": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Type of data set regarding the extent of the impact chain that is covered.",
+                  "enum": [
+                    "Inventory indicator",
+                    "Mid-point indicator",
+                    "Damage indicator",
+                    "Area of Protection damage indicator",
+                    "Combined single-point indicator",
+                    "LCIA methodology documentation"
+                  ]
                 },
                 "LCIAMethodPrinciple": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "LCIA method principle(s) followed to derive the impact factors.",
+                  "enum": [
+                    "Distance-to-target",
+                    "Critical surface-time",
+                    "Effective volumes",
+                    "AoP-Damage model",
+                    "Carrying capacity",
+                    "Resource dissipation",
+                    "other"
+                  ]
                 },
                 "deviationsFromLCIAMethodPrinciple": {
-                  "type": "object",
-                  "properties": {
-                    "@xml:lang": {
-                      "type": "string"
-                    },
-                    "#text": {
-                      "type": "string"
-                    }
-                  }
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "Short description of possible data set specific deviations from \"LCIA method principle(s)\". Refers especially to explanations on the combination of LCIA methods with different principles in a single LCIA methodology."
                 },
                 "normalisation": {
-                  "type": "boolean"
+                  "type": "string",
+                  "description": "Indication whether or not a normalisation step was included in the resulting impact factors.",
+                  "enum": [
+                    "true",
+                    "false"
+                  ]
+                },
+                "referenceToUsableNormalisationDataSets": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Normalisation data sets\" that can be used together with the impact factors of this data set."
+                },
+                "normalisationDescription": {
+                  "$ref": "tidas_data_types.json#/$defs/STMultiLang",
+                  "description": "Short description of the included normalisation, if any."
+                },
+                "referenceToIncludedNormalisationDataSets": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Normalisation data set(s)\" that was/were used to calculate the normalised impact factors of this data set, if any."
                 },
                 "weighting": {
-                  "type": "boolean"
+                  "type": "string",
+                  "description": "Indication whether or not a weighting-step was included in the resulting impact factors.",
+                  "enum": [
+                    "true",
+                    "false"
+                  ]
+                },
+                "referenceToUsableWeightingDataSets": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Weighting data set(s)\", that can be used together with the impact factors of this data set."
+                },
+                "weightingDescription": {
+                  "$ref": "tidas_data_types.json#/$defs/STMultiLang",
+                  "description": "Short description of the included weighting, if any."
+                },
+                "referenceToIncludedWeightingDataSets": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Weighting data set\" that was used to calculate the weighted impact factors of this data set, if any."
                 }
-              }
+              },
+              "required": [
+                "typeOfDataSet",
+                "LCIAMethodPrinciple"
+              ]
             },
             "dataSources": {
-              "type": "null"
+              "description": "Data sources used for the model and the underlying substance and other data.",
+              "type": "object",
+              "properties": {
+                "referenceToDataSource": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Source data set(s)\" of the data source(s) used for the data set e.g. paper, questionnaire, monography etc. The main data sources e.g. for underlying substance properties are named, too."
+                }
+              },
+              "required": [
+                "referenceToDataSource"
+              ]
             },
             "completeness": {
               "type": "object",
               "properties": {
+                "completenessImpactCoverage": {
+                  "$ref": "tidas_data_types.json#/$defs/Perc",
+                  "description": "Estimate of the completeness of coverage of impact(s), as identified in the fields \"Impact category/ies\" or - only for LCIA methodologies with Damage indicator or Combined single-point indicators - \"Area(s) of Protection\". Expressed by the quantitative extent of coverage of the scientifically recognized, impact. Note that this information is typically highly uncertain."
+                },
                 "inventoryItems": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/Int6",
+                  "description": "Number of chemical substances/substance groups, chemical elements, or types covered, without considering variants by environmental emission or source compartment, geographical location, time, or other."
                 }
               }
+            },
+            "validation": {
+              "description": "Review information on LCIA method.",
+              "type": "object",
+              "properties": {
+                "review": {
+                  "description": "Type of review that has been performed regarding independency and type of review process.",
+                  "type": "object",
+                  "properties": {
+                    "@type": {
+                      "type": "string",
+                      "enum": [
+                        "Dependent internal review",
+                        "Independent internal review",
+                        "Independent external review",
+                        "Accredited third party review",
+                        "Independent review panel",
+                        "Not reviewed"
+                      ]
+                    },
+                    "scope": {
+                      "description": "Scope of review regarding which aspects and components of the data set was reviewed or verified. In case of aggregated e.g. LCI results also and on which level of detail (e.g. LCI results only, included unit processes, ...) the review / verification was performed.",
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "@name": {
+                              "type": "string",
+                              "enum": [
+                                "Raw data",
+                                "Unit process(es), single operation",
+                                "Unit process(es), black box",
+                                "LCI results or Partly terminated system",
+                                "LCIA results",
+                                "Documentation",
+                                "Life cycle inventory methods",
+                                "LCIA results calculation",
+                                "Goal and scope definition"
+                              ]
+                            },
+                            "method": {
+                              "type": "object",
+                              "properties": {
+                                "@name": {
+                                  "description": "Validation method(s) used in the respective \"Scope of review\".",
+                                  "type": "string",
+                                  "enum": [
+                                    "Validation of data sources",
+                                    "Sample tests on calculations",
+                                    "Energy balance",
+                                    "Element balance",
+                                    "Cross-check with other source",
+                                    "Cross-check with other data set",
+                                    "Expert judgement",
+                                    "Mass balance",
+                                    "Compliance with legal limitsRegulated Inputs and Outputs e.g. emission data are validated for compliance with legal limits, typically after relating and scaling the data to the regulated processes/sites etc.",
+                                    "Compliance with ISO 14040 to 14044",
+                                    "Documentation",
+                                    "Evidence collection by means of plant visits and/or interviews"
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "@name": {
+                                "type": "string",
+                                "enum": [
+                                  "Raw data",
+                                  "Unit process(es), single operation",
+                                  "Unit process(es), black box",
+                                  "LCI results or Partly terminated system",
+                                  "LCIA results",
+                                  "Documentation",
+                                  "Life cycle inventory methods",
+                                  "LCIA results calculation",
+                                  "Goal and scope definition"
+                                ]
+                              },
+                              "method": {
+                                "type": "object",
+                                "properties": {
+                                  "@name": {
+                                    "description": "Validation method(s) used in the respective \"Scope of review\".",
+                                    "type": "string",
+                                    "enum": [
+                                      "Validation of data sources",
+                                      "Sample tests on calculations",
+                                      "Energy balance",
+                                      "Element balance",
+                                      "Cross-check with other source",
+                                      "Cross-check with other data set",
+                                      "Expert judgement",
+                                      "Mass balance",
+                                      "Compliance with legal limitsRegulated Inputs and Outputs e.g. emission data are validated for compliance with legal limits, typically after relating and scaling the data to the regulated processes/sites etc.",
+                                      "Compliance with ISO 14040 to 14044",
+                                      "Documentation",
+                                      "Evidence collection by means of plant visits and/or interviews"
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "common:reviewDetails": {
+                      "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                      "description": "Summary of the review. All the following items should be explicitly addressed: completeness and appropriateness of the model, geographical and temporal coverage and differentiation, correctness and precision of substance data or other underlying data; appropriateness and coherence of application of normalisation and/or weighting schemes, if included; correctness, appropriateness, comprehensibility, and completeness of the data set documentation; stakeholder aceptance of LCIA method. Optional: Comment of the reviewer on characterisation factors for single elementary flows or groups of elementary flows. Relevant restrictions to the review due to lack of transparency or documentation should be named. An overall quality statement may be included here."
+                    },
+                    "common:referenceToNameOfReviewerAndInstitution": {
+                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                      "description": "\"Contact data set\" of reviewer. The full name of reviewer(s) and institution(s) as well as a contact address and/or email should be provided in that contact data set."
+                    },
+                    "common:otherReviewDetails": {
+                      "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                      "description": "Further information from the review process, especially comments received from third parties once the data set has been published or additional reviewer comments from an additional external review."
+                    },
+                    "common:referenceToCompleteReviewReport": {
+                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                      "description": "\"Source data set\" of the complete review report."
+                    }
+                  },
+                  "required": [
+                    "@type",
+                    "scope"
+                  ]
+                }
+              },
+              "required": [
+                "review"
+              ]
+            },
+            "complianceDeclarations": {
+              "description": "Statements on compliance of several data set aspects with compliance requirements as defined by the referenced compliance system (e.g. an EPD scheme, handbook of a national or international data network such as the ILCD, etc.).",
+              "type": "object",
+              "properties": {
+                "compliance": {
+                  "type": "object",
+                  "properties": {
+                    "common:referenceToComplianceSystem": {
+                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                      "description": "\"Source data set\" of the \"Compliance system\" that is declared to be met by the data set."
+                    },
+                    "common:approvalOfOverallCompliance": {
+                      "type": "string",
+                      "description": "Official approval whether or not and in how far the data set meets all the requirements of the \"Compliance system\" refered to. This approval should be issued/confirmed by the owner of that compliance system, who is identified via the respective \"Contact data set\".",
+                      "enum": [
+                        "Fully compliant",
+                        "Not compliant",
+                        "Not defined"
+                      ]
+                    },
+                    "common:nomenclatureCompliance": {
+                      "type": "string",
+                      "description": "Nomenclature compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                      "enum": [
+                        "Fully compliant",
+                        "Not compliant",
+                        "Not defined"
+                      ]
+                    },
+                    "common:methodologicalCompliance": {
+                      "type": "string",
+                      "description": "Methodological compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                      "enum": [
+                        "Fully compliant",
+                        "Not compliant",
+                        "Not defined"
+                      ]
+                    },
+                    "common:reviewCompliance": {
+                      "type": "string",
+                      "description": "Review/Verification compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                      "enum": [
+                        "Fully compliant",
+                        "Not compliant",
+                        "Not defined"
+                      ]
+                    },
+                    "common:documentationCompliance": {
+                      "type": "string",
+                      "description": "Documentation/Reporting compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                      "enum": [
+                        "Fully compliant",
+                        "Not compliant",
+                        "Not defined"
+                      ]
+                    },
+                    "common:qualityCompliance": {
+                      "type": "string",
+                      "description": "Quality compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                      "enum": [
+                        "Fully compliant",
+                        "Not compliant",
+                        "Not defined"
+                      ]
+                    }
+                  }
+                }
+              },
+              "required": [
+                "common:referenceToComplianceSystem",
+                "common:approvalOfOverallCompliance",
+                "common:nomenclatureCompliance",
+                "common:methodologicalCompliance",
+                "common:reviewCompliance",
+                "common:documentationCompliance",
+                "common:qualityCompliance"
+              ]
+            }
+          },
+          "required": [
+            "completeness"
+          ]
+        },
+        "administrativeInformation": {
+          "description": "Information required for data set management and administration.",
+          "type": "object",
+          "properties": {
+            "common:commissionerAndGoal": {
+              "description": "Extract of the information items linked to goal and scope of LCIA method modeling.",
+              "type": "object",
+              "properties": {
+                "common:referenceToCommissioner": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Contact data set\" of the commissioner / financing party of the data collection / compilation and of the data set modelling. For groups of commissioners, each single organisation should be named. For data set updates and for direct use of data from formerly commissioned studies, also the original commissioner should be named."
+                },
+                "common:project": {
+                  "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                  "description": "Extract of the information items linked to goal and scope of LCIA method modeling."
+                },
+                "common:intendedApplications": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "Documentation of the intended application(s) of data collection and data set modelling. This indicates / includes information on the level of detail, the specifidity, and the quality ambition in the effort."
+                }
+              }
+            },
+            "dataGenerator": {
+              "description": "Expert(s), that compiled and modelled the data set as well as internal administrative information linked to the data generation activity.",
+              "type": "object",
+              "properties": {
+                "common:referenceToPersonOrEntityGeneratingTheDataSet": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Contact data set\" of the person(s), working group(s), organisation(s) or database network, that generated the data set, i.e. being responsible for its correctness regarding methods, inventory, and documentation."
+                }
+              },
+              "required": [
+                "common:referenceToPersonOrEntityGeneratingTheDataSet"
+              ]
+            },
+            "dataEntryBy": {
+              "description": "Staff or entity, that documented the generated data set, entering the information into the database; plus administrative information linked to the data entry activity.",
+              "type": "object",
+              "properties": {
+                "common:timeStamp": {
+                  "$ref": "tidas_data_types.json#/$defs/dateTime",
+                  "description": "Date and time stamp of data set generation, typically an automated entry (\"last saved\")."
+                },
+                "common:referenceToDataSetFormat": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Source data set\" of the used version of the ILCD format. If additional data format fields have been integrated into the data set file, using the \"namespace\" option, the used format namespace(s) are to be given. This is the case if the data sets carries additional information as specified by other, particular LCA formats, e.g. of other database networks or LCA softwares."
+                },
+                "common:referenceToConvertedOriginalDataSetFrom": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Source data set\" of the database or data set publication from which this data set has been obtained by conversion. This can cover e.g. conversion to a different format, applying a different nomenclature, mapping of flow names, conversion of units, etc. This may however not have changed or re-modeled the Inputs and Outputs, i.e. obtaining the same LCIA results. This entry is required for converted data sets stemming originally from other LCA databases (e.g. when re-publishing data from IISI, ILCD etc. databases). [Note: Identically re-published data sets are identied in the field \"Unchanged re-publication of:\" in the section \"Publication and Ownership\".]"
+                },
+                "common:referenceToPersonOrEntityEnteringTheData": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Contact data set\" of the responsible person or entity that has documented this data set, i.e. entered the data and the descriptive information."
+                },
+                "recommendationBy": {
+                  "type": "object",
+                  "properties": {
+                    "referenceToEntity": {
+                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                      "description": "\"Contact data set(s)\" of the governmental body/ies that has/ve officially recommended this LCIA method data set and its impact factors for use within the documented scope. Eventually deviating (downgraded) recommendations for individual exchanges are documented in the \"Inputs and Outputs\" section of the data set."
+                    },
+                    "level": {
+                      "type": "string",
+                      "description": "Level of recommendation given to this data set by the recommending governmental body. Note that the recommendation level of individual elementary flows can be different (lower) from the general level; this is documented as \"Deviating recommendation\" in the section \"Characterisation factors\" directly for each affected elementary flow.",
+                      "enum": [
+                        "Level I",
+                        "Level II",
+                        "Level III",
+                        "Interim",
+                        "Not recommended"
+                      ]
+                    },
+                    "meaning": {
+                      "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                      "description": "Specific meaning of the declared recommendation level of this LCIA method / methodology and the characterisation factors, as defined in the guidance document referenced in in the field \"Compliance system\""
+                    }
+                  },
+                  "required": [
+                    "referenceToEntity",
+                    "level",
+                    "meaning"
+                  ]
+                }
+              },
+              "required": [
+                "common:timeStamp",
+                "common:referenceToDataSetFormat"
+              ]
+            },
+            "publicationAndOwnership": {
+              "description": "Information related to publication and version management of the data set including copyright and access restrictions.",
+              "type": "object",
+              "properties": {
+                "common:dateOfLastRevision": {
+                  "$ref": "tidas_data_types.json#/$defs/dateTime",
+                  "description": "Date when the data set was revised for the last time, typically manually set."
+                },
+                "common:dataSetVersion": {
+                  "type": "string",
+                  "description": "Version number of data set. First two digits refer to major updates, the second two digits to minor revisions and error corrections etc. The third three digits are intended for automatic and internal counting of versions during data set development. Together with the data set's UUID, the \"Data set version\" uniquely identifies each data set."
+                },
+                "common:referenceToPrecedingDataSetVersion": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "Last preceding data set, which was replaced by this version. Either a URI of that data set (i.e. an internet address) or its UUID plus version number is given (or both)."
+                },
+                "common:permanentDataSetURI": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "URI (i.e. an internet address) of the original of this data set. [Note: This equally globally unique identifier supports users and software tools to identify and retrieve the original version of a data set via the internet or to check for available updates. The URI must not represent an existing WWW address, but it should be unique and point to the data access point, e.g. by combining the data owner's www path with the data set's UUID, e.g. http://www.mycompany.com/lca/processes/50f12420-8855-12db-b606-0900210c9a66.]"
+                },
+                "common:workflowAndPublicationStatus": {
+                  "type": "string",
+                  "description": "Workflow or publication status of data set. Details e.g. of foreseen publication dates should be provided on request by the \"Data set owner\".",
+                  "enum": [
+                    "Working draft",
+                    "Final draft for internal review",
+                    "Final draft for external review",
+                    "Data set finalised; unpublished",
+                    "Under revision",
+                    "Withdrawn",
+                    "Data set finalised; subsystems published",
+                    "Data set finalised; entirely published"
+                  ]
+                },
+                "common:referenceToUnchangedRepublication": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Source data set\" of the publication, in which this data set was published for the first time. [Note: This refers to exactly this data set as it is, without any format conversion, adjustments, flow name mapping, etc. In case this data set was modified/converted, the original source is documented in \"Converted original data set from:\" in section \"Data entry by\".]"
+                },
+                "common:referenceToOwnershipOfDataSet": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "\"Contact data set\" of the person or entity who owns this data set. (Note: this is not necessarily the publisher of the data set.)"
+                },
+                "common:copyright": {
+                  "type": "string",
+                  "description": "Indicates whether or not a copyright on the data set exists. Decided upon by the \"Owner of data set\". [Note: See also field \"Access and use restrictions\".]",
+                  "enum": [
+                    "true",
+                    "false"
+                  ]
+                },
+                "common:accessRestrictions": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "Access restrictions / use conditions for this data set as free text or referring to e.g. license conditions. In case of no restrictions \"None\" is entered."
+                }
+              },
+              "required": [
+                "common:dateOfLastRevision",
+                "common:dataSetVersion"
+              ]
             }
           }
+        },
+        "characterisationFactors": {
+          "description": "Flow / Exchanges list with corresponding impact factors according to the respective LCIA method.",
+          "type": "object",
+          "properties": {
+            "factor": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "referenceToFlowDataSet": {
+                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                      "description": "Reference to \"UUID of flow\" of \"Flow data set\" to link the particular impact factor in the \"LCIA data set\" to the respective \"Flow data set\". Please be aware, that for location-specific LCIA methods, there may be multiple references to the same Flow data set."
+                    },
+                    "location": {
+                      "type": "string",
+                      "description": "Location where exchange of elementary flow occurs. Used only for those LCIA methods, that make use of such information. This information refers to the entry within the same field in the \"Process data set\"."
+                    },
+                    "exchangeDirection": {
+                      "type": "string",
+                      "description": "Direction of exchange; this information refers to the entry within the same field in the \"Process data set\".",
+                      "enum": [
+                        "Input",
+                        "Output"
+                      ]
+                    },
+                    "meanValue": {
+                      "$ref": "tidas_data_types.json#/$defs/Real",
+                      "description": "Mean value of the impact characterisation factor for the exchange identified by the fields \"Reference to flow data set\", \"Exchange direction\" and \"Location of direction\". It is recommended to report only significant digits of the amount. ! If for an elementary flow its relevant contribution to this LCIA theme is known by state-of-the-art scientific knowledge, but no impact factor is provided in the LCIA method, the flow should nevertheless be referrenced and the mean value to be entered is \"0\"!"
+                    },
+                    "minimumValue": {
+                      "$ref": "tidas_data_types.json#/$defs/Real",
+                      "description": "Minimum value of the characterisation factor for the exchange in case uncertainty distribution is uniform or triangular."
+                    },
+                    "maximumValue": {
+                      "$ref": "tidas_data_types.json#/$defs/Real",
+                      "description": "Maximum value of the characterisation factor for the exchange in case uncertainty distribution is uniform or triangular."
+                    },
+                    "uncertaintyDistributionType": {
+                      "type": "string",
+                      "description": "Defines the kind of uncertainty distribution that is valid for this particular object or parameter.",
+                      "enum": [
+                        "undefined",
+                        "log-normal",
+                        "normalisation",
+                        "triangular",
+                        "uniform"
+                      ]
+                    },
+                    "relativeStandardDeviation95In": {
+                      "$ref": "tidas_data_types.json#/$defs/Perc",
+                      "description": "The resulting overall uncertainty of the calculated variable value considering uncertainty of measurements, modelling, appropriateness etc. [Notes: For log-normal distribution the square of the geometric standard deviation (SDg^2) is stated. Mean value times SDg^2 equals the 97.5% value (= Maximum value), Mean value divided by SDg^2 equals the 2.5% value (= Minimum value). For normal distribution the doubled standard deviation value (2*SD) is entered. Mean value plus 2*SD equals 97.5% value (= Maximum value), Mean value minus 2*SD equals 2.5% value (= Minimum value). This data field remains empty when uniform or triangular uncertainty distribution is applied.]"
+                    },
+                    "dataDerivationTypeStatus": {
+                      "type": "string",
+                      "description": "Identifies the way by which the individual Input / Output amount was derived (e.g. measured, estimated etc.), respectively the status and relevancy of missing data.",
+                      "enum": [
+                        "Measured",
+                        "Calculated",
+                        "Estimated",
+                        "Unknown derivation",
+                        "Missing important",
+                        "Missing unimportant"
+                      ]
+                    },
+                    "deviatingRecommendation": {
+                      "type": "string",
+                      "description": "Deviating (downgraded) recommendation level for this exchange, in reference to the recommendation level of the LCIA method data set as a whole (see field \"Official recommendation of data set by governmental body:\").",
+                      "enum": [
+                        "Level I",
+                        "Level II",
+                        "Level III",
+                        "Interim",
+                        "Not recommended"
+                      ]
+                    },
+                    "referenceToDataSource": {
+                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                      "description": "Reference to \"UUID of source\"(s) in the \"Source data set\" of data source(s) used for modelling the value of this single LCIA factor e.g. a specific paper, questionnaire, monography etc. If, as typical, more than one data source was used, more than one source can be referenced."
+                    },
+                    "generalComment": {
+                      "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                      "description": "General information about the data set, including e.g. general (internal, not reviewed) quality statements as well as information sources used. (Note: Please also check the more specific fields e.g. on \"Intended application\", \"Advice on data set use\" and the fields in the \"Modelling and validation\" section to avoid overlapping entries.)"
+                    }
+                  },
+                  "required": [
+                    "referenceToFlowDataSet",
+                    "exchangeDirection",
+                    "meanValue",
+                    "deviatingRecommendation"
+                  ]
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "referenceToFlowDataSet": {
+                        "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                        "description": "Reference to \"UUID of flow\" of \"Flow data set\" to link the particular impact factor in the \"LCIA data set\" to the respective \"Flow data set\". Please be aware, that for location-specific LCIA methods, there may be multiple references to the same Flow data set."
+                      },
+                      "location": {
+                        "type": "string",
+                        "description": "Location where exchange of elementary flow occurs. Used only for those LCIA methods, that make use of such information. This information refers to the entry within the same field in the \"Process data set\"."
+                      },
+                      "exchangeDirection": {
+                        "type": "string",
+                        "description": "Direction of exchange; this information refers to the entry within the same field in the \"Process data set\".",
+                        "enum": [
+                          "Input",
+                          "Output"
+                        ]
+                      },
+                      "meanValue": {
+                        "$ref": "tidas_data_types.json#/$defs/Real",
+                        "description": "Mean value of the impact characterisation factor for the exchange identified by the fields \"Reference to flow data set\", \"Exchange direction\" and \"Location of direction\". It is recommended to report only significant digits of the amount. ! If for an elementary flow its relevant contribution to this LCIA theme is known by state-of-the-art scientific knowledge, but no impact factor is provided in the LCIA method, the flow should nevertheless be referrenced and the mean value to be entered is \"0\"!"
+                      },
+                      "minimumValue": {
+                        "$ref": "tidas_data_types.json#/$defs/Real",
+                        "description": "Minimum value of the characterisation factor for the exchange in case uncertainty distribution is uniform or triangular."
+                      },
+                      "maximumValue": {
+                        "$ref": "tidas_data_types.json#/$defs/Real",
+                        "description": "Maximum value of the characterisation factor for the exchange in case uncertainty distribution is uniform or triangular."
+                      },
+                      "uncertaintyType": {
+                        "type": "string",
+                        "description": "Defines the kind of uncertainty distribution that is valid for this particular object or parameter.",
+                        "enum": [
+                          "undefined",
+                          "log-normal",
+                          "normalisation",
+                          "triangular",
+                          "uniform"
+                        ]
+                      },
+                      "relativeStandardDeviation95In": {
+                        "$ref": "tidas_data_types.json#/$defs/Perc",
+                        "description": "The resulting overall uncertainty of the calculated variable value considering uncertainty of measurements, modelling, appropriateness etc. [Notes: For log-normal distribution the square of the geometric standard deviation (SDg^2) is stated. Mean value times SDg^2 equals the 97.5% value (= Maximum value), Mean value divided by SDg^2 equals the 2.5% value (= Minimum value). For normal distribution the doubled standard deviation value (2*SD) is entered. Mean value plus 2*SD equals 97.5% value (= Maximum value), Mean value minus 2*SD equals 2.5% value (= Minimum value). This data field remains empty when uniform or triangular uncertainty distribution is applied.]"
+                      },
+                      "dataDerivationTypeStatus": {
+                        "type": "string",
+                        "description": "Identifies the way by which the individual Input / Output amount was derived (e.g. measured, estimated etc.), respectively the status and relevancy of missing data.",
+                        "enum": [
+                          "Measured",
+                          "Calculated",
+                          "Estimated",
+                          "Unknown derivation",
+                          "Missing important",
+                          "Missing unimportant"
+                        ]
+                      },
+                      "deviatingRecommendation": {
+                        "type": "string",
+                        "description": "Deviating (downgraded) recommendation level for this exchange, in reference to the recommendation level of the LCIA method data set as a whole (see field \"Official recommendation of data set by governmental body:\").",
+                        "enum": [
+                          "Level I",
+                          "Level II",
+                          "Level III",
+                          "Interim",
+                          "Not recommended"
+                        ]
+                      },
+                      "referenceToDataSource": {
+                        "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                        "description": "Reference to \"UUID of source\"(s) in the \"Source data set\" of data source(s) used for modelling the value of this single LCIA factor e.g. a specific paper, questionnaire, monography etc. If, as typical, more than one data source was used, more than one source can be referenced."
+                      },
+                      "generalComment": {
+                        "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                        "description": "General information about the data set, including e.g. general (internal, not reviewed) quality statements as well as information sources used. (Note: Please also check the more specific fields e.g. on \"Intended application\", \"Advice on data set use\" and the fields in the \"Modelling and validation\" section to avoid overlapping entries.)"
+                      }
+                    },
+                    "required": [
+                      "referenceToFlowDataSet",
+                      "exchangeDirection",
+                      "meanValue",
+                      "deviatingRecommendation"
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "factor"
+          ]
         }
       }
     }
