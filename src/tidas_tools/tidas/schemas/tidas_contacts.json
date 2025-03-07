@@ -61,7 +61,7 @@
                                   "type": "object",
                                   "properties": {
                                     "@level": {
-                                      "$ref": "tidas_data_types.json#/$defs/Int1",
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
                                       "const": "0"
                                     },
                                     "@classId": {
@@ -78,7 +78,7 @@
                                   ],
                                   "dependencies": {
                                     "@level": {
-                                      "$ref": "./tidas_classification_category.json#/$defs/Contact"
+                                      "$ref": "./tidas_contacts_category.json#/$defs/Contact"
                                     }
                                   }
                                 },
@@ -86,7 +86,7 @@
                                   "type": "object",
                                   "properties": {
                                     "@level": {
-                                      "$ref": "tidas_data_types.json#/$defs/Int1",
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
                                       "const": "1"
                                     },
                                     "@classId": {
@@ -103,7 +103,7 @@
                                   ],
                                   "dependencies": {
                                     "@level": {
-                                      "$ref": "./tidas_classification_category.json#/$defs/Contact"
+                                      "$ref": "./tidas_contacts_category.json#/$defs/Contact"
                                     }
                                   }
                                 }
@@ -138,7 +138,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "0"
                                 },
                                 "@classId": {
@@ -155,7 +155,7 @@
                               ],
                               "dependencies": {
                                 "@level": {
-                                  "$ref": "./tidas_classification_category.json#/$defs/Contact"
+                                  "$ref": "./tidas_contacts_category.json#/$defs/Contact"
                                 }
                               }
                             }
@@ -213,8 +213,8 @@
                 }
               },
               "required": [
-                "common:UUID",
-                "common:shortName",
+                "common:UUID", 
+                "common:shortName", 
                 "common:name"
               ]
             },
@@ -245,7 +245,7 @@
                 }
               },
               "required": [
-                "common:timeStamp",
+                "common:timeStamp", 
                 "common:referenceToDataSetFormat"
               ]
             },

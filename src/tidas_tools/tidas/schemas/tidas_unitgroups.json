@@ -51,7 +51,7 @@
                           "type": "object",
                           "properties": {
                             "@level": {
-                              "$ref": "tidas_data_types.json#/$defs/Int1",
+                              "$ref": "tidas_data_types.json#/$defs/LevelType",
                               "const": "0",
                               "description": "If more than one class is specified in a hierachical classification system, the hierarchy level (1,2,...) could be specified with this attribute of class."
                             },
@@ -70,7 +70,7 @@
                           ],
                           "dependencies": {
                             "@level": {
-                              "$ref": "./tidas_classification_category.json#/$defs/UnitGroup"
+                              "$ref": "./tidas_unitgroups_category.json#/$defs/UnitGroup"
                             }
                           }
                         },
@@ -104,7 +104,7 @@
               "type": "object",
               "properties": {
                 "referenceToReferenceUnit": {
-                  "$ref": "tidas_data_types.json#/$defs/Int5"
+                   "$ref": "tidas_data_types.json#/$defs/Int5"
                 },
                 "common:other": {
                   "type": "string"
@@ -166,7 +166,7 @@
           "properties": {
             "dataEntryBy": {
               "type": "object",
-              "properties": {
+               "properties": {
                 "common:timeStamp": {
                   "$ref": "tidas_data_types.json#/$defs/dateTime",
                   "description": "Date and time stamp of data set generation, typically an automated entry (\"last saved\")."
