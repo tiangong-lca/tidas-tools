@@ -52,3 +52,10 @@ git push origin v0.0.1
 ```bash
 black .
 ```
+
+### Run Test
+
+```bash
+python src/tidas_tools/convert.py -i test_data/converted_json/data/ -o test_data/converted_xml --to-eilcd
+python src/tidas_tools/convert.py -i test_data/published_xml/ -o test_data/converted_json/ --to-tidas
+```
