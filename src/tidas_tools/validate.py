@@ -111,8 +111,8 @@ def validate_processes_classification_hierarchy(class_items):
         parent_level = int(parent["@level"])
         child_level = int(child["@level"])
 
-        parent_id = parent["@catId"]
-        child_id = child["@catId"]
+        parent_id = parent["@classId"]
+        child_id = child["@classId"]
 
         if parent_level == 0 and child_level == 1:
             valid_level1_codes = level0_to_level1_mapping.get(parent_id, [])
@@ -126,6 +126,31 @@ def validate_processes_classification_hierarchy(class_items):
                 errors.append(
                     f"Processes classification code error: child code '{child_id}' does not start with parent code '{parent_id}'"
                 )
+
+    if errors:
+        return {"valid": False, "errors": errors}
+    else:
+        return {"valid": True}
+
+
+def validate_sources_classification_hierarchy(class_items):
+    errors = []
+
+    for i, item in enumerate(class_items):
+        level = int(item["@level"])
+        if level != i:
+            errors.append(
+                f"Sources classification level sorting error: at index {i}, expected level {i}, got {level}"
+            )
+
+    for i in range(1, len(class_items)):
+        parent_id = class_items[i - 2]["@classId"]
+        child_id = class_items[i]["@classId"]
+
+        if not child_id.startswith(parent_id):
+            errors.append(
+                f"Sources classification code error: child code '{child_id}' does not start with parent code '{parent_id}'"
+            )
 
     if errors:
         return {"valid": False, "errors": errors}
@@ -172,6 +197,61 @@ def category_validate(json_file_path: str, category: str):
                             )
                             if not validation_result["valid"]:
                                 errors.extend(validation_result["errors"])
+                        elif (
+                            json_item["flowDataSet"]["modellingAndValidation"][
+                                "LCIMethod"
+                            ]["typeOfDataSet"]
+                            == "Elementary flow"
+                        ):
+                            validation_result = (
+                                validate_elementary_flows_classification_hierarchy(
+                                    json_item["flowDataSet"]["flowInformation"][
+                                        "dataSetInformation"
+                                    ]["classificationInformation"][
+                                        "common:elementaryFlowCategorization"
+                                    ][
+                                        "common:category"
+                                    ]
+                                )
+                            )
+                            if not validation_result["valid"]:
+                                errors.extend(validation_result["errors"])
+
+                    if category == "processes":
+                        validation_result = validate_processes_classification_hierarchy(
+                            json_item["processDataSet"]["processInformation"][
+                                "dataSetInformation"
+                            ]["classificationInformation"]["common:classification"][
+                                "common:class"
+                            ]
+                        )
+                        if not validation_result["valid"]:
+                            errors.extend(validation_result["errors"])
+
+                    if category == "lifecyclemodels":
+                        # 检查是否有重复的模型ID
+                        validation_result = validate_processes_classification_hierarchy(
+                            json_item["lifecycleModelDataSet"][
+                                "lifecycleModelInformation"
+                            ]["dataSetInformation"]["classificationInformation"][
+                                "common:classification"
+                            ][
+                                "common:class"
+                            ]
+                        )
+                        if not validation_result["valid"]:
+                            errors.extend(validation_result["errors"])
+
+                    if category == "sources":
+                        validation_result = validate_sources_classification_hierarchy(
+                            json_item["sourceDataSet"]["sourceInformation"][
+                                "dataSetInformation"
+                            ]["classificationInformation"]["common:classification"][
+                                "common:class"
+                            ]
+                        )
+                        if not validation_result["valid"]:
+                            errors.extend(validation_result["errors"])
 
                     # 输出所有错误信息
                     if errors:
