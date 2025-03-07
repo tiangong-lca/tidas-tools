@@ -16,6 +16,10 @@ dependencies = [
 packages = [{include = "tidas_tools", from = "src"}]
 include = ["src/tidas_tools/schemas/*.json"]
 
+[tool.poetry.scripts]
+tidas-convert = "tidas_tools.convert_cli:main"
+tidas-validate = "tidas_tools.validate_cli:main"
+
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
 
