@@ -14,7 +14,7 @@ dependencies = [
 
 [tool.poetry]
 packages = [{include = "tidas_tools", from = "src"}]
-include = ["src/tidas_tools/schemas/*.json"]
+include = ["src/tidas_tools/eilcd/*.*", "src/tidas_tools/tidas/*.*"]
 
 [tool.poetry.scripts]
 tidas-convert = "tidas_tools.convert_cli:main"
