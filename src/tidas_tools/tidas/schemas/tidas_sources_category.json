@@ -1,0 +1,101 @@
+  {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "tidas_sources_category_dependencies.json",
+    "$defs": {
+        "Source": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "0"
+                        },
+                        "#text": {
+                            "const": "Images"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "1"
+                        },
+                        "#text": {
+                            "const": "Data set formats"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "2"
+                        },
+                        "#text": {
+                            "const": "Databases"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "3"
+                        },
+                        "#text": {
+                            "const": "Compliance systems"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "4"
+                        },
+                        "#text": {
+                            "const": "Statistical classifications"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "5"
+                        },
+                        "#text": {
+                            "const": "Publications and communications"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "6"
+                        },
+                        "#text": {
+                            "const": "Other source types"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

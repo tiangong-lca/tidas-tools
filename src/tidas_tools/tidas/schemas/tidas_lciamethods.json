@@ -59,7 +59,7 @@
                                   "type": "object",
                                   "properties": {
                                     "@level": {
-                                      "$ref": "tidas_data_types.json#/$defs/Int1",
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
                                       "const": "0"
                                     },
                                     "@classId": {
@@ -76,7 +76,7 @@
                                   ],
                                   "dependencies": {
                                     "@level": {
-                                      "$ref": "./tidas_classification_category.json#/$defs/LCIAMethod"
+                                      "$ref": "./tidas_lciamethods_category.json#/$defs/LCIAMethod"
                                     }
                                   }
                                 },
@@ -84,7 +84,7 @@
                                   "type": "object",
                                   "properties": {
                                     "@level": {
-                                      "$ref": "tidas_data_types.json#/$defs/Int1",
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
                                       "const": "1"
                                     },
                                     "@classId": {
@@ -101,7 +101,7 @@
                                   ],
                                   "dependencies": {
                                     "@level": {
-                                      "$ref": "./tidas_classification_category.json#/$defs/LCIAMethod"
+                                      "$ref": "./tidas_lciamethods_category.json#/$defs/LCIAMethod"
                                     }
                                   }
                                 },
@@ -109,7 +109,7 @@
                                   "type": "object",
                                   "properties": {
                                     "@level": {
-                                      "$ref": "tidas_data_types.json#/$defs/Int1",
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
                                       "const": "2"
                                     },
                                     "@classId": {
@@ -126,7 +126,7 @@
                                   ],
                                   "dependencies": {
                                     "@level": {
-                                      "$ref": "./tidas_classification_category.json#/$defs/LCIAMethod"
+                                      "$ref": "./tidas_lciamethods_category.json#/$defs/LCIAMethod"
                                     }
                                   }
                                 }
@@ -344,6 +344,9 @@
                 "geographicalRepresentativenessDescription": {
                   "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
                   "description": "Further explanation on additional aspects of the location, both regarding the intervention and the impact: whether certain areas are exempted from the location, whether data is only valid for certain sub-locations within the location indicated, or whether impact indicator values for certain elementary flows are extrapolated from another geographical area than indicated. Information on the use of generic intervention and/or impact locations, and other restrictions."
+                },
+                "common:other": {
+                  "type": "string"
                 }
               }
             },
@@ -374,8 +377,14 @@
                 "referenceToMethodologyFlowChart": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
                   "description": "\"Source data set(s)\" of flowchart(s) and/or pictures depicting the LCIA method(ology)."
+                },
+                "common:other": {
+                  "type": "string"
                 }
               }
+            },
+            "common:other": {
+              "type": "string"
             }
           },
           "required": [
@@ -477,6 +486,9 @@
                 "referenceToDataSource": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
                   "description": "\"Source data set(s)\" of the data source(s) used for the data set e.g. paper, questionnaire, monography etc. The main data sources e.g. for underlying substance properties are named, too."
+                },
+                "common:other": {
+                  "type": "string"
                 }
               },
               "required": [
@@ -622,12 +634,18 @@
                     "common:referenceToCompleteReviewReport": {
                       "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
                       "description": "\"Source data set\" of the complete review report."
+                    },
+                    "common:other": {
+                      "type": "string"
                     }
                   },
                   "required": [
                     "@type",
                     "scope"
                   ]
+                },
+                "common:other": {
+                  "type": "string"
                 }
               },
               "required": [
@@ -698,8 +716,14 @@
                         "Not compliant",
                         "Not defined"
                       ]
+                    },
+                    "common:other": {
+                      "type": "string"
                     }
                   }
+                },
+                "common:other": {
+                  "type": "string"
                 }
               },
               "required": [
@@ -711,11 +735,14 @@
                 "common:documentationCompliance",
                 "common:qualityCompliance"
               ]
+            },
+            "common:other": {
+              "type": "string"
             }
           },
           "required": [
             "completeness"
-          ]
+          ] 
         },
         "administrativeInformation": {
           "description": "Information required for data set management and administration.",
@@ -736,6 +763,9 @@
                 "common:intendedApplications": {
                   "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
                   "description": "Documentation of the intended application(s) of data collection and data set modelling. This indicates / includes information on the level of detail, the specifidity, and the quality ambition in the effort."
+                },
+                "common:other": {
+                  "type": "string"
                 }
               }
             },
@@ -746,6 +776,9 @@
                 "common:referenceToPersonOrEntityGeneratingTheDataSet": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
                   "description": "\"Contact data set\" of the person(s), working group(s), organisation(s) or database network, that generated the data set, i.e. being responsible for its correctness regarding methods, inventory, and documentation."
+                },
+                "common:other": {
+                  "type": "string"
                 }
               },
               "required": [
@@ -800,6 +833,9 @@
                     "level",
                     "meaning"
                   ]
+                },
+                "common:other": {
+                  "type": "string"
                 }
               },
               "required": [
@@ -837,10 +873,10 @@
                     "Final draft for external review",
                     "Data set finalised; unpublished",
                     "Under revision",
-                    "Withdrawn",
+                    "Withdrawn", 
                     "Data set finalised; subsystems published",
                     "Data set finalised; entirely published"
-                  ]
+                  ] 
                 },
                 "common:referenceToUnchangedRepublication": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
@@ -861,12 +897,18 @@
                 "common:accessRestrictions": {
                   "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
                   "description": "Access restrictions / use conditions for this data set as free text or referring to e.g. license conditions. In case of no restrictions \"None\" is entered."
+                },
+                "common:other": {
+                  "type": "string"
                 }
               },
               "required": [
                 "common:dateOfLastRevision",
                 "common:dataSetVersion"
               ]
+            },
+            "common:other": {
+              "type": "string"
             }
           }
         },
@@ -952,6 +994,9 @@
                     "generalComment": {
                       "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
                       "description": "General information about the data set, including e.g. general (internal, not reviewed) quality statements as well as information sources used. (Note: Please also check the more specific fields e.g. on \"Intended application\", \"Advice on data set use\" and the fields in the \"Modelling and validation\" section to avoid overlapping entries.)"
+                    },
+                    "common:other": {
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -1033,8 +1078,12 @@
                         ]
                       },
                       "referenceToDataSource": {
-                        "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                        "description": "Reference to \"UUID of source\"(s) in the \"Source data set\" of data source(s) used for modelling the value of this single LCIA factor e.g. a specific paper, questionnaire, monography etc. If, as typical, more than one data source was used, more than one source can be referenced."
+                        "properties": {
+                          "referenceToDataSource": {
+                            "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                            "description": "Reference to \"UUID of source\"(s) in the \"Source data set\" of data source(s) used for modelling the value of this single LCIA factor e.g. a specific paper, questionnaire, monography etc. If, as typical, more than one data source was used, more than one source can be referenced."
+                          }
+                        }
                       },
                       "generalComment": {
                         "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
@@ -1050,11 +1099,17 @@
                   }
                 }
               ]
+            },
+            "common:other": {
+              "type": "string"
             }
           },
           "required": [
             "factor"
           ]
+        },
+        "common:other": {
+          "type": "string"
         }
       }
     }
