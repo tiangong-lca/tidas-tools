@@ -20,6 +20,32 @@ RED = "\033[91m"
 RESET = "\033[0m"
 
 
+def validate_elementary_flows_classification_hierarchy(class_items):
+
+    errors = []
+
+    for i, item in enumerate(class_items):
+        level = int(item["@level"])
+        if level != i:
+            errors.append(
+                f"Elementary flow classification level sorting error: at index {i}, expected level {i}, got {level}"
+            )
+
+    for i in range(1, len(class_items)):
+        parent_id = class_items[i - 2]["@catId"]
+        child_id = class_items[i]["@catId"]
+
+        if not child_id.startswith(parent_id):
+            errors.append(
+                f"Elementary flow classification code error: child code '{child_id}' does not start with parent code '{parent_id}'"
+            )
+
+    if errors:
+        return {"valid": False, "errors": errors}
+    else:
+        return {"valid": True}
+
+
 def validate_product_flows_classification_hierarchy(class_items):
 
     errors = []
@@ -45,6 +71,7 @@ def validate_product_flows_classification_hierarchy(class_items):
     else:
         return {"valid": True}
 
+
 def validate_processes_classification_hierarchy(class_items):
     errors = []
 
@@ -67,7 +94,7 @@ def validate_processes_classification_hierarchy(class_items):
         "R": ["90", "91", "92", "93"],
         "S": ["94", "95", "96"],
         "T": ["97", "98"],
-        "U": ["99"]
+        "U": ["99"],
     }
 
     for i, item in enumerate(class_items):
@@ -80,13 +107,13 @@ def validate_processes_classification_hierarchy(class_items):
     for i in range(1, len(class_items)):
         parent = class_items[i - 1]
         child = class_items[i]
-        
+
         parent_level = int(parent["@level"])
         child_level = int(child["@level"])
-        
+
         parent_id = parent["@catId"]
         child_id = child["@catId"]
-        
+
         if parent_level == 0 and child_level == 1:
             valid_level1_codes = level0_to_level1_mapping.get(parent_id, [])
             if child_id not in valid_level1_codes:
@@ -104,6 +131,7 @@ def validate_processes_classification_hierarchy(class_items):
         return {"valid": False, "errors": errors}
     else:
         return {"valid": True}
+
 
 def category_validate(json_file_path: str, category: str):
 
@@ -125,12 +153,21 @@ def category_validate(json_file_path: str, category: str):
 
                     # 如果是 flows 分类，则继续进行分类层级验证
                     if category == "flows":
-                        if json_item["flowDataSet"]["modellingAndValidation"]["LCIMethod"]["typeOfDataSet"] == "Product flow":
+                        if (
+                            json_item["flowDataSet"]["modellingAndValidation"][
+                                "LCIMethod"
+                            ]["typeOfDataSet"]
+                            == "Product flow"
+                        ):
                             validation_result = (
                                 validate_product_flows_classification_hierarchy(
-                                    json_item["flowDataSet"]["flowInformation"]["dataSetInformation"]["classificationInformation"][
+                                    json_item["flowDataSet"]["flowInformation"][
+                                        "dataSetInformation"
+                                    ]["classificationInformation"][
                                         "common:classification"
-                                    ]["common:class"]
+                                    ][
+                                        "common:class"
+                                    ]
                                 )
                             )
                             if not validation_result["valid"]:
