@@ -1,7 +1,9 @@
+import argparse
 import importlib.resources as pkg_resources
 import json
-import os
 import logging
+import os
+import sys
 
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
@@ -261,3 +263,26 @@ def category_validate(json_file_path: str, category: str):
                     else:
                         print(f"{GREEN}INFO: {full_path} PASSED.{RESET}")
                         logging.info(f"INFO: {full_path} PASSED.")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="TIDAS format validator.")
+    parser.add_argument(
+        "--input_dir",
+        "-i",
+        type=str,
+        help="Input directory containing files to process",
+    )
+    data_dir = "test_data/converted_json/data"
+    try:
+        args = parser.parse_args()
+        for category in os.listdir(args.input_dir):
+            if category == "external_docs":
+                continue
+            category_dir = os.path.join(data_dir, category)
+            category_validate(category_dir, category)
+    except Exception as e:
+        error_msg = f"Error validating: {e}"
+        print(f"{RED}{error_msg}{RESET}", file=sys.stderr)
+        logging.error(error_msg)
+        sys.exit(1)
