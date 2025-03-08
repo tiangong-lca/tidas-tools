@@ -279,7 +279,8 @@ def main():
             if category == "external_docs":
                 continue
             category_dir = os.path.join(args.input_dir, category)
-            category_validate(category_dir, category)
+            if os.path.isdir(category_dir):  # Only process directories
+                category_validate(category_dir, category)
     except Exception as e:
         error_msg = f"Error validating: {e}"
         print(f"{RED}{error_msg}{RESET}", file=sys.stderr)
