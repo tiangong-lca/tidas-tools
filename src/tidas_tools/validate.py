@@ -5,8 +5,10 @@ import logging
 import os
 import sys
 
-from jsonschema import RefResolver, validate
+from jsonschema import validate
 from jsonschema.exceptions import ValidationError
+from referencing import Registry
+from referencing.jsonschema import DRAFT7
 
 import tidas_tools.tidas.schemas as schemas
 
@@ -160,40 +162,45 @@ def validate_sources_classification_hierarchy(class_items):
         return {"valid": True}
 
 
-def local_resolver(uri):
+def retrieve_schema(uri):
+    """Custom retrieval function for schema references"""
     # Handle both local and remote references
-    if not uri.startswith(('http://', 'https://')):
+    if not uri.startswith(("http://", "https://")):
         # This is a local reference, load from package
         try:
-            print(f"Trying to resolve local reference: {uri}")
+            # print(f"Trying to resolve local reference: {uri}")
             with pkg_resources.open_text(schemas, uri) as f:
-                return json.load(f)
+                schema_data = json.load(f)
+                # Create a proper resource object
+                return DRAFT7.create_resource(schema_data)
         except Exception as e:
             print(f"Failed to resolve: {uri}, error: {e}")
             # Try alternative path resolution methods
             try:
                 # Try finding the file directly in the schemas package
                 schema_path = pkg_resources.files(schemas) / uri
-                print(f"Attempting alternative path: {schema_path}")
-                with open(schema_path, 'r') as f:
-                    return json.load(f)
+                with open(schema_path, "r") as f:
+                    schema_data = json.load(f)
+                    # Create a proper resource object
+                    return DRAFT7.create_resource(schema_data)
             except Exception as alt_e:
                 print(f"Alternative resolution also failed: {alt_e}")
                 raise
-    return {}
+    # For remote references, return None to indicate the reference couldn't be resolved
+    return None
 
-store = {
-    '': local_resolver,  # Handle relative references
-    'https://example.com/local-schemas': local_resolver  # Keep existing for backward compatibility
-}
 
 def category_validate(json_file_path: str, category: str):
-
     schema_file_path = pkg_resources.files(schemas) / f"tidas_{category.lower()}.json"
     schema_uri = f"file://{schema_file_path}"
 
     with schema_file_path.open() as f:
         schema = json.load(f)
+
+        # Create registry with our retrieve function
+        registry = Registry(retrieve=retrieve_schema)
+        # Add the main schema to the registry
+        registry = registry.with_resource(schema_uri, DRAFT7.create_resource(schema))
 
         for filename in os.listdir(json_file_path):
             if filename.endswith(".json"):
@@ -204,10 +211,13 @@ def category_validate(json_file_path: str, category: str):
                     errors = []
 
                     try:
-                        resolver = RefResolver(schema_uri, schema, store=store)
-                        validate(instance=json_item, schema=schema, resolver=resolver)
+                        # Add more detailed error handling
+                        validate(instance=json_item, schema=schema, registry=registry)
                     except ValidationError as e:
                         errors.append(f"Schema Error: {e.message}")
+                    except Exception as e:
+                        print(f"Unexpected validation error: {type(e).__name__}: {e}")
+                        errors.append(f"Validation error: {e}")
 
                     if category == "flows":
                         if (
@@ -304,11 +314,16 @@ def main():
     try:
         args = parser.parse_args()
         for category in os.listdir(args.input_dir):
-            if category == "external_docs":
-                continue
-            category_dir = os.path.join(args.input_dir, category)
-            if os.path.isdir(category_dir):  # Only process directories
-                category_validate(category_dir, category)
+            try:
+                if category == "external_docs":
+                    continue
+                category_dir = os.path.join(args.input_dir, category)
+                if os.path.isdir(category_dir):  # Only process directories
+                    category_validate(category_dir, category)
+            except Exception as e:
+                error_msg = f"Error validating category {category}: {e}"
+                print(f"{RED}{error_msg}{RESET}", file=sys.stderr)
+                logging.error(error_msg)
     except Exception as e:
         error_msg = f"Error validating: {e}"
         print(f"{RED}{error_msg}{RESET}", file=sys.stderr)
