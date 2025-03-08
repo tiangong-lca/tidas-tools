@@ -273,13 +273,12 @@ def main():
         type=str,
         help="Input directory containing files to process",
     )
-    data_dir = "test_data/converted_json/data"
     try:
         args = parser.parse_args()
         for category in os.listdir(args.input_dir):
             if category == "external_docs":
                 continue
-            category_dir = os.path.join(data_dir, category)
+            category_dir = os.path.join(args.input_dir, category)
             category_validate(category_dir, category)
     except Exception as e:
         error_msg = f"Error validating: {e}"
