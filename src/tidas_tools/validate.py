@@ -162,7 +162,7 @@ def validate_sources_classification_hierarchy(class_items):
 
 def category_validate(json_file_path: str, category: str):
 
-    with pkg_resources.open_text(schemas, f"tidas_{category.lower()}.json") as f:
+    with (pkg_resources.files(schemas) / f"tidas_{category.lower()}.json").open() as f:
         schema = json.load(f)
 
         for filename in os.listdir(json_file_path):
@@ -286,3 +286,7 @@ def main():
         print(f"{RED}{error_msg}{RESET}", file=sys.stderr)
         logging.error(error_msg)
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
