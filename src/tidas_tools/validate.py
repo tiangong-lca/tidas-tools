@@ -5,7 +5,7 @@ import logging
 import os
 import sys
 
-from jsonschema import validate
+from jsonschema import RefResolver, validate
 from jsonschema.exceptions import ValidationError
 
 import tidas_tools.tidas.schemas as schemas
@@ -160,9 +160,39 @@ def validate_sources_classification_hierarchy(class_items):
         return {"valid": True}
 
 
+def local_resolver(uri):
+    # Handle both local and remote references
+    if not uri.startswith(('http://', 'https://')):
+        # This is a local reference, load from package
+        try:
+            print(f"Trying to resolve local reference: {uri}")
+            with pkg_resources.open_text(schemas, uri) as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Failed to resolve: {uri}, error: {e}")
+            # Try alternative path resolution methods
+            try:
+                # Try finding the file directly in the schemas package
+                schema_path = pkg_resources.files(schemas) / uri
+                print(f"Attempting alternative path: {schema_path}")
+                with open(schema_path, 'r') as f:
+                    return json.load(f)
+            except Exception as alt_e:
+                print(f"Alternative resolution also failed: {alt_e}")
+                raise
+    return {}
+
+store = {
+    '': local_resolver,  # Handle relative references
+    'https://example.com/local-schemas': local_resolver  # Keep existing for backward compatibility
+}
+
 def category_validate(json_file_path: str, category: str):
 
-    with (pkg_resources.files(schemas) / f"tidas_{category.lower()}.json").open() as f:
+    schema_file_path = pkg_resources.files(schemas) / f"tidas_{category.lower()}.json"
+    schema_uri = f"file://{schema_file_path}"
+
+    with schema_file_path.open() as f:
         schema = json.load(f)
 
         for filename in os.listdir(json_file_path):
@@ -174,11 +204,11 @@ def category_validate(json_file_path: str, category: str):
                     errors = []
 
                     try:
-                        validate(instance=json_item, schema=schema)
+                        resolver = RefResolver(schema_uri, schema, store=store)
+                        validate(instance=json_item, schema=schema, resolver=resolver)
                     except ValidationError as e:
                         errors.append(f"Schema Error: {e.message}")
 
-                    # 如果是 flows 分类，则继续进行分类层级验证
                     if category == "flows":
                         if (
                             json_item["flowDataSet"]["modellingAndValidation"][
@@ -231,7 +261,6 @@ def category_validate(json_file_path: str, category: str):
                             errors.extend(validation_result["errors"])
 
                     if category == "lifecyclemodels":
-                        # 检查是否有重复的模型ID
                         validation_result = validate_processes_classification_hierarchy(
                             json_item["lifecycleModelDataSet"][
                                 "lifecycleModelInformation"
@@ -255,7 +284,6 @@ def category_validate(json_file_path: str, category: str):
                         if not validation_result["valid"]:
                             errors.extend(validation_result["errors"])
 
-                    # 输出所有错误信息
                     if errors:
                         for err in errors:
                             print(f"{RED}ERROR: {full_path} {err}{RESET}")
