@@ -91,7 +91,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "0"
                                 },
                                 "@classId": {
@@ -116,7 +116,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "1"
                                 },
                                 "@classId": {
@@ -141,7 +141,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "2"
                                 },
                                 "@classId": {
@@ -166,7 +166,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "3"
                                 },
                                 "@classId": {
@@ -233,7 +233,7 @@
                                   }
                                 }
                               }
-                            }
+                            }      
                           ]
                         },
                         "common:other": {
@@ -642,11 +642,11 @@
                               }
                             },
                             "required": [
-                              "@dataSetInternalID",
-                              "referenceToProcess",
-                              "@multiplicationFactor",
-                              "groups",
-                              "connections"
+                            "@dataSetInternalID",
+                            "referenceToProcess",
+                            "@multiplicationFactor",
+                            "groups",
+                            "connections"
                             ]
                           }
                         },
@@ -748,7 +748,7 @@
                                           }
                                         },
                                         "required": [
-                                          "@name"
+                                        "@name"
                                         ]
                                       }
                                     }
@@ -839,8 +839,8 @@
                                                   }
                                                 },
                                                 "required": [
-                                                  "@id",
-                                                  "@flowUUID"
+                                                "@id",
+                                                "@flowUUID"
                                                 ]
                                               }
                                             }
@@ -898,8 +898,8 @@
                                                   }
                                                 },
                                                 "required": [
-                                                  "@id",
-                                                  "@flowUUID"
+                                                "@id",
+                                                "@flowUUID"
                                                 ]
                                               },
                                               {
@@ -926,12 +926,12 @@
                                                       "enum": [
                                                         "true",
                                                         "false"
-                                                      ]
+                                                      ] 
                                                     }
                                                   },
                                                   "required": [
-                                                    "@id",
-                                                    "@flowUUID"
+                                                  "@id",
+                                                  "@flowUUID"
                                                   ]
                                                 }
                                               }
@@ -953,11 +953,11 @@
                             }
                           },
                           "required": [
-                            "@dataSetInternalID",
-                            "referenceToProcess",
-                            "@multiplicationFactor",
-                            "groups",
-                            "connections"
+                          "@dataSetInternalID",
+                          "referenceToProcess",
+                          "@multiplicationFactor",
+                          "groups",
+                          "connections"
                           ]
                         }
                       ]
@@ -1230,7 +1230,7 @@
               "properties": {
                 "common:dataSetVersion": {
                   "type": "string",
-                  "description": "Version number of data set. First two digits refer to major updates, the second two digits to minor revisions and error corrections etc. The third three digits are intended for automatic and internal counting of versions during data set development. Together with the data set's UUID, the \"Data set version\" uniquely identifies each data set."
+                  "description": "Version number of data set. First two digits refer to major updates, the second two digits to minor revisions and error corrections etc. The third three digits are intended for automatic and internal counting of versions during data set development. Together with the data set's UUID, the \"Data set version\" uniquely identifies each data set." 
                 },
                 "common:referenceToPrecedingDataSetVersion": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
@@ -1251,7 +1251,7 @@
                   "enum": [
                     "true",
                     "false"
-                  ]
+                  ] 
                 },
                 "referenceToEntitiesWithExclusiveAccess": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",

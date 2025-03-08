@@ -63,7 +63,7 @@
       "type": "string",
       "minimum": 0,
       "maximum": 99999
-    },
+    }, 
     "Int6": {
       "description": "6-digit integer number",
       "type": "string",
@@ -83,7 +83,7 @@
       "description": "Mathematical rule",
       "type": "string"
     },
-    "MatV": {
+    "MatV": { 
       "description": "Mathematical variable or parameter",
       "type": "string"
     },
@@ -194,7 +194,7 @@
             },
             "@refObjectId": {
               "type": "string",
-              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
             },
             "@version": {
               "type": "string"
@@ -224,7 +224,7 @@
               },
               "@refObjectId": {
                 "type": "string",
-                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
               },
               "@version": {
                 "type": "string"

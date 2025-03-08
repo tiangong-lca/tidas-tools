@@ -15,7 +15,7 @@ also available at http://lca.jrc.ec.europa.eu/eplca/doc/ILCD_format_and_editor_l
            targetNamespace="http://lca.jrc.it/ILCD/Common"
            elementFormDefault="qualified">
    <xs:import namespace="http://www.w3.org/XML/1998/namespace"
-              schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+              schemaLocation="xml.xsd"/>
    <xs:include schemaLocation="ILCD_Common_EnumerationValues.xsd"/>
    <xs:simpleType name="boolean">
       <xs:annotation>

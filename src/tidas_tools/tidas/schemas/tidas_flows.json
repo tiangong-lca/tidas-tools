@@ -87,7 +87,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "0"
                                 },
                                 "@catId": {
@@ -112,7 +112,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "1"
                                 },
                                 "@catId": {
@@ -137,7 +137,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "2"
                                 },
                                 "@catId": {
@@ -214,7 +214,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "0"
                                 },
                                 "@classId": {
@@ -239,7 +239,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "1"
                                 },
                                 "@classId": {
@@ -264,7 +264,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "2"
                                 },
                                 "@classId": {
@@ -289,7 +289,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "3"
                                 },
                                 "@classId": {
@@ -314,7 +314,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "4"
                                 },
                                 "@classId": {
@@ -661,7 +661,7 @@
                   ]
                 },
                 "relativeStandardDeviation95In": {
-                  "$ref": "tidas_data_types.json#/$defs/Perc",
+                  "$ref": "tidas_data_types.json#/$defs/Perc", 
                   "description": "The resulting overall uncertainty of the calculated variable value considering uncertainty of measurements, modelling, appropriateness etc. [Notes: For log-normal distribution the square of the geometric standard deviation (SDg^2) is stated. Mean value times SDg^2 equals the 97.5% value (= Maximum value), Mean value divided by SDg^2 equals the 2.5% value (= Minimum value). For normal distribution the doubled standard deviation value (2*SD) is entered. Mean value plus 2*SD equals 97.5% value (= Maximum value), Mean value minus 2*SD equals 2.5% value (= Minimum value). This data field remains empty when uniform or triangular uncertainty distribution is applied.]"
                 },
                 "dataDerivationTypeStatus": {

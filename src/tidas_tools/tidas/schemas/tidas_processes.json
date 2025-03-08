@@ -99,7 +99,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "0"
                                 },
                                 "@classId": {
@@ -124,7 +124,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "1"
                                 },
                                 "@classId": {
@@ -149,7 +149,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "2"
                                 },
                                 "@classId": {
@@ -174,7 +174,7 @@
                               "type": "object",
                               "properties": {
                                 "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/Int1",
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
                                   "const": "3"
                                 },
                                 "@classId": {
@@ -241,7 +241,7 @@
                                   }
                                 }
                               }
-                            }
+                            }      
                           ]
                         },
                         "common:other": {
@@ -444,7 +444,7 @@
                         "normal",
                         "triangular",
                         "uniform"
-                      ]
+                      ] 
                     },
                     "relativeStandardDeviation95In": {
                       "$ref": "tidas_data_types.json#/$defs/Perc"
@@ -546,7 +546,7 @@
                 },
                 "common:other": {
                   "type": "string"
-                }
+              }
               },
               "required": [
                 "typeOfDataSet"
@@ -557,7 +557,7 @@
               "properties": {
                 "dataCutOffAndCompletenessPrinciples": {
                   "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
-                  "description": "Principles applied in data collection regarding completeness of (also intermediate) product and waste flows and of elementary flows. Examples are: cut-off rules, systematic exclusion of infrastructure, services or auxiliaries, etc. systematic exclusion of air in incineration processes, coling water, etc."
+                  "description": "Principles applied in data collection regarding completeness of (also intermediate) product and waste flows and of elementary flows. Examples are: cut-off rules, systematic exclusion of infrastructure, services or auxiliaries, etc. systematic exclusion of air in incineration processes, coling water, etc."  
                 },
                 "deviationsFromCutOffAndCompletenessPrinciples": {
                   "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
@@ -613,7 +613,7 @@
                 },
                 "common:other": {
                   "type": "string"
-                }
+              }
               }
             },
             "completeness": {
@@ -950,7 +950,7 @@
           },
           "required": [
             "LCIMethodAndAllocation"
-          ]
+          ] 
         },
         "administrativeInformation": {
           "description": "Information on data set management and administration.",
@@ -1060,7 +1060,7 @@
                     "Final draft for external review",
                     "Data set finalised; unpublished",
                     "Under revision",
-                    "Withdrawn",
+                    "Withdrawn", 
                     "Data set finalised; subsystems published",
                     "Data set finalised; entirely published"
                   ]
