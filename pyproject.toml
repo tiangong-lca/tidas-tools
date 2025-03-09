@@ -1,6 +1,6 @@
 [project]
 name = "tidas-tools"
-version = "0.0.3"
+version = "0.0.4"
 description = "tidas-tools"
 authors = [
     {name = "Nan LI",email = "linanenv@gmail.com"}
