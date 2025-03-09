@@ -64,8 +64,7 @@
                   "required": [
                     "baseName",
                     "treatmentStandardsRoutes",
-                    "mixAndLocationTypes",
-                    "functionalUnitFlowProperties"
+                    "mixAndLocationTypes"
                   ]
                 },
                 "identifierOfSubDataSet": {
@@ -252,7 +251,10 @@
                         "common:class"
                       ]
                     }
-                  }
+                  },
+                  "required": [
+                    "common:classification"
+                  ]
                 },
                 "common:generalComment": {
                   "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
@@ -269,7 +271,8 @@
               "required": [
                 "common:UUID",
                 "name",
-                "classificationInformation"
+                "classificationInformation",
+                "common:generalComment"
               ]
             },
             "quantitativeReference": {
@@ -465,7 +468,13 @@
             "common:other": {
               "type": "string"
             }
-          }
+          },
+          "required": [
+            "dataSetInformation",
+            "quantitativeReference",
+            "time",
+            "geography"
+          ]
         },
         "modellingAndValidation": {
           "type": "object",
@@ -740,9 +749,16 @@
                                     "Evidence collection by means of plant visits and/or interviews"
                                   ]
                                 }
-                              }
+                              },
+                              "required": [
+                                "@name"
+                              ]
                             }
-                          }
+                          },
+                          "required": [
+                            "@name",
+                            "method"
+                          ]                          
                         },
                         {
                           "type": "array",
@@ -784,9 +800,16 @@
                                       "Evidence collection by means of plant visits and/or interviews"
                                     ]
                                   }
-                                }
+                                },
+                                "required": [
+                                  "@name"
+                                ]
                               }
-                            }
+                            },
+                            "required": [
+                              "@name",
+                              "method"
+                            ]
                           }
                         }
                       ]
@@ -849,16 +872,19 @@
                   },
                   "required": [
                     "@type",
-                    "scope",
-                    "common:reviewDetails",
-                    "common:referenceToNameOfReviewerAndInstitution",
-                    "common:referenceToCompleteReviewReport"
+                    "scope"
                   ]
                 },
                 "common:other": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "review",
+                "reviewDetails",
+                "referenceToNameOfReviewerAndInstitution",
+                "referenceToCompleteReviewReport"
+              ]
             },
             "complianceDeclarations": {
               "description": "Statements on compliance of several data set aspects with compliance requirements as defined by the referenced compliance system (e.g. an EPD scheme, handbook of a national or international data network such as the ILCD, etc.).",
@@ -928,20 +954,23 @@
                     "common:other": {
                       "type": "string"
                     }
-                  }
+                  },
+                  "required": [
+                    "common:referenceToComplianceSystem",
+                    "common:approvalOfOverallCompliance",
+                    "common:nomenclatureCompliance",
+                    "common:methodologicalCompliance",
+                    "common:reviewCompliance",
+                    "common:documentationCompliance",
+                    "common:qualityCompliance"
+                  ]
                 },
                 "common:other": {
                   "type": "string"
                 }
               },
               "required": [
-                "common:referenceToComplianceSystem",
-                "common:approvalOfOverallCompliance",
-                "common:nomenclatureCompliance",
-                "common:methodologicalCompliance",
-                "common:reviewCompliance",
-                "common:documentationCompliance",
-                "common:qualityCompliance"
+                "compliance"
               ]
             },
             "common:other": {
@@ -949,7 +978,9 @@
             }
           },
           "required": [
-            "LCIMethodAndAllocation"
+            "LCIMethodAndAllocation",
+            "validation",
+            "complianceDeclarations"
           ] 
         },
         "administrativeInformation": {
@@ -992,10 +1023,7 @@
                 "common:other": {
                   "type": "string"
                 }
-              },
-              "required": [
-                "common:referenceToPersonOrEntityGeneratingTheDataSet"
-              ]
+              }
             },
             "dataEntryBy": {
               "description": "Staff or entity, that documented the generated data set, entering the information into the database; plus administrative information linked to the data entry activity.",
@@ -1026,7 +1054,8 @@
               },
               "required": [
                 "common:timeStamp",
-                "common:referenceToDataSetFormat"
+                "common:referenceToDataSetFormat",
+                "common:referenceToPersonOrEntityEnteringTheData"
               ]
             },
             "publicationAndOwnership": {
@@ -1113,17 +1142,22 @@
                 }
               },
               "required": [
-                "common:dateOfLastRevision",
                 "common:dataSetVersion",
                 "common:permanentDataSetURI",
                 "common:referenceToOwnershipOfDataSet",
-                "common:copyright"
+                "common:copyright",
+                "common:licenseType"
               ]
             },
             "common:other": {
               "type": "string"
             }
-          }
+          },
+          "required": [
+            "common:commissionerAndGoal",
+            "dataEntryBy",
+            "publicationAndOwnership"
+          ]
         },
         "exchanges": {
           "type": "object",
@@ -1309,14 +1343,16 @@
                 }
               },
               "required": [
-                "meanAmount",
-                "uncertaintyDistributionType"
+                "meanAmount"
               ]
             },
             "common:other": {
               "type": "string"
             }
-          }
+          },
+          "required": [
+            "LCIAResult"
+          ]
         },
         "common:other": {
           "type": "string"
@@ -1332,7 +1368,8 @@
         "processInformation",
         "modellingAndValidation",
         "administrativeInformation",
-        "exchanges"
+        "exchanges",
+        "LCIAResults"
       ]
     }
   },

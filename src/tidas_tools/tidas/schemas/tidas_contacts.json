@@ -215,7 +215,8 @@
               "required": [
                 "common:UUID", 
                 "common:shortName", 
-                "common:name"
+                "common:name",
+                "classificationInformation"
               ]
             },
             "common:other": {
@@ -274,13 +275,18 @@
                 }
               },
               "required": [
-                "common:dataSetVersion"
+                "common:dataSetVersion",
+                "common:referenceToOwnershipOfDataSet"
               ]
             },
             "common:other": {
               "type": "string"
             }
-          }
+          },
+          "required": [
+            "dataEntryBy",
+            "publicationAndOwnership"
+          ]
         },
         "common:other": {
           "type": "string"
