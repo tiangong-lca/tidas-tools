@@ -168,24 +168,15 @@ def retrieve_schema(uri):
     if not uri.startswith(("http://", "https://")):
         # This is a local reference, load from package
         try:
-            # print(f"Trying to resolve local reference: {uri}")
-            with pkg_resources.open_text(schemas, uri) as f:
+            # Try finding the file directly in the schemas package
+            schema_path = pkg_resources.files(schemas) / uri
+            with open(schema_path, "r") as f:
                 schema_data = json.load(f)
                 # Create a proper resource object
                 return DRAFT7.create_resource(schema_data)
         except Exception as e:
             print(f"Failed to resolve: {uri}, error: {e}")
-            # Try alternative path resolution methods
-            try:
-                # Try finding the file directly in the schemas package
-                schema_path = pkg_resources.files(schemas) / uri
-                with open(schema_path, "r") as f:
-                    schema_data = json.load(f)
-                    # Create a proper resource object
-                    return DRAFT7.create_resource(schema_data)
-            except Exception as alt_e:
-                print(f"Alternative resolution also failed: {alt_e}")
-                raise
+            raise
     # For remote references, return None to indicate the reference couldn't be resolved
     return None
 
