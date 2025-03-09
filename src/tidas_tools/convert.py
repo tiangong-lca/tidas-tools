@@ -8,7 +8,7 @@ import sys
 import xmltodict
 
 logging.basicConfig(
-    filename="tidas_convert.log",
+    filename="tidas_tools.log",
     level=logging.INFO,
     format="%(asctime)s - %(message)s",
     datefmt="%d-%b-%y %H:%M:%S",
@@ -122,13 +122,13 @@ def convert_directory(input_dir, output_dir, to_xml=True):
 def main():
     parser = argparse.ArgumentParser(description="TIDAS and eILCD format converter.")
     parser.add_argument(
-        "--input_dir",
+        "--input-dir",
         "-i",
         type=str,
         help="Input directory containing files to process",
     )
     parser.add_argument(
-        "--output_dir",
+        "--output-dir",
         "-o",
         type=str,
         help="Output directory to store the converted files",
@@ -138,13 +138,13 @@ def main():
         "--to-eilcd",
         action="store_true",
         default=True,
-        help="Convert JSON files to XML format (default)",
+        help="Convert TIDAS to eILCD format (default)",
     )
     format_group.add_argument(
         "--to-tidas",
         action="store_true",
         dest="to_json",
-        help="Convert XML files to JSON format",
+        help="Convert eILCD to TIDAS format",
     )
 
     try:

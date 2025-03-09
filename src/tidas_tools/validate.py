@@ -13,7 +13,7 @@ from referencing.jsonschema import DRAFT7
 import tidas_tools.tidas.schemas as schemas
 
 logging.basicConfig(
-    filename="tidas_validate.log",
+    filename="tidas-tools.log",
     level=logging.INFO,
     format="%(asctime)s - %(message)s",
     datefmt="%d-%b-%y %H:%M:%S",
@@ -297,10 +297,10 @@ def category_validate(json_file_path: str, category: str):
 def main():
     parser = argparse.ArgumentParser(description="TIDAS format validator.")
     parser.add_argument(
-        "--input_dir",
+        "--input-dir",
         "-i",
         type=str,
-        help="Input directory containing files to process",
+        help="Input directory containing files to validate",
     )
     try:
         args = parser.parse_args()

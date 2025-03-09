@@ -1,63 +1,175 @@
+# TianGong TIDAS Tools User Guide
 
-# TianGong TIDAS Toolbox
+[English](./README.md) | [中文](./README_CN.md)
 
-## Env Preparing
+This toolkit is used for conversion and validation of TianGong TIDAS data formats.
 
-### Using Ubuntu
+---
+
+## 1. Introduction
+
+This toolkit contains two independent tools:
+
+- **TIDAS and eILCD Data Format Conversion Tool**
+- **TIDAS Data Validation Tool**
+
+---
+
+## 2. TIDAS and eILCD Data Format Conversion Tool Usage
+
+### (1) Installation Instructions
 
 ```bash
+# Install this toolkit
+pip install tidas-tools
+```
 
+### (2) Tool Functionalities
+
+This tool supports mutual conversion between the following two data formats:
+
+- TIDAS data format → eILCD data format (default mode)
+- eILCD data format → TIDAS data format
+
+### (3) Command-line Arguments
+
+| Argument | Short form | Description |
+|----------|------------|-------------|
+| `--help` | `-h` | Display help message |
+| `--input-dir` | `-i` | Directory containing data files to be converted (note: this directory must directly contain the data files, not their parent directory) |
+| `--output-dir` | `-o` | Output directory for converted data (the program will automatically generate the complete schema-compatible directory structure) |
+| `--to-eilcd` | | Convert data from TIDAS format to eILCD format (default mode) |
+| `--to-tidas` | | Convert data from eILCD format to TIDAS format |
+
+### (4) Usage Examples
+
+```bash
+# Convert TIDAS data to eILCD format
+tidas-convert --input-dir <TIDAS_data_directory> --output-dir <eILCD_output_directory> --to-eilcd
+
+# Convert eILCD data to TIDAS format
+tidas-convert --input-dir <eILCD_data_directory> --output-dir <TIDAS_output_directory> --to-tidas
+```
+
+---
+
+## 3. TIDAS Data Validation Tool Usage
+
+### (1) Tool Functionalities
+
+This tool validates whether TIDAS data complies with the specified format standards.
+
+### (2) Command-line Arguments
+
+| Argument | Short form | Description |
+|----------|------------|-------------|
+| `--help` | `-h` | Display help message |
+| `--input-dir` | `-i` | Directory containing TIDAS data to validate (note: this directory must directly contain the data files, not their parent directory) |
+
+### (3) Usage Example
+
+```bash
+# Validate TIDAS data format
+tidas-validate --input-dir <TIDAS_data_directory>
+```
+
+---
+
+## 4. Log File Information
+
+Both data conversion and validation tools will automatically generate execution logs. The log file name is:
+
+```
+tidas-tools.log
+```
+
+---
+
+## 5. Development Environment Setup and Contribution Guide
+
+If you wish to participate in development, you can set up your environment following these steps:
+
+### (1) Ubuntu System Environment Preparation
+
+```bash
+# Update repositories and install software management tools
 sudo apt update
 sudo apt install software-properties-common
+
+# Add the official PPA repository for the latest Python version and install Python 3.12
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt install -y python3.12
 
+# Install necessary dependency packages
 sudo apt install libxml2-dev libxslt-dev
 sudo apt-get install build-essential python3-dev
 
-
+# Upgrade software packages on the system
 sudo apt upgrade
 ```
 
-### Using Poetry
+### (2) Manage Python Environment with Poetry
 
 ```bash
+# Install Poetry
 curl -sSL https://install.python-poetry.org | python3 -
 
+# Activate Poetry environment
 poetry env activate
 
+# Display current Poetry environment information
 poetry env info
 
+# Install project dependencies (generate lock file first if it's the first-time installation)
 poetry lock
 poetry install
-
 ```
 
-### Auto Build
+---
 
-The auto build will be triggered by pushing any tag named like release-v$version. For instance, push a tag named as v0.0.1 will build a docker image of 0.0.1 version.
+## 6. Code Standards and Testing
 
-```bash
-#list existing tags
-git tag
-#creat a new tag
-git tag v0.0.1
-#push this tag to origin
-git push origin v0.0.1
-```
-
-
-### Lint and Format
+### (1) Code Formatting Tool (black recommended)
 
 ```bash
+# Automatically format code using black
 black .
 ```
 
-### Run Test
+### (2) Testing Instructions
+
+To test data conversion and validation functionalities, run the following commands:
 
 ```bash
-python src/tidas_tools/convert.py -i test_data/converted_json/data/ -o test_data/converted_xml --to-eilcd
-python src/tidas_tools/convert.py -i test_data/published_xml/ -o test_data/converted_json/ --to-tidas
+# Test converting TIDAS data to eILCD format
+python src/tidas_tools/convert.py -i <TIDAS_data_directory> -o <eILCD_data_directory> --to-eilcd
 
-python src/tidas_tools/validate.py -i test_data/converted_json/data/
+# Test converting eILCD data to TIDAS format
+python src/tidas_tools/convert.py --input-dir <eILCD_data_directory> --output-dir <TIDAS_data_directory> --to-tidas
+
+# Test TIDAS data validation functionality
+python src/tidas_tools/validate.py -i <eILCD_data_directory>
 ```
+
+---
+
+## 7. Automatic Building and Publishing (CI/CD)
+
+This project supports automatic building and publishing. When you push a git tag named with the `v<version>` format to the repository, it will trigger the workflow automatically. For example:
+
+```bash
+# List existing tags
+git tag
+
+# Create a new tag (e.g., version v0.0.1)
+git tag v0.0.1
+
+# Push the newly created tag to the remote repository to trigger automatic workflow
+git push origin v0.0.1
+```
+
+---
+
+## 8. Contribution
+
+We welcome your contributions! You can participate in the project by submitting issues or pull requests.
