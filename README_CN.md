@@ -1,6 +1,6 @@
 # TianGong TIDAS Tools 使用说明
 
-[English](./README.md) | [中文](./README_CN.md)
+[English](https://github.com/tiangong-lca/tidas-tools/blob/main/README.md) | [中文](https://github.com/tiangong-lca/tidas-tools/blob/main/README_CN.md)
 
 本工具箱用于 TianGong TIDAS 数据格式的转换和验证。
 

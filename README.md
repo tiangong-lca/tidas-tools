@@ -1,6 +1,6 @@
 # TianGong TIDAS Tools User Guide
 
-[English](./README.md) | [中文](./README_CN.md)
+[English](https://github.com/tiangong-lca/tidas-tools/blob/main/README.md) | [中文](https://github.com/tiangong-lca/tidas-tools/blob/main/README_CN.md)
 
 This toolkit is used for conversion and validation of TianGong TIDAS data formats.
 
