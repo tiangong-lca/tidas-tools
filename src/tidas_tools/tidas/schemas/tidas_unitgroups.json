@@ -97,7 +97,8 @@
               },
               "required": [
                 "common:UUID",
-                "common:name"
+                "common:name",
+                "classificationInformation"
               ]
             },
             "quantitativeReference": {
@@ -119,7 +120,8 @@
             }
           },
           "required": [
-            "dataSetInformation"
+            "dataSetInformation",
+            "quantitativeReference"
           ]
         },
         "modellingAndValidation": {
@@ -154,12 +156,18 @@
                 "common:other": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "compliance"
+              ]
             },
             "common:other": {
               "type": "string"
             }
-          }
+          },
+          "required": [
+            "complianceDeclarations"
+          ]
         },
         "administrativeInformation": {
           "type": "object",
@@ -209,13 +217,18 @@
                 }
               },
               "required": [
-                "common:dataSetVersion"
+                "common:dataSetVersion",
+                "common:referenceToOwnershipOfDataSet"
               ]
             },
             "common:other": {
               "type": "string"
             }
-          }
+          },
+          "required": [
+            "dataEntryBy",
+            "publicationAndOwnership"
+          ]
         },
         "units": {
           "type": "object",
@@ -280,7 +293,10 @@
         "@xmlns:common",
         "@xmlns:xsi",
         "@version",
-        "@xsi:schemaLocation"
+        "@xsi:schemaLocation",
+        "unitGroupInformation",
+        "modellingAndValidation",
+        "administrativeInformation"
       ]
     }
   },

@@ -234,7 +234,7 @@
               "required": [
                 "common:UUID",
                 "common:name",
-                "classification"
+                "classificationInformation"
               ]
             },
             "quantitativeReference": {
@@ -381,7 +381,11 @@
                 "common:other": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "modelName",
+                "modelDescription"
+              ]
             },
             "common:other": {
               "type": "string"
@@ -389,7 +393,9 @@
           },
           "required": [
             "dataSetInformation",
-            "geography"
+            "quantitativeReference",
+            "time",
+            "impactModel"
           ]
         },
         "modellingAndValidation": {
@@ -568,9 +574,16 @@
                                     "Evidence collection by means of plant visits and/or interviews"
                                   ]
                                 }
-                              }
+                              },
+                              "required": [
+                                "@name"
+                              ]
                             }
-                          }
+                          },
+                          "required": [
+                            "@name",
+                            "method"
+                          ]
                         },
                         {
                           "type": "array",
@@ -612,9 +625,16 @@
                                       "Evidence collection by means of plant visits and/or interviews"
                                     ]
                                   }
-                                }
+                                },
+                                "required": [
+                                  "@name"
+                                ]
                               }
-                            }
+                            },
+                            "required": [
+                              "@name",
+                              "method"
+                            ]
                           }
                         }
                       ]
@@ -641,7 +661,8 @@
                   },
                   "required": [
                     "@type",
-                    "scope"
+                    "scope",
+                    "common:referenceToNameOfReviewerAndInstitution"
                   ]
                 },
                 "common:other": {
@@ -720,20 +741,23 @@
                     "common:other": {
                       "type": "string"
                     }
-                  }
+                  },
+                  "required": [
+                    "common:referenceToComplianceSystem",
+                    "common:approvalOfOverallCompliance",
+                    "common:nomenclatureCompliance",
+                    "common:methodologicalCompliance",
+                    "common:reviewCompliance",
+                    "common:documentationCompliance",
+                    "common:qualityCompliance"
+                  ]
                 },
                 "common:other": {
                   "type": "string"
                 }
               },
               "required": [
-                "common:referenceToComplianceSystem",
-                "common:approvalOfOverallCompliance",
-                "common:nomenclatureCompliance",
-                "common:methodologicalCompliance",
-                "common:reviewCompliance",
-                "common:documentationCompliance",
-                "common:qualityCompliance"
+                "compliance"
               ]
             },
             "common:other": {
@@ -741,7 +765,10 @@
             }
           },
           "required": [
-            "completeness"
+            "LCIAMethodNormalisationAndWeighting",
+            "dataSources",
+            "validation",
+            "complianceDeclarations"
           ] 
         },
         "administrativeInformation": {
@@ -840,7 +867,8 @@
               },
               "required": [
                 "common:timeStamp",
-                "common:referenceToDataSetFormat"
+                "common:referenceToDataSetFormat",
+                "recommendationBy"
               ]
             },
             "publicationAndOwnership": {
@@ -904,13 +932,19 @@
               },
               "required": [
                 "common:dateOfLastRevision",
-                "common:dataSetVersion"
+                "common:dataSetVersion",
+                "common:referenceToOwnershipOfDataSet"
               ]
             },
             "common:other": {
               "type": "string"
             }
-          }
+          },
+          "required": [
+            "dataGenerator",
+            "dataEntryBy",
+            "publicationAndOwnership"
+          ]
         },
         "characterisationFactors": {
           "description": "Flow / Exchanges list with corresponding impact factors according to the respective LCIA method.",
@@ -1111,7 +1145,16 @@
         "common:other": {
           "type": "string"
         }
-      }
+      },
+      "required": [
+        "LCIAMethodInformation",
+        "modellingAndValidation",
+        "administrativeInformation",
+        "characterisationFactors"
+      ]
     }
-  }
+  },
+  "required": [
+    "LCIAMethodDataSet"
+  ]
 }

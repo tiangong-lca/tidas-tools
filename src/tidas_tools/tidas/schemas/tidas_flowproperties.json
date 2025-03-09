@@ -173,7 +173,10 @@
                 "common:other": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "compliance"
+              ]
             },
             "common:other": {
               "type": "string"
@@ -236,7 +239,8 @@
                 }
               },
               "required": [
-                "common:dataSetVersion"
+                "common:dataSetVersion",
+                "common:referenceToOwnershipOfDataSet"
               ]
             },
             "common:other": {

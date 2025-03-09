@@ -72,8 +72,7 @@
                   "required": [
                     "baseName",
                     "treatmentStandardsRoutes",
-                    "mixAndLocationTypes",
-                    "functionalUnitFlowProperties"
+                    "mixAndLocationTypes"
                   ]
                 },
                 "classificationInformation": {
@@ -244,7 +243,10 @@
                         "common:class"
                       ]
                     }
-                  }
+                  },
+                  "required": [
+                    "common:classification"
+                  ]
                 },
                 "referenceToResultingProcess": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
@@ -306,11 +308,7 @@
                             "groupName": {
                               "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
                             }
-                          },
-                          "required": [
-                            "@id",
-                            "groupName"
-                          ]
+                          }
                         },
                         {
                           "type": "array",
@@ -324,19 +322,12 @@
                               "groupName": {
                                 "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
                               }
-                            },
-                            "required": [
-                              "@id",
-                              "groupName"
-                            ]
+                            }
                           }
                         }
                       ]
                     }
-                  },
-                  "required": [
-                    "group"
-                  ]
+                  }
                 },
                 "processes": {
                   "type": "object",
@@ -382,10 +373,7 @@
                                             "pattern": "^-?\\d+$",
                                             "description": "Data set internal ID of the group."
                                           }
-                                        },
-                                        "required": [
-                                          "@groupId"
-                                        ]
+                                        }
                                       },
                                       {
                                         "type": "array",
@@ -397,10 +385,7 @@
                                               "pattern": "^-?\\d+$",
                                               "description": "Data set internal ID of the group."
                                             }
-                                          },
-                                          "required": [
-                                            "@groupId"
-                                          ]
+                                          }
                                         }
                                       }
                                     ]
@@ -421,10 +406,7 @@
                                             "$ref": "tidas_data_types.json#/$defs/MatV",
                                             "description": "Name of free parameter"
                                           }
-                                        },
-                                        "required": [
-                                          "@name"
-                                        ]
+                                        }
                                       },
                                       {
                                         "type": "array",
@@ -435,10 +417,7 @@
                                               "$ref": "tidas_data_types.json#/$defs/MatV",
                                               "description": "Name of free parameter"
                                             }
-                                          },
-                                          "required": [
-                                            "@name"
-                                          ]
+                                          }
                                         }
                                       }
                                     ]
@@ -537,6 +516,7 @@
                                           }
                                         },
                                         "required": [
+                                          "@dominant",
                                           "@flowUUID",
                                           "downstreamProcess"
                                         ]
@@ -628,6 +608,7 @@
                                             }
                                           },
                                           "required": [
+                                            "@dominant",
                                             "@flowUUID",
                                             "downstreamProcess"
                                           ]
@@ -643,9 +624,8 @@
                             },
                             "required": [
                             "@dataSetInternalID",
-                            "referenceToProcess",
                             "@multiplicationFactor",
-                            "groups",
+                            "referenceToProcess",
                             "connections"
                             ]
                           }
@@ -685,10 +665,7 @@
                                           "pattern": "^-?\\d+$",
                                           "description": "Data set internal ID of the group."
                                         }
-                                      },
-                                      "required": [
-                                        "@groupId"
-                                      ]
+                                      }
                                     },
                                     {
                                       "type": "array",
@@ -700,10 +677,7 @@
                                             "pattern": "^-?\\d+$",
                                             "description": "Data set internal ID of the group."
                                           }
-                                        },
-                                        "required": [
-                                          "@groupId"
-                                        ]
+                                        }
                                       }
                                     }
                                   ]
@@ -728,10 +702,7 @@
                                           "$ref": "tidas_data_types.json#/$defs/Real",
                                           "description": "Value of the parameter."
                                         }
-                                      },
-                                      "required": [
-                                        "@name"
-                                      ]
+                                      }
                                     },
                                     {
                                       "type": "array",
@@ -746,10 +717,7 @@
                                             "$ref": "tidas_data_types.json#/$defs/Real",
                                             "description": "Value of the parameter."
                                           }
-                                        },
-                                        "required": [
-                                        "@name"
-                                        ]
+                                        }
                                       }
                                     }
                                   ]
@@ -848,6 +816,7 @@
                                         }
                                       },
                                       "required": [
+                                        "@dominant",
                                         "@flowUUID",
                                         "downstreamProcess"
                                       ]
@@ -930,8 +899,8 @@
                                                     }
                                                   },
                                                   "required": [
-                                                  "@id",
-                                                  "@flowUUID"
+                                                    "@id",
+                                                    "@flowUUID"
                                                   ]
                                                 }
                                               }
@@ -939,6 +908,7 @@
                                           }
                                         },
                                         "required": [
+                                          "@dominant",
                                           "@flowUUID",
                                           "downstreamProcess"
                                         ]
@@ -946,7 +916,10 @@
                                     }
                                   ]
                                 }
-                              }
+                              },
+                              "required": [
+                                "outputExchange"
+                              ]
                             },
                             "common:other": {
                               "type": "string"
@@ -954,9 +927,8 @@
                           },
                           "required": [
                           "@dataSetInternalID",
-                          "referenceToProcess",
                           "@multiplicationFactor",
-                          "groups",
+                          "referenceToProcess",
                           "connections"
                           ]
                         }
@@ -973,7 +945,6 @@
                 }
               },
               "required": [
-                "groupDeclarations",
                 "processes"
               ]
             }
@@ -1028,8 +999,7 @@
                         }
                       },
                       "required": [
-                        "common:referenceToNameOfReviewerAndInstitution",
-                        "common:referenceToCompleteReviewReport"
+                        "common:referenceToNameOfReviewerAndInstitution"
                       ]
                     },
                     {
@@ -1054,8 +1024,7 @@
                           }
                         },
                         "required": [
-                          "common:referenceToNameOfReviewerAndInstitution",
-                          "common:referenceToCompleteReviewReport"
+                          "common:referenceToNameOfReviewerAndInstitution"
                         ]
                       }
                     }
@@ -1064,7 +1033,10 @@
                 "common:other": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "review"
+              ]
             },
             "complianceDeclarations": {
               "description": "One or more declarations of compliance to selected standards, schemes and other references, e.g. ISO 14040, ISO 14044, ILCD, EF, EN 15804, ...",
@@ -1147,12 +1119,19 @@
                 "common:other": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "compliance"
+              ]
             },
             "common:other": {
               "type": "string"
             }
-          }
+          },
+          "required": [
+            "validation",
+            "complianceDeclarations"
+          ]
         },
         "administrativeInformation": {
           "type": "object",
@@ -1179,8 +1158,7 @@
                 }
               },
               "required": [
-                "common:referenceToCommissioner",
-                "common:intendedApplications"
+                "common:referenceToCommissioner"
               ]
             },
             "dataGenerator": {
@@ -1194,10 +1172,7 @@
                 "common:other": {
                   "type": "string"
                 }
-              },
-              "required": [
-                "common:referenceToPersonOrEntityGeneratingTheDataSet"
-              ]
+              }
             },
             "dataEntryBy": {
               "description": "\"Contact data set\" of the responsible person or entity that has documented this data set, i.e. entered the data and the descriptive information.",
@@ -1220,8 +1195,9 @@
                 }
               },
               "required": [
-                "common:referenceToPersonOrEntityEnteringTheDataSet",
-                "common:timeStamp"
+                "common:timeStamp",
+                "common:referenceToDataSetFormat",
+                "common:referenceToPersonOrEntityEnteringTheDataSet"
               ]
             },
             "publicationAndOwnership": {
@@ -1281,14 +1257,18 @@
                 "common:permanentDataSetURI",
                 "common:referenceToOwnershipOfDataSet",
                 "common:copyright",
-                "common:licenseType",
-                "common:accessRestrictions"
+                "common:licenseType"
               ]
             },
             "common:other": {
               "type": "string"
             }
-          }
+          },
+          "required": [
+            "common:commissionerAndGoal",
+            "dataEntryBy",
+            "publicationAndOwnership"
+          ]
         },
         "common:other": {
           "type": "string"

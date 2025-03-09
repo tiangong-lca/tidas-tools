@@ -116,10 +116,7 @@
                       "type": "string",
                       "format": "uri"
                     }
-                  },
-                  "required": [
-                    "@uri"
-                  ]
+                  }
                 },
                 "referenceToContact": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
@@ -135,13 +132,17 @@
               },
               "required": [
                 "common:UUID",
-                "common:shortName"
+                "common:shortName",
+                "classificationInformation"
               ]
             },
             "common:other": {
               "type": "string"
             }
-          }
+          },
+          "required": [
+            "dataSetInformation"
+          ]
         },
         "administrativeInformation": {
           "type": "object",
@@ -193,13 +194,18 @@
                 }
               },
               "required": [
-                "common:dataSetVersion"
+                "common:dataSetVersion",
+                "common:referenceToOwnershipOfDataSet"
               ]
             },
             "common:other": {
               "type": "string"
             }
-          }
+          },
+          "required": [
+            "dataEntryBy",
+            "publicationAndOwnership"
+          ]
         },
         "common:other": {
           "type": "string"

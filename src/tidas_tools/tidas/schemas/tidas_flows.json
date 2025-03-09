@@ -65,8 +65,7 @@
                   "required": [
                     "baseName",
                     "treatmentStandardsRoutes",
-                    "mixAndLocationTypes",
-                    "flowProperties"
+                    "mixAndLocationTypes"
                   ]
                 },
                 "common:synonyms": {
@@ -462,10 +461,7 @@
                 "common:other": {
                   "type": "string"
                 }
-              },
-              "required": [
-                "locationOfSupply"
-              ]
+              }
             },
             "technology": {
               "type": "object",
@@ -481,10 +477,7 @@
                 "common:other": {
                   "type": "string"
                 }
-              },
-              "required": [
-                "technologicalApplicability"
-              ]
+              }
             },
             "common:other": {
               "type": "string"
@@ -492,8 +485,7 @@
           },
           "required": [
             "dataSetInformation",
-            "quantitativeReference",
-            "geography"
+            "quantitativeReference"
           ]
         },
         "modellingAndValidation": {
@@ -613,7 +605,8 @@
                 }
               },
               "required": [
-                "common:dataSetVersion"
+                "common:dataSetVersion",
+                "common:referenceToOwnershipOfDataSet"
               ]
             },
             "common:other": {
