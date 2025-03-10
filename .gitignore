@@ -152,3 +152,6 @@ test_data/*
 /*.py
 
 poetry.lock
+
+tidas.zip
+tidas/

@@ -22,6 +22,7 @@ include = ["src/tidas_tools/eilcd/*.*", "src/tidas_tools/tidas/*.*"]
 
 [tool.poetry.scripts]
 tidas-convert = "tidas_tools.convert_cli:main"
+tidas-export = "tidas_tools.export_cli:main"
 tidas-validate = "tidas_tools.validate_cli:main"
 
 [tool.poetry.group.dev.dependencies]

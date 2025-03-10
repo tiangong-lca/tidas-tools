@@ -1,9 +1,9 @@
-from tidas_tools.convert import main as convert_main
+from tidas_tools.convert import main as export_main
 
 
 def main():
 
-    convert_main()
+    export_main()
 
 
 if __name__ == "__main__":

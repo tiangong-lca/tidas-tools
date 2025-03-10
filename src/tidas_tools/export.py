@@ -4,6 +4,7 @@ import os
 import shutil
 import sys
 from pathlib import Path
+import json
 
 import boto3
 import psycopg2
@@ -11,13 +12,18 @@ import xmltodict
 from dotenv import load_dotenv
 from tqdm import tqdm
 
+# ANSI color codes
+GREEN = "\033[92m"
+RED = "\033[91m"
+RESET = "\033[0m"
+
 
 def setup_logging(verbose):
     """Configure logging"""
     log_level = logging.DEBUG if verbose else logging.INFO
 
     handlers = [
-        logging.FileHandler("export_xml.log", mode="w"),
+        logging.FileHandler("tidas_export.log", mode="w"),
         logging.StreamHandler(sys.stdout),
     ]
 
@@ -35,33 +41,43 @@ def zip_folder(folder_path, output_path):
     return f"{output_path}.zip"
 
 
-def process_record(input_dir, category, record):
+def process_record(output_dir, category, record, to_tidas=True):
     """Process a single record and save as XML"""
     id, json_ordered, version = record
-    xml_data = xmltodict.unparse(json_ordered, pretty=True)
 
-    category_dir = Path(input_dir) / category
+    category_dir = Path(output_dir) / category
     category_dir.mkdir(exist_ok=True, parents=True)
 
-    xml_path = category_dir / f"{id}_{version}.xml"
-    with open(xml_path, "w") as f:
-        f.write(xml_data)
+    if to_tidas:
+        tidas_path = category_dir / f"{id}_{version}.json"
+        with open(tidas_path, "w") as f:
+            json.dump(json_ordered, f, indent=2)
+    else:
+        xml_data = xmltodict.unparse(json_ordered, pretty=True)
+        eilcd_path = category_dir / f"{id}_{version}.xml"
+        with open(eilcd_path, "w") as f:
+            f.write(xml_data)
 
 
-def process_common_record(input_dir, record):
+def process_common_record(output_dir, record, to_tidas=True):
     """Process a common record and save as XML"""
     id, json_ordered = record
-    xml_data = xmltodict.unparse(json_ordered, pretty=True)
 
-    input_path = Path(input_dir)
+    input_path = Path(output_dir)
     input_path.mkdir(exist_ok=True, parents=True)
 
-    xml_path = input_path / f"{id}.xml"
-    with open(xml_path, "w") as f:
-        f.write(xml_data)
+    if to_tidas:
+        tidas_path = input_path / f"{id}.json"
+        with open(tidas_path, "w") as f:
+            json.dump(json_ordered, f, indent=2)
+    else:
+        xml_data = xmltodict.unparse(json_ordered, pretty=True)
+        eilcd_path = input_path / f"{id}.xml"
+        with open(eilcd_path, "w") as f:
+            f.write(xml_data)
 
 
-def export_common_records(conn, input_dir):
+def export_common_records(conn, output_dir, to_tidas=True):
     """Export common records"""
     logging.info("Exporting common records...")
     cursor = conn.cursor()
@@ -82,47 +98,68 @@ def export_common_records(conn, input_dir):
 
     with tqdm(total=total, desc="Exporting common records") as pbar:
         for record in records:
-            process_common_record(input_dir, record)
+            process_common_record(output_dir, record, to_tidas)
             pbar.update(1)
 
     cursor.close()
     logging.info(f"Exported {total} common records")
 
 
-def export_category_records(conn, input_dir, categories):
+def export_category_records(conn, output_dir, categories, to_tidas=True):
     """Export records by category"""
     logging.info("Exporting category records...")
 
     # Create directories for all categories
     for category in categories:
-        category_dir = Path(input_dir) / category
+        category_dir = Path(output_dir) / category
         category_dir.mkdir(exist_ok=True, parents=True)
 
     for category in categories:
-        cursor = conn.cursor()
-        cursor.execute(
-            f"SELECT id, json_ordered, version FROM {category} WHERE state_code = 100"
-        )
+        try:
+            # Get total record count for accurate progress bar
+            count_cursor = conn.cursor()
+            count_cursor.execute(
+                f"SELECT COUNT(*) FROM {category} WHERE state_code = 100"
+            )
+            total_count = count_cursor.fetchone()[0]
+            count_cursor.close()
 
-        batch_size = 500
-        total_exported = 0
+            if total_count == 0:
+                logging.info(f"No records found in {category}")
+                continue
 
-        while True:
-            records = cursor.fetchmany(batch_size)
-            if not records:
-                break
+            cursor = conn.cursor()
+            # Set statement timeout (10 minutes)
+            cursor.execute("SET statement_timeout = '600000';")
+            cursor.execute(
+                f"SELECT id, json_ordered, version FROM {category} WHERE state_code = 100"
+            )
 
-            with tqdm(total=len(records), desc=f"Exporting {category}") as pbar:
-                for record in records:
-                    process_record(input_dir, category, record)
-                    pbar.update(1)
-                    total_exported += 1
+            batch_size = 500
+            total_exported = 0
 
-        cursor.close()
-        logging.info(f"Exported {total_exported} {category} records")
+            # Use a single progress bar for the entire category
+            with tqdm(total=total_count, desc=f"Exporting {category}") as pbar:
+                while True:
+                    records = cursor.fetchmany(batch_size)
+                    if not records:
+                        break
+
+                    for record in records:
+                        process_record(output_dir, category, record, to_tidas)
+                        pbar.update(1)
+                        total_exported += 1
+
+            cursor.close()
+            logging.info(f"Exported {total_exported} {category} records")
+
+        except Exception as e:
+            logging.error(f"Error exporting {category}: {str(e)}")
+            # Continue with next category rather than aborting everything
+            continue
 
 
-def download_external_docs(s3, bucket_name, input_dir):
+def download_external_docs(s3, bucket_name, output_dir):
     """Download external documents from S3"""
     logging.info("Downloading external documents...")
 
@@ -139,7 +176,7 @@ def download_external_docs(s3, bucket_name, input_dir):
             logging.info("No documents in bucket")
             return
 
-        external_docs_dir = Path(input_dir) / "external_docs"
+        external_docs_dir = Path(output_dir) / "external_docs"
         external_docs_dir.mkdir(exist_ok=True, parents=True)
 
         with tqdm(total=total_files, desc="Downloading external documents") as pbar:
@@ -163,24 +200,39 @@ def download_external_docs(s3, bucket_name, input_dir):
 def parse_arguments():
     """Parse command line arguments"""
     parser = argparse.ArgumentParser(
-        description="Export database records as XML files and create a ZIP archive. "
-        "This tool connects to a database, exports records as XML, optionally downloads "
+        description="Export database records and create a ZIP archive. "
+        "This tool connects to a database, exports records, optionally downloads "
         "external documents from S3-compatible storage, and creates a ZIP archive containing "
         "all exported data."
     )
 
     parser.add_argument(
-        "--input-dir",
-        default="dist/tiangong",
+        "--output-dir",
+        "-o",
+        default="tidas",
         help="Input directory to store XML files",
     )
     parser.add_argument(
         "--output-zip",
-        default="dist/tiangong",
+        "-z",
+        default="tidas",
         help="Output zip filename (without .zip extension)",
     )
+    format_group = parser.add_mutually_exclusive_group()
+    format_group.add_argument(
+        "--to-tidas",
+        action="store_true",
+        default=True,
+        help="Export in TIDAS JSON format (default)",
+    )
+    format_group.add_argument(
+        "--to-eilcd",
+        action="store_false",
+        dest="to_tidas",
+        help="Export in EILCD XML format",
+    )
     parser.add_argument(
-        "--env-file", default=".env", help="Path to .env file with credentials"
+        "--env-file", "-e", default=".env", help="Path to .env file with credentials"
     )
     parser.add_argument("--db-user", help="Database username")
     parser.add_argument("--db-password", help="Database password")
@@ -228,14 +280,14 @@ def main():
     missing_db_params = [k for k, v in db_params.items() if not v and k != "port"]
     if missing_db_params:
         print(
-            f"\033[91mError: Missing database parameters: {', '.join(missing_db_params)}\033[0m",
+            f"{RED}Error: Missing database parameters: {', '.join(missing_db_params)}{RESET}",
             file=sys.stderr,
         )
         return 1
 
     try:
         # Create input directory
-        Path(args.input_dir).mkdir(exist_ok=True, parents=True)
+        Path(args.output_dir).mkdir(exist_ok=True, parents=True)
 
         # Create output directory
         Path(args.output_zip).parent.mkdir(exist_ok=True, parents=True)
@@ -246,7 +298,7 @@ def main():
         logging.info("Database connection successful")
 
         # Export common records
-        export_common_records(conn, args.input_dir)
+        export_common_records(conn, args.output_dir)
 
         # Export category records
         categories = [
@@ -259,7 +311,7 @@ def main():
             "lciamethods",
             "lifecyclemodels",
         ]
-        export_category_records(conn, args.input_dir, categories)
+        export_category_records(conn, args.output_dir, categories)
 
         # Close database connection
         conn.close()
@@ -284,26 +336,26 @@ def main():
                 s3 = boto3.client("s3", **aws_params)
 
                 # Download external documents
-                download_external_docs(s3, bucket, args.input_dir)
+                download_external_docs(s3, bucket, args.output_dir)
             else:
                 logging.warning(
                     "Missing AWS parameters, skipping external document download"
                 )
 
         # Compress output
-        zip_file = zip_folder(args.input_dir, args.output_zip)
+        zip_file = zip_folder(args.output_dir, args.output_zip)
 
-        print(f"\033[92mExport successfully completed!\033[0m")
+        print(f"{GREEN}Export successfully completed!{RESET}")
         print(f"Output file: {zip_file}")
         return 0
 
     except psycopg2.Error as e:
         logging.error(f"Database error: {str(e)}")
-        print(f"\033[91mDatabase error: {str(e)}\033[0m", file=sys.stderr)
+        print(f"{RED}Database error: {str(e)}{RESET}", file=sys.stderr)
         return 1
     except Exception as e:
         logging.error(f"Error: {str(e)}")
-        print(f"\033[91mError: {str(e)}\033[0m", file=sys.stderr)
+        print(f"{RED}Error: {str(e)}{RESET}", file=sys.stderr)
         return 1
 
 
