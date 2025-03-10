@@ -8,7 +8,11 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.9,<4.0"
 dependencies = [
+"boto3==1.37.9",
 "jsonschema==4.23.0",
+"psycopg2-binary==2.9.10",
+"python-dotenv==1.0.1",
+"tqdm==4.67.1",
 "xmltodict==0.14.2",
 ]
 
