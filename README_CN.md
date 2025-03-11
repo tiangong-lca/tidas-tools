@@ -1,5 +1,10 @@
 # TianGong TIDAS Tools 使用说明
 
+[![PyPI](https://img.shields.io/pypi/v/tidas-tools.svg)][pypi status]
+[![Python Version](https://img.shields.io/pypi/pyversions/tidas-tools)][pypi status]
+
+[pypi status]: https://pypi.org/project/tidas-tools/
+
 [English](https://github.com/tiangong-lca/tidas-tools/blob/main/README.md) | [中文](https://github.com/tiangong-lca/tidas-tools/blob/main/README_CN.md)
 
 本工具箱用于 TianGong TIDAS 数据格式的转换和验证。

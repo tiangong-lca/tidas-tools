@@ -1,5 +1,10 @@
 # TianGong TIDAS Tools User Guide
 
+[![PyPI](https://img.shields.io/pypi/v/tidas-tools.svg)][pypi status]
+[![Python Version](https://img.shields.io/pypi/pyversions/tidas-tools)][pypi status]
+
+[pypi status]: https://pypi.org/project/tidas-tools/
+
 [English](https://github.com/tiangong-lca/tidas-tools/blob/main/README.md) | [中文](https://github.com/tiangong-lca/tidas-tools/blob/main/README_CN.md)
 
 This toolkit is used for conversion and validation of TianGong TIDAS data formats.
