@@ -7,12 +7,22 @@ import sys
 
 import xmltodict
 
-logging.basicConfig(
-    filename="tidas_tools.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(message)s",
-    datefmt="%d-%b-%y %H:%M:%S",
-)
+
+def setup_logging(verbose):
+    """Configure logging"""
+    log_level = logging.DEBUG if verbose else logging.INFO
+
+    handlers = [
+        logging.FileHandler("tidas_convert.log", mode="w"),
+        logging.StreamHandler(sys.stdout),
+    ]
+
+    logging.basicConfig(
+        level=log_level,
+        format="%(asctime)s:%(levelname)s:%(message)s",
+        handlers=handlers,
+    )
+
 
 GREEN = "\033[92m"
 RED = "\033[91m"
@@ -133,6 +143,9 @@ def main():
         type=str,
         help="Output directory to store the converted files",
     )
+    parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Enable verbose logging"
+    )
     format_group = parser.add_mutually_exclusive_group()
     format_group.add_argument(
         "--to-eilcd",
@@ -149,6 +162,8 @@ def main():
 
     try:
         args = parser.parse_args()
+
+        setup_logging(args.verbose)
 
         if not args.input_dir or not args.output_dir:
             error_msg = "Input and output directories must be specified"

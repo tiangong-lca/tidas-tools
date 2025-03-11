@@ -12,12 +12,22 @@ from referencing.jsonschema import DRAFT7
 
 import tidas_tools.tidas.schemas as schemas
 
-logging.basicConfig(
-    filename="tidas-tools.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(message)s",
-    datefmt="%d-%b-%y %H:%M:%S",
-)
+
+def setup_logging(verbose):
+    """Configure logging"""
+    log_level = logging.DEBUG if verbose else logging.INFO
+
+    handlers = [
+        logging.FileHandler("tidas_validate.log", mode="w"),
+        logging.StreamHandler(sys.stdout),
+    ]
+
+    logging.basicConfig(
+        level=log_level,
+        format="%(asctime)s:%(levelname)s:%(message)s",
+        handlers=handlers,
+    )
+
 
 GREEN = "\033[92m"
 RED = "\033[91m"
@@ -302,8 +312,14 @@ def main():
         type=str,
         help="Input directory containing files to validate",
     )
+    parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Enable verbose logging"
+    )
     try:
         args = parser.parse_args()
+
+        setup_logging(args.verbose)
+
         for category in os.listdir(args.input_dir):
             try:
                 if category == "external_docs":
