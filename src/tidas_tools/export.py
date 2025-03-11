@@ -225,12 +225,12 @@ def parse_arguments():
     parser.add_argument("--aws-secret-access-key", help="AWS secret access key")
     parser.add_argument("--aws-bucket", help="AWS bucket for external documents")
     parser.add_argument(
-        "--verbose", "-v", action="store_true", help="Enable verbose logging"
-    )
-    parser.add_argument(
         "--skip-external-docs",
         action="store_true",
         help="Skip downloading external documents",
+    )
+    parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Enable verbose logging"
     )
 
     return parser.parse_args()

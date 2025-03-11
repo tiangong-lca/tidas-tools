@@ -39,8 +39,7 @@ def convert_directory(input_dir, output_dir, to_xml=True):
         os.makedirs(data_dir, exist_ok=True)
         logging.info(f"Created output directory: {data_dir}")
     except Exception as e:
-        error_msg = f"Failed to create output directory: {e}"
-        logging.error(error_msg)
+        logging.error(f"Failed to create output directory: {e}")
         return
 
     for root, dirs, files in os.walk(input_dir):
@@ -51,8 +50,7 @@ def convert_directory(input_dir, output_dir, to_xml=True):
             )  # Put subdirectories under data
             os.makedirs(target_dir, exist_ok=True)
         except Exception as e:
-            error_msg = f"Failed to create directory {target_dir}: {e}"
-            logging.error(error_msg)
+            logging.error(f"Failed to create directory {target_dir}: {e}")
             continue
 
         for file in files:
@@ -90,17 +88,14 @@ def convert_directory(input_dir, output_dir, to_xml=True):
                     success_msg = f"Converted: {source_file} -> {target_file}"
                     logging.info(success_msg)
                 except Exception as e:
-                    error_msg = f"Error converting {source_file}: {e}"
-                    logging.error(error_msg)
+                    logging.error(f"Error converting {source_file}: {e}")
             else:
                 target_file = os.path.join(target_dir, file)
                 try:
                     shutil.copy2(source_file, target_file)
-                    copy_msg = f"Copied: {source_file} -> {target_file}"
-                    logging.info(copy_msg)
+                    logging.info(f"Copied: {source_file} -> {target_file}")
                 except Exception as e:
-                    error_msg = f"Error copying {source_file}: {e}"
-                    logging.error(error_msg)
+                    logging.error(f"Error copying {source_file}: {e}")
 
 
 def main():
@@ -117,9 +112,6 @@ def main():
         type=str,
         help="Output directory to store the converted files",
     )
-    parser.add_argument(
-        "--verbose", "-v", action="store_true", help="Enable verbose logging"
-    )
     format_group = parser.add_mutually_exclusive_group()
     format_group.add_argument(
         "--to-eilcd",
@@ -133,6 +125,9 @@ def main():
         dest="to_json",
         help="Convert eILCD to TIDAS format",
     )
+    parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Enable verbose logging"
+    )
 
     try:
         args = parser.parse_args()
@@ -140,14 +135,12 @@ def main():
         setup_logging(args.verbose, "convert")
 
         if not args.input_dir or not args.output_dir:
-            error_msg = "Input and output directories must be specified"
-            logging.error(error_msg)
+            logging.error("Input and output directories must be specified")
             parser.print_help()
             sys.exit(1)
 
         if not os.path.isdir(args.input_dir):
-            error_msg = f"Input directory '{args.input_dir}' does not exist or is not a directory."
-            logging.error(error_msg)
+            logging.error(f"Input directory '{args.input_dir}' does not exist or is not a directory.")
             sys.exit(1)
 
         os.makedirs(args.output_dir, exist_ok=True)
@@ -207,11 +200,9 @@ def main():
                 complete_msg = "Conversion from eILCD to TIDAS complete."
                 logging.info(complete_msg)
         except Exception as e:
-            error_msg = f"Error copying template files: {e}"
-            logging.error(error_msg)
+            logging.error(f"Error copying template files: {e}")
     except Exception as e:
-        error_msg = f"Unexpected error: {e}"
-        logging.error(error_msg)
+        logging.error(f"Unexpected error: {e}")
         sys.exit(1)
 
 

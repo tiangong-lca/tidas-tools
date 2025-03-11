@@ -45,6 +45,7 @@ This tool supports mutual conversion between the following two data formats:
 | `--output-dir` | `-o` | Output directory for converted data (the program will automatically generate the complete schema-compatible directory structure) |
 | `--to-eilcd` | | Convert data from TIDAS format to eILCD format (default mode) |
 | `--to-tidas` | | Convert data from eILCD format to TIDAS format |
+| `--verbose` | `-v` | Enable verbose logging |
 
 ### (4) Usage Examples
 
@@ -70,6 +71,7 @@ This tool validates whether TIDAS data complies with the specified format standa
 |----------|------------|-------------|
 | `--help` | `-h` | Display help message |
 | `--input-dir` | `-i` | Directory containing TIDAS data to validate (note: this directory must directly contain the data files, not their parent directory) |
+| `--verbose` | `-v` | Enable verbose logging |
 
 ### (3) Usage Example
 
@@ -78,19 +80,70 @@ This tool validates whether TIDAS data complies with the specified format standa
 tidas-validate --input-dir <TIDAS_data_directory>
 ```
 
+## 4. TIDAS Export Tool Documentation
+
+### (1) Tool Functionalities
+
+This tool exports data records in either TIDAS or eILCD format. It also optionally downloads supplementary files and bundles them into a final zip archive.
+
+### (2) Command-line Arguments and Environment Variables
+
+| Parameter                 | Short | Description                                     |
+|---------------------------|-------|-------------------------------------------------|
+| `--help`                  | `-h`  | Display help information                        |
+| `--to-tidas`              | -     | Export data in TIDAS format (default)           |
+| `--to-eilcd`              | None  | Export data in eILCD format                     |
+| `--input-dir`             | `-i`  | Input directory containing files to export      |
+| `--output-zip`            | `-z`  | Output path for the zip file                    |
+| `--env-file`              | `-e`  | Path to .env file containing DB and AWS credentials|
+| `--skip-external-docs`    |       | Skip downloading external supplementary files   |
+| `--to-tidas`              |       | Export in TIDAS format (default option)         |
+| `--to-eilcd`              |       | Export in eILCD format (mutually exclusive)     |
+| `--verbose`               | `-v`  | Enable verbose logging                          |
+| `--db-user`               |       | Database username                               |
+| `--db-password`           |       | Database password                               |
+| `--db-host`               |       | Database host                                   |
+| `--db-port`               |       | Database port (default: 5432)                   |
+| `--db-name`               |       | Database name                                   |
+| `--aws-access-key-id`     |       | AWS access key ID                               |
+| `--aws-secret-access-key` |       | AWS secret access key                           |
+| `--aws-region`            |       | AWS region                                      |
+
+Credentials can also be set via environment variables (defaults to the .env file in the current directory):
+
+```env
+DB_USER=
+DB_PASSWORD=
+DB_HOST=
+DB_PORT=5432
+DB_NAME=postgres
+AWS_REGION=
+AWS_ENDPOINT=
+```
+
+### (3) Usage Example
+
+```bash
+# Export records to TIDAS format and produce a ZIP archive.
+tidas-export -i <TIDAS_input_directory> -z <TIDAS_ZIP_File> --to-tidas
+
+# Export records to eILCD format without downloading supplementary files
+tidas-export -z <eILCD_ZIP_File> --to-eilcd --skip-external-docs
+```
+
 ---
 
-## 4. Log File Information
+## 5. Log File Information
 
 Both data conversion and validation tools will automatically generate execution logs. The log file name is:
 
 ```
-tidas-tools.log
+tidas-{function_name}.log
 ```
 
 ---
 
-## 5. Development Environment Setup and Contribution Guide
+## 6. Development Environment Setup and Contribution Guide
 
 If you wish to participate in development, you can set up your environment following these steps:
 
@@ -132,7 +185,7 @@ poetry install
 
 ---
 
-## 6. Code Standards and Testing
+## 7. Code Standards and Testing
 
 ### (1) Code Formatting Tool (black recommended)
 
@@ -158,7 +211,7 @@ python src/tidas_tools/validate.py -i <eILCD_data_directory>
 
 ---
 
-## 7. Automatic Building and Publishing (CI/CD)
+## 8. Automatic Building and Publishing (CI/CD)
 
 This project supports automatic building and publishing. When you push a git tag named with the `v<version>` format to the repository, it will trigger the workflow automatically. For example:
 
@@ -175,6 +228,6 @@ git push origin v0.0.1
 
 ---
 
-## 8. Contribution
+## 9. Contribution
 
 We welcome your contributions! You can participate in the project by submitting issues or pull requests.

@@ -45,6 +45,7 @@ pip install tidas-tools
 | `--output-dir` | `-o` | 转换后数据输出目录（程序会自动生成包含完整 schema 的目录结构） |
 | `--to-eilcd` | | 将数据从 TIDAS 格式转换为 eILCD 格式（默认模式） |
 | `--to-tidas` | | 将数据从 eILCD 格式转换为 TIDAS 格式 |
+| `--verbose` | `-v` | 开启详细日志模式 |
 
 ### （四）使用示例
 
@@ -70,6 +71,7 @@ tidas-convert --input-dir <eILCD数据目录> --output-dir <TIDAS数据输出目
 |------|------|----------|
 | `--help` | `-h` | 显示帮助信息 |
 | `--input-dir` | `-i` | 待验证的 TIDAS 数据所在目录（注意：该目录应直接包含数据文件，而非其上层目录）|
+| `--verbose` | `-v` | 开启详细日志模式 |
 
 ### （三）使用示例
 
@@ -78,19 +80,72 @@ tidas-convert --input-dir <eILCD数据目录> --output-dir <TIDAS数据输出目
 tidas-validate --input-dir <TIDAS数据目录>
 ```
 
+## 四、TIDAS 数据导出工具使用说明
+
+### （一）工具功能说明
+
+本工具用于从数据库导出记录为指定格式（TIDAS 或 eILCD），并可选择是否下载附加文件，最终输出为zip压缩文件。
+
+### （二）命令行与环境变量参数
+
+| 参数 | 缩写 | 参数说明 |
+| --- | --- | --- |
+| `--help` | `-h` | 显示帮助信息 |
+| `--input-dir` | `-i` | 存储导出文件的输入目录（TIDAS或eILCD格式） |
+| `--output-zip` | `-z` | 输出的zip文件名（无需包含.zip扩展名） |
+| `--env-file` | `-e` | 包含数据库和AWS凭证的.env文件路径 |
+| `--to-tidas` | 无 | 输出为TIDAS格式（默认选项） |
+| `--to-eilcd` | 无 | 输出为EILCD格式（与`--to-tidas`互斥） |
+| `--db-user` | 无 | 数据库用户名 |
+| `--db-password` | 无 | 数据库密码 |
+| `--db-host` | 无 | 数据库主机地址 |
+| `--db-port` | 无 | 数据库端口（默认5432） |
+| `--db-name` | 无 | 数据库名称 |
+| `--aws-access-key-id` | 无 | AWS访问密钥ID |
+| `--aws-secret-access-key` | 无 | AWS秘密访问密钥 |
+| `--aws-region` | 无 | AWS区域 |
+| `--aws-endpoint` | 无 | AWS端点URL |
+| `--aws-bucket` | 无 | AWS S3存储桶名称（用于附加文件） |
+| `--skip-external-docs` | 无 | 跳过附加文件下载 |
+| `--verbose` | `-v` | 启用详细日志模式 |
+
+您也可以使用环境变量来设置数据库和AWS凭证（默认当前路径下的.env文件）：
+
+```env
+DB_USER=
+DB_PASSWORD=
+DB_HOST=
+DB_PORT=5432
+DB_NAME=postgres
+AWS_REGION=
+AWS_ENDPOINT=
+AWS_EXTERNAL_DOCS_BUCKET=external_docs
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+```
+
+### （三）使用示例
+
+```bash
+# 导出记录为TIDAS格式并创建压缩文件
+tidas-export --tidas-dir <TIDAS数据目录> --output-zip <TIDAS ZIP文件> --to-tidas
+
+# 导出记录为eILCD格式，并跳过附加文件下载
+tidas-export -z <eILCD ZIP文件> --to-eilcd --skip-external-docs
+```
 ---
 
-## 四、日志文件说明
+## 五、日志文件说明
 
 数据转换和验证工具执行过程中，会自动生成运行日志，日志文件名为：
 
 ```
-tidas-tools.log
+tidas-{function_name}.log
 ```
 
 ---
 
-## 五、开发环境搭建与代码贡献指南
+## 六、开发环境搭建与代码贡献指南
 
 如果您希望参与开发贡献，您可以参考以下步骤搭建开发环境：
 
@@ -132,7 +187,7 @@ poetry install
 
 ---
 
-## 六、代码规范与测试
+## 七、代码规范与测试
 
 ### （一）代码格式化工具（推荐使用 black）
 
@@ -158,7 +213,7 @@ python src/tidas_tools/validate.py -i <TIDAS数据目录>
 
 ---
 
-## 七、自动构建构建并发布（CI/CD）
+## 八、自动构建构建并发布（CI/CD）
 
 本项目支持自动构建和发布，当您向 git 仓库推送以 `v版本号` 命名的 tag 时，会自动触发。例如：
 
@@ -175,6 +230,6 @@ git push origin v0.0.1
 
 ---
 
-## 八、参与贡献
+## 九、参与贡献
 
 我们欢迎您的贡献，您可以通过提交 issue 或 pull request 参与到项目中来。
