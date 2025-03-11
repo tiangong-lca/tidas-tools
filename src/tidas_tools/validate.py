@@ -9,29 +9,9 @@ from jsonschema import validate
 from jsonschema.exceptions import ValidationError
 from referencing import Registry
 from referencing.jsonschema import DRAFT7
+from .tidas_log import setup_logging
 
 import tidas_tools.tidas.schemas as schemas
-
-
-def setup_logging(verbose):
-    """Configure logging"""
-    log_level = logging.DEBUG if verbose else logging.INFO
-
-    handlers = [
-        logging.FileHandler("tidas_validate.log", mode="w"),
-        logging.StreamHandler(sys.stdout),
-    ]
-
-    logging.basicConfig(
-        level=log_level,
-        format="%(asctime)s:%(levelname)s:%(message)s",
-        handlers=handlers,
-    )
-
-
-GREEN = "\033[92m"
-RED = "\033[91m"
-RESET = "\033[0m"
 
 
 def validate_elementary_flows_classification_hierarchy(class_items):
@@ -185,7 +165,7 @@ def retrieve_schema(uri):
                 # Create a proper resource object
                 return DRAFT7.create_resource(schema_data)
         except Exception as e:
-            print(f"Failed to resolve: {uri}, error: {e}")
+            logging.error(f"Failed to resolve: {uri}, error: {e}")
             raise
     # For remote references, return None to indicate the reference couldn't be resolved
     return None
@@ -217,7 +197,9 @@ def category_validate(json_file_path: str, category: str):
                     except ValidationError as e:
                         errors.append(f"Schema Error: {e.message}")
                     except Exception as e:
-                        print(f"Unexpected validation error: {type(e).__name__}: {e}")
+                        logging.error(
+                            f"Unexpected validation error: {type(e).__name__}: {e}"
+                        )
                         errors.append(f"Validation error: {e}")
 
                     if category == "flows":
@@ -297,10 +279,8 @@ def category_validate(json_file_path: str, category: str):
 
                     if errors:
                         for err in errors:
-                            print(f"{RED}ERROR: {full_path} {err}{RESET}")
                             logging.error(f"ERROR: {full_path} {err}")
                     else:
-                        print(f"{GREEN}INFO: {full_path} PASSED.{RESET}")
                         logging.info(f"INFO: {full_path} PASSED.")
 
 
@@ -318,7 +298,7 @@ def main():
     try:
         args = parser.parse_args()
 
-        setup_logging(args.verbose)
+        setup_logging(args.verbose, "validate")
 
         for category in os.listdir(args.input_dir):
             try:
@@ -329,11 +309,9 @@ def main():
                     category_validate(category_dir, category)
             except Exception as e:
                 error_msg = f"Error validating category {category}: {e}"
-                print(f"{RED}{error_msg}{RESET}", file=sys.stderr)
                 logging.error(error_msg)
     except Exception as e:
         error_msg = f"Error validating: {e}"
-        print(f"{RED}{error_msg}{RESET}", file=sys.stderr)
         logging.error(error_msg)
         sys.exit(1)
 

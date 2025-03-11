@@ -6,27 +6,7 @@ import shutil
 import sys
 
 import xmltodict
-
-
-def setup_logging(verbose):
-    """Configure logging"""
-    log_level = logging.DEBUG if verbose else logging.INFO
-
-    handlers = [
-        logging.FileHandler("tidas_convert.log", mode="w"),
-        logging.StreamHandler(sys.stdout),
-    ]
-
-    logging.basicConfig(
-        level=log_level,
-        format="%(asctime)s:%(levelname)s:%(message)s",
-        handlers=handlers,
-    )
-
-
-GREEN = "\033[92m"
-RED = "\033[91m"
-RESET = "\033[0m"
+from .tidas_log import setup_logging
 
 
 def convert_format(data, to_xml=True):
@@ -60,7 +40,6 @@ def convert_directory(input_dir, output_dir, to_xml=True):
         logging.info(f"Created output directory: {data_dir}")
     except Exception as e:
         error_msg = f"Failed to create output directory: {e}"
-        print(f"{RED}Error: {error_msg}{RESET}", file=sys.stderr)
         logging.error(error_msg)
         return
 
@@ -73,7 +52,6 @@ def convert_directory(input_dir, output_dir, to_xml=True):
             os.makedirs(target_dir, exist_ok=True)
         except Exception as e:
             error_msg = f"Failed to create directory {target_dir}: {e}"
-            print(f"{RED}Error: {error_msg}{RESET}", file=sys.stderr)
             logging.error(error_msg)
             continue
 
@@ -110,22 +88,18 @@ def convert_directory(input_dir, output_dir, to_xml=True):
                             json.dump(result, f, indent=2, ensure_ascii=False)
 
                     success_msg = f"Converted: {source_file} -> {target_file}"
-                    print(f"{GREEN}{success_msg}{RESET}")
                     logging.info(success_msg)
                 except Exception as e:
                     error_msg = f"Error converting {source_file}: {e}"
-                    print(f"{RED}{error_msg}{RESET}", file=sys.stderr)
                     logging.error(error_msg)
             else:
                 target_file = os.path.join(target_dir, file)
                 try:
                     shutil.copy2(source_file, target_file)
                     copy_msg = f"Copied: {source_file} -> {target_file}"
-                    print(f"{GREEN}{copy_msg}{RESET}")
                     logging.info(copy_msg)
                 except Exception as e:
                     error_msg = f"Error copying {source_file}: {e}"
-                    print(f"{RED}{error_msg}{RESET}", file=sys.stderr)
                     logging.error(error_msg)
 
 
@@ -163,18 +137,16 @@ def main():
     try:
         args = parser.parse_args()
 
-        setup_logging(args.verbose)
+        setup_logging(args.verbose, "convert")
 
         if not args.input_dir or not args.output_dir:
             error_msg = "Input and output directories must be specified"
-            print(f"{RED}Error: {error_msg}{RESET}", file=sys.stderr)
             logging.error(error_msg)
             parser.print_help()
             sys.exit(1)
 
         if not os.path.isdir(args.input_dir):
             error_msg = f"Input directory '{args.input_dir}' does not exist or is not a directory."
-            print(f"{RED}Error: {error_msg}{RESET}", file=sys.stderr)
             logging.error(error_msg)
             sys.exit(1)
 
@@ -193,9 +165,6 @@ def main():
                     if os.path.isdir(item_path):
                         dest_path = os.path.join(args.output_dir, item)
                         if os.path.exists(dest_path):
-                            print(
-                                f"{GREEN}Directory {dest_path} already exists, merging contents...{RESET}"
-                            )
                             logging.info(
                                 f"Directory {dest_path} already exists, merging contents"
                             )
@@ -212,7 +181,6 @@ def main():
                         else:
                             shutil.copytree(item_path, dest_path)
                 complete_msg = "Conversion from TIDAS to eILCD complete."
-                print(f"{GREEN}{complete_msg}{RESET}")
                 logging.info(complete_msg)
             else:
                 tidas_dir = os.path.join(os.path.dirname(__file__), "tidas")
@@ -221,9 +189,6 @@ def main():
                     if os.path.isdir(item_path):
                         dest_path = os.path.join(args.output_dir, item)
                         if os.path.exists(dest_path):
-                            print(
-                                f"{GREEN}Directory {dest_path} already exists, merging contents...{RESET}"
-                            )
                             logging.info(
                                 f"Directory {dest_path} already exists, merging contents"
                             )
@@ -240,15 +205,12 @@ def main():
                         else:
                             shutil.copytree(item_path, dest_path)
                 complete_msg = "Conversion from eILCD to TIDAS complete."
-                print(f"{GREEN}{complete_msg}{RESET}")
                 logging.info(complete_msg)
         except Exception as e:
             error_msg = f"Error copying template files: {e}"
-            print(f"{RED}{error_msg}{RESET}", file=sys.stderr)
             logging.error(error_msg)
     except Exception as e:
         error_msg = f"Unexpected error: {e}"
-        print(f"{RED}{error_msg}{RESET}", file=sys.stderr)
         logging.error(error_msg)
         sys.exit(1)
 

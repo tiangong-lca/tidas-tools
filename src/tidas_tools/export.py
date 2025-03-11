@@ -1,10 +1,9 @@
 import argparse
+import json
 import logging
 import os
 import shutil
-import sys
 from pathlib import Path
-import json
 
 import boto3
 import psycopg2
@@ -12,26 +11,7 @@ import xmltodict
 from dotenv import load_dotenv
 from tqdm import tqdm
 
-# ANSI color codes
-GREEN = "\033[92m"
-RED = "\033[91m"
-RESET = "\033[0m"
-
-
-def setup_logging(verbose):
-    """Configure logging"""
-    log_level = logging.DEBUG if verbose else logging.INFO
-
-    handlers = [
-        logging.FileHandler("tidas_export.log", mode="w"),
-        logging.StreamHandler(sys.stdout),
-    ]
-
-    logging.basicConfig(
-        level=log_level,
-        format="%(asctime)s:%(levelname)s:%(message)s",
-        handlers=handlers,
-    )
+from .tidas_log import setup_logging
 
 
 def zip_folder(folder_path, output_path):
@@ -279,10 +259,7 @@ def main():
     # Validate required database parameters
     missing_db_params = [k for k, v in db_params.items() if not v and k != "port"]
     if missing_db_params:
-        print(
-            f"{RED}Error: Missing database parameters: {', '.join(missing_db_params)}{RESET}",
-            file=sys.stderr,
-        )
+        logging.error(f"Missing database parameters: {', '.join(missing_db_params)}")
         return 1
 
     try:
@@ -345,17 +322,15 @@ def main():
         # Compress output
         zip_file = zip_folder(args.output_dir, args.output_zip)
 
-        print(f"{GREEN}Export successfully completed!{RESET}")
-        print(f"Output file: {zip_file}")
+        logging.info(f"Export successfully completed!")
+        logging.info(f"Output file: {zip_file}")
         return 0
 
     except psycopg2.Error as e:
         logging.error(f"Database error: {str(e)}")
-        print(f"{RED}Database error: {str(e)}{RESET}", file=sys.stderr)
         return 1
     except Exception as e:
         logging.error(f"Error: {str(e)}")
-        print(f"{RED}Error: {str(e)}{RESET}", file=sys.stderr)
         return 1
 
 

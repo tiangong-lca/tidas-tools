@@ -21,9 +21,9 @@ packages = [{include = "tidas_tools", from = "src"}]
 include = ["src/tidas_tools/eilcd/*.*", "src/tidas_tools/tidas/*.*"]
 
 [tool.poetry.scripts]
-tidas-convert = "tidas_tools.convert_cli:main"
-tidas-export = "tidas_tools.export_cli:main"
-tidas-validate = "tidas_tools.validate_cli:main"
+tidas-convert = "tidas_tools.convert:main"
+tidas-export = "tidas_tools.export:main"
+tidas-validate = "tidas_tools.validate:main"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
