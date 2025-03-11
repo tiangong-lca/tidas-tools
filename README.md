@@ -99,7 +99,6 @@ This tool exports data records in either TIDAS or eILCD format. It also optional
 | `--skip-external-docs`    |       | Skip downloading external supplementary files   |
 | `--to-tidas`              |       | Export in TIDAS format (default option)         |
 | `--to-eilcd`              |       | Export in eILCD format (mutually exclusive)     |
-| `--verbose`               | `-v`  | Enable verbose logging                          |
 | `--db-user`               |       | Database username                               |
 | `--db-password`           |       | Database password                               |
 | `--db-host`               |       | Database host                                   |
@@ -108,6 +107,7 @@ This tool exports data records in either TIDAS or eILCD format. It also optional
 | `--aws-access-key-id`     |       | AWS access key ID                               |
 | `--aws-secret-access-key` |       | AWS secret access key                           |
 | `--aws-region`            |       | AWS region                                      |
+| `--verbose`               | `-v`  | Enable verbose logging                          |
 
 Credentials can also be set via environment variables (defaults to the .env file in the current directory):
 
