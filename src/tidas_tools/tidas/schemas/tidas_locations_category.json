@@ -1123,1471 +1123,1471 @@
     },
     {
       "const": "CN-BJ",
-      "description": "Beijing Shi,China"
+      "description": "Beijing City,China"
     },
     {
       "const": "CN-TJ",
-      "description": "Tianjin Shi,China"
+      "description": "Tianjin City,China"
     },
     {
       "const": "CN-HE",
-      "description": "Hebei Sheng,China"
+      "description": "Hebei Province,China"
     },
     {
       "const": "CN-HE-SJW",
-      "description": "Shijiazhuang Shi,Hebei Sheng,China"
+      "description": "Shijiazhuang City,Hebei Province,China"
     },
     {
       "const": "CN-HE-TGS",
-      "description": "Tangshan Shi,Hebei Sheng,China"
+      "description": "Tangshan City,Hebei Province,China"
     },
     {
       "const": "CN-HE-SHP",
-      "description": "Qinhuangdao Shi,Hebei Sheng,China"
+      "description": "Qinhuangdao City,Hebei Province,China"
     },
     {
       "const": "CN-HE-HDS",
-      "description": "Handan Shi,Hebei Sheng,China"
+      "description": "Handan City,Hebei Province,China"
     },
     {
       "const": "CN-HE-XTS",
-      "description": "Xingtai Shi,Hebei Sheng,China"
+      "description": "Xingtai City,Hebei Province,China"
     },
     {
       "const": "CN-HE-BDS",
-      "description": "Baoding Shi,Hebei Sheng,China"
+      "description": "Baoding City,Hebei Province,China"
     },
     {
       "const": "CN-HE-ZJK",
-      "description": "Zhangjiakou Shi,Hebei Sheng,China"
+      "description": "Zhangjiakou City,Hebei Province,China"
     },
     {
       "const": "CN-HE-CDS",
-      "description": "Chengde Shi,Hebei Sheng,China"
+      "description": "Chengde City,Hebei Province,China"
     },
     {
       "const": "CN-HE-CGZ",
-      "description": "Cangzhou Shi,Hebei Sheng,China"
+      "description": "Cangzhou City,Hebei Province,China"
     },
     {
       "const": "CN-HE-LFS",
-      "description": "Langfang Shi,Hebei Sheng,China"
+      "description": "Langfang City,Hebei Province,China"
     },
     {
       "const": "CN-HE-HGS",
-      "description": "Hengshui Shi,Hebei Sheng,China"
+      "description": "Hengshui City,Hebei Province,China"
     },
     {
       "const": "CN-SX",
-      "description": "Shanxi Sheng,China"
+      "description": "Shanxi Province,China"
     },
     {
       "const": "CN-SX-TYN",
-      "description": "Taiyuan Shi,Shanxi Sheng,China"
+      "description": "Taiyuan City,Shanxi Province,China"
     },
     {
       "const": "CN-SX-DTG",
-      "description": "Datong Shi,Shanxi Sheng,China"
+      "description": "Datong City,Shanxi Province,China"
     },
     {
       "const": "CN-SX-YQS",
-      "description": "Yangquan Shi,Shanxi Sheng,China"
+      "description": "Yangquan City,Shanxi Province,China"
     },
     {
       "const": "CN-SX-CZS",
-      "description": "Changzhi Shi,Shanxi Sheng,China"
+      "description": "Changzhi City,Shanxi Province,China"
     },
     {
       "const": "CN-SX-JCG",
-      "description": "Jincheng Shi,Shanxi Sheng,China"
+      "description": "Jincheng City,Shanxi Province,China"
     },
     {
       "const": "CN-SX-SZJ",
-      "description": "Shuozhou Shi,Shanxi Sheng,China"
+      "description": "Shuozhou City,Shanxi Province,China"
     },
     {
       "const": "CN-SX-JZN",
-      "description": "Jinzhong Shi,Shanxi Sheng,China"
+      "description": "Jinzhong City,Shanxi Province,China"
     },
     {
       "const": "CN-SX-YCE",
-      "description": "Yuncheng Shi,Shanxi Sheng,China"
+      "description": "Yuncheng City,Shanxi Province,China"
     },
     {
       "const": "CN-SX-XZS",
-      "description": "Xinzhou Shi,Shanxi Sheng,China"
+      "description": "Xinzhou City,Shanxi Province,China"
     },
     {
       "const": "CN-SX-LFN",
-      "description": "Linfen Shi,Shanxi Sheng,China"
+      "description": "Linfen City,Shanxi Province,China"
     },
     {
       "const": "CN-SX-LLH",
-      "description": "Lüliang Shi,Shanxi Sheng,China"
+      "description": "Lüliang City,Shanxi Province,China"
     },
     {
       "const": "CN-NM",
-      "description": "Nei Mongol Zizhiqu,China"
+      "description": "Inner Mongolia Autonomous Region,China"
     },
     {
       "const": "CN-NM-HET",
-      "description": "Hohhot Shi,Nei Mongol Zizhiqu,China"
+      "description": "Hohhot City,Inner Mongolia Autonomous Region,China"
     },
     {
       "const": "CN-NM-BTS",
-      "description": "Baotou Shi,Nei Mongol Zizhiqu,China"
+      "description": "Baotou City,Inner Mongolia Autonomous Region,China"
     },
     {
       "const": "CN-NM-WHM",
-      "description": "Wuhai Shi,Nei Mongol Zizhiqu,China"
+      "description": "Wuhai City,Inner Mongolia Autonomous Region,China"
     },
     {
       "const": "CN-NM-CFS",
-      "description": "Chifeng(Ulanhad)Shi,Nei Mongol Zizhiqu,China"
+      "description": "Chifeng(Ulanhad)City,Inner Mongolia Autonomous Region,China"
     },
     {
       "const": "CN-NM-TLO",
-      "description": "Tongliao Shi,Nei Mongol Zizhiqu,China"
+      "description": "Tongliao City,Inner Mongolia Autonomous Region,China"
     },
     {
       "const": "CN-NM-ODS",
-      "description": "Ordos Shi,Nei Mongol Zizhiqu,China"
+      "description": "Ordos City,Inner Mongolia Autonomous Region,China"
     },
     {
       "const": "CN-NM-HBR",
-      "description": "Hulun Buir Shi,Nei Mongol Zizhiqu,China"
+      "description": "Hulun Buir City,Inner Mongolia Autonomous Region,China"
     },
     {
       "const": "CN-NM-BYR",
-      "description": "Bayannur Shi,Nei Mongol Zizhiqu,China"
+      "description": "Bayannur City,Inner Mongolia Autonomous Region,China"
     },
     {
       "const": "CN-NM-ULS",
-      "description": "Ulanqab Shi,Nei Mongol Zizhiqu,China"
+      "description": "Ulanqab City,Inner Mongolia Autonomous Region,China"
     },
     {
       "const": "CN-NM-HIN",
-      "description": "Hinggan Meng,Nei Mongol Zizhiqu,China"
+      "description": "Hinggan Meng,Inner Mongolia Autonomous Region,China"
     },
     {
       "const": "CN-NM-XGO",
-      "description": "Xilin Gol Meng,Nei Mongol Zizhiqu,China"
+      "description": "Xilin Gol Meng,Inner Mongolia Autonomous Region,China"
     },
     {
       "const": "CN-NM-ALM",
-      "description": "Alxa Meng,Nei Mongol Zizhiqu,China"
+      "description": "Alxa Meng,Inner Mongolia Autonomous Region,China"
     },
     {
       "const": "CN-LN",
-      "description": "Liaoning Sheng,China"
+      "description": "Liaoning Province,China"
     },
     {
       "const": "CN-LN-SHE",
-      "description": "Shenyang Shi,Liaoning Sheng,China"
+      "description": "Shenyang City,Liaoning Province,China"
     },
     {
       "const": "CN-LN-DLC",
-      "description": "Dalian Shi,Liaoning Sheng,China"
+      "description": "Dalian City,Liaoning Province,China"
     },
     {
       "const": "CN-LN-ASN",
-      "description": "Anshan Shi,Liaoning Sheng,China"
+      "description": "Anshan City,Liaoning Province,China"
     },
     {
       "const": "CN-LN-FSN",
-      "description": "Fushun Shi,Liaoning Sheng,China"
+      "description": "Fushun City,Liaoning Province,China"
     },
     {
       "const": "CN-LN-BXS",
-      "description": "Benxi Shi,Liaoning Sheng,China"
+      "description": "Benxi City,Liaoning Province,China"
     },
     {
       "const": "CN-LN-DDG",
-      "description": "Dandong Shi,Liaoning Sheng,China"
+      "description": "Dandong City,Liaoning Province,China"
     },
     {
       "const": "CN-LN-JNZ",
-      "description": "Jinzhou Shi,Liaoning Sheng,China"
+      "description": "Jinzhou City,Liaoning Province,China"
     },
     {
       "const": "CN-LN-YIK",
-      "description": "Yingkou Shi,Liaoning Sheng,China"
+      "description": "Yingkou City,Liaoning Province,China"
     },
     {
       "const": "CN-LN-FXS",
-      "description": "Fuxin Shi,Liaoning Sheng,China"
+      "description": "Fuxin City,Liaoning Province,China"
     },
     {
       "const": "CN-LN-LYL",
-      "description": "Liaoyang Shi,Liaoning Sheng,China"
+      "description": "Liaoyang City,Liaoning Province,China"
     },
     {
       "const": "CN-LN-PJS",
-      "description": "Panjin Shi,Liaoning Sheng,China"
+      "description": "Panjin City,Liaoning Province,China"
     },
     {
       "const": "CN-LN-TLS",
-      "description": "Tieling Shi,Liaoning Sheng,China"
+      "description": "Tieling City,Liaoning Province,China"
     },
     {
       "const": "CN-LN-CYS",
-      "description": "Chaoyang Shi,Liaoning Sheng,China"
+      "description": "Chaoyang City,Liaoning Province,China"
     },
     {
       "const": "CN-LN-HLD",
-      "description": "Huludao Shi,Liaoning Sheng,China"
+      "description": "Huludao City,Liaoning Province,China"
     },
     {
       "const": "CN-JL",
-      "description": "Jilin Sheng,China"
+      "description": "Jilin Province,China"
     },
     {
       "const": "CN-JL-CGQ",
-      "description": "Changchun Shi,Jilin Sheng,China"
+      "description": "Changchun City,Jilin Province,China"
     },
     {
       "const": "CN-JL-JLS",
-      "description": "Jilin Shi,Jilin Sheng,China"
+      "description": "Jilin City,Jilin Province,China"
     },
     {
       "const": "CN-JL-SPS",
-      "description": "Siping Shi,Jilin Sheng,China"
+      "description": "Siping City,Jilin Province,China"
     },
     {
       "const": "CN-JL-LYH",
-      "description": "Liaoyuan Shi,Jilin Sheng,China"
+      "description": "Liaoyuan City,Jilin Province,China"
     },
     {
       "const": "CN-JL-THS",
-      "description": "Tonghua Shi,Jilin Sheng,China"
+      "description": "Tonghua City,Jilin Province,China"
     },
     {
       "const": "CN-JL-BSN",
-      "description": "Baishan Shi,Jilin Sheng,China"
+      "description": "Baishan City,Jilin Province,China"
     },
     {
       "const": "CN-JL-SYU",
-      "description": "Songyuan Shi,Jilin Sheng,China"
+      "description": "Songyuan City,Jilin Province,China"
     },
     {
       "const": "CN-JL-BCS",
-      "description": "Baicheng Shi,Jilin Sheng,China"
+      "description": "Baicheng City,Jilin Province,China"
     },
     {
       "const": "CN-JL-YBZ",
-      "description": "Yanbian Chosenzu Zizhizhou,Jilin Sheng,China"
+      "description": "Yanbian Korean Autonomous Prefecture,Jilin Province,China"
     },
     {
       "const": "CN-HL",
-      "description": "Heilongjiang Sheng,China"
+      "description": "Heilongjiang Province,China"
     },
     {
       "const": "CN-HL-HRB",
-      "description": "Harbin Shi,Heilongjiang Sheng,China"
+      "description": "Harbin City,Heilongjiang Province,China"
     },
     {
       "const": "CN-HL-NDG",
-      "description": "Qiqihar Shi,Heilongjiang Sheng,China"
+      "description": "Qiqihar City,Heilongjiang Province,China"
     },
     {
       "const": "CN-HL-JXI",
-      "description": "Jixi Shi,Heilongjiang Sheng,China"
+      "description": "Jixi City,Heilongjiang Province,China"
     },
     {
       "const": "CN-HL-HEG",
-      "description": "Hegang Shi,Heilongjiang Sheng,China"
+      "description": "Hegang City,Heilongjiang Province,China"
     },
     {
       "const": "CN-HL-SYS",
-      "description": "Shuangyashan Shi,Heilongjiang Sheng,China"
+      "description": "Shuangyashan City,Heilongjiang Province,China"
     },
     {
       "const": "CN-HL-DQG",
-      "description": "Daqing Shi,Heilongjiang Sheng,China"
+      "description": "Daqing City,Heilongjiang Province,China"
     },
     {
       "const": "CN-HL-YCH",
-      "description": "Yichun Shi,Heilongjiang Sheng,China"
+      "description": "Yichun City,Heilongjiang Province,China"
     },
     {
       "const": "CN-HL-JMU",
-      "description": "Jiamusi Shi,Heilongjiang Sheng,China"
+      "description": "Jiamusi City,Heilongjiang Province,China"
     },
     {
       "const": "CN-HL-QTH",
-      "description": "Qitaihe Shi,Heilongjiang Sheng,China"
+      "description": "Qitaihe City,Heilongjiang Province,China"
     },
     {
       "const": "CN-HL-MDG",
-      "description": "Mudanjiang Shi,Heilongjiang Sheng,China"
+      "description": "Mudanjiang City,Heilongjiang Province,China"
     },
     {
       "const": "CN-HL-HEK",
-      "description": "Heihe Shi,Heilongjiang Sheng,China"
+      "description": "Heihe City,Heilongjiang Province,China"
     },
     {
       "const": "CN-HL-SUH",
-      "description": "Suihua Shi,Heilongjiang Sheng,China"
+      "description": "Suihua City,Heilongjiang Province,China"
     },
     {
       "const": "CN-HL-DHL",
-      "description": "Da Hinggan Ling Diqu,Heilongjiang Sheng,China"
+      "description": "Da Hinggan Ling Diqu,Heilongjiang Province,China"
     },
     {
       "const": "CN-SH",
-      "description": "Shanghai Shi,China"
+      "description": "Shanghai City,China"
     },
     {
       "const": "CN-JS",
-      "description": "Jiangsu Sheng,China"
+      "description": "Jiangsu Province,China"
     },
     {
       "const": "CN-JS-NKG",
-      "description": "Nanjing Shi,Jiangsu Sheng,China"
+      "description": "Nanjing City,Jiangsu Province,China"
     },
     {
       "const": "CN-JS-WUX",
-      "description": "Wuxi Shi,Jiangsu Sheng,China"
+      "description": "Wuxi City,Jiangsu Province,China"
     },
     {
       "const": "CN-JS-XUZ",
-      "description": "Xuzhou Shi,Jiangsu Sheng,China"
+      "description": "Xuzhou City,Jiangsu Province,China"
     },
     {
       "const": "CN-JS-CZX",
-      "description": "Changzhou Shi,Jiangsu Sheng,China"
+      "description": "Changzhou City,Jiangsu Province,China"
     },
     {
       "const": "CN-JS-SZH",
-      "description": "Suzhou Shi,Jiangsu Sheng,China"
+      "description": "Suzhou City,Jiangsu Province,China"
     },
     {
       "const": "CN-JS-NTG",
-      "description": "Nantong Shi,Jiangsu Sheng,China"
+      "description": "Nantong City,Jiangsu Province,China"
     },
     {
       "const": "CN-JS-LYG",
-      "description": "Lianyungang Shi,Jiangsu Sheng,China"
+      "description": "Lianyungang City,Jiangsu Province,China"
     },
     {
       "const": "CN-JS-HAS",
-      "description": "Huai'an Shi,Jiangsu Sheng,China"
+      "description": "Huai'an City,Jiangsu Province,China"
     },
     {
       "const": "CN-JS-YCK",
-      "description": "Yancheng Shi,Jiangsu Sheng,China"
+      "description": "Yancheng City,Jiangsu Province,China"
     },
     {
       "const": "CN-JS-YZH",
-      "description": "Yangzhou Shi,Jiangsu Sheng,China"
+      "description": "Yangzhou City,Jiangsu Province,China"
     },
     {
       "const": "CN-JS-ZHE",
-      "description": "Zhenjiang Shi,Jiangsu Sheng,China"
+      "description": "Zhenjiang City,Jiangsu Province,China"
     },
     {
       "const": "CN-JS-TZS",
-      "description": "Taizhou Shi,Jiangsu Sheng,China"
+      "description": "Taizhou City,Jiangsu Province,China"
     },
     {
       "const": "CN-JS-SUQ",
-      "description": "Suqian Shi,Jiangsu Sheng,China"
+      "description": "Suqian City,Jiangsu Province,China"
     },
     {
       "const": "CN-ZJ",
-      "description": "Zhejiang Sheng,China"
+      "description": "Zhejiang Province,China"
     },
     {
       "const": "CN-ZJ-HGH",
-      "description": "Hangzhou Shi,Zhejiang Sheng,China"
+      "description": "Hangzhou City,Zhejiang Province,China"
     },
     {
       "const": "CN-ZJ-NGB",
-      "description": "Ningbo Shi,Zhejiang Sheng,China"
+      "description": "Ningbo City,Zhejiang Province,China"
     },
     {
       "const": "CN-ZJ-WNZ",
-      "description": "Wenzhou Shi,Zhejiang Sheng,China"
+      "description": "Wenzhou City,Zhejiang Province,China"
     },
     {
       "const": "CN-ZJ-JIX",
-      "description": "Jiaxing Shi,Zhejiang Sheng,China"
+      "description": "Jiaxing City,Zhejiang Province,China"
     },
     {
       "const": "CN-ZJ-HZH",
-      "description": "Huzhou Shi,Zhejiang Sheng,China"
+      "description": "Huzhou City,Zhejiang Province,China"
     },
     {
       "const": "CN-ZJ-SXG",
-      "description": "Shaoxing Shi,Zhejiang Sheng,China"
+      "description": "Shaoxing City,Zhejiang Province,China"
     },
     {
       "const": "CN-ZJ-JHA",
-      "description": "Jinhua Shi,Zhejiang Sheng,China"
+      "description": "Jinhua City,Zhejiang Province,China"
     },
     {
       "const": "CN-ZJ-QUZ",
-      "description": "Quzhou Shi,Zhejiang Sheng,China"
+      "description": "Quzhou City,Zhejiang Province,China"
     },
     {
       "const": "CN-ZJ-ZOS",
-      "description": "Zhoushan Shi,Zhejiang Sheng,China"
+      "description": "Zhoushan City,Zhejiang Province,China"
     },
     {
       "const": "CN-ZJ-TZZ",
-      "description": "Taizhou Shi,Zhejiang Sheng,China"
+      "description": "Taizhou City,Zhejiang Province,China"
     },
     {
       "const": "CN-ZJ-LSS",
-      "description": "Lishui Shi,Zhejiang Sheng,China"
+      "description": "Lishui City,Zhejiang Province,China"
     },
     {
       "const": "CN-AH",
-      "description": "Anhui Sheng,China"
+      "description": "Anhui Province,China"
     },
     {
       "const": "CN-AH-HFE",
-      "description": "Hefei Sh,Anhui Sheng,China"
+      "description": "Hefei City,Anhui Province,China"
     },
     {
       "const": "CN-AH-WHI",
-      "description": "Wuhu Shi,Anhui Sheng,China"
+      "description": "Wuhu City,Anhui Province,China"
     },
     {
       "const": "CN-AH-BBU",
-      "description": "Bengbu Shi,Anhui Sheng,China"
+      "description": "Bengbu City,Anhui Province,China"
     },
     {
       "const": "CN-AH-HNS",
-      "description": "Huainan Shi,Anhui Sheng,China"
+      "description": "Huainan City,Anhui Province,China"
     },
     {
       "const": "CN-AH-MAA",
-      "description": "Ma'anshan Shi,Anhui Sheng,China"
+      "description": "Ma'anshan City,Anhui Province,China"
     },
     {
       "const": "CN-AH-HBE",
-      "description": "Huaibei Shi,Anhui Sheng,China"
+      "description": "Huaibei City,Anhui Province,China"
     },
     {
       "const": "CN-AH-TOL",
-      "description": "Tongling Shi,Anhui Sheng,China"
+      "description": "Tongling City,Anhui Province,China"
     },
     {
       "const": "CN-AH-AQG",
-      "description": "Anqing Shi,Anhui Sheng,China"
+      "description": "Anqing City,Anhui Province,China"
     },
     {
       "const": "CN-AH-HSN",
-      "description": "Huangshan Shi,Anhui Sheng,China"
+      "description": "Huangshan City,Anhui Province,China"
     },
     {
       "const": "CN-AH-CUZ",
-      "description": "Chuzhou Shi,Anhui Sheng,China"
+      "description": "Chuzhou City,Anhui Province,China"
     },
     {
       "const": "CN-AH-FYS",
-      "description": "Fuyang Shi,Anhui Sheng,China"
+      "description": "Fuyang City,Anhui Province,China"
     },
     {
       "const": "CN-AH-SUZ",
-      "description": "Suzhou Shi,Anhui Sheng,China"
+      "description": "Suzhou City,Anhui Province,China"
     },
     {
       "const": "CN-AH-CAH",
-      "description": "Chaohu Shi,Anhui Sheng,China"
+      "description": "Chaohu City,Anhui Province,China"
     },
     {
       "const": "CN-AH-LAW",
-      "description": "Lu'an Shi,Anhui Sheng,China"
+      "description": "Lu'an City,Anhui Province,China"
     },
     {
       "const": "CN-AH-BOZ",
-      "description": "Bozhou Shi,Anhui Sheng,China"
+      "description": "Bozhou City,Anhui Province,China"
     },
     {
       "const": "CN-AH-CIZ",
-      "description": "Chizhou Shi,Anhui Sheng,China"
+      "description": "Chizhou City,Anhui Province,China"
     },
     {
       "const": "CN-AH-XCI",
-      "description": "Xuancheng Shi,Anhui Sheng,China"
+      "description": "Xuancheng City,Anhui Province,China"
     },
     {
       "const": "CN-FJ",
-      "description": "Fujian Sheng,China"
+      "description": "Fujian Province,China"
     },
     {
       "const": "CN-FJ-FOC",
-      "description": "Fuzhou Shi,Fujian Sheng,China"
+      "description": "Fuzhou City,Fujian Province,China"
     },
     {
       "const": "CN-FJ-XMN",
-      "description": "Xiamen Shi,Fujian Sheng,China"
+      "description": "Xiamen City,Fujian Province,China"
     },
     {
       "const": "CN-FJ-PUT",
-      "description": "Putian Shi,Fujian Sheng,China"
+      "description": "Putian City,Fujian Province,China"
     },
     {
       "const": "CN-FJ-SMS",
-      "description": "Sanming Shi,Fujian Sheng,China"
+      "description": "Sanming City,Fujian Province,China"
     },
     {
       "const": "CN-FJ-QZJ",
-      "description": "Quanzhou Shi,Fujian Sheng,China"
+      "description": "Quanzhou City,Fujian Province,China"
     },
     {
       "const": "CN-FJ-ZZU",
-      "description": "Zhangzhou Shi,Fujian Sheng,China"
+      "description": "Zhangzhou City,Fujian Province,China"
     },
     {
       "const": "CN-FJ-NPS",
-      "description": "Nanping Shi,Fujian Sheng,China"
+      "description": "Nanping City,Fujian Province,China"
     },
     {
       "const": "CN-FJ-LYF",
-      "description": "Longyan Shi,Fujian Sheng,China"
+      "description": "Longyan City,Fujian Province,China"
     },
     {
       "const": "CN-FJ-NDS",
-      "description": "Ningde Shi,Fujian Sheng,China"
+      "description": "Ningde City,Fujian Province,China"
     },
     {
       "const": "CN-JX",
-      "description": "Jiangxi Sheng,China"
+      "description": "Jiangxi Province,China"
     },
     {
       "const": "CN-JX-KHN",
-      "description": "Nanchang Shi,Jiangxi Sheng,China"
+      "description": "Nanchang City,Jiangxi Province,China"
     },
     {
       "const": "CN-JX-JDZ",
-      "description": "Jingdezhen Shi,Jiangxi Sheng,China"
+      "description": "Jingdezhen City,Jiangxi Province,China"
     },
     {
       "const": "CN-JX-PXS",
-      "description": "Pingxiang Shi,Jiangxi Sheng,China"
+      "description": "Pingxiang City,Jiangxi Province,China"
     },
     {
       "const": "CN-JX-JIU",
-      "description": "Jiujiang Shi,Jiangxi Sheng,China"
+      "description": "Jiujiang City,Jiangxi Province,China"
     },
     {
       "const": "CN-JX-XYU",
-      "description": "Xinyu Shi,Jiangxi Sheng,China"
+      "description": "Xinyu City,Jiangxi Province,China"
     },
     {
       "const": "CN-JX-YTS",
-      "description": "Yingtan Shi,Jiangxi Sheng,China"
+      "description": "Yingtan City,Jiangxi Province,China"
     },
     {
       "const": "CN-JX-GZH",
-      "description": "Ganzhou Shi,Jiangxi Sheng,China"
+      "description": "Ganzhou City,Jiangxi Province,China"
     },
     {
       "const": "CN-JX-JAS",
-      "description": "Ji'an Shi,Jiangxi Sheng,China"
+      "description": "Ji'an City,Jiangxi Province,China"
     },
     {
       "const": "CN-JX-YCN",
-      "description": "Yichun Shi,Jiangxi Sheng,China"
+      "description": "Yichun City,Jiangxi Province,China"
     },
     {
       "const": "CN-JX-FUZ",
-      "description": "Fuzhou Shi,Jiangxi Sheng,China"
+      "description": "Fuzhou City,Jiangxi Province,China"
     },
     {
       "const": "CN-JX-SRS",
-      "description": "Shangrao Shi,Jiangxi Sheng,China"
+      "description": "Shangrao City,Jiangxi Province,China"
     },
     {
       "const": "CN-SD",
-      "description": "Shandong Sheng,China"
+      "description": "Shandong Province,China"
     },
     {
       "const": "CN-SD-TNA",
-      "description": "Jinan Shi,Shandong Sheng,China"
+      "description": "Jinan City,Shandong Province,China"
     },
     {
       "const": "CN-SD-TAO",
-      "description": "Qingdao Shi,Shandong Sheng,China"
+      "description": "Qingdao City,Shandong Province,China"
     },
     {
       "const": "CN-SD-ZBO",
-      "description": "Zibo Shi,Shandong Sheng,China"
+      "description": "Zibo City,Shandong Province,China"
     },
     {
       "const": "CN-SD-ZZG",
-      "description": "Zaozhuang Shi,Shandong Sheng,China"
+      "description": "Zaozhuang City,Shandong Province,China"
     },
     {
       "const": "CN-SD-DYG",
-      "description": "Dongying Sh,Shandong Sheng,China"
+      "description": "Dongying City,Shandong Province,China"
     },
     {
       "const": "CN-SD-YNT",
-      "description": "Yantai Shi,Shandong Sheng,China"
+      "description": "Yantai City,Shandong Province,China"
     },
     {
       "const": "CN-SD-WEF",
-      "description": "Weifang Shi,Shandong Sheng,China"
+      "description": "Weifang City,Shandong Province,China"
     },
     {
       "const": "CN-SD-JNG",
-      "description": "Jining Shi,Shandong Sheng,China"
+      "description": "Jining City,Shandong Province,China"
     },
     {
       "const": "CN-SD-TAI",
-      "description": "Tai'an Shi,Shandong Sheng,China"
+      "description": "Tai'an City,Shandong Province,China"
     },
     {
       "const": "CN-SD-WEH",
-      "description": "Weihai Shi,Shandong Sheng,China"
+      "description": "Weihai City,Shandong Province,China"
     },
     {
       "const": "CN-SD-RZH",
-      "description": "Rizhao Shi,Shandong Sheng,China"
+      "description": "Rizhao City,Shandong Province,China"
     },
     {
       "const": "CN-SD-LWS",
-      "description": "Laiwu Shi,Shandong Sheng,China"
+      "description": "Laiwu City,Shandong Province,China"
     },
     {
       "const": "CN-SD-LYI",
-      "description": "Linyi Shi,Shandong Sheng,China"
+      "description": "Linyi City,Shandong Province,China"
     },
     {
       "const": "CN-SD-DZS",
-      "description": "Dezhou Shi,Shandong Sheng,China"
+      "description": "Dezhou City,Shandong Province,China"
     },
     {
       "const": "CN-SD-LCH",
-      "description": "Liaocheng Shi,Shandong Sheng,China"
+      "description": "Liaocheng City,Shandong Province,China"
     },
     {
       "const": "CN-SD-BZH",
-      "description": "Binzhou Shi,Shandong Sheng,China"
+      "description": "Binzhou City,Shandong Province,China"
     },
     {
       "const": "CN-SD-HZS",
-      "description": "Heze Shi,Shandong Sheng,China"
+      "description": "Heze City,Shandong Province,China"
     },
     {
       "const": "CN-HA",
-      "description": "Henan Sheng,China"
+      "description": "Henan Province,China"
     },
     {
       "const": "CN-HA-CGO",
-      "description": "Zhengzhou Shi,Henan Sheng,China"
+      "description": "Zhengzhou City,Henan Province,China"
     },
     {
       "const": "CN-HA-KFS",
-      "description": "Kaifeng Shi,Henan Sheng,China"
+      "description": "Kaifeng City,Henan Province,China"
     },
     {
       "const": "CN-HA-LYA",
-      "description": "Luoyang Shi,Henan Sheng,China"
+      "description": "Luoyang City,Henan Province,China"
     },
     {
       "const": "CN-HA-PDS",
-      "description": "Pingdingshan Shi,Henan Sheng,China"
+      "description": "Pingdingshan City,Henan Province,China"
     },
     {
       "const": "CN-HA-AYS",
-      "description": "Anyang Shi,Henan Sheng,China"
+      "description": "Anyang City,Henan Province,China"
     },
     {
       "const": "CN-HA-HBS",
-      "description": "Hebi Shi,Henan Sheng,China"
+      "description": "Hebi City,Henan Province,China"
     },
     {
       "const": "CN-HA-XXS",
-      "description": "Xinxiang Shi,Henan Sheng,China"
+      "description": "Xinxiang City,Henan Province,China"
     },
     {
       "const": "CN-HA-JZY",
-      "description": "Jiaozuo Shi,Henan Sheng,China"
+      "description": "Jiaozuo City,Henan Province,China"
     },
     {
       "const": "CN-HA-PYS",
-      "description": "Puyang Shi,Henan Sheng,China"
+      "description": "Puyang City,Henan Province,China"
     },
     {
       "const": "CN-HA-XCS",
-      "description": "Xuchang Shi,Henan Sheng,China"
+      "description": "Xuchang City,Henan Province,China"
     },
     {
       "const": "CN-HA-LHS",
-      "description": "Luohe Shi,Henan Sheng,China"
+      "description": "Luohe City,Henan Province,China"
     },
     {
       "const": "CN-HA-SMX",
-      "description": "Sanmenxia Shi,Henan Sheng,China"
+      "description": "Sanmenxia City,Henan Province,China"
     },
     {
       "const": "CN-HA-NYS",
-      "description": "Nanyang Shi,Henan Sheng,China"
+      "description": "Nanyang City,Henan Province,China"
     },
     {
       "const": "CN-HA-SQS",
-      "description": "Shangqiu Shi,Henan Sheng,China"
+      "description": "Shangqiu City,Henan Province,China"
     },
     {
       "const": "CN-HA-XYG",
-      "description": "Xinyang Shi,Henan Sheng,China"
+      "description": "Xinyang City,Henan Province,China"
     },
     {
       "const": "CN-HA-ZKS",
-      "description": "Zhoukou Shi,Henan Sheng,China"
+      "description": "Zhoukou City,Henan Province,China"
     },
     {
       "const": "CN-HA-ZMD",
-      "description": "Zhumadian Shi,Henan Sheng,China"
+      "description": "Zhumadian City,Henan Province,China"
     },
     {
       "const": "CN-HB",
-      "description": "Hubei Sheng,China"
+      "description": "Hubei Province,China"
     },
     {
       "const": "CN-HB-WUH",
-      "description": "Wuhan Shi,Hubei Sheng,China"
+      "description": "Wuhan City,Hubei Province,China"
     },
     {
       "const": "CN-HB-HSI",
-      "description": "Huangshi Shi,Hubei Sheng,China"
+      "description": "Huangshi City,Hubei Province,China"
     },
     {
       "const": "CN-HB-SYE",
-      "description": "Shiyan Shi,Hubei Sheng,China"
+      "description": "Shiyan City,Hubei Province,China"
     },
     {
       "const": "CN-HB-YCO",
-      "description": "Yichang Shi,Hubei Sheng,China"
+      "description": "Yichang City,Hubei Province,China"
     },
     {
       "const": "CN-HB-XFN",
-      "description": "Xiangfan Shi,Hubei Sheng,China"
+      "description": "Xiangfan City,Hubei Province,China"
     },
     {
       "const": "CN-HB-EZS",
-      "description": "Ezhou Sli,Hubei Sheng,China"
+      "description": "Ezhou City,Hubei Province,China"
     },
     {
       "const": "CN-HB-JMS",
-      "description": "Jingmen Shi,Hubei Sheng,China"
+      "description": "Jingmen City,Hubei Province,China"
     },
     {
       "const": "CN-HB-XGE",
-      "description": "Xiaogan Shi,Hubei Sheng,China"
+      "description": "Xiaogan City,Hubei Province,China"
     },
     {
       "const": "CN-HB-JGZ",
-      "description": "Jingzhou Shi,Hubei Sheng,China"
+      "description": "Jingzhou City,Hubei Province,China"
     },
     {
       "const": "CN-HB-HGE",
-      "description": "Huanggang Shi,Hubei Sheng,China"
+      "description": "Huanggang City,Hubei Province,China"
     },
     {
       "const": "CN-HB-XNS",
-      "description": "Xianning Shi,Hubei Sheng,China"
+      "description": "Xianning City,Hubei Province,China"
     },
     {
       "const": "CN-HB-SZR",
-      "description": "Suizhou Shi,Hubei Sheng,China"
+      "description": "Suizhou City,Hubei Province,China"
     },
     {
       "const": "CN-HB-ESH",
-      "description": "Enshi Tujiazu Miaozu Zizhizhou,Hubei Sheng,China"
+      "description": "Enshi Tujia&Miao Autonomous Prefecture,Hubei Province,China"
     },
     {
       "const": "CN-HN",
-      "description": "Hunan Sheng,China"
+      "description": "Hunan Province,China"
     },
     {
       "const": "CN-HN-CSX",
-      "description": "Changsha Shi,Hunan Sheng,China"
+      "description": "Changsha City,Hunan Province,China"
     },
     {
       "const": "CN-HN-ZZS",
-      "description": "Zhuzhou Shi,Hunan Sheng,China"
+      "description": "Zhuzhou City,Hunan Province,China"
     },
     {
       "const": "CN-HN-XGT",
-      "description": "Xiangtan Shi,Hunan Sheng,China"
+      "description": "Xiangtan City,Hunan Province,China"
     },
     {
       "const": "CN-HN-HNY",
-      "description": "Hengyang Shi,Hunan Sheng,China"
+      "description": "Hengyang City,Hunan Province,China"
     },
     {
       "const": "CN-HN-SYR",
-      "description": "Shaoyang Shi,Hunan Sheng,China"
+      "description": "Shaoyang City,Hunan Province,China"
     },
     {
       "const": "CN-HN-YYG",
-      "description": "Yueyang Shi,Hunan Sheng,China"
+      "description": "Yueyang City,Hunan Province,China"
     },
     {
       "const": "CN-HN-CDE",
-      "description": "Changde Shi,Hunan Sheng,China"
+      "description": "Changde City,Hunan Province,China"
     },
     {
       "const": "CN-HN-ZJJ",
-      "description": "Zhangjiajie Shi,Hunan Sheng,China"
+      "description": "Zhangjiajie City,Hunan Province,China"
     },
     {
       "const": "CN-HN-YYS",
-      "description": "Yiyang Shi,Hunan Sheng,China"
+      "description": "Yiyang City,Hunan Province,China"
     },
     {
       "const": "CN-HN-CNZ",
-      "description": "Chenzhou Shi,Hunan Sheng,China"
+      "description": "Chenzhou City,Hunan Province,China"
     },
     {
       "const": "CN-HN-YZS",
-      "description": "Yongzhou Shi,Hunan Sheng,China"
+      "description": "Yongzhou City,Hunan Province,China"
     },
     {
       "const": "CN-HN-HHS",
-      "description": "Huaihua Shi,Hunan Sheng,China"
+      "description": "Huaihua City,Hunan Province,China"
     },
     {
       "const": "CN-HN-LDI",
-      "description": "Loudi Shi,Hunan Sheng,China"
+      "description": "Loudi City,Hunan Province,China"
     },
     {
       "const": "CN-HN-XXZ",
-      "description": "Xiangxi Tujiazu Miaozu Zizhizhou,Hunan Sheng,China"
+      "description": "​Xiangxi Tujia&Miao Autonomous Prefecture​,Hunan Province,China"
     },
     {
       "const": "CN-GD",
-      "description": "Guangdong Sheng,China"
+      "description": "Guangdong Province,China"
     },
     {
       "const": "CN-GD-CAN",
-      "description": "Guangzhou Shi,Guangdong Sheng,China"
+      "description": "Guangzhou City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-HSC",
-      "description": "Shaoguan Shi,Guangdong Sheng,China"
+      "description": "Shaoguan City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-SZX",
-      "description": "Shenzhen Shi,Guangdong Sheng,China"
+      "description": "Shenzhen City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-ZUH",
-      "description": "Zhuhai Shi,Guangdong Sheng,China"
+      "description": "Zhuhai City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-SWA",
-      "description": "Shantou Shi,Guangdong Sheng,China"
+      "description": "Shantou City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-FOS",
-      "description": "Foshan Shi,Guangdong Sheng,China"
+      "description": "Foshan City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-JMN",
-      "description": "Jiangmen Shi,Guangdong Sheng,China"
+      "description": "Jiangmen City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-ZHA",
-      "description": "Zhanjiang Shi,Guangdong Sheng,China"
+      "description": "Zhanjiang City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-MMI",
-      "description": "Maoming Shi,Guangdong Sheng,China"
+      "description": "Maoming City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-ZQG",
-      "description": "Zhaoqing Shi,Guangdong Sheng,China"
+      "description": "Zhaoqing City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-HUI",
-      "description": "Huizhou Shi,Guangdong Sheng,China"
+      "description": "Huizhou City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-MXZ",
-      "description": "Meizhou Shi,Guangdong Sheng,China"
+      "description": "Meizhou City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-SWE",
-      "description": "Shanwei Shi,Guangdong Sheng,China"
+      "description": "Shanwei City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-HEY",
-      "description": "Heyuan Shi,Guangdong Sheng,China"
+      "description": "Heyuan City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-YJI",
-      "description": "Yangjiang Shi,Guangdong Sheng,China"
+      "description": "Yangjiang City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-QYN",
-      "description": "Qingyuan Shi,Guangdong Sheng,China"
+      "description": "Qingyuan City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-DGG",
-      "description": "Dongguan Shi,Guangdong Sheng,China"
+      "description": "Dongguan City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-ZSN",
-      "description": "Zhongshan Shi,Guangdong Sheng,China"
+      "description": "Zhongshan City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-CZY",
-      "description": "Chaozhou Shi,Guangdong Sheng,China"
+      "description": "Chaozhou City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-JIY",
-      "description": "Jieyang Shi,Guangdong Sheng,China"
+      "description": "Jieyang City,Guangdong Province,China"
     },
     {
       "const": "CN-GD-YFS",
-      "description": "Yunfu Shi,Guangdong Sheng,China"
+      "description": "Yunfu City,Guangdong Province,China"
     },
     {
       "const": "CN-GX",
-      "description": "Guangxi Zhuangzu Zizhiqu,China"
+      "description": "Guangxi Zhuang Autonomous Region,China"
     },
     {
       "const": "CN-GX-NNG",
-      "description": "Nanning Shi,Guangxi Zhuangzu Zizhiqu,China"
+      "description": "Nanning City,Guangxi Zhuang Autonomous Region,China"
     },
     {
       "const": "CN-GX-LZH",
-      "description": "Liuzhou Shi,Guangxi Zhuangzu Zizhiqu,China"
+      "description": "Liuzhou City,Guangxi Zhuang Autonomous Region,China"
     },
     {
       "const": "CN-GX-KWL",
-      "description": "Guilin Shi,Guangxi Zhuangzu Zizhiqu,China"
+      "description": "Guilin City,Guangxi Zhuang Autonomous Region,China"
     },
     {
       "const": "CN-GX-WUZ",
-      "description": "Wuzhou Sh,Guangxi Zhuangzu Zizhiqu,China"
+      "description": "Wuzhou City,Guangxi Zhuang Autonomous Region,China"
     },
     {
       "const": "CN-GX-BHY",
-      "description": "Beihai Shi,Guangxi Zhuangzu Zizhiqu,China"
+      "description": "Beihai City,Guangxi Zhuang Autonomous Region,China"
     },
     {
       "const": "CN-GX-FAN",
-      "description": "Fangchenggang Shi,Guangxi Zhuangzu Zizhiqu,China"
+      "description": "Fangchenggang City,Guangxi Zhuang Autonomous Region,China"
     },
     {
       "const": "CN-GX-QZH",
-      "description": "Qinzhou Shi,Guangxi Zhuangzu Zizhiqu,China"
+      "description": "Qinzhou City,Guangxi Zhuang Autonomous Region,China"
     },
     {
       "const": "CN-GX-GUG",
-      "description": "Guigang Shi,Guangxi Zhuangzu Zizhiqu,China"
+      "description": "Guigang City,Guangxi Zhuang Autonomous Region,China"
     },
     {
       "const": "CN-GX-YUL",
-      "description": "Yulin Shi,Guangxi Zhuangzu Zizhiqu,China"
+      "description": "Yulin City,Guangxi Zhuang Autonomous Region,China"
     },
     {
       "const": "CN-GX-BSS",
-      "description": "Bose Shi,Guangxi Zhuangzu Zizhiqu,China"
+      "description": "Bose City,Guangxi Zhuang Autonomous Region,China"
     },
     {
       "const": "CN-GX-HZO",
-      "description": "Hezhou Shi,Guangxi Zhuangzu Zizhiqu,China"
+      "description": "Hezhou City,Guangxi Zhuang Autonomous Region,China"
     },
     {
       "const": "CN-GX-HCS",
-      "description": "Hechi Shi,Guangxi Zhuangzu Zizhiqu,China"
+      "description": "Hechi City,Guangxi Zhuang Autonomous Region,China"
     },
     {
       "const": "CN-GX-LIB",
-      "description": "Laibin Shi,Guangxi Zhuangzu Zizhiqu,China"
+      "description": "Laibin City,Guangxi Zhuang Autonomous Region,China"
     },
     {
       "const": "CN-GX-COZ",
-      "description": "Chongzuo Shi,Guangxi Zhuangzu Zizhiqu,China"
+      "description": "Chongzuo City,Guangxi Zhuang Autonomous Region,China"
     },
     {
       "const": "CN-HI",
-      "description": "Hainan Sheng,China"
+      "description": "Hainan Province,China"
     },
     {
       "const": "CN-HI-HAK",
-      "description": "Haikou Shi,Hainan Sheng,China"
+      "description": "Haikou City,Hainan Province,China"
     },
     {
       "const": "CN-HI-SYX",
-      "description": "Sanva Shi,Hainan Sheng,China"
+      "description": "Sanva City,Hainan Province,China"
     },
     {
       "const": "CN-CQ",
-      "description": "Chongqing Shi,China"
+      "description": "Chongqing City,China"
     },
     {
       "const": "CN-SC",
-      "description": "Sichuan Sheng,China"
+      "description": "Sichuan Province,China"
     },
     {
       "const": "CN-SC-CTU",
-      "description": "Chengdu Shi,Sichuan Sheng,China"
+      "description": "Chengdu City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-ZGS",
-      "description": "Zigong Shi,Sichuan Sheng,China"
+      "description": "Zigong City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-PZH",
-      "description": "Panzhihua Shi,Sichuan Sheng,China"
+      "description": "Panzhihua City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-LUZ",
-      "description": "Luzhou Sh,Sichuan Sheng,China"
+      "description": "Luzhou City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-DEY",
-      "description": "Deyang Shi,Sichuan Sheng,China"
+      "description": "Deyang City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-MYG",
-      "description": "Mianyang Shi,Sichuan Sheng,China"
+      "description": "Mianyang City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-GYC",
-      "description": "Guangyuan Shi,Sichuan Sheng,China"
+      "description": "Guangyuan City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-SNS",
-      "description": "Suining Shi,Sichuan Sheng,China"
+      "description": "Suining City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-NJS",
-      "description": "Neijiang Shi,Sichuan Sheng,China"
+      "description": "Neijiang City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-LES",
-      "description": "Leshan Shi,Sichuan Sheng,China"
+      "description": "Leshan City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-NCO",
-      "description": "Nanchong Shi,Sichuan Sheng,China"
+      "description": "Nanchong City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-MSS",
-      "description": "Meishan Shi,Sichuan Sheng,China"
+      "description": "Meishan City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-YBS",
-      "description": "Yibin Shi,Sichuan Sheng,China"
+      "description": "Yibin City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-GAC",
-      "description": "Guang'an Shi,Sichuan Sheng,China"
+      "description": "Guang'an City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-DAZ",
-      "description": "Dazhou Shi,Sichuan Sheng,China"
+      "description": "Dazhou City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-YAS",
-      "description": "Ya'an Shi,Sichuan Sheng,China"
+      "description": "Ya'an City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-BZS",
-      "description": "Bazhong Shi,Sichuan Sheng,China"
+      "description": "Bazhong City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-ZYS",
-      "description": "Ziyang Shi,Sichuan Sheng,China"
+      "description": "Ziyang City,Sichuan Province,China"
     },
     {
       "const": "CN-SC-ABA",
-      "description": "Aba(Ngawa)Zangzu Qiangzu Zizhizhou,Sichuan Sheng,China"
+      "description": "Aba Tibetan&Qiang Autonomous Prefecture,Sichuan Province,China"
     },
     {
       "const": "CN-SC-GAZ",
-      "description": "Garzê Zangzu Zizhizhou,Sichuan Sheng,China"
+      "description": "Garzê Tibetan Autonomous Prefecture,Sichuan Province,China"
     },
     {
       "const": "CN-SC-LSY",
-      "description": "Liangshan Yizu Zizhizhou,Sichuan Sheng,China"
+      "description": "Liangshan Yi Autonomous Prefecture​,Sichuan Province,China"
     },
     {
       "const": "CN-GZ",
-      "description": "Guizhou Sheng,China"
+      "description": "Guizhou Province,China"
     },
     {
       "const": "CN-GZ-KWE",
-      "description": "Guiyang Shi,Guizhou Sheng,China"
+      "description": "Guiyang City,Guizhou Province,China"
     },
     {
       "const": "CN-GZ-LPS",
-      "description": "Lupanshui Shi,Guizhou Sheng,China"
+      "description": "Lupanshui City,Guizhou Province,China"
     },
     {
       "const": "CN-GZ-ZNY",
-      "description": "Zunyi Shi,Guizhou Sheng,China"
+      "description": "Zunyi City,Guizhou Province,China"
     },
     {
       "const": "CN-GZ-ASS",
-      "description": "Anshun Shi,Guizhou Sheng,China"
+      "description": "Anshun City,Guizhou Province,China"
     },
     {
       "const": "CN-GZ-TRD",
-      "description": "Tongren Diqu,Guizhou Sheng,China"
+      "description": "Tongren Diqu,Guizhou Province,China"
     },
     {
       "const": "CN-GZ-QXZ",
-      "description": "Qianxinan Buycizu Miaozu Zizhizhou,Guizhou Sheng,China"
+      "description": "Qianxinan Buyei&Miao Autonomous Prefecture,Guizhou Province,China"
     },
     {
       "const": "CN-GZ-BJD",
-      "description": "Bijie Diqu,Guizhou Sheng,China"
+      "description": "Bijie Diqu,Guizhou Province,China"
     },
     {
       "const": "CN-GZ-QND",
-      "description": "Qiandongnan Miaozu Dongzu Zizhizhou,Guizhou Sheng,China"
+      "description": "Qiandongnan Miao&Dong Autonomous Prefecture,Guizhou Province,China"
     },
     {
       "const": "CN-GZ-QNZ",
-      "description": "Qiannan Buyeizu Miaozu Zizhizhou,Guizhou Sheng,China"
+      "description": "​Qiannan Buyei&Miao Autonomous Prefecture,Guizhou Province,China"
     },
     {
       "const": "CN-YN",
-      "description": "Yunnan Sheng,China"
+      "description": "Yunnan Province,China"
     },
     {
       "const": "CN-YN-KMG",
-      "description": "Kunming Shi,Yunnan Sheng,China"
+      "description": "Kunming City,Yunnan Province,China"
     },
     {
       "const": "CN-YN-QJS",
-      "description": "Qujing Shi,Yunnan Sheng,China"
+      "description": "Qujing City,Yunnan Province,China"
     },
     {
       "const": "CN-YN-YXS",
-      "description": "Yuxi Shi,Yunnan Sheng,China"
+      "description": "Yuxi City,Yunnan Province,China"
     },
     {
       "const": "CN-YN-BOS",
-      "description": "Baoshan Shi,Yunnan Sheng,China"
+      "description": "Baoshan City,Yunnan Province,China"
     },
     {
       "const": "CN-YN-ZTS",
-      "description": "Zhaotong Shi,Yunnan Sheng,China"
+      "description": "Zhaotong City,Yunnan Province,China"
     },
     {
       "const": "CN-YN-LJH",
-      "description": "Lijiang Shi,Yunnan Sheng,China"
+      "description": "Lijiang City,Yunnan Province,China"
     },
     {
       "const": "CN-YN-PRS",
-      "description": "Pu'er Shi,Yunnan Sheng,China"
+      "description": "Pu'er City,Yunnan Province,China"
     },
     {
       "const": "CN-YN-LIH",
-      "description": "Lincang Shi,Yunnan Sheng,China"
+      "description": "Lincang City,Yunnan Province,China"
     },
     {
       "const": "CN-YN-CXD",
-      "description": "Chuxiong Yizu Zizhizhou,Yunnan Sheng,China"
+      "description": "​Chuxiong Yi Autonomous Prefecture,Yunnan Province,China"
     },
     {
       "const": "CN-YN-HHZ",
-      "description": "Honghe Hanizu Yizu Zizhizhou,Yunnan Sheng,China"
+      "description": "​Honghe Hani&Yi Autonomous Prefecture,Yunnan Province,China"
     },
     {
       "const": "CN-YN-WSZ",
-      "description": "Wenshan Zhuangzu Miaozu Zizhizhou,Yunnan Sheng,China"
+      "description": "​Wenshan Zhuang&Miao Autonomous Prefecture,Yunnan Province,China"
     },
     {
       "const": "CN-YN-XSB",
-      "description": "Xishuangbanna Daizu Zizhizhou,Yunnan Sheng,China"
+      "description": "Xishuangbanna Dai Autonomous Prefecture,Yunnan Province,China"
     },
     {
       "const": "CN-YN-DLZ",
-      "description": "Dali Baizu Zizhizhou,Yunnan Sheng,China"
+      "description": "​Dali Bai Autonomous Prefecture,Yunnan Province,China"
     },
     {
       "const": "CN-YN-DHG",
-      "description": "Dehong Daizu Jingpozu Zizhizhou,Yunnan Sheng,China"
+      "description": "Dehong Dai&Jingpo Autonomous Prefecture,Yunnan Province,China"
     },
     {
       "const": "CN-YN-NUJ",
-      "description": "Nujiang Lisuzu Zizhizhou,Yunnan Sheng,China"
+      "description": "Nujiang Lisu Autonomous Prefecture,Yunnan Province,China"
     },
     {
       "const": "CN-YN-DEZ",
-      "description": "Deqên Zangzu Zizhizhou,Yunnan Sheng,China"
+      "description": "Deqên Tibetan Autonomous Prefecture,Yunnan Province,China"
     },
     {
       "const": "CN-XZ",
-      "description": "Xizang Zizhiqu,China"
+      "description": "Tibet Autonomous Region,China"
     },
     {
       "const": "CN-XZ-LXA",
-      "description": "Lhasa Shi,Xizang Zizhiqu,China"
+      "description": "Lhasa City,Tibet Autonomous Region,China"
     },
     {
       "const": "CN-XZ-QAD",
-      "description": "Qamdo Diqu,Xizang Zizhiqu,China"
+      "description": "Qamdo Diqu,Tibet Autonomous Region,China"
     },
     {
       "const": "CN-XZ-SND",
-      "description": "Shannan Diqu,Xizang Zizhiqu,China"
+      "description": "Shannan Diqu,Tibet Autonomous Region,China"
     },
     {
       "const": "CN-XZ-XID",
-      "description": "Xigaze Diqu,Xizang Zizhiqu,China"
+      "description": "Xigaze Diqu,Tibet Autonomous Region,China"
     },
     {
       "const": "CN-XZ-NAD",
-      "description": "Nagqu Diqu,Xizang Zizhiqu,China"
+      "description": "Nagqu Diqu,Tibet Autonomous Region,China"
     },
     {
       "const": "CN-XZ-NGD",
-      "description": "Ngari Diqu,Xizang Zizhiqu,China"
+      "description": "Ngari Diqu,Tibet Autonomous Region,China"
     },
     {
       "const": "CN-XZ-NYD",
-      "description": "Nyingchi Diqu,Xizang Zizhiqu,China"
+      "description": "Nyingchi Diqu,Tibet Autonomous Region,China"
     },
     {
       "const": "CN-SN",
-      "description": "Shaanxi Sheng,China"
+      "description": "Shaanxi Province,China"
     },
     {
       "const": "CN-SN-SIA",
-      "description": "Xi'an Shi,Shaanxi Sheng,China"
+      "description": "Xi'an City,Shaanxi Province,China"
     },
     {
       "const": "CN-SN-TCN",
-      "description": "Tongchuan Shi,Shaanxi Sheng,China"
+      "description": "Tongchuan City,Shaanxi Province,China"
     },
     {
       "const": "CN-SN-BJI",
-      "description": "Baoji Shi,Shaanxi Sheng,China"
+      "description": "Baoji City,Shaanxi Province,China"
     },
     {
       "const": "CN-SN-XYS",
-      "description": "Xianyang Shi,Shaanxi Sheng,China"
+      "description": "Xianyang City,Shaanxi Province,China"
     },
     {
       "const": "CN-SN-WNA",
-      "description": "Weinan Shi,Shaanxi Sheng,China"
+      "description": "Weinan City,Shaanxi Province,China"
     },
     {
       "const": "CN-SN-YNA",
-      "description": "Yan'an Shi,Shaanxi Sheng,China"
+      "description": "Yan'an City,Shaanxi Province,China"
     },
     {
       "const": "CN-SN-HZJ",
-      "description": "Hanzhong Shi,Shaanxi Sheng,China"
+      "description": "Hanzhong City,Shaanxi Province,China"
     },
     {
       "const": "CN-SN-YLN",
-      "description": "Yulin Shi,Shaanxi Sheng,China"
+      "description": "Yulin City,Shaanxi Province,China"
     },
     {
       "const": "CN-SN-ANK",
-      "description": "Ankang Shi,Shaanxi Sheng,China"
+      "description": "Ankang City,Shaanxi Province,China"
     },
     {
       "const": "CN-SN-SLH",
-      "description": "Shangluo Shi,Shaanxi Sheng,China"
+      "description": "Shangluo City,Shaanxi Province,China"
     },
     {
       "const": "CN-GS",
-      "description": "Gansu Sheng,China"
+      "description": "Gansu Province,China"
     },
     {
       "const": "CN-GS-LHW",
-      "description": "Lanzhou Shi,Gansu Sheng,China"
+      "description": "Lanzhou City,Gansu Province,China"
     },
     {
       "const": "CN-GS-JYG",
-      "description": "Jiayuguan Shi,Gansu Sheng,China"
+      "description": "Jiayuguan City,Gansu Province,China"
     },
     {
       "const": "CN-GS-JCS",
-      "description": "Jinchang Shi,Gansu Sheng,China"
+      "description": "Jinchang City,Gansu Province,China"
     },
     {
       "const": "CN-GS-BYS",
-      "description": "Baiyin Shi,Gansu Sheng,China"
+      "description": "Baiyin City,Gansu Province,China"
     },
     {
       "const": "CN-GS-TSU",
-      "description": "Tianshui Shi,Gansu Sheng,China"
+      "description": "Tianshui City,Gansu Province,China"
     },
     {
       "const": "CN-GS-WWS",
-      "description": "Wuwei Shi,Gansu Sheng,China"
+      "description": "Wuwei City,Gansu Province,China"
     },
     {
       "const": "CN-GS-ZYE",
-      "description": "Zhangye Shi,Gansu Sheng,China"
+      "description": "Zhangye City,Gansu Province,China"
     },
     {
       "const": "CN-GS-PLS",
-      "description": "Pingliang Shi,Gansu Sheng,China"
+      "description": "Pingliang City,Gansu Province,China"
     },
     {
       "const": "CN-GS-JQG",
-      "description": "Jiuquan Shi,Gansu Sheng,China"
+      "description": "Jiuquan City,Gansu Province,China"
     },
     {
       "const": "CN-GS-QYI",
-      "description": "Qingyang Shi,Gansu Sheng,China"
+      "description": "Qingyang City,Gansu Province,China"
     },
     {
       "const": "CN-GS-DNX",
-      "description": "Dingxi Shi,Gansu Sheng,China"
+      "description": "Dingxi City,Gansu Province,China"
     },
     {
       "const": "CN-GS-LGN",
-      "description": "Longnan Shi,Gansu Sheng,China"
+      "description": "Longnan City,Gansu Province,China"
     },
     {
       "const": "CN-GS-LXH",
-      "description": "Linxia Huizu Zizhizhou,Gansu Sheng,China"
+      "description": "​Linxia Hui Autonomous Prefecture,Gansu Province,China"
     },
     {
       "const": "CN-GS-GNZ",
-      "description": "Gannan Zangzu Zizhizhou,Gansu Sheng,China"
+      "description": "Gannan Tibetan Autonomous Prefecture,Gansu Province,China"
     },
     {
       "const": "CN-QH",
-      "description": "Qinghai Sheng,China"
+      "description": "Qinghai Province,China"
     },
     {
       "const": "CN-QH-XNN",
-      "description": "Xining Shi,Qinghai Sheng,China"
+      "description": "Xining City,Qinghai Province,China"
     },
     {
       "const": "CN-QH-HDD",
-      "description": "Haidong Diqu,Qinghai Sheng,China"
+      "description": "Haidong Diqu,Qinghai Province,China"
     },
     {
       "const": "CN-QH-HBZ",
-      "description": "Haibei Zangzu Zizhizhou,Qinghai Sheng,China"
+      "description": "Haibei Tibetan Autonomous Prefecture,Qinghai Province,China"
     },
     {
       "const": "CN-QH-HN7",
-      "description": "Huangnan Zangzu Zizhizhou,Qinghai Sheng,China"
+      "description": "Huangnan Tibetan Autonomous Prefecture,Qinghai Province,China"
     },
     {
       "const": "CN-QH-HNN",
-      "description": "Hainan Zangzu Zizhizhou,Qinghai Sheng,China"
+      "description": "Hainan Tibetan Autonomous Prefecture,Qinghai Province,China"
     },
     {
       "const": "CN-QH-GOL",
-      "description": "Golog Zangzu Zizhizhou,Qinghai Sheng,China"
+      "description": "Golog Tibetan Autonomous Prefecture,Qinghai Province,China"
     },
     {
       "const": "CN-QH-YSZ",
-      "description": "Yushu Zangzu Zizhizhou,Qinghai Sheng,China"
+      "description": "Yushu Tibetan Autonomous Prefecture,Qinghai Province,China"
     },
     {
       "const": "CN-QH-HXZ",
-      "description": "Haixi Mongolzu Zangzu Zizhizhou,Qinghai Sheng,China"
+      "description": "Haixi Mongol&Tibetan Autonomous Prefecture,Qinghai Province,China"
     },
     {
       "const": "CN-NX",
-      "description": "Ningxia Huizu Zizhiqu,China"
+      "description": "Ningxia Hui Autonomous Region,China"
     },
     {
       "const": "CN-NX-INC",
-      "description": "Yinchuan Shi,Ningxia Huizu Zizhiqu,China"
+      "description": "Yinchuan City,Ningxia Hui Autonomous Region,China"
     },
     {
       "const": "CN-NX-SZS",
-      "description": "Shizuishan Shi,Ningxia Huizu Zizhiqu,China"
+      "description": "Shizuishan City,Ningxia Hui Autonomous Region,China"
     },
     {
       "const": "CN-NX-WZS",
-      "description": "Wuzhong Shi,Ningxia Huizu Zizhiqu,China"
+      "description": "Wuzhong City,Ningxia Hui Autonomous Region,China"
     },
     {
       "const": "CN-NX-GYN",
-      "description": "Guyuan Shi,Ningxia Huizu Zizhiqu,China"
+      "description": "Guyuan City,Ningxia Hui Autonomous Region,China"
     },
     {
       "const": "CN-NX-ZWS",
-      "description": "Zhongwei Shi,Ningxia Huizu Zizhiqu,China"
+      "description": "Zhongwei City,Ningxia Hui Autonomous Region,China"
     },
     {
       "const": "CN-XJ",
-      "description": "Xinjiang Uygur Zizhiqu,China"
+      "description": "Xinjiang Uygur Autonomous Region,China"
     },
     {
       "const": "CN-XJ-URC",
-      "description": "Urümqi  Shi,Xinjiang Uygur Zizhiqu,China"
+      "description": "Urümqi City,Xinjiang Uygur Autonomous Region,China"
     },
     {
       "const": "CN-XJ-KAR",
-      "description": "Karamay Shi,Xinjiang Uygur Zizhiqu,China"
+      "description": "Karamay City,Xinjiang Uygur Autonomous Region,China"
     },
     {
       "const": "CN-XJ-TUD",
-      "description": "Turpan Diqu,Xinjiang Uygur Zizhiqu,China"
+      "description": "Turpan Diqu,Xinjiang Uygur Autonomous Region,China"
     },
     {
       "const": "CN-XJ-HMD",
-      "description": "Hami(Kumul)Diqu,Xinjiang Uygur Zizhiqu,China"
+      "description": "Hami(Kumul)Diqu,Xinjiang Uygur Autonomous Region,China"
     },
     {
       "const": "CN-XJ-CJZ",
-      "description": "Changji Huizu Zizhizhou,Xinjiang Uygur Zizhiqu,China"
+      "description": "Changji Hui Autonomous Prefecture,Xinjiang Uygur Autonomous Region,China"
     },
     {
       "const": "CN-XJ-BOR",
-      "description": "Bortala Mongol Zizhizhou,Xinjiang Uygur Zizhiqu,China"
+      "description": "Bortala Mongol Autonomous Prefecture,Xinjiang Uygur Autonomous Region,China"
     },
     {
       "const": "CN-XJ-BAG",
-      "description": "Bayingolin Mongol Zizhizhou,Xinjiang Uygur Zizhiqu,China"
+      "description": "Bayingolin Mongol Autonomous Prefecture,Xinjiang Uygur Autonomous Region,China"
     },
     {
       "const": "CN-XJ-AKD",
-      "description": "Aksu Diqu,Xinjiang Uygur Zizhiqu,China"
+      "description": "Aksu Diqu,Xinjiang Uygur Autonomous Region,China"
     },
     {
       "const": "CN-XJ-KIZ",
-      "description": "Kizilsu Kirgiz Zizhizhou,Xinjiang Uygur Zizhiqu,China"
+      "description": "​Kizilsu Kirgiz Autonomous Prefecture,Xinjiang Uygur Autonomous Region,China"
     },
     {
       "const": "CN-XJ-KSI",
-      "description": "Kashi(Kaxgar)Diqu,Xinjiang Uygur Zizhiqu,China"
+      "description": "Kashi(Kaxgar)Diqu,Xinjiang Uygur Autonomous Region,China"
     },
     {
       "const": "CN-XJ-HOD",
-      "description": "Hotan Diqu,Xinjiang Uygur Zizhiqu,China"
+      "description": "Hotan Diqu,Xinjiang Uygur Autonomous Region,China"
     },
     {
       "const": "CN-XJ-ILD",
-      "description": "Ili Kazak Zizhizhou,Xinjiang Uygur Zizhiqu,China"
+      "description": "​Ili Kazak Autonomous Prefecture,Xinjiang Uygur Autonomous Region,China"
     },
     {
       "const": "CN-XJ-TCD",
-      "description": "Tacheng(Qoqek)Diqu,Xinjiang Uygur Zizhiqu,China"
+      "description": "Tacheng(Qoqek)Diqu,Xinjiang Uygur Autonomous Region,China"
     },
     {
       "const": "CN-XJ-ALD",
-      "description": "Altay Diqu,Xinjiang Uygur Zizhiqu,China"
+      "description": "Altay Diqu,Xinjiang Uygur Autonomous Region,China"
     },
     {
       "const": "CN-TW",
-      "description": "Taiwan Sheng,China"
+      "description": "Taiwan Province,China"
     },
     {
       "const": "CN-HK",
-      "description": "Hongkong Tebiexingzhengqu,China"
+      "description": "Hong Kong Special Administrative Region of the People's Republic of China"
     },
     {
       "const": "CN-MO",
-      "description": "Macau Tebiexingzhengqu,China"
+      "description": "Macao Special Administrative Region of the People's Republic of China"
     }
   ]
 }
