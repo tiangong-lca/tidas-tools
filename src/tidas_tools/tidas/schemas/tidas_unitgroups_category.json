@@ -1,61 +1,57 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$defs": {
-        "UnitGroup": {
-            "oneOf": [
-                {
-                    "properties": {
-                        "@level": {
-                            "const": "0"
-                        },
-                        "@classId": {
-                            "const": "1"
-                        },
-                        "#text": {
-                            "const": "Technical unit groups"
-                        }
-                    }
+    "oneOf": [
+        {
+            "properties": {
+                "@level": {
+                    "const": "0"
                 },
-                {
-                    "properties": {
-                        "@level": {
-                            "const": "0"
-                        },
-                        "@classId": {
-                            "const": "2"
-                        },
-                        "#text": {
-                            "const": "Chemical composition unit groups"
-                        }
-                    }
+                "@classId": {
+                    "const": "1"
                 },
-                {
-                    "properties": {
-                        "@level": {
-                            "const": "0"
-                        },
-                        "@classId": {
-                            "const": "3"
-                        },
-                        "#text": {
-                            "const": "Economic unit groups"
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "@level": {
-                            "const": "0"
-                        },
-                        "@classId": {
-                            "const": "4"
-                        },
-                        "#text": {
-                            "const": "Other unit groups"
-                        }
-                    }
+                "#text": {
+                    "const": "Technical unit groups"
                 }
-            ]
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "0"
+                },
+                "@classId": {
+                    "const": "2"
+                },
+                "#text": {
+                    "const": "Chemical composition unit groups"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "0"
+                },
+                "@classId": {
+                    "const": "3"
+                },
+                "#text": {
+                    "const": "Economic unit groups"
+                }
+            }
+        },
+        {
+            "properties": {
+                "@level": {
+                    "const": "0"
+                },
+                "@classId": {
+                    "const": "4"
+                },
+                "#text": {
+                    "const": "Other unit groups"
+                }
+            }
         }
-    }
+    ]
 }
