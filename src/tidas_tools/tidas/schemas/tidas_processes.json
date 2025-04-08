@@ -306,15 +306,15 @@
             "time": {
               "type": "object",
               "properties": {
-                "referenceYear": {
+                "common:referenceYear": {
                   "$ref": "tidas_data_types.json#/$defs/Year",
                   "description": "Reference year when the emission is assumed to take place, i.e. the start year of the time period for which the impact is modelled. For time-independent models \"time independent\" should be stated."
                 },
-                "dataSetValidUntil": {
+                "common:dataSetValidUntil": {
                   "$ref": "tidas_data_types.json#/$defs/Year",
                   "description": "End year of the time period for which the data set is still valid / sufficiently representative. This date also determines when a data set revision / remodelling is required or recommended due to expected relevant changes in environmentally or technically relevant inventory values, including in the background system."
                 },
-                "timeRepresentativenessDescription": {
+                "common:timeRepresentativenessDescription": {
                   "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
                   "description": "Description of the valid time span of the data set including information on limited usability within sub-time spans, if any."
                 },
@@ -323,7 +323,7 @@
                 }
               },
               "required": [
-                "referenceYear"
+                "common:referenceYear"
               ]
             },
             "geography": {
@@ -406,7 +406,10 @@
                 "common:other": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "technologyDescriptionAndIncludedProcesses"
+              ]
             },
             "mathematicalRelations": {
               "type": "object",
@@ -623,7 +626,11 @@
                 "common:other": {
                   "type": "string"
               }
-              }
+              },
+              "required": [
+                "dataCutOffAndCompletenessPrinciples",
+                "referenceToDataSource"
+              ]
             },
             "completeness": {
               "type": "object",
@@ -854,15 +861,15 @@
                       "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
                       "description": "Summary of the review. All the following items should be explicitly addressed: Representativeness, completeness, and precision of Inputs and Outputs for the process in its documented location, technology and time i.e. both completeness of technical model (product, waste, and elementary flows) and completeness of coverage of the relevant problem fields (environmental, human health, resource use) for this specific good, service, or process. Plausibility of data. Correctness and appropriateness of the data set documentation. Appropriateness of system boundaries, cut-off rules, LCI modelling choices such as e.g. allocation, consistency of included processes and of LCI methodology. If the data set comprises pre-calculated LCIA results, the correspondence of the Input and Output elementary flows (including their geographical validity) with the applied LCIA method(s) should be addressed by the reviewer. An overall quality statement on the data set may be included here."
                     },
-                    "referenceToNameOfReviewerAndInstitution": {
+                    "common:referenceToNameOfReviewerAndInstitution": {
                       "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
                       "description": "\"Contact data set\" of reviewer. The full name of reviewer(s) and institution(s) as well as a contact address and/or email should be provided in that contact data set."
                     },
-                    "otherReviewDetails": {
+                    "common:otherReviewDetails": {
                       "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
                       "description": "Further information from the review process, especially comments received from third parties once the data set has been published or additional reviewer comments from an additional external review."
                     },
-                    "referenceToCompleteReviewReport": {
+                    "common:referenceToCompleteReviewReport": {
                       "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
                       "description": "\"Source data set\" of the complete review report."
                     },
@@ -882,8 +889,8 @@
               "required": [
                 "review",
                 "reviewDetails",
-                "referenceToNameOfReviewerAndInstitution",
-                "referenceToCompleteReviewReport"
+                "common:referenceToNameOfReviewerAndInstitution",
+                "common:referenceToCompleteReviewReport"
               ]
             },
             "complianceDeclarations": {
@@ -1044,7 +1051,7 @@
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
                   "description": "\"Contact data set\" of the responsible person or entity that has documented this data set, i.e. entered the data and the descriptive information."
                 },
-                "referenceToDataSetUseApproval": {
+                "common:referenceToDataSetUseApproval": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
                   "description": "\"Source data set\": Names exclusively the producer or operator of the good, service or technology represented by this data set, which officially has approved this data set in all its parts. In case of nationally or internationally averaged data sets, this will be the respective business association. If no official approval has been given, the entry \"No official approval by producer or operator\" is to be entered and the reference will point to an empty \"Contact data set\". [Notes: The producer or operator may only be named here, if a written approval of this data set was given. A recognition of this data set by any other organisation then the producer/operator of the good, service, or process is not to be stated here, but as a \"review\" in the validation section.]"
                 },

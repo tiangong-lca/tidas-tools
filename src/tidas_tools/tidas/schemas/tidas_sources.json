@@ -180,7 +180,7 @@
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
                   "description": "Last preceding data set, which was replaced by this version. Either a URI of that data set (i.e. an internet address) or its UUID plus version number is given (or both)."
                 },
-                "permanentDataSetURI": {
+                "common:permanentDataSetURI": {
                   "type": "string",
                   "format": "uri",
                   "description": "URI (i.e. an internet address) of the original of this data set. [Note: This equally globally unique identifier supports users and software tools to identify and retrieve the original version of a data set via the internet or to check for available updates. The URI must not represent an existing WWW address, but it should be unique and point to the data access point, e.g. by combining the data owner's www path with the data set's UUID, e.g. http://www.mycompany.com/lca/processes/50f12420-8855-12db-b606-0900210c9a66.]"

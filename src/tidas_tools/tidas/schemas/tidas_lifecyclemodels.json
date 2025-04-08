@@ -1229,7 +1229,7 @@
                     "false"
                   ] 
                 },
-                "referenceToEntitiesWithExclusiveAccess": {
+                "common:referenceToEntitiesWithExclusiveAccess": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
                   "description": "\"Contact data set\" of those entities or persons (or groups of these), to which an exclusive access to this data set is granted. Mainly intended to be used in confidentiality management in projects. [Note: See also field \"Access and use restrictions\".]"
                 },
