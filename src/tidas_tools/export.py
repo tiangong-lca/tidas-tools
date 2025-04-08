@@ -31,7 +31,7 @@ def process_record(output_dir, category, record, to_tidas=True):
     if to_tidas:
         tidas_path = category_dir / f"{id}_{version}.json"
         with open(tidas_path, "w") as f:
-            json.dump(json_ordered, f, indent=2)
+            json.dump(json_ordered, f, indent=2, ensure_ascii=False)
     else:
         xml_data = xmltodict.unparse(json_ordered, pretty=True)
         eilcd_path = category_dir / f"{id}_{version}.xml"
