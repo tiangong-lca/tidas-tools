@@ -61,7 +61,7 @@ def export_common_records(conn, output_dir, to_tidas=True):
     """Export common records"""
     logging.info("Exporting common records...")
     cursor = conn.cursor()
-    cursor.execute("SET statement_timeout = '600000';")
+    cursor.execute("SET statement_timeout = '1200000';")
     cursor.execute("SELECT file_name, json_ordered FROM ilcd")
 
     # Get total record count for progress bar
@@ -110,7 +110,7 @@ def export_category_records(conn, output_dir, categories, to_tidas=True):
 
             cursor = conn.cursor()
             # Set statement timeout (10 minutes)
-            cursor.execute("SET statement_timeout = '600000';")
+            cursor.execute("SET statement_timeout = '1200000';")
             cursor.execute(
                 f"SELECT id, json_ordered, version FROM {category} WHERE state_code = 100"
             )
