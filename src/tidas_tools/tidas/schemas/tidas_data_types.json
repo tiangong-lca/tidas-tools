@@ -54,20 +54,17 @@
     "Int1": {
       "description": "1-digit integer number",
       "type": "string",
-      "minimum": 0,
-      "maximum": 9
+      "pattern": "^[0-9]$"
     },
     "Int5": {
       "description": "5-digit integer number",
       "type": "string",
-      "minimum": 0,
-      "maximum": 99999
+      "pattern": "^(0|[1-9]\\d{0,4})$"
     }, 
     "Int6": {
       "description": "6-digit integer number",
       "type": "string",
-      "minimum": 0,
-      "maximum": 999999
+      "pattern": "^(0|[1-9]\\d{0,5})$"
     },
     "LevelType": {
       "description": "1-digit integer number, must be equal to or greater than 0",
