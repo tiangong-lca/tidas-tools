@@ -154,5 +154,7 @@ test_data/*
 poetry.lock
 
 tidas.zip
-tidas/
+# tidas/
 output
+
+.vscode/

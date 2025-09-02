@@ -1,0 +1,375 @@
+# Process Dataset Content Rules and Guidelines
+# 流程数据集内容规则与指南
+#
+# Rule Structure:
+# <rules>: [
+#   {
+#     language: "en" | "zh" | "all",
+#     examples: [...] (optional),
+#     ... other custom fields
+#   }
+# ]
+
+metadata:
+  version: "1.0.0"
+  last_updated: "2024-01-15"
+  applies_to: "ILCD/Tidas Process Dataset v1.1"
+
+# Global rules
+global_rules:
+  multi_language_support:
+    <rules>:
+      - language: "en"
+        requirement: "English version is mandatory for all multilingual fields"
+        purpose: "Ensures international accessibility"
+      - language: "zh"
+        requirement: "中文版本建议提供，特别是中国地区的数据"
+        purpose: "确保本地用户可理解性"
+
+processDataSet:
+  processInformation:
+    dataSetInformation:
+      name:
+        baseName:
+          <rules>:
+            - language: "en"
+              naming_convention: |
+                Format: [Output product/service]; [Technology/Route]; [Additional specifiers]
+                - Start with the main output product or service
+                - Include technology type if relevant
+                - Add location or time specifiers if needed
+              content_requirements:
+                - "Use semicolons to separate major components"
+                - "Avoid abbreviations except widely recognized ones (e.g., CO2, kWh)"
+                - "Maximum 200 characters"
+              examples:
+                - "Electricity; hard coal; modern power plant; China 2023"
+                - "Steel; electric arc furnace; recycled scrap"
+                - "Transport; truck; Euro 6; 40t gross weight"
+              best_practices:
+                - "Be specific but concise"
+                - "Include distinguishing technical characteristics"
+                - "Use consistent terminology across datasets"
+
+            - language: "zh"
+              naming_convention: |
+                格式：[产出产品/服务]；[技术/路线]；[附加说明]
+                - 以主要产出产品或服务开头
+                - 包含相关技术类型
+                - 必要时添加地点或时间说明
+              content_requirements:
+                - "使用分号分隔主要组成部分"
+                - "避免使用缩写，除非广泛认可"
+                - "最长200个字符"
+              examples:
+                - "电力；燃煤；现代电厂；中国2023"
+                - "钢铁；电弧炉；再生废料"
+                - "运输；卡车；国六标准；40吨总重"
+              best_practices:
+                - "具体但简洁"
+                - "包含关键技术特征"
+                - "跨数据集使用一致的术语"
+
+        treatmentStandardsRoutes:
+          <rules>:
+            - language: "en"
+              content_requirements:
+                - "Specify treatment standards (e.g., ISO, EN, GB standards)"
+                - "Include process routes or pathways"
+                - "Mention specific technologies or methods"
+              examples:
+                - "ISO 14040 compliant; wet process route"
+                - "EU BAT reference; membrane technology"
+
+            - language: "zh"
+              content_requirements:
+                - "说明处理标准（如ISO、EN、GB标准）"
+                - "包含工艺路线或路径"
+                - "提及具体技术或方法"
+              examples:
+                - "符合ISO 14040标准；湿法工艺路线"
+                - "欧盟最佳可行技术；膜技术"
+
+      common:generalComment:
+        <rules>:
+          - language: "en"
+            structure: |
+              Recommended structure:
+              1. Process overview and purpose
+              2. System boundaries description
+              3. Key assumptions and limitations
+              4. Data quality considerations
+              5. Special remarks or warnings
+            writing_style:
+              - "Write in third person"
+              - "Use present tense for current processes"
+              - "Be objective and factual"
+            examples:
+              - |
+                This dataset represents electricity production from hard coal in a modern 
+                supercritical power plant. The system boundary includes coal handling, 
+                combustion, and flue gas treatment. Efficiency is assumed at 45% net. 
+                Data quality is high, based on measured plant data from 2023.
+
+          - language: "zh"
+            structure: |
+              建议结构：
+              1. 流程概述和目的
+              2. 系统边界描述
+              3. 关键假设和限制
+              4. 数据质量考虑
+              5. 特别说明或警告
+            writing_style:
+              - "使用第三人称"
+              - "当前流程使用现在时"
+              - "客观、事实性描述"
+            examples:
+              - |
+                该数据集代表现代超临界电厂的燃煤发电。系统边界包括煤炭处理、
+                燃烧和烟气处理。净效率假定为45%。数据质量高，基于2023年
+                实测电厂数据。
+
+    time:
+      referenceYear:
+        <rules>:
+          - language: "all"
+            format: "YYYY (4-digit year)"
+            requirements:
+              - "Must be 4-digit format"
+              - "Should represent the year of data validity"
+              - "For future scenarios, clearly indicate in comments"
+            examples:
+              valid: ["2023", "2020", "2025"]
+              invalid: ["23", "2020-2021", "2020s"]
+
+      timeRepresentativenessDescription:
+        <rules>:
+          - language: "en"
+            content_guide:
+              - "How well the reference year represents the technology"
+              - "Expected changes or trends"
+              - "Validity period justification"
+            examples:
+              - |
+                Data represents average 2023 technology. The technology is mature with 
+                minimal expected changes until 2030. Annual efficiency improvements of 
+                0.5% may occur.
+
+          - language: "zh"
+            content_guide:
+              - "参考年份对技术的代表性"
+              - "预期变化或趋势"
+              - "有效期说明"
+            examples:
+              - |
+                数据代表2023年平均技术水平。技术成熟，预计2030年前变化较小。
+                年效率可能提升0.5%。
+
+    geography:
+      locationOfOperationSupplyOrProduction:
+        location:
+          <rules>:
+            - language: "all"
+              naming_convention: "ISO 3166-1 alpha-2 codes"
+              code_mapping:
+                countries:
+                  CN: "China"
+                  US: "United States"
+                  DE: "Germany"
+                regions:
+                  GLO: "Global"
+                  RER: "Europe region"
+                  RNA: "North America region"
+                  RAF: "Africa region"
+                  RAS: "Asia region"
+                  RLA: "Latin America region"
+                  ROW: "Rest of World"
+              subdivision_format: "ISO 3166-2 (e.g., CN-GD for Guangdong)"
+              examples:
+                - "CN"
+                - "GLO"
+                - "CN-GD"
+
+        descriptionOfRestrictions:
+          <rules>:
+            - language: "en"
+              content_requirements:
+                - "Explain any geographic limitations"
+                - "Mention climate or regional factors"
+                - "Note infrastructure dependencies"
+              examples:
+                - |
+                  Valid for temperate climate zones. Requires access to waterways for 
+                  cooling. Grid connection assumes European standard voltage.
+
+            - language: "zh"
+              content_requirements:
+                - "说明地理限制"
+                - "提及气候或区域因素"
+                - "说明基础设施依赖"
+              examples:
+                - |
+                  适用于温带气候区。需要水路用于冷却。电网连接假定欧洲标准电压。
+
+    technology:
+      technologyDescriptionAndIncludedProcesses:
+        <rules>:
+          - language: "en"
+            structure:
+              - "Technology type and generation"
+              - "Process steps included"
+              - "Auxiliary processes"
+              - "Excluded processes (cut-off)"
+            writing_guidelines:
+              - "Use technical but accessible language"
+              - "Define acronyms on first use"
+              - "List process steps sequentially"
+            examples:
+              - |
+                Ultra-supercritical (USC) pulverized coal combustion technology, 
+                600°C/620°C steam conditions. Includes: coal grinding, combustion, 
+                steam generation, turbine operation, condensation. Auxiliary: 
+                DeNOx (SCR), DeSOx (FGD), ESP for particulates. Excludes: 
+                coal mining, ash disposal infrastructure.
+
+          - language: "zh"
+            structure:
+              - "技术类型和代别"
+              - "包含的工艺步骤"
+              - "辅助过程"
+              - "排除的过程（截断）"
+            writing_guidelines:
+              - "使用专业但易懂的语言"
+              - "首次使用时定义缩略词"
+              - "按顺序列出工艺步骤"
+            examples:
+              - |
+                超超临界(USC)煤粉燃烧技术，600°C/620°C蒸汽条件。包括：磨煤、
+                燃烧、蒸汽发生、汽轮机运行、冷凝。辅助：脱硝(SCR)、脱硫(FGD)、
+                静电除尘器。不包括：煤炭开采、灰渣处理基础设施。
+
+  modellingAndValidation:
+    LCIMethodAndAllocation:
+      typeOfDataSet:
+        <rules>:
+          - language: "all"
+            valid_values:
+              - "Unit process, single operation"
+              - "Unit process, black box"
+              - "LCI result"
+              - "Partly terminated system"
+            description: "Defines the type and aggregation level of the process"
+
+      LCIMethodPrinciple:
+        <rules>:
+          - language: "all"
+            valid_values:
+              - "Attributional"
+              - "Consequential"
+              - "Not applicable"
+            applicability: "Required for LCI results"
+
+      modellingConstants:
+        <rules>:
+          - language: "all"
+            format: "key-value pairs"
+            naming_convention:
+              - "Use lowercase with underscores"
+              - "Include units in the name or separately"
+            examples:
+              - "efficiency: 0.45"
+              - "capacity_factor: 0.85"
+              - "lifetime_years: 30"
+
+    dataSourcesTreatmentAndRepresentativeness:
+      dataCollectionPeriod:
+        <rules>:
+          - language: "all"
+            format: "YYYY-MM to YYYY-MM or YYYY"
+            alignment: "Should align with referenceYear"
+            examples:
+              - "2023"
+              - "2023-01 to 2023-12"
+              - "2022-06 to 2023-05"
+
+    validation:
+      review:
+        scope:
+          <rules>:
+            - language: "all"
+              valid_scopes:
+                - "Raw data"
+                - "Unit process(es), single operation"
+                - "Unit process(es), black box"
+                - "LCI results or Partly terminated system"
+                - "LCIA results"
+                - "Life cycle inventory methods"
+                - "Goal and scope definition"
+                - "LCIA methods"
+              requirement: "At least one review recommended for published datasets"
+
+  administrativeInformation:
+    dataEntryBy:
+      common:timeStamp:
+        <rules>:
+          - language: "all"
+            format: "ISO 8601"
+            pattern: "YYYY-MM-DDTHH:MM:SS"
+            examples:
+              - "2024-01-15T10:30:00"
+              - "2023-12-31T23:59:59"
+
+    publicationAndOwnership:
+      common:dataSetVersion:
+        <rules>:
+          - language: "all"
+            format: "Semantic versioning"
+            pattern: "major.minor.patch"
+            examples:
+              - "1.0.0"
+              - "2.1.3"
+              - "0.9.1-beta"
+
+      permanentDataSetURI:
+        <rules>:
+          - language: "all"
+            requirement: "Optional but recommended for published datasets"
+            format: "Resolvable URI"
+            examples:
+              - "https://example.org/ilcd/processes/550e8400-e29b-41d4"
+              - "https://data.ecoinvent.org/process/abc-123-def"
+
+  exchanges:
+    exchange:
+      referenceToFlowDataSet:
+        <rules>:
+          - language: "all"
+            naming_convention:
+              elementary_flows: "Follow ILCD nomenclature"
+              product_flows: "Follow process name rules"
+              waste_flows: "Prefix with 'waste' or '废物'"
+            validation: "Must reference existing flow dataset UUID"
+
+      meanAmount:
+        <rules>:
+          - language: "all"
+            data_type: "Decimal number"
+            requirement: "Required unless resultingAmount is provided"
+            sign_convention: "Positive or negative depending on direction"
+
+      dataSourceType:
+        <rules>:
+          - language: "all"
+            valid_values:
+              - "Primary data"
+              - "Secondary data"
+              - "Calculated"
+              - "Unknown"
+            requirement: "Required for all exchanges"
+            
+      location:
+        <rules>:
+          - language: "all"
+            consistency_rule: |
+              Should align with process location unless specifically different
+              (e.g., imported materials, exported products)
