@@ -622,62 +622,65 @@
           "type": "object",
           "properties": {
             "flowProperty": {
-              "type": "object",
-              "properties": {
-                "@dataSetInternalID": {
-                  "$ref": "tidas_data_types.json#/$defs/Int5",
-                  "description": "Automated entry: internal ID, used in the \"Quantitative reference\" section to identify the reference flow property."
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "@dataSetInternalID": {
+                    "$ref": "tidas_data_types.json#/$defs/Int5",
+                    "description": "Automated entry: internal ID, used in the \"Quantitative reference\" section to identify the reference flow property."
+                  },
+                  "referenceToFlowPropertyDataSet": {
+                    "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType"
+                  },
+                  "meanValue": {
+                    "$ref": "tidas_data_types.json#/$defs/Real",
+                    "description": "Value for the flow expressed in this flow property in relationship to the the value of the flow expressed in its reference flow property (see field \"Reference to reference flow property\" in the \"Quantitative reference\" section). [Notes and examples: If the product flow \"Diesel\" is expressed by default in \"Mass\" (= reference flow property) and \"kg\" (= corresponding reference unit), the value that would be stated here for an additional flow property e.g. \"Net calorific value\" would be \"42.5\", as this flow property has the reference unit \"MJ\" and Diesel has a net calorific value of 42.5 MJ per 1 kg. It is recommended to report only significant digits of the value.]"
+                  },
+                  "minimumValue": {
+                    "$ref": "tidas_data_types.json#/$defs/Real",
+                    "description": "Minimum value of this flow property in case uncertainty distribution is uniform or triangular."
+                  },
+                  "maximumValue": {
+                    "$ref": "tidas_data_types.json#/$defs/Real",
+                    "description": "Maximum value of this flow property in case uncertainty distribution is uniform or triangular."
+                  },
+                  "uncertaintyDistributionType": {
+                    "type": "string",
+                    "enum": [
+                      "undefined",
+                      "log-normal",
+                      "normal",
+                      "triangular",
+                      "uniform"
+                    ]
+                  },
+                  "relativeStandardDeviation95In": {
+                    "$ref": "tidas_data_types.json#/$defs/Perc",
+                    "description": "The resulting overall uncertainty of the calculated variable value considering uncertainty of measurements, modelling, appropriateness etc. [Notes: For log-normal distribution the square of the geometric standard deviation (SDg^2) is stated. Mean value times SDg^2 equals the 97.5% value (= Maximum value), Mean value divided by SDg^2 equals the 2.5% value (= Minimum value). For normal distribution the doubled standard deviation value (2*SD) is entered. Mean value plus 2*SD equals 97.5% value (= Maximum value), Mean value minus 2*SD equals 2.5% value (= Minimum value). This data field remains empty when uniform or triangular uncertainty distribution is applied.]"
+                  },
+                  "dataDerivationTypeStatus": {
+                    "type": "string",
+                    "enum": [
+                      "Measured",
+                      "Calculated",
+                      "Estimated",
+                      "Unknown derivation"
+                    ]
+                  },
+                  "generalComment": {
+                    "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
+                  },
+                  "common:other": {
+                    "type": "string"
+                  }
                 },
-                "referenceToFlowPropertyDataSet": {
-                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType"
-                },
-                "meanValue": {
-                  "$ref": "tidas_data_types.json#/$defs/Real",
-                  "description": "Value for the flow expressed in this flow property in relationship to the the value of the flow expressed in its reference flow property (see field \"Reference to reference flow property\" in the \"Quantitative reference\" section). [Notes and examples: If the product flow \"Diesel\" is expressed by default in \"Mass\" (= reference flow property) and \"kg\" (= corresponding reference unit), the value that would be stated here for an additional flow property e.g. \"Net calorific value\" would be \"42.5\", as this flow property has the reference unit \"MJ\" and Diesel has a net calorific value of 42.5 MJ per 1 kg. It is recommended to report only significant digits of the value.]"
-                },
-                "minimumValue": {
-                  "$ref": "tidas_data_types.json#/$defs/Real",
-                  "description": "Minimum value of this flow property in case uncertainty distribution is uniform or triangular."
-                },
-                "maximumValue": {
-                  "$ref": "tidas_data_types.json#/$defs/Real",
-                  "description": "Maximum value of this flow property in case uncertainty distribution is uniform or triangular."
-                },
-                "uncertaintyDistributionType": {
-                  "type": "string",
-                  "enum": [
-                    "undefined",
-                    "log-normal",
-                    "normal",
-                    "triangular",
-                    "uniform"
-                  ]
-                },
-                "relativeStandardDeviation95In": {
-                  "$ref": "tidas_data_types.json#/$defs/Perc", 
-                  "description": "The resulting overall uncertainty of the calculated variable value considering uncertainty of measurements, modelling, appropriateness etc. [Notes: For log-normal distribution the square of the geometric standard deviation (SDg^2) is stated. Mean value times SDg^2 equals the 97.5% value (= Maximum value), Mean value divided by SDg^2 equals the 2.5% value (= Minimum value). For normal distribution the doubled standard deviation value (2*SD) is entered. Mean value plus 2*SD equals 97.5% value (= Maximum value), Mean value minus 2*SD equals 2.5% value (= Minimum value). This data field remains empty when uniform or triangular uncertainty distribution is applied.]"
-                },
-                "dataDerivationTypeStatus": {
-                  "type": "string",
-                  "enum": [
-                    "Measured",
-                    "Calculated",
-                    "Estimated",
-                    "Unknown derivation"
-                  ]
-                },
-                "generalComment": {
-                  "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
-                },
-                "common:other": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "@dataSetInternalID",
-                "referenceToFlowPropertyDataSet",
-                "meanValue"
-              ]
+                "required": [
+                  "@dataSetInternalID",
+                  "referenceToFlowPropertyDataSet",
+                  "meanValue"
+                ]
+              }
             },
             "common:other": {
               "type": "string"
