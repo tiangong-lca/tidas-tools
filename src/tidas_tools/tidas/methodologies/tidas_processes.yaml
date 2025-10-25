@@ -34,61 +34,176 @@ processDataSet:
           <rules>:
             - language: "en"
               naming_convention: |
-                Format: [Output product/service]; [Technology/Route]; [Additional specifiers]
-                - Start with the main output product or service
-                - Include technology type if relevant
-                - Add location or time specifiers if needed
+                Follow ILCD Rule 20: align the process base name with the reference flow naming structure.
+                - Single reference flow: reuse the reference flow's technical name as the process name.
+                - Multiple reference flows: start with the technology or plant descriptor and append each reference flow name separated by commas.
+                - Exclude geographical or temporal qualifiers from the base name; capture them in the dedicated metadata fields.
               content_requirements:
-                - "Use semicolons to separate major components"
-                - "Avoid abbreviations except widely recognized ones (e.g., CO2, kWh)"
-                - "Maximum 200 characters"
+                - "Use technical terminology as applied in the supplying industry or towards customers."
+                - "Separate descriptors within the base name using commas and avoid semicolons or brackets."
+                - "Spell out terms before adding widely recognised abbreviations (e.g., \"Polypropylene, PP\")."
+                - "Cover every reference flow explicitly when the dataset is multi-functional."
+                - "Keep the wording concise enough for interface display (target 200 characters or fewer)."
               examples:
-                - "Electricity; hard coal; modern power plant; China 2023"
-                - "Steel; electric arc furnace; recycled scrap"
-                - "Transport; truck; Euro 6; 40t gross weight"
+                - "Electricity from hard coal, modern supercritical power plant"
+                - "Steel sheet, electric arc furnace, recycled scrap route"
+                - "Combined heat and power plant, natural gas, electricity and heat as reference flows"
               best_practices:
-                - "Be specific but concise"
-                - "Include distinguishing technical characteristics"
-                - "Use consistent terminology across datasets"
+                - "Match the single-output reference flow name exactly."
+                - "For multiple reference flows, list them by decreasing quantitative relevance."
+                - "Cross-check terminology against existing datasets to support searchability."
 
             - language: "zh"
               naming_convention: |
-                格式：[产出产品/服务]；[技术/路线]；[附加说明]
-                - 以主要产出产品或服务开头
-                - 包含相关技术类型
-                - 必要时添加地点或时间说明
+                遵循 ILCD 规则20：基础名称需与参考流命名结构保持一致。
+                - 单一参考流：直接沿用参考流的技术名称作为流程名称。
+                - 多功能数据集：以技术或装置描述开头，用逗号串联每个参考流名称。
+                - 地理位置、时间等信息不要写入基础名称，在对应元数据字段中填写。
               content_requirements:
-                - "使用分号分隔主要组成部分"
-                - "避免使用缩写，除非广泛认可"
-                - "最长200个字符"
+                - "使用行业通用的技术术语，必要时先写全称再补充常用缩写（例如 Polypropylene, PP）。"
+                - "同一字段内部使用逗号分隔描述，避免使用分号或括号。"
+                - "多参考流数据集需在名称中逐一覆盖所有参考流。"
+                - "名称应便于界面展示，建议控制在200个字符以内。"
               examples:
-                - "电力；燃煤；现代电厂；中国2023"
-                - "钢铁；电弧炉；再生废料"
-                - "运输；卡车；国六标准；40吨总重"
+                - "电力生产，燃煤，现代超临界机组"
+                - "钢板，电弧炉，再生废钢路线"
+                - "天然气联合热电机组，电力与热量为参考流"
               best_practices:
-                - "具体但简洁"
-                - "包含关键技术特征"
-                - "跨数据集使用一致的术语"
+                - "单产出数据集的名称需与参考流名称完全一致。"
+                - "多参考流时按重要性排序，保持跨数据集表述一致。"
+                - "发布前与现有数据集对比，避免重复或冲突命名。"
 
         treatmentStandardsRoutes:
           <rules>:
             - language: "en"
+              naming_convention: |
+                Follow ILCD Rule 14: capture qualitative technical qualifiers separated by commas.
+                - Combine treatment received, standards fulfilled, product quality, use information, and route descriptors as needed.
+                - Use concise technical terms; avoid generic marketing language.
+                - Order entries from most intrinsic (treatment) to contextual qualifiers (use information).
               content_requirements:
-                - "Specify treatment standards (e.g., ISO, EN, GB standards)"
-                - "Include process routes or pathways"
-                - "Mention specific technologies or methods"
+                - "Name surface or material treatments (e.g., polished, sterilised, chromium plated)."
+                - "Reference applicable standards or grades (e.g., EN 10202 prime quality, GB/T 13296)."
+                - "Indicate product quality or performance attributes (e.g., UV-resistant, flame-retardant)."
+                - "Document intended use qualifiers when relevant (e.g., for wafer production, indoor use)."
+                - "Identify production routes or feedstock types (e.g., steam cracking route, secondary material)."
               examples:
-                - "ISO 14040 compliant; wet process route"
-                - "EU BAT reference; membrane technology"
+                - "Chromium plated, EN 10202 prime quality, indoor use"
+                - "Sterilised, ISO 13485 compliant, medical device grade"
+                - "Steam cracking route, bottle grade, primary feedstock"
+              best_practices:
+                - "Stick to industry-recognised terminology and spell out uncommon abbreviations."
+                - "Group related qualifiers and keep each to two or three words for readability."
+                - "Cross-reference standards and routes with authoritative documentation."
 
             - language: "zh"
+              naming_convention: |
+                遵循 ILCD 规则14：使用逗号串联处理方式、标准、质量等级等技术限定词。
+                - 按需要组合处理方式、满足的标准、产品质量、用途信息和路线描述。
+                - 采用简洁专业术语，避免宣传性或模糊表述。
+                - 建议按“处理→标准→质量/用途→路线”顺序排列。
               content_requirements:
-                - "说明处理标准（如ISO、EN、GB标准）"
-                - "包含工艺路线或路径"
-                - "提及具体技术或方法"
+                - "写明处理方式（如抛光、灭菌、铬镀层等）。"
+                - "引用适用的标准或等级（如 EN 10202 一级、GB/T 13296 等）。"
+                - "指出关键质量或性能属性（如 抗紫外、阻燃）。"
+                - "必要时补充用途限定（如 用于晶圆生产、室内使用）。"
+                - "标识生产路线或原料属性（如 蒸汽裂解路线、再生料）。"
               examples:
-                - "符合ISO 14040标准；湿法工艺路线"
-                - "欧盟最佳可行技术；膜技术"
+                - "铬镀层，EN 10202 一级，室内使用"
+                - "灭菌，符合 ISO 13485，医疗器械级"
+                - "蒸汽裂解路线，瓶级，原生原料"
+              best_practices:
+                - "优先采用行业通用术语并在首次出现时写出全称。"
+                - "将相关限定词集中表述，控制在两到三个词组之内。"
+                - "与标准文本或工艺文件核对，确保引用准确。"
+
+        mixAndLocationTypes:
+          <rules>:
+            - language: "en"
+              naming_convention: |
+                Follow ILCD Rule 15: describe mix and location types using comma-separated qualifiers.
+                - State whether the dataset represents a production mix, consumption mix, or single technology.
+                - Indicate the delivery or availability point (e.g., at plant, to consumer).
+                - Use "to" when transport to a node is included; use "at" when it represents the point of handover.
+              content_requirements:
+                - "Clarify production versus consumption mix status; omit if not applicable."
+                - "Specify the commercial or logistical location type (e.g., at wholesale, at point-of-sale)."
+                - "Add other relevant availability descriptors (e.g., to waste incineration plant)."
+                - "Avoid confusing location type with intended use; reserve use-related qualifiers for treatmentStandardsRoutes."
+              examples:
+                - "Production mix, at plant"
+                - "Consumption mix, to consumer"
+                - "Technology-specific, to wholesale"
+                - "Production mix, to waste incineration plant"
+              best_practices:
+                - "Align mix terminology with documented system boundaries."
+                - "Keep qualifiers consistent across datasets representing the same market."
+                - "Review transport assumptions to choose between \"at\" and \"to\" correctly."
+
+            - language: "zh"
+              naming_convention: |
+                遵循 ILCD 规则15：用逗号标注混合类型与交付地点类型。
+                - 说明是否为生产混合、消费混合或特定技术数据。
+                - 明确交付或可用位置（如 产地交付、批发交付、终端消费者）。
+                - 涉及运输到某节点时使用“至”，表示交接点时使用“在”。
+              content_requirements:
+                - "区分生产混合与消费混合；若不适用可省略。"
+                - "标注物流或商业节点（如 在批发、在零售点）。"
+                - "根据需要补充其他可得性描述（如 至焚烧厂）。"
+                - "避免与用途混淆，真正的用途限定应写在 treatmentStandardsRoutes 字段。"
+              examples:
+                - "生产混合，在工厂"
+                - "消费混合，至终端消费者"
+                - "特定技术，至批发商"
+                - "生产混合，至废物焚烧厂"
+              best_practices:
+                - "与系统边界描述保持一致。"
+                - "同一市场的可交付点描述应保持统一。"
+                - "核对运输假设，正确选择“在”或“至”。"
+
+        functionalUnitFlowProperties:
+          <rules>:
+            - language: "en"
+              naming_convention: |
+                Follow ILCD Rule 16: document quantitative qualifying properties with explicit units and comma separation.
+                - Express constituent content or energy content per functional unit.
+                - Use percentage, concentration, or energy density formats that mirror measurement data.
+                - State the reference basis when it is not the default mass/mass relation.
+              content_requirements:
+                - "Quantify key constituents or energy content (e.g., 24 % Fe, 9.6 MJ/kg net calorific value)."
+                - "Indicate the measurement basis explicitly when different from mass fraction (e.g., by volume, molar)."
+                - "Include multiple properties as separate comma-separated entries."
+                - "Avoid duplicating information stored in dedicated property fields (e.g., CAS numbers)."
+              examples:
+                - "24 % Fe mass/mass"
+                - "9.6 MJ/kg net calorific value"
+                - "90.5 % methane by volume"
+                - "0.05 % sulfur mass/mass, 30 MJ/m3 lower heating value"
+              best_practices:
+                - "Use significant figures consistent with data quality statements."
+                - "Adopt SI units or widely accepted industrial units."
+                - "Cross-check values against reference flow documentation for consistency."
+
+            - language: "zh"
+              naming_convention: |
+                遵循 ILCD 规则16：用逗号分隔定量属性，明确单位与计量基准。
+                - 表达关键组分含量或能量含量，并指明参考单位。
+                - 常用百分比、浓度或能量密度形式，与测量数据保持一致。
+                - 当基准不是质量分数时需额外说明（如 体积分数、摩尔分数）。
+              content_requirements:
+                - "量化主要组分或能量（如 24 % Fe、9.6 MJ/kg 净热值）。"
+                - "若基准不同于质量分数，应明确写出（如 体积分数、摩尔）。"
+                - "多项属性分别列出并以逗号分隔。"
+                - "避免重复记录已在其他属性字段中的信息（如 CAS 号）。"
+              examples:
+                - "24 % Fe 质量分数"
+                - "9.6 MJ/kg 净热值"
+                - "90.5 % 甲烷 体积分数"
+                - "0.05 % 硫 质量分数，30 MJ/m3 低位发热量"
+              best_practices:
+                - "保持与数据质量声明一致的有效数字。"
+                - "优先使用 SI 单位或行业通行单位。"
+                - "与参考流文档核对，确保数值一致。"
 
       common:generalComment:
         <rules>:
@@ -323,12 +438,20 @@ processDataSet:
       common:dataSetVersion:
         <rules>:
           - language: "all"
-            format: "Semantic versioning"
-            pattern: "major.minor.patch"
+            definition: |
+              Dataset version identifier using the ILCD three-tier numbering scheme.
+            format: "NN.NN.NNN (three numeric groups separated by dots)"
+            content_requirements:
+              - "Use leading zeros to keep fixed-width groups (e.g., 01.00.000)."
+              - "Increment the version whenever content changes; document major versus minor revisions."
+              - "Keep the version in sync with release notes or repository tags."
+            validation:
+              - "Reject values that do not match the numeric three-group pattern."
+              - "Ensure each new dataset version number is greater than the previous published version."
             examples:
-              - "1.0.0"
-              - "2.1.3"
-              - "0.9.1-beta"
+              - "01.00.000"
+              - "01.01.000"
+              - "02.00.000"
 
       permanentDataSetURI:
         <rules>:

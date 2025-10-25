@@ -1,0 +1,550 @@
+# Flow Dataset Content Rules and Guidelines
+# 流量数据集内容规则与指南
+#
+# Rule Structure:
+# <rules>: [
+#   {
+#     language: "en" | "zh" | "all",
+#     examples: [...] (optional),
+#     ... other custom fields
+#   }
+# ]
+
+metadata:
+  version: "1.0.0"
+  last_updated: "2024-01-15"
+  applies_to: "ILCD/Tidas Flow Dataset v1.1"
+
+# Global rules
+global_rules:
+  multi_language_support:
+    <rules>:
+      - language: "en"
+        requirement: "English version is mandatory for all multilingual fields"
+        purpose: "Ensures international accessibility"
+      - language: "zh"
+        requirement: "中文版本建议提供，特别是中国地区的数据"
+        purpose: "确保本地用户可理解性"
+
+flowDataSet:
+  flowInformation:
+    dataSetInformation:
+      name:
+        baseName:
+          <rules>:
+            - language: "en"
+              naming_convention: |
+                provide the general descriptive name of the flow using technical language.
+                - State the substance, product, or waste exactly as used in industry or customer communication.
+                - Avoid abbreviations unless paired with the fully written term.
+                - Indicate relevant states or grades (e.g., gaseous, granulate, recycled) when needed for identification.
+              content_requirements:
+                - "Use commas to separate descriptors within the base name; do not use semicolons."
+                - "Prefer commonly accepted trivial names over rare chemical nomenclature for known substances."
+                - "Avoid including geographical, temporal, or quantitative data; capture those in dedicated fields."
+                - "For emissions, rely solely on the base name unless Rule 16 qualifiers are essential."
+              examples:
+                - "Polypropylene, PP, granulate"
+                - "Sulfur dioxide, gaseous"
+                - "Waste glass cullet, mixed colors"
+              best_practices:
+                - "Mirror terminology used in authoritative datasets to support searches."
+                - "Spell out acronyms on first use and retain the acronym after a comma if widely used."
+                - "Check for outdated terminology and update to current industry usage."
+
+            - language: "zh"
+              naming_convention: |
+                使用行业技术语言准确描述该流的通用名称。
+                - 先写全称，再根据需要补充常用缩写。
+                - 在必要时说明形态或等级（例如 气态、颗粒、再生料）。
+                - 避免不必要的地理、时间或定量信息。
+              content_requirements:
+                - "同一字段内使用逗号分隔描述，不使用分号。"
+                - "优先采用通用俗名；仅当需要时使用复杂化学命名。"
+                - "排除地理与时间信息，相关数据在其他字段填写。"
+                - "对排放类流量通常仅需基础名称，除非需要补充定量属性。"
+              examples:
+                - "聚丙烯，PP，颗粒料"
+                - "二氧化硫，气态"
+                - "废玻璃碎片，混色"
+              best_practices:
+                - "与权威数据集保持术语一致，方便检索。"
+                - "首次出现缩写时保留全称+缩写组合。"
+                - "定期核对术语，避免使用过时名称。"
+
+        treatmentStandardsRoutes:
+          <rules>:
+            - language: "en"
+              naming_convention: |
+                capture qualitative technical qualifiers as comma-separated phrases.
+                - List treatments, fulfilled standards, product qualities, intended uses, and production routes.
+                - Arrange entries from intrinsic modifications (treatment) to contextual qualifiers (use information).
+              content_requirements:
+                - "Document surface or material treatments (e.g., hot rolled, sterilised, refined)."
+                - "Reference applicable standards or grades (e.g., EN 10025 S355, ASTM D4806)."
+                - "Capture key performance attributes (e.g., UV-resistant, food-grade)."
+                - "Include intended use qualifiers when they define the flow (e.g., for wafer production)."
+                - "Identify primary or secondary origin and specific routes when relevant (e.g., secondary feedstock, steam cracking route)."
+              examples:
+                - "Hot rolled, EN 10025 S355, primary production route"
+                - "Refined, ASTM D4806, fuel-grade ethanol"
+                - "Sterilised, ISO 11137 compliant, medical packaging"
+              best_practices:
+                - "Use terminology recognised by the supplying industry and reference documents."
+                - "Keep each qualifier concise (ideally two to three words)."
+                - "Avoid marketing adjectives; focus on technical differentiators."
+
+            - language: "zh"
+              naming_convention: |
+                以逗号连接处理方式、标准、质量属性、用途及工艺路线等限定词。
+                - 先写处理方式，再写标准或等级，随后补充质量与用途信息。
+                - 根据需要注明原料来源或路线。
+              content_requirements:
+                - "写明处理方式（如 热轧、精制、灭菌等）。"
+                - "引用适用标准或等级（如 EN 10025 S355、ASTM D4806 等）。"
+                - "记录关键性能属性（如 抗紫外、食品级）。"
+                - "用途限定清晰表达（如 用于晶圆生产、医用包装）。"
+                - "注明原生或再生来源，以及具体路线（如 再生料、蒸汽裂解路线）。"
+              examples:
+                - "热轧，EN 10025 S355，原生生产路线"
+                - "精制，符合 ASTM D4806，燃料级乙醇"
+                - "灭菌，符合 ISO 11137，医疗包装用"
+              best_practices:
+                - "使用行业公认术语，必要时核对标准文档。"
+                - "限定词保持简洁，避免冗长描述。"
+                - "杜绝宣传性词汇，突出技术差异。"
+
+        mixAndLocationTypes:
+          <rules>:
+            - language: "en"
+              naming_convention: |
+                state mix and location type qualifiers separated by commas.
+                - Distinguish between production mix, consumption mix, or technology-specific flows.
+                - Describe the delivery point or availability location using "at" (handover) or "to" (including transport).
+              content_requirements:
+                - "Indicate whether the dataset averages multiple production routes (production mix) or includes trade (consumption mix)."
+                - "Specify nodes such as at plant, at wholesale, at point-of-sale, to consumer."
+                - "Use 'to' when transport burdens up to that node are included (e.g., to wholesale, to waste incineration plant)."
+                - "Leave the field empty only when both mix and location qualifiers are inapplicable."
+              examples:
+                - "Production mix, at plant"
+                - "Consumption mix, to consumer"
+                - "Technology-specific, to wholesale"
+                - "Production mix, to waste incineration plant"
+              best_practices:
+                - "Validate the qualifiers against the system boundary description."
+                - "Keep language consistent across flows representing the same market."
+                - "Avoid mixing intended use descriptions; place them in treatmentStandardsRoutes."
+
+            - language: "zh"
+              naming_convention: |
+                用逗号标注混合类型与交付位置。
+                - 区分生产混合、消费混合或特定技术。
+                - 使用“在”表示交割点，“至”表示包含运输至该节点。
+              content_requirements:
+                - "说明是否为生产混合（多路线平均）或消费混合（包含进出口）。"
+                - "标出交付/可得位置（如 在工厂、在批发、在零售点、至终端消费者）。"
+                - "需要时补充至废物处理设施等描述。"
+                - "若两类信息均不适用，可留空；否则需提供。"
+              examples:
+                - "生产混合，在工厂"
+                - "消费混合，至终端消费者"
+                - "特定技术，至批发商"
+                - "生产混合，至废物焚烧厂"
+              best_practices:
+                - "确认与系统边界叙述一致。"
+                - "同一市场的描述保持统一表述。"
+                - "用途限定应写在 treatmentStandardsRoutes 字段，避免混淆。"
+
+        flowProperties:
+          <rules>:
+            - language: "en"
+              naming_convention: |
+                express quantitative specifying properties with explicit bases.
+                - Provide constituent or energy content per reference unit.
+                - Use comma-separated entries for multiple properties.
+                - Include the measurement basis if it deviates from mass fraction.
+              content_requirements:
+                - "Quantify key components or properties (e.g., 45 % Fe, 9.6 MJ/kg net calorific value)."
+                - "Clarify basis such as by volume, molar, per dry mass when applicable."
+                - "Express values using SI units or widely accepted industrial units."
+                - "Avoid redundant data that is recorded in dedicated property fields."
+              examples:
+                - "45 % Fe mass/mass"
+                - "9.6 MJ/kg net calorific value"
+                - "90.5 % methane by volume"
+                - "750 g/L total dissolved solids"
+              best_practices:
+                - "Align significant figures with data quality documentation."
+                - "Cross-check against laboratory reports or data sources."
+                - "Display multiple properties in descending relevance."
+            - language: "zh"
+              naming_convention: |
+                用逗号列出定量属性，并明确计量基准。
+                - 列出关键组分含量或能量密度。
+                - 若计量基准不同于质量分数，需额外说明。
+              content_requirements:
+                - "量化核心属性（如 45 % Fe、9.6 MJ/kg 净热值）。"
+                - "注明体积分数、摩尔分数或干基等特殊基准。"
+                - "使用 SI 单位或行业惯用单位。"
+                - "避免重复其他字段已有的信息。"
+              examples:
+                - "45 % Fe 质量分数"
+                - "9.6 MJ/kg 净热值"
+                - "90.5 % 甲烷 体积分数"
+                - "750 g/L 总溶解固体"
+              best_practices:
+                - "与数据质量说明一致地保留有效数字。"
+                - "对照实验或来源数据核实取值。"
+                - "按重要性排序多个属性。"
+
+
+      common:synonyms:
+        <rules>:
+          - language: "en"
+            usage: |
+              Provide alternative names, trade names, or abbreviations separated by semicolons.
+              - Include synonyms that improve discoverability in databases.
+              - Keep language consistent with the specified locale.
+            content_requirements:
+              - "List only validated synonyms used in reputable sources."
+              - "Avoid duplicate entries already covered in the base name."
+              - "Reflect different English variants if they aid searching (e.g., aluminium; aluminum)."
+            examples:
+              - "Polypropylene homopolymer; PP homo; propene polymer"
+              - "Sulfur dioxide; sulphur dioxide"
+
+          - language: "zh"
+            usage: |
+              以分号分隔提供中文同义词、商品名或常用缩写。
+              - 仅记录实际使用且经过验证的称谓。
+              - 与对应语言环境保持一致。
+            content_requirements:
+              - "避免与基础名称重复。"
+              - "必要时提供简体与繁体或常用别名。"
+            examples:
+              - "聚丙烯均聚物; 丙烯聚合物"
+              - "二氧化硫; 亚硫酸酐"
+
+      classificationInformation:
+        common:elementaryFlowCategorization:
+          <rules>:
+            - language: "en"
+              guidance: |
+                Use the ILCD elementary flow category hierarchy to classify elementary flows.
+                - Provide up to three levels (0–2) following the controlled vocabulary.
+                - Record the official category identifier (`@catId`) and the exact label text from `tidas_flows_elementary_category.json`.
+              content_requirements:
+                - "Select categories by referencing the maintained `tidas_flows_elementary_category.json` list; each level must use a valid `@catId`."
+                - "Ensure level numbering is continuous starting at level 0."
+                - "Use one entry per level; do not duplicate levels."
+                - "When a level is omitted, no deeper level may be provided (e.g., skip level 1 only if level 2 is also omitted)."
+              examples:
+                - level 0: "Emissions to air"
+                - level 1: "Emissions to air, non-methane VOC"
+                - level 2: "Emissions to air, aromatic compounds"
+              best_practices:
+                - "Verify category assignments with environmental experts when ambiguous."
+                - "Update categorisation promptly if the flow type changes."
+                - "Implement validation that checks the selected `@catId` values exist in the controlled list and match the base name's flow type (e.g., emissions, resource)."
+
+            - language: "zh"
+              guidance: |
+                根据 ILCD 基本流分类层级填写，最多提供 0–2 级。
+                - 使用 `tidas_flows_elementary_category.json` 中的分类标识和标准名称。
+                - 各层级仅填写一次，保持层级连贯。
+              content_requirements:
+                - "分类必须引用 `tidas_flows_elementary_category.json` 中的有效 `@catId`。"
+                - "层级编号自0开始，依次递增。"
+                - "如无更细分类，可省略更深层级，不能跳级。"
+              examples:
+                - "第0级：空气排放"
+                - "第1级：空气排放，非甲烷挥发性有机物"
+                - "第2级：空气排放，芳香族化合物"
+              best_practices:
+                - "对于难以归类的流量，先与专业人员确认。"
+                - "当流量属性发生变化时及时更新分类。"
+                - "建议在数据录入时校验 `@catId` 是否存在，并核对基础名称是否属于该分类类型。"
+
+        common:classification:
+          <rules>:
+            - language: "en"
+              guidance: |
+                Classify product or waste flows using the CPC product flow hierarchy.
+                - Supply sequential levels (0–4) as applicable.
+                - Ensure `@classId` references controlled entries in `tidas_flows_product_category.json`.
+              content_requirements:
+                - "Match each textual label to its official class identifier."
+                - "Do not skip intermediate levels when deeper levels are provided."
+                - "Avoid mixing elementary and product classifications; choose the relevant branch."
+                - "Confirm every `@classId` exists in the maintained hierarchy and follows parent-child relationships."
+              examples:
+                - level 0: "Products"
+                - level 1: "Materials"
+                - level 2: "Metals"
+                - level 3: "Ferrous metals"
+                - level 4: "Steel, flat rolled"
+              best_practices:
+                - "Coordinate with database governance when introducing new classes."
+                - "Review class assignments during dataset version updates."
+                - "Apply validation to ensure selected classes align with the base name (e.g., avoid classifying an emission as a product)."
+
+            - language: "zh"
+              guidance: |
+                按照 CPC 产品/废物流分类层级填写，最多支持0–4级。
+                - `@classId` 必须引用 `tidas_flows_product_category.json` 中的受控条目。
+                - 如填写更深层级，不得跳过中间层级。
+              content_requirements:
+                - "确保标签文字与官方分类名称一致。"
+                - "区分产品/废物流与基本流分类，避免混用。"
+                - "每个 `@classId` 均需在维护的层级结构中存在，并遵循父子关系。"
+              examples:
+                - "第0级：产品"
+                - "第1级：材料"
+                - "第2级：金属材料"
+                - "第3级：黑色金属"
+                - "第4级：钢，板材"
+              best_practices:
+                - "新增分类前与数据库管理者沟通确认。"
+                - "版本更新时复核分类是否仍然准确。"
+                - "在录入时增加校验：确认所选分类存在且与基础名称性质一致（例如 排放不得归入产品类目）。"
+
+    quantitativeReference:
+      referenceToReferenceFlowProperty:
+        <rules>:
+          - language: "all"
+            definition: |
+              Integer key pointing to the `@dataSetInternalID` of the reference flow property listed in `flowProperties`.
+              - Mandatory for every flow dataset.
+              - Typically links to the mass or energy flow property that represents the functional unit of the flow.
+            content_requirements:
+              - "Use a positive integer matching an existing `flowProperties.flowProperty.@dataSetInternalID`."
+              - "Ensure the referenced flow property has `meanValue = 1` relative to itself."
+              - "Whenever the reference property changes, update this link and all dependent ratios."
+            validation:
+              - "Reject IDs that are absent from the local `flowProperties` list."
+              - "Cross-verify that the referenced flow property is consistent with `modellingAndValidation.LCIMethod.typeOfDataSet` (e.g., mass for product flows, substance amount for elementary emissions)."
+            examples:
+              - "1  (points to flow property entry 1: Mass, kg)"
+              - "3  (points to flow property entry 3: Net calorific value, MJ)"
+
+  flowProperties:
+    flowProperty:
+      referenceToFlowPropertyDataSet:
+        <rules>:
+          - language: "all"
+            definition: |
+              Global reference (`GlobalReferenceType`) to the flow property dataset defining the unit, quantity dimension, and conversion factors (e.g., mass, energy).
+            content_requirements:
+              - "Use maintained references (UUID + version) from the organisation's flow property catalogue."
+              - "Populate all required `GlobalReferenceType` fields: `@type`, `@refObjectId` (UUID), `@version`, `@uri`, and `common:shortDescription`."
+              - "Ensure the referenced dataset corresponds to the intended physical quantity."
+              - "Keep references updated if the canonical flow property dataset is revised."
+            validation:
+              - "Verify referenced datasets exist and are accessible."
+              - "Cross-check that unit symbols in name/meanValue match the referenced dataset's reference unit."
+              - "Validate UUID formatting against the 8-4-4-4-12 pattern."
+            examples:
+              - "UUID: 123e4567-e89b-12d3-a456-426614174000; version 01.00.000 (Mass, kg)"
+              - "UUID: 223e4567-e89b-12d3-a456-426614174111; version 01.00.000 (Energy, MJ)"
+
+      meanValue:
+        <rules>:
+          - language: "en"
+            definition: |
+              Numerical relation expressing how the flow amount converts between the reference flow property and the current property.
+            content_requirements:
+              - "Set to 1.0 for the reference flow property (the one pointed to by `referenceToReferenceFlowProperty`)."
+              - "For additional properties, provide conversion ratios (e.g., net calorific value per kg)."
+              - "Use significant figures that reflect measurement accuracy; avoid trailing precision beyond data quality."
+            validation:
+              - "Ensure values are positive real numbers."
+              - "For energy or composition properties, cross-check with laboratory or literature sources."
+              - "If uncertainty fields are provided, confirm their ranges align with the mean value."
+            examples:
+              - "1.0"
+              - "42.5"
+              - "0.85"
+
+          - language: "zh"
+            definition: |
+              表示参考流属性与当前属性之间换算关系的数值。
+            content_requirements:
+              - "被定量参考指向的流属性应设置为 1.0。"
+              - "其他属性填写换算系数，例如 每千克对应的净热值。"
+              - "保留的有效数字需与测量精度相符。"
+            validation:
+              - "数值需为正实数。"
+              - "能量或组分属性须与实验或文献数据核对。"
+              - "若填写不确定性字段，应与该平均值的量级保持一致。"
+            examples:
+              - "1.0"
+              - "42.5"
+              - "0.85"
+
+  modellingAndValidation:
+    LCIMethod:
+      typeOfDataSet:
+        <rules>:
+          - language: "all"
+            definition: |
+              Mandatory ILCD field indicating whether the flow is an "Elementary flow", "Product flow", or "Waste flow".
+            valid_values:
+              - "Elementary flow"
+              - "Product flow"
+              - "Waste flow"
+            content_requirements:
+              - "Select exactly one value from the allowed list; do not customise."
+              - "Elementary flow: substances exchanged with the environment without human transformation."
+              - "Product flow: goods or services entering/exiting the technosphere as products."
+              - "Waste flow: outputs destined for treatment or disposal services."
+              - "Ensure consistency with `classificationInformation` and the chosen reference flow property (e.g., emissions require elementary flow)."
+            validation:
+              - "Enforce completion before publication."
+              - "Add rule-based checks comparing the chosen value with classification IDs and base name phrasing."
+            examples:
+              - "\"Elementary flow\""
+              - "\"Product flow\""
+              - "\"Waste flow\""
+
+    complianceDeclarations:
+      compliance:
+        referenceToComplianceSystem:
+          <rules>:
+            - language: "all"
+              definition: |
+                Global reference identifying the compliance or review scheme applied to this dataset.
+              content_requirements:
+                - "Populate `common:referenceToComplianceSystem` with the Global Reference to the applied compliance or review system (e.g., ILCD Entry-Level)."
+                - "Complete the `GlobalReferenceType` fields for the compliance system: `@type`, `@refObjectId` (UUID), `@version`, `@uri`, and `common:shortDescription`."
+                - "Refer only to recognised schemes and keep references aligned with current organisational compliance policy."
+              validation:
+                - "Ensure the referenced compliance dataset exists and is accessible."
+                - "Validate UUID format and, when provided, the resolvability of the URI."
+                - "Warn when the referenced scheme is obsolete or not approved for the dataset type."
+              examples:
+                - "referenceToComplianceSystem → UUID of ILCD Entry-Level compliance"
+                - "Corporate QA scheme reference with documented version"
+
+        common:approvalOfOverallCompliance:
+          <rules>:
+            - language: "all"
+              definition: |
+                Declares the overall compliance outcome derived from the referenced scheme.
+              valid_values:
+                - "Fully compliant"
+                - "Not compliant"
+                - "Not defined"
+              content_requirements:
+                - "Select one statement from the allowed list."
+                - "Provide justification whenever \"Not compliant\" or \"Not defined\" is used."
+                - "Ensure the chosen status matches evidence supplied by the compliance reference."
+              validation:
+                - "Reject entries outside the `valid_values` set."
+                - "When marked \"Fully compliant\", confirm a valid, current compliance reference is provided."
+              examples:
+                - "\"Fully compliant\""
+                - "\"Not compliant\""
+                - "\"Not defined\" (pending external review)"
+            
+
+  administrativeInformation:
+    dataEntryBy:
+      common:timeStamp:
+        <rules>:
+          - language: "en"
+            definition: |
+              ISO 8601 date-time indicating when the dataset was last generated or saved.
+            content_requirements:
+              - "Record with full date and time including time zone (e.g., 2024-04-30T10:15:00+08:00)."
+              - "Update automatically upon each validated modification."
+              - "If manual edit is necessary, ensure it reflects the actual publication instant."
+            validation:
+              - "Reject timestamps without offset information."
+              - "Prevent future-dated entries unless creating forward-dated publications."
+
+          - language: "zh"
+            definition: |
+              记录数据集生成或保存时间的 ISO 8601 日期时间（含时区）。
+            content_requirements:
+              - "填写完整日期、时间与时区（如 2024-04-30T10:15:00+08:00）。"
+              - "每次有效修改后需自动更新。"
+              - "如需人工调整，应与实际发布时刻一致。"
+            validation:
+              - "禁止缺少时区的时间戳。"
+              - "除非为预发布版本，不得填写未来时间。"
+
+      common:referenceToDataSetFormat:
+        <rules>:
+          - language: "all"
+            definition: |
+              Global reference to the ILCD data format description used to encode the dataset.
+            content_requirements:
+              - "Populate all `GlobalReferenceType` fields: `@type`, `@refObjectId` (UUID), `@version`, `@uri`, and `common:shortDescription`."
+              - "Update the reference when migrating to a newer schema version."
+            validation:
+              - "Check that the referenced format dataset exists and matches the namespaces declared at the dataset root."
+              - "Validate UUID and URI syntax."
+
+      common:referenceToPersonOrEntityEnteringTheData:
+        <rules>:
+          - language: "all"
+            definition: |
+              Global reference identifying the person or organisation that documented or entered the dataset.
+            content_requirements:
+              - "Provide a maintained contact dataset using `GlobalReferenceType` with `@type`, `@refObjectId` (UUID), `@version`, `@uri`, and `common:shortDescription`."
+              - "Ensure the referenced entity is authorised for data entry or maintenance."
+              - "Update the reference whenever responsibilities change."
+            validation:
+              - "Confirm UUID and URI syntax and that the reference resolves to an active contact."
+              - "Flag mismatches where the listed entity lacks required permissions."
+            examples:
+              - "UUID referencing the corporate LCA team contact dataset."
+
+    publicationAndOwnership:
+      common:dataSetVersion:
+        <rules>:
+          - language: "en"
+            definition: |
+              Version number of the dataset.
+            content_requirements:
+              - "Follow semantic-style numbering (e.g., 01.00.000)"
+              - "Increment the version whenever content changes; document major vs. minor revisions."
+              - "Synchronise version entries with repository tags or release notes."
+            validation:
+              - "Enforce the numeric pattern with three groups separated by dots."
+              - "Verify that the version increases monotonically compared to preceding datasets."
+            examples:
+              - "01.00.000"
+              - "01.01.000"
+              - "02.00.000"
+
+          - language: "zh"
+            definition: |
+              数据集版本号。
+            content_requirements:
+              - "遵循三段式数字格式（例如 01.00.000）"
+              - "每次内容调整均需递增版本号，并区分主次版本。"
+              - "与代码仓库标签或发布说明保持一致。"
+            validation:
+              - "校验格式是否符合三段数字模式。"
+              - "确认相较于上一版本递增。"
+            examples:
+              - "01.00.000"
+              - "01.01.000"
+              - "02.00.000"
+
+      common:referenceToOwnershipOfDataSet:
+        <rules>:
+          - language: "all"
+            definition: |
+              Global reference to the contact or organisation owning the dataset rights.
+            content_requirements:
+              - "Link to a maintained ownership/contact dataset containing legal entity details."
+              - "Update when ownership transfers or licensing terms change."
+              - "Ensure alignment with publication statements and licences."
+            validation:
+              - "Confirm the referenced ownership record exists and is current."
+              - "Warn if the owner differs from the `dataEntryBy` entity without explanatory notes."
+            examples:
+              - "UUID referencing company legal entity contact dataset."
