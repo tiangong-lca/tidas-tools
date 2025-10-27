@@ -533,7 +533,7 @@
                         "Not reviewed"
                       ]
                     },
-                    "scope": {
+                    "common:scope": {
                       "description": "Scope of review regarding which aspects and components of the data set was reviewed or verified. In case of aggregated e.g. LCI results also and on which level of detail (e.g. LCI results only, included unit processes, ...) the review / verification was performed.",
                       "anyOf": [
                         {
@@ -553,36 +553,68 @@
                                 "Goal and scope definition"
                               ]
                             },
-                            "method": {
-                              "type": "object",
-                              "properties": {
-                                "@name": {
-                                  "description": "Validation method(s) used in the respective \"Scope of review\".",
-                                  "type": "string",
-                                  "enum": [
-                                    "Validation of data sources",
-                                    "Sample tests on calculations",
-                                    "Energy balance",
-                                    "Element balance",
-                                    "Cross-check with other source",
-                                    "Cross-check with other data set",
-                                    "Expert judgement",
-                                    "Mass balance",
-                                    "Compliance with legal limitsRegulated Inputs and Outputs e.g. emission data are validated for compliance with legal limits, typically after relating and scaling the data to the regulated processes/sites etc.",
-                                    "Compliance with ISO 14040 to 14044",
-                                    "Documentation",
-                                    "Evidence collection by means of plant visits and/or interviews"
+                            "common:method": {
+                              "description": "Validation method(s) used in the respective \"Scope of review\".",
+                              "anyOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "@name": {
+                                      "type": "string",
+                                      "enum": [
+                                        "Validation of data sources",
+                                        "Sample tests on calculations",
+                                        "Energy balance",
+                                        "Element balance",
+                                        "Cross-check with other source",
+                                        "Cross-check with other data set",
+                                        "Expert judgement",
+                                        "Mass balance",
+                                        "Compliance with legal limitsRegulated Inputs and Outputs e.g. emission data are validated for compliance with legal limits, typically after relating and scaling the data to the regulated processes/sites etc.",
+                                        "Compliance with ISO 14040 to 14044",
+                                        "Documentation",
+                                        "Evidence collection by means of plant visits and/or interviews"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "@name"
                                   ]
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "@name": {
+                                        "type": "string",
+                                        "enum": [
+                                          "Validation of data sources",
+                                          "Sample tests on calculations",
+                                          "Energy balance",
+                                          "Element balance",
+                                          "Cross-check with other source",
+                                          "Cross-check with other data set",
+                                          "Expert judgement",
+                                          "Mass balance",
+                                          "Compliance with legal limitsRegulated Inputs and Outputs e.g. emission data are validated for compliance with legal limits, typically after relating and scaling the data to the regulated processes/sites etc.",
+                                          "Compliance with ISO 14040 to 14044",
+                                          "Documentation",
+                                          "Evidence collection by means of plant visits and/or interviews"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "@name"
+                                    ]
+                                  }
                                 }
-                              },
-                              "required": [
-                                "@name"
                               ]
                             }
                           },
                           "required": [
                             "@name",
-                            "method"
+                            "common:method"
                           ]
                         },
                         {
@@ -604,36 +636,68 @@
                                   "Goal and scope definition"
                                 ]
                               },
-                              "method": {
-                                "type": "object",
-                                "properties": {
-                                  "@name": {
-                                    "description": "Validation method(s) used in the respective \"Scope of review\".",
-                                    "type": "string",
-                                    "enum": [
-                                      "Validation of data sources",
-                                      "Sample tests on calculations",
-                                      "Energy balance",
-                                      "Element balance",
-                                      "Cross-check with other source",
-                                      "Cross-check with other data set",
-                                      "Expert judgement",
-                                      "Mass balance",
-                                      "Compliance with legal limitsRegulated Inputs and Outputs e.g. emission data are validated for compliance with legal limits, typically after relating and scaling the data to the regulated processes/sites etc.",
-                                      "Compliance with ISO 14040 to 14044",
-                                      "Documentation",
-                                      "Evidence collection by means of plant visits and/or interviews"
+                              "common:method": {
+                                "description": "Validation method(s) used in the respective \"Scope of review\".",
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "@name": {
+                                        "type": "string",
+                                        "enum": [
+                                          "Validation of data sources",
+                                          "Sample tests on calculations",
+                                          "Energy balance",
+                                          "Element balance",
+                                          "Cross-check with other source",
+                                          "Cross-check with other data set",
+                                          "Expert judgement",
+                                          "Mass balance",
+                                          "Compliance with legal limitsRegulated Inputs and Outputs e.g. emission data are validated for compliance with legal limits, typically after relating and scaling the data to the regulated processes/sites etc.",
+                                          "Compliance with ISO 14040 to 14044",
+                                          "Documentation",
+                                          "Evidence collection by means of plant visits and/or interviews"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "@name"
                                     ]
+                                  },
+                                  {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "@name": {
+                                          "type": "string",
+                                          "enum": [
+                                            "Validation of data sources",
+                                            "Sample tests on calculations",
+                                            "Energy balance",
+                                            "Element balance",
+                                            "Cross-check with other source",
+                                            "Cross-check with other data set",
+                                            "Expert judgement",
+                                            "Mass balance",
+                                            "Compliance with legal limitsRegulated Inputs and Outputs e.g. emission data are validated for compliance with legal limits, typically after relating and scaling the data to the regulated processes/sites etc.",
+                                            "Compliance with ISO 14040 to 14044",
+                                            "Documentation",
+                                            "Evidence collection by means of plant visits and/or interviews"
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "@name"
+                                      ]
+                                    }
                                   }
-                                },
-                                "required": [
-                                  "@name"
                                 ]
                               }
                             },
                             "required": [
                               "@name",
-                              "method"
+                              "common:method"
                             ]
                           }
                         }
@@ -661,7 +725,7 @@
                   },
                   "required": [
                     "@type",
-                    "scope",
+                    "common:scope",
                     "common:referenceToNameOfReviewerAndInstitution"
                   ]
                 },
