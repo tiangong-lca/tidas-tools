@@ -320,13 +320,37 @@ def main():
 
         setup_logging(args.verbose, "validate")
 
-        for category in os.listdir(args.input_dir):
+        schemas_root = pkg_resources.files(schemas)
+        supported_categories = [
+            "contacts",
+            "flowproperties",
+            "flows",
+            "lciamethods",
+            "lifecyclemodels",
+            "processes",
+            "sources",
+            "unitgroups",
+        ]
+
+        for category in supported_categories:
             try:
-                if category == "external_docs":
-                    continue
                 category_dir = os.path.join(args.input_dir, category)
-                if os.path.isdir(category_dir):  # Only process directories
-                    category_validate(category_dir, category)
+                if not os.path.isdir(category_dir):
+                    logging.debug("Skipping missing directory %s", category_dir)
+                    continue
+
+                schema_filename = f"tidas_{category.lower()}.json"
+                schema_path = schemas_root / schema_filename
+
+                if not schema_path.is_file():
+                    logging.debug(
+                        "Skipping directory %s — no schema file %s",
+                        category_dir,
+                        schema_filename,
+                    )
+                    continue
+
+                category_validate(category_dir, category)
             except Exception as e:
                 error_msg = f"Error validating category {category}: {e}"
                 logging.error(error_msg)
