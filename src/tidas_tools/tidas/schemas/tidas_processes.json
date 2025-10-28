@@ -715,7 +715,7 @@
                         "Not reviewed"
                       ]
                     },
-                    "scope": {
+                    "common:scope": {
                       "description": "Scope of review regarding which aspects and components of the data set was reviewed or verified. In case of aggregated e.g. LCI results also and on which level of detail (e.g. LCI results only, included unit processes, ...) the review / verification was performed.",
                       "anyOf": [
                         {
@@ -735,37 +735,69 @@
                                 "Goal and scope definition"
                               ]
                             },
-                            "method": {
-                              "type": "object",
-                              "properties": {
-                                "@name": {
-                                  "description": "Validation method(s) used in the respective \"Scope of review\".",
-                                  "type": "string",
-                                  "enum": [
-                                    "Validation of data sources",
-                                    "Sample tests on calculations",
-                                    "Energy balance",
-                                    "Element balance",
-                                    "Cross-check with other source",
-                                    "Cross-check with other data set",
-                                    "Expert judgement",
-                                    "Mass balance",
-                                    "Compliance with legal limits",
-                                    "Compliance with ISO 14040 to 14044",
-                                    "Documentation",
-                                    "Evidence collection by means of plant visits and/or interviews"
+                            "common:method": {
+                              "description": "Validation method(s) used in the respective \"Scope of review\".",
+                              "anyOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "@name": {
+                                      "type": "string",
+                                      "enum": [
+                                        "Validation of data sources",
+                                        "Sample tests on calculations",
+                                        "Energy balance",
+                                        "Element balance",
+                                        "Cross-check with other source",
+                                        "Cross-check with other data set",
+                                        "Expert judgement",
+                                        "Mass balance",
+                                        "Compliance with legal limits",
+                                        "Compliance with ISO 14040 to 14044",
+                                        "Documentation",
+                                        "Evidence collection by means of plant visits and/or interviews"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "@name"
                                   ]
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "@name": {
+                                        "type": "string",
+                                        "enum": [
+                                          "Validation of data sources",
+                                          "Sample tests on calculations",
+                                          "Energy balance",
+                                          "Element balance",
+                                          "Cross-check with other source",
+                                          "Cross-check with other data set",
+                                          "Expert judgement",
+                                          "Mass balance",
+                                          "Compliance with legal limits",
+                                          "Compliance with ISO 14040 to 14044",
+                                          "Documentation",
+                                          "Evidence collection by means of plant visits and/or interviews"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "@name"
+                                    ]
+                                  }
                                 }
-                              },
-                              "required": [
-                                "@name"
                               ]
                             }
                           },
                           "required": [
                             "@name",
-                            "method"
-                          ]                          
+                            "common:method"
+                          ]
                         },
                         {
                           "type": "array",
@@ -786,78 +818,157 @@
                                   "Goal and scope definition"
                                 ]
                               },
-                              "method": {
-                                "type": "object",
-                                "properties": {
-                                  "@name": {
-                                    "description": "Validation method(s) used in the respective \"Scope of review\".",
-                                    "type": "string",
-                                    "enum": [
-                                      "Validation of data sources",
-                                      "Sample tests on calculations",
-                                      "Energy balance",
-                                      "Element balance",
-                                      "Cross-check with other source",
-                                      "Cross-check with other data set",
-                                      "Expert judgement",
-                                      "Mass balance",
-                                      "Compliance with legal limits",
-                                      "Compliance with ISO 14040 to 14044",
-                                      "Documentation",
-                                      "Evidence collection by means of plant visits and/or interviews"
+                              "common:method": {
+                                "description": "Validation method(s) used in the respective \"Scope of review\".",
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "@name": {
+                                        "type": "string",
+                                        "enum": [
+                                          "Validation of data sources",
+                                          "Sample tests on calculations",
+                                          "Energy balance",
+                                          "Element balance",
+                                          "Cross-check with other source",
+                                          "Cross-check with other data set",
+                                          "Expert judgement",
+                                          "Mass balance",
+                                          "Compliance with legal limits",
+                                          "Compliance with ISO 14040 to 14044",
+                                          "Documentation",
+                                          "Evidence collection by means of plant visits and/or interviews"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "@name"
                                     ]
+                                  },
+                                  {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "@name": {
+                                          "type": "string",
+                                          "enum": [
+                                            "Validation of data sources",
+                                            "Sample tests on calculations",
+                                            "Energy balance",
+                                            "Element balance",
+                                            "Cross-check with other source",
+                                            "Cross-check with other data set",
+                                            "Expert judgement",
+                                            "Mass balance",
+                                            "Compliance with legal limits",
+                                            "Compliance with ISO 14040 to 14044",
+                                            "Documentation",
+                                            "Evidence collection by means of plant visits and/or interviews"
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "@name"
+                                      ]
+                                    }
                                   }
-                                },
-                                "required": [
-                                  "@name"
                                 ]
                               }
                             },
                             "required": [
                               "@name",
-                              "method"
+                              "common:method"
                             ]
                           }
                         }
                       ]
                     },
-                    "dataQualityIndicators": {
+                    "common:dataQualityIndicators": {
                       "type": "object",
                       "description": "Data quality indicators serve to provide the reviewed key information on the data set in a defined, computer-readable (and hence searchable) form. This serves to support LCA practitioners to identify/select the highest quality and most appropriate data sets.",
                       "properties": {
-                        "dataQualityIndicator": {
-                          "type": "object",
+                        "common:dataQualityIndicator": {
                           "description": "Data quality indicators serve to provide the reviewed key information on the data set in a defined, computer-readable (and hence searchable) form. This serves to support LCA practitioners to identify/select the highest quality and most appropriate data sets.",
-                          "properties": {
-                            "@name": {
-                              "type": "string",
-                              "enum": [
-                                "Technological representativeness",
-                                "Time representativeness",
-                                "Geographical representativeness",
-                                "Completeness",
-                                "Precision",
-                                "Methodological appropriateness and consistency",
-                                "Overall quality"
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "@name": {
+                                  "type": "string",
+                                  "enum": [
+                                    "Technological representativeness",
+                                    "Time representativeness",
+                                    "Geographical representativeness",
+                                    "Completeness",
+                                    "Precision",
+                                    "Methodological appropriateness and consistency",
+                                    "Overall quality"
+                                  ]
+                                },
+                                "@value": {
+                                  "type": "string",
+                                  "enum": [
+                                    "Very good",
+                                    "Good",
+                                    "Fair",
+                                    "Poor",
+                                    "Very poor",
+                                    "Not evaluated / unknown",
+                                    "Not applicable"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "@name",
+                                "@value"
                               ]
                             },
-                            "@value": {
-                              "type": "string",
-                              "enum": [
-                                "Very good",
-                                "Good",
-                                "Fair",
-                                "Poor",
-                                "Very poor",
-                                "Not evaluated / unknown",
-                                "Not applicable"
-                              ]
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "@name": {
+                                    "type": "string",
+                                    "enum": [
+                                      "Technological representativeness",
+                                      "Time representativeness",
+                                      "Geographical representativeness",
+                                      "Completeness",
+                                      "Precision",
+                                      "Methodological appropriateness and consistency",
+                                      "Overall quality"
+                                    ]
+                                  },
+                                  "@value": {
+                                    "type": "string",
+                                    "enum": [
+                                      "Very good",
+                                      "Good",
+                                      "Fair",
+                                      "Poor",
+                                      "Very poor",
+                                      "Not evaluated / unknown",
+                                      "Not applicable"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "@name",
+                                  "@value"
+                                ]
+                              }
                             }
-                          }
+                          ]
                         }
-                      }
+                      },
+                      "required": [
+                        "common:dataQualityIndicator"
+                      ]
                     },
-                    "reviewDetails": {
+                    "common:reviewDetails": {
                       "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
                       "description": "Summary of the review. All the following items should be explicitly addressed: Representativeness, completeness, and precision of Inputs and Outputs for the process in its documented location, technology and time i.e. both completeness of technical model (product, waste, and elementary flows) and completeness of coverage of the relevant problem fields (environmental, human health, resource use) for this specific good, service, or process. Plausibility of data. Correctness and appropriateness of the data set documentation. Appropriateness of system boundaries, cut-off rules, LCI modelling choices such as e.g. allocation, consistency of included processes and of LCI methodology. If the data set comprises pre-calculated LCIA results, the correspondence of the Input and Output elementary flows (including their geographical validity) with the applied LCIA method(s) should be addressed by the reviewer. An overall quality statement on the data set may be included here."
                     },
@@ -879,7 +990,10 @@
                   },
                   "required": [
                     "@type",
-                    "scope"
+                    "common:scope",
+                    "common:reviewDetails",
+                    "common:referenceToNameOfReviewerAndInstitution",
+                    "common:referenceToCompleteReviewReport"
                   ]
                 },
                 "common:other": {
@@ -887,10 +1001,7 @@
                 }
               },
               "required": [
-                "review",
-                "reviewDetails",
-                "common:referenceToNameOfReviewerAndInstitution",
-                "common:referenceToCompleteReviewReport"
+                "review"
               ]
             },
             "complianceDeclarations": {
@@ -898,78 +1009,162 @@
               "type": "object",
               "properties": {
                 "compliance": {
-                  "type": "object",
-                  "properties": {
-                    "common:referenceToComplianceSystem": {
-                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                      "description": "\"Source data set\" of the \"Compliance system\" that is declared to be met by the data set."
-                    },
-                    "common:approvalOfOverallCompliance": {
-                      "type": "string",
-                      "description": "Official approval whether or not and in how far the data set meets all the requirements of the \"Compliance system\" refered to. This approval should be issued/confirmed by the owner of that compliance system, who is identified via the respective \"Contact data set\".",
-                      "enum": [
-                        "Fully compliant",
-                        "Not compliant",
-                        "Not defined"
+                  "description": "One compliance declaration. Multiple declarations may be provided.",
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "common:referenceToComplianceSystem": {
+                          "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                          "description": "\"Source data set\" of the \"Compliance system\" that is declared to be met by the data set."
+                        },
+                        "common:approvalOfOverallCompliance": {
+                          "type": "string",
+                          "description": "Official approval whether or not and in how far the data set meets all the requirements of the \"Compliance system\" refered to. This approval should be issued/confirmed by the owner of that compliance system, who is identified via the respective \"Contact data set\".",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:nomenclatureCompliance": {
+                          "type": "string",
+                          "description": "Nomenclature compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:methodologicalCompliance": {
+                          "type": "string",
+                          "description": "Methodological compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:reviewCompliance": {
+                          "type": "string",
+                          "description": "Review/Verification compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:documentationCompliance": {
+                          "type": "string",
+                          "description": "Documentation/Reporting compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:qualityCompliance": {
+                          "type": "string",
+                          "description": "Quality compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:other": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "common:referenceToComplianceSystem",
+                        "common:approvalOfOverallCompliance",
+                        "common:nomenclatureCompliance",
+                        "common:methodologicalCompliance",
+                        "common:reviewCompliance",
+                        "common:documentationCompliance",
+                        "common:qualityCompliance"
                       ]
                     },
-                    "common:nomenclatureCompliance": {
-                      "type": "string",
-                      "description": "Nomenclature compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                      "enum": [
-                        "Fully compliant",
-                        "Not compliant",
-                        "Not defined"
-                      ]
-                    },
-                    "common:methodologicalCompliance": {
-                      "type": "string",
-                      "description": "Methodological compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                      "enum": [
-                        "Fully compliant",
-                        "Not compliant",
-                        "Not defined"
-                      ]
-                    },
-                    "common:reviewCompliance": {
-                      "type": "string",
-                      "description": "Review/Verification compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                      "enum": [
-                        "Fully compliant",
-                        "Not compliant",
-                        "Not defined"
-                      ]
-                    },
-                    "common:documentationCompliance": {
-                      "type": "string",
-                      "description": "Documentation/Reporting compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                      "enum": [
-                        "Fully compliant",
-                        "Not compliant",
-                        "Not defined"
-                      ]
-                    },
-                    "common:qualityCompliance": {
-                      "type": "string",
-                      "description": "Quality compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                      "enum": [
-                        "Fully compliant",
-                        "Not compliant",
-                        "Not defined"
-                      ]
-                    },
-                    "common:other": {
-                      "type": "string"
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "common:referenceToComplianceSystem": {
+                            "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                            "description": "\"Source data set\" of the \"Compliance system\" that is declared to be met by the data set."
+                          },
+                          "common:approvalOfOverallCompliance": {
+                            "type": "string",
+                            "description": "Official approval whether or not and in how far the data set meets all the requirements of the \"Compliance system\" refered to. This approval should be issued/confirmed by the owner of that compliance system, who is identified via the respective \"Contact data set\".",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:nomenclatureCompliance": {
+                            "type": "string",
+                            "description": "Nomenclature compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:methodologicalCompliance": {
+                            "type": "string",
+                            "description": "Methodological compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:reviewCompliance": {
+                            "type": "string",
+                            "description": "Review/Verification compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:documentationCompliance": {
+                            "type": "string",
+                            "description": "Documentation/Reporting compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:qualityCompliance": {
+                            "type": "string",
+                            "description": "Quality compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:other": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "common:referenceToComplianceSystem",
+                          "common:approvalOfOverallCompliance",
+                          "common:nomenclatureCompliance",
+                          "common:methodologicalCompliance",
+                          "common:reviewCompliance",
+                          "common:documentationCompliance",
+                          "common:qualityCompliance"
+                        ]
+                      },
+                      "minItems": 1
                     }
-                  },
-                  "required": [
-                    "common:referenceToComplianceSystem",
-                    "common:approvalOfOverallCompliance",
-                    "common:nomenclatureCompliance",
-                    "common:methodologicalCompliance",
-                    "common:reviewCompliance",
-                    "common:documentationCompliance",
-                    "common:qualityCompliance"
                   ]
                 },
                 "common:other": {

@@ -1043,77 +1043,162 @@
               "type": "object",
               "properties": {
                 "compliance": {
-                  "properties": {
-                    "common:referenceToComplianceSystem": {
-                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                      "description": "\"Source data set\" of the \"Compliance system\" that is declared to be met by the data set."
-                    },
-                    "common:approvalOfOverallCompliance": {
-                      "type": "string",
-                      "description": "Official approval whether or not and in how far the data set meets all the requirements of the \"Compliance system\" refered to. This approval should be issued/confirmed by the owner of that compliance system, who is identified via the respective \"Contact data set\".",
-                      "enum": [
-                        "Fully compliant",
-                        "Not compliant",
-                        "Not defined"
+                  "description": "One compliance declaration. Multiple declarations may be provided.",
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "common:referenceToComplianceSystem": {
+                          "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                          "description": "\"Source data set\" of the \"Compliance system\" that is declared to be met by the data set."
+                        },
+                        "common:approvalOfOverallCompliance": {
+                          "type": "string",
+                          "description": "Official approval whether or not and in how far the data set meets all the requirements of the \"Compliance system\" refered to. This approval should be issued/confirmed by the owner of that compliance system, who is identified via the respective \"Contact data set\".",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:nomenclatureCompliance": {
+                          "type": "string",
+                          "description": "Nomenclature compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:methodologicalCompliance": {
+                          "type": "string",
+                          "description": "Methodological compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:reviewCompliance": {
+                          "type": "string",
+                          "description": "Review/Verification compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:documentationCompliance": {
+                          "type": "string",
+                          "description": "Documentation/Reporting compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:qualityCompliance": {
+                          "type": "string",
+                          "description": "Quality compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:other": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "common:referenceToComplianceSystem",
+                        "common:approvalOfOverallCompliance",
+                        "common:nomenclatureCompliance",
+                        "common:methodologicalCompliance",
+                        "common:reviewCompliance",
+                        "common:documentationCompliance",
+                        "common:qualityCompliance"
                       ]
                     },
-                    "common:nomenclatureCompliance": {
-                      "type": "string",
-                      "description": "Nomenclature compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                      "enum": [
-                        "Fully compliant",
-                        "Not compliant",
-                        "Not defined"
-                      ]
-                    },
-                    "common:methodologicalCompliance": {
-                      "type": "string",
-                      "description": "Methodological compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                      "enum": [
-                        "Fully compliant",
-                        "Not compliant",
-                        "Not defined"
-                      ]
-                    },
-                    "common:reviewCompliance": {
-                      "type": "string",
-                      "description": "Review/Verification compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                      "enum": [
-                        "Fully compliant",
-                        "Not compliant",
-                        "Not defined"
-                      ]
-                    },
-                    "common:documentationCompliance": {
-                      "type": "string",
-                      "description": "Documentation/Reporting compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                      "enum": [
-                        "Fully compliant",
-                        "Not compliant",
-                        "Not defined"
-                      ]
-                    },
-                    "common:qualityCompliance": {
-                      "type": "string",
-                      "description": "Quality compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                      "enum": [
-                        "Fully compliant",
-                        "Not compliant",
-                        "Not defined"
-                      ]
-                    },
-                    "common:other": {
-                      "type": "string"
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "common:referenceToComplianceSystem": {
+                            "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                            "description": "\"Source data set\" of the \"Compliance system\" that is declared to be met by the data set."
+                          },
+                          "common:approvalOfOverallCompliance": {
+                            "type": "string",
+                            "description": "Official approval whether or not and in how far the data set meets all the requirements of the \"Compliance system\" refered to. This approval should be issued/confirmed by the owner of that compliance system, who is identified via the respective \"Contact data set\".",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:nomenclatureCompliance": {
+                            "type": "string",
+                            "description": "Nomenclature compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:methodologicalCompliance": {
+                            "type": "string",
+                            "description": "Methodological compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:reviewCompliance": {
+                            "type": "string",
+                            "description": "Review/Verification compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:documentationCompliance": {
+                            "type": "string",
+                            "description": "Documentation/Reporting compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:qualityCompliance": {
+                            "type": "string",
+                            "description": "Quality compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:other": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "common:referenceToComplianceSystem",
+                          "common:approvalOfOverallCompliance",
+                          "common:nomenclatureCompliance",
+                          "common:methodologicalCompliance",
+                          "common:reviewCompliance",
+                          "common:documentationCompliance",
+                          "common:qualityCompliance"
+                        ]
+                      },
+                      "minItems": 1
                     }
-                  },
-                  "required": [
-                    "common:referenceToComplianceSystem",
-                    "common:approvalOfOverallCompliance",
-                    "common:nomenclatureCompliance",
-                    "common:methodologicalCompliance",
-                    "common:reviewCompliance",
-                    "common:documentationCompliance",
-                    "common:qualityCompliance"
                   ]
                 },
                 "common:other": {
