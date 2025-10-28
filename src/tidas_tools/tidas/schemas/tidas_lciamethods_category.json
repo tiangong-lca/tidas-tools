@@ -1,681 +1,685 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "oneOf": [
-        {
-            "properties": {
-                "@level": {
-                    "const": "0"
+    "$defs": {
+        "LCIAMethod": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "1"
+                        },
+                        "#text": {
+                            "const": "Damage level LCIA methods"
+                        }
+                    }
                 },
-                "@classId": {
-                    "const": "1"
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.1"
+                        },
+                        "#text": {
+                            "const": "Total impact across areas of protection"
+                        }
+                    }
                 },
-                "#text": {
-                    "const": "Damage level LCIA methods"
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.2"
+                        },
+                        "#text": {
+                            "const": "Human health"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.2.1"
+                        },
+                        "#text": {
+                            "const": "Total human health, combined"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.2.2"
+                        },
+                        "#text": {
+                            "const": "Human health, toxicity"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.2.3"
+                        },
+                        "#text": {
+                            "const": "Human health, climate change"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.2.4"
+                        },
+                        "#text": {
+                            "const": "Human health, ionising radiation"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.2.5"
+                        },
+                        "#text": {
+                            "const": "Human health, ozone depletion"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.2.6"
+                        },
+                        "#text": {
+                            "const": "Human health, photooxidant creation"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.2.7"
+                        },
+                        "#text": {
+                            "const": "Human health, other"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.3"
+                        },
+                        "#text": {
+                            "const": "Natural environment"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.1"
+                        },
+                        "#text": {
+                            "const": "Total natural environment, combined"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.2"
+                        },
+                        "#text": {
+                            "const": "Natural environment, climate change"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.3"
+                        },
+                        "#text": {
+                            "const": "Natural environment, ozone depletion"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.4"
+                        },
+                        "#text": {
+                            "const": "Natural environment, land use"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.5"
+                        },
+                        "#text": {
+                            "const": "Natural environment, freshwater ecotoxicity"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.6"
+                        },
+                        "#text": {
+                            "const": "Natural environment, seawater ecotoxicity"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.7"
+                        },
+                        "#text": {
+                            "const": "Natural environment, terrestric ecotoxicity"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.8"
+                        },
+                        "#text": {
+                            "const": "Natural environment, acidification"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.9"
+                        },
+                        "#text": {
+                            "const": "Natural environment, eutrophication"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.10"
+                        },
+                        "#text": {
+                            "const": "Natural environment, photooxidant creation"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.11"
+                        },
+                        "#text": {
+                            "const": "Natural environment, ionising radiation"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.3.12"
+                        },
+                        "#text": {
+                            "const": "Natural environment, other"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.4"
+                        },
+                        "#text": {
+                            "const": "Man-made environment"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.4.1"
+                        },
+                        "#text": {
+                            "const": "Total man-made environment, combined"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.4.2"
+                        },
+                        "#text": {
+                            "const": "Man-made environment, acidification"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.4.3"
+                        },
+                        "#text": {
+                            "const": "Man-made environment, climate change"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.4.4"
+                        },
+                        "#text": {
+                            "const": "Man-made environment, eutrophication"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.4.5"
+                        },
+                        "#text": {
+                            "const": "Man-made environment, other"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "1.5"
+                        },
+                        "#text": {
+                            "const": "Resource availability"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.5.1"
+                        },
+                        "#text": {
+                            "const": "Total resource depletion, combined"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.5.2"
+                        },
+                        "#text": {
+                            "const": "Resource depletion, minerals and metals"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.5.3"
+                        },
+                        "#text": {
+                            "const": "Resource depletion, non-renewable energy resourcess"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.5.4"
+                        },
+                        "#text": {
+                            "const": "Resource depletion, land use"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.5.5"
+                        },
+                        "#text": {
+                            "const": "Resource depletion, renewable energy resources"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.5.6"
+                        },
+                        "#text": {
+                            "const": "Resource depletion, renewable non-energy resources"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "2"
+                        },
+                        "@classId": {
+                            "const": "1.5.6"
+                        },
+                        "#text": {
+                            "const": "Resource depletion, other"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "2"
+                        },
+                        "#text": {
+                            "const": "Midpoint level LCIA methods"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.1"
+                        },
+                        "#text": {
+                            "const": "Combined methods"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.2"
+                        },
+                        "#text": {
+                            "const": "Climate change"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.3"
+                        },
+                        "#text": {
+                            "const": "Ozone depletion"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.4"
+                        },
+                        "#text": {
+                            "const": "Land use"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.5"
+                        },
+                        "#text": {
+                            "const": "Ecotoxicity"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.6"
+                        },
+                        "#text": {
+                            "const": "Acidification"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.7"
+                        },
+                        "#text": {
+                            "const": "Eutrophication"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.8"
+                        },
+                        "#text": {
+                            "const": "Photooxidant creation"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.9"
+                        },
+                        "#text": {
+                            "const": "Nuclear radiation"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.10"
+                        },
+                        "#text": {
+                            "const": "Human toxicity"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.11"
+                        },
+                        "#text": {
+                            "const": "Respiratory effects"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.12"
+                        },
+                        "#text": {
+                            "const": "Noise"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.13"
+                        },
+                        "#text": {
+                            "const": "Resource depletion"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "1"
+                        },
+                        "@classId": {
+                            "const": "2.14"
+                        },
+                        "#text": {
+                            "const": "Other midpoint categories"
+                        }
+                    }
                 }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "1.1"
-                },
-                "#text": {
-                    "const": "Total impact across areas of protection"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "1.2"
-                },
-                "#text": {
-                    "const": "Human health"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.2.1"
-                },
-                "#text": {
-                    "const": "Total human health, combined"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.2.2"
-                },
-                "#text": {
-                    "const": "Human health, toxicity"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.2.3"
-                },
-                "#text": {
-                    "const": "Human health, climate change"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.2.4"
-                },
-                "#text": {
-                    "const": "Human health, ionising radiation"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.2.5"
-                },
-                "#text": {
-                    "const": "Human health, ozone depletion"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.2.6"
-                },
-                "#text": {
-                    "const": "Human health, photooxidant creation"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.2.7"
-                },
-                "#text": {
-                    "const": "Human health, other"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "1.3"
-                },
-                "#text": {
-                    "const": "Natural environment"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.3.1"
-                },
-                "#text": {
-                    "const": "Total natural environment, combined"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.3.2"
-                },
-                "#text": {
-                    "const": "Natural environment, climate change"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.3.3"
-                },
-                "#text": {
-                    "const": "Natural environment, ozone depletion"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.3.4"
-                },
-                "#text": {
-                    "const": "Natural environment, land use"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.3.5"
-                },
-                "#text": {
-                    "const": "Natural environment, freshwater ecotoxicity"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.3.6"
-                },
-                "#text": {
-                    "const": "Natural environment, seawater ecotoxicity"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.3.7"
-                },
-                "#text": {
-                    "const": "Natural environment, terrestric ecotoxicity"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.3.8"
-                },
-                "#text": {
-                    "const": "Natural environment, acidification"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.3.9"
-                },
-                "#text": {
-                    "const": "Natural environment, eutrophication"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.3.10"
-                },
-                "#text": {
-                    "const": "Natural environment, photooxidant creation"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.3.11"
-                },
-                "#text": {
-                    "const": "Natural environment, ionising radiation"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.3.12"
-                },
-                "#text": {
-                    "const": "Natural environment, other"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "1.4"
-                },
-                "#text": {
-                    "const": "Man-made environment"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.4.1"
-                },
-                "#text": {
-                    "const": "Total man-made environment, combined"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.4.2"
-                },
-                "#text": {
-                    "const": "Man-made environment, acidification"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.4.3"
-                },
-                "#text": {
-                    "const": "Man-made environment, climate change"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.4.4"
-                },
-                "#text": {
-                    "const": "Man-made environment, eutrophication"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.4.5"
-                },
-                "#text": {
-                    "const": "Man-made environment, other"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "1.5"
-                },
-                "#text": {
-                    "const": "Resource availability"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.5.1"
-                },
-                "#text": {
-                    "const": "Total resource depletion, combined"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.5.2"
-                },
-                "#text": {
-                    "const": "Resource depletion, minerals and metals"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.5.3"
-                },
-                "#text": {
-                    "const": "Resource depletion, non-renewable energy resourcess"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.5.4"
-                },
-                "#text": {
-                    "const": "Resource depletion, land use"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.5.5"
-                },
-                "#text": {
-                    "const": "Resource depletion, renewable energy resources"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.5.6"
-                },
-                "#text": {
-                    "const": "Resource depletion, renewable non-energy resources"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "2"
-                },
-                "@classId": {
-                    "const": "1.5.6"
-                },
-                "#text": {
-                    "const": "Resource depletion, other"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "0"
-                },
-                "@classId": {
-                    "const": "2"
-                },
-                "#text": {
-                    "const": "Midpoint level LCIA methods"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "2.1"
-                },
-                "#text": {
-                    "const": "Combined methods"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "2.2"
-                },
-                "#text": {
-                    "const": "Climate change"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "2.3"
-                },
-                "#text": {
-                    "const": "Ozone depletion"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "2.4"
-                },
-                "#text": {
-                    "const": "Land use"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "2.5"
-                },
-                "#text": {
-                    "const": "Ecotoxicity"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "2.6"
-                },
-                "#text": {
-                    "const": "Acidification"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "2.7"
-                },
-                "#text": {
-                    "const": "Eutrophication"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "2.8"
-                },
-                "#text": {
-                    "const": "Photooxidant creation"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "2.9"
-                },
-                "#text": {
-                    "const": "Nuclear radiation"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "2.10"
-                },
-                "#text": {
-                    "const": "Human toxicity"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "2.11"
-                },
-                "#text": {
-                    "const": "Respiratory effects"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "2.12"
-                },
-                "#text": {
-                    "const": "Noise"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "2.13"
-                },
-                "#text": {
-                    "const": "Resource depletion"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "1"
-                },
-                "@classId": {
-                    "const": "2.14"
-                },
-                "#text": {
-                    "const": "Other midpoint categories"
-                }
-            }
+            ]
         }
-    ]
+    }
 }

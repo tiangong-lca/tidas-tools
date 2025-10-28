@@ -1,57 +1,61 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "oneOf": [
-        {
-            "properties": {
-                "@level": {
-                    "const": "0"
+    "$defs": {
+        "FlowProperty": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "1"
+                        },
+                        "#text": {
+                            "const": "Technical flow properties"
+                        }
+                    }
                 },
-                "@classId": {
-                    "const": "1"
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "2"
+                        },
+                        "#text": {
+                            "const": "Chemical composition of flows"
+                        }
+                    }
                 },
-                "#text": {
-                    "const": "Technical flow properties"
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "3"
+                        },
+                        "#text": {
+                            "const": "Economic flow properties"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "@level": {
+                            "const": "0"
+                        },
+                        "@classId": {
+                            "const": "4"
+                        },
+                        "#text": {
+                            "const": "Other flow properties"
+                        }
+                    }
                 }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "0"
-                },
-                "@classId": {
-                    "const": "2"
-                },
-                "#text": {
-                    "const": "Chemical composition of flows"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "0"
-                },
-                "@classId": {
-                    "const": "3"
-                },
-                "#text": {
-                    "const": "Economic flow properties"
-                }
-            }
-        },
-        {
-            "properties": {
-                "@level": {
-                    "const": "0"
-                },
-                "@classId": {
-                    "const": "4"
-                },
-                "#text": {
-                    "const": "Other flow properties"
-                }
-            }
+            ]
         }
-    ]
+    }
 }

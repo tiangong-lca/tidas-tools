@@ -130,16 +130,36 @@ def validate_processes_classification_hierarchy(class_items):
 def validate_sources_classification_hierarchy(class_items):
     errors = []
 
+    # Normalize to list if the schema provided a single object
+    if isinstance(class_items, dict):
+        class_items = [class_items]
+
+    # If the data is not a list at this point (e.g. None), treat as empty.
+    if not isinstance(class_items, list):
+        class_items = []
+
     for i, item in enumerate(class_items):
-        level = int(item["@level"])
+        try:
+            level = int(item["@level"])
+        except (KeyError, TypeError, ValueError):
+            errors.append(
+                f"Sources classification level parsing error: missing or invalid '@level' at index {i}"
+            )
+            continue
         if level != i:
             errors.append(
                 f"Sources classification level sorting error: at index {i}, expected level {i}, got {level}"
             )
 
     for i in range(1, len(class_items)):
-        parent_id = class_items[i - 2]["@classId"]
-        child_id = class_items[i]["@classId"]
+        parent_id = class_items[i - 1].get("@classId")
+        child_id = class_items[i].get("@classId")
+
+        if parent_id is None or child_id is None:
+            errors.append(
+                f"Sources classification code error: missing '@classId' for parent index {i-1} or child index {i}"
+            )
+            continue
 
         if not child_id.startswith(parent_id):
             errors.append(
