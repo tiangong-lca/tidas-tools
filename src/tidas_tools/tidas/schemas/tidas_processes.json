@@ -989,11 +989,27 @@
                     }
                   },
                   "required": [
-                    "@type",
-                    "common:scope",
-                    "common:reviewDetails",
-                    "common:referenceToNameOfReviewerAndInstitution",
-                    "common:referenceToCompleteReviewReport"
+                    "@type"
+                  ],
+                  "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "@type": {
+                            "const": "Not reviewed"
+                          }
+                        }
+                      },
+                      "then": {},
+                      "else": {
+                        "required": [
+                          "common:scope",
+                          "common:reviewDetails",
+                          "common:referenceToNameOfReviewerAndInstitution",
+                          "common:referenceToCompleteReviewReport"
+                        ]
+                      }
+                    }
                   ]
                 },
                 "common:other": {
