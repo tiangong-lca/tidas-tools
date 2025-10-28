@@ -166,21 +166,20 @@ sudo apt-get install build-essential python3-dev
 sudo apt upgrade
 ```
 
-### (2) Manage Python Environment with Poetry
+### (2) Manage Python Environment with uv
 
 ```bash
-# Install Poetry
-curl -sSL https://install.python-poetry.org | python3 -
+# Install uv (if not already available)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Activate Poetry environment
-poetry env activate
+# Synchronize dependencies (including development tools)
+uv sync --dev
 
-# Display current Poetry environment information
-poetry env info
+# Activate the virtual environment created by uv (optional)
+source .venv/bin/activate
 
-# Install project dependencies (generate lock file first if it's the first-time installation)
-poetry lock
-poetry install
+# Run project commands without activating the environment
+uv run python src/tidas_tools/convert.py --help
 ```
 
 ---
@@ -191,7 +190,7 @@ poetry install
 
 ```bash
 # Automatically format code using black
-black .
+uv run black .
 ```
 
 ### (2) Testing Instructions
@@ -200,13 +199,17 @@ To test data conversion and validation functionalities, run the following comman
 
 ```bash
 # Test converting TIDAS data to eILCD format
-python src/tidas_tools/convert.py -i <TIDAS_data_directory> -o <eILCD_data_directory> --to-eilcd
+uv run python src/tidas_tools/convert.py -i <TIDAS_data_directory> -o <eILCD_data_directory> --to-eilcd
 
 # Test converting eILCD data to TIDAS format
-python src/tidas_tools/convert.py --input-dir <eILCD_data_directory> --output-dir <TIDAS_data_directory> --to-tidas
+uv run python src/tidas_tools/convert.py --input-dir <eILCD_data_directory> --output-dir <TIDAS_data_directory> --to-tidas
 
 # Test TIDAS data validation functionality
-python src/tidas_tools/validate.py -i <eILCD_data_directory>
+# Execute automated tests
+uv run pytest
+
+# Validate TIDAS data
+uv run python src/tidas_tools/validate.py -i <eILCD_data_directory>
 ```
 
 ---

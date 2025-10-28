@@ -140,7 +140,9 @@ def main():
             sys.exit(1)
 
         if not os.path.isdir(args.input_dir):
-            logging.error(f"Input directory '{args.input_dir}' does not exist or is not a directory.")
+            logging.error(
+                f"Input directory '{args.input_dir}' does not exist or is not a directory."
+            )
             sys.exit(1)
 
         os.makedirs(args.output_dir, exist_ok=True)

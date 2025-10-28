@@ -168,21 +168,20 @@ sudo apt-get install build-essential python3-dev
 sudo apt upgrade
 ```
 
-### （二）使用 Poetry 管理 Python 环境
+### （二）使用 uv 管理 Python 环境
 
 ```bash
-# 安装 Poetry
-curl -sSL https://install.python-poetry.org | python3 -
+# 安装 uv（如已安装可跳过）
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# 激活 Poetry 环境
-poetry env activate
+# 同步项目依赖（包含开发工具）
+uv sync --dev
 
-# 显示当前 Poetry 环境信息
-poetry env info
+# 激活 uv 创建的虚拟环境（可选）
+source .venv/bin/activate
 
-# 安装项目依赖包（首次安装需先生成 lock 文件）
-poetry lock
-poetry install
+# 在未激活环境的情况下执行命令
+uv run python src/tidas_tools/convert.py --help
 ```
 
 ---
@@ -193,7 +192,7 @@ poetry install
 
 ```bash
 # 使用 black 自动格式化代码
-black .
+uv run black .
 ```
 
 ### （二）测试工具使用说明
@@ -202,13 +201,17 @@ black .
 
 ```bash
 # 测试将 TIDAS 数据转换为 eILCD 格式
-python src/tidas_tools/convert.py -i <TIDAS数据目录> -o <eILCD数据目录> --to-eilcd
+uv run python src/tidas_tools/convert.py -i <TIDAS数据目录> -o <eILCD数据目录> --to-eilcd
 
 # 测试将 eILCD 数据转换为 TIDAS 格式
-python src/tidas_tools/convert.py --input-dir <eILCD数据目录> --output-dir <TIDAS数据目录> --to-tidas
+uv run python src/tidas_tools/convert.py --input-dir <eILCD数据目录> --output-dir <TIDAS数据目录> --to-tidas
 
 # 测试 TIDAS 数据验证功能
-python src/tidas_tools/validate.py -i <TIDAS数据目录> 
+# 执行自动化测试
+uv run pytest
+
+# 验证 TIDAS 数据
+uv run python src/tidas_tools/validate.py -i <TIDAS数据目录> 
 ```
 
 ---
