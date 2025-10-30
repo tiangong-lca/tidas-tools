@@ -5,8 +5,7 @@ import logging
 import os
 import sys
 
-from jsonschema import validate
-from jsonschema.exceptions import ValidationError
+from jsonschema import Draft7Validator
 from referencing import Registry
 from referencing.jsonschema import DRAFT7
 from .tidas_log import setup_logging
@@ -202,6 +201,8 @@ def category_validate(json_file_path: str, category: str):
         registry = Registry(retrieve=retrieve_schema)
         # Add the main schema to the registry
         registry = registry.with_resource(schema_uri, DRAFT7.create_resource(schema))
+        # Instantiate validator once per category for efficiency
+        validator = Draft7Validator(schema, registry=registry)
 
         for filename in os.listdir(json_file_path):
             if filename.endswith(".json"):
@@ -212,10 +213,16 @@ def category_validate(json_file_path: str, category: str):
                     errors = []
 
                     try:
-                        # Add more detailed error handling
-                        validate(instance=json_item, schema=schema, registry=registry)
-                    except ValidationError as e:
-                        errors.append(f"Schema Error: {e.message}")
+                        # Use iter_errors to capture every schema violation
+                        for schema_error in validator.iter_errors(json_item):
+                            location = (
+                                "/".join(str(part) for part in schema_error.path)
+                                if schema_error.path
+                                else "<root>"
+                            )
+                            errors.append(
+                                f"Schema Error at {location}: {schema_error.message}"
+                            )
                     except Exception as e:
                         logging.error(
                             f"Unexpected validation error: {type(e).__name__}: {e}"
