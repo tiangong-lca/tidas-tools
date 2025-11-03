@@ -361,7 +361,7 @@
           "const": "0145"
         },
         "#text": {
-          "const": "Raising of swine/pigs"
+          "const": "Raising of swine and pigs"
         }
       }
     },
@@ -713,6 +713,32 @@
         },
         "#text": {
           "const": "Freshwater aquaculture"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "033"
+        },
+        "#text": {
+          "const": "Support activities for fishing and aquaculture"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "0330"
+        },
+        "#text": {
+          "const": "Support activities for fishing and aquaculture"
         }
       }
     },
@@ -1385,6 +1411,19 @@
           "const": "3"
         },
         "@classId": {
+          "const": "1076"
+        },
+        "#text": {
+          "const": "Processing of coffee and tea"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
           "const": "1079"
         },
         "#text": {
@@ -1479,7 +1518,7 @@
           "const": "1103"
         },
         "#text": {
-          "const": "Manufacture of malt liquors and malt"
+          "const": "Manufacture of beer"
         }
       }
     },
@@ -1490,6 +1529,19 @@
         },
         "@classId": {
           "const": "1104"
+        },
+        "#text": {
+          "const": "Manufacture of malt"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "1105"
         },
         "#text": {
           "const": "Manufacture of soft drinks; production of mineral waters and other bottled waters"
@@ -1791,7 +1843,7 @@
           "const": "151"
         },
         "#text": {
-          "const": "Tanning and dressing of leather; manufacture of luggage, handbags, saddlery and harness; dressing and dyeing of fur"
+          "const": "Tanning, dyeing, dressing of leather and fur; manufacture of luggage, handbags, saddlery and harness"
         }
       }
     },
@@ -1817,7 +1869,7 @@
           "const": "1512"
         },
         "#text": {
-          "const": "Manufacture of luggage, handbags and the like, saddlery and harness"
+          "const": "Manufacture of luggage, handbags and the like, saddlery and harness of any material"
         }
       }
     },
@@ -2142,7 +2194,7 @@
           "const": "192"
         },
         "#text": {
-          "const": "Manufacture of refined petroleum products"
+          "const": "Manufacture of refined petroleum products; manufacture of fossil fuel products"
         }
       }
     },
@@ -2155,7 +2207,7 @@
           "const": "1920"
         },
         "#text": {
-          "const": "Manufacture of refined petroleum products"
+          "const": "Manufacture of refined petroleum products; manufacture of fossil fuel products"
         }
       }
     },
@@ -2363,7 +2415,7 @@
           "const": "22"
         },
         "#text": {
-          "const": "Manufacture of rubber and plastics products"
+          "const": "Manufacture of rubber and plastic products"
         }
       }
     },
@@ -2867,10 +2919,23 @@
           "const": "3"
         },
         "@classId": {
-          "const": "2610"
+          "const": "2611"
         },
         "#text": {
-          "const": "Manufacture of electronic components and boards"
+          "const": "Manufacture of solar cells, solar panels and photovoltaic inverters"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "2619"
+        },
+        "#text": {
+          "const": "Manufacture of other electronic components and boards"
         }
       }
     },
@@ -3195,7 +3260,7 @@
           "const": "274"
         },
         "#text": {
-          "const": "Manufacture of electric lighting equipment"
+          "const": "Manufacture of lighting equipment"
         }
       }
     },
@@ -3208,7 +3273,7 @@
           "const": "2740"
         },
         "#text": {
-          "const": "Manufacture of electric lighting equipment"
+          "const": "Manufacture of lighting equipment"
         }
       }
     },
@@ -3351,7 +3416,7 @@
           "const": "2815"
         },
         "#text": {
-          "const": "Manufacture of ovens, furnaces and furnace burners"
+          "const": "Manufacture of ovens, furnaces and permanent household heating equipment"
         }
       }
     },
@@ -3816,10 +3881,23 @@
           "const": "3"
         },
         "@classId": {
-          "const": "3100"
+          "const": "3101"
         },
         "#text": {
-          "const": "Manufacture of furniture"
+          "const": "Manufacture of wooden furniture"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "3102"
+        },
+        "#text": {
+          "const": "Manufacture of other furniture"
         }
       }
     },
@@ -4014,7 +4092,7 @@
           "const": "33"
         },
         "#text": {
-          "const": "Repair and installation of machinery and equipment"
+          "const": "Repair, maintenance and installation of machinery and equipment"
         }
       }
     },
@@ -4027,7 +4105,7 @@
           "const": "331"
         },
         "#text": {
-          "const": "Repair of fabricated metal products, machinery and equipment"
+          "const": "Repair and maintenance of fabricated metal products, machinery and equipment"
         }
       }
     },
@@ -4040,7 +4118,7 @@
           "const": "3311"
         },
         "#text": {
-          "const": "Repair of fabricated metal products"
+          "const": "Repair and maintenance of fabricated metal products"
         }
       }
     },
@@ -4053,7 +4131,7 @@
           "const": "3312"
         },
         "#text": {
-          "const": "Repair of machinery"
+          "const": "Repair and maintenance of machinery"
         }
       }
     },
@@ -4066,7 +4144,7 @@
           "const": "3313"
         },
         "#text": {
-          "const": "Repair of electronic and optical equipment"
+          "const": "Repair and maintenance of electronic and optical equipment"
         }
       }
     },
@@ -4079,7 +4157,7 @@
           "const": "3314"
         },
         "#text": {
-          "const": "Repair of electrical equipment"
+          "const": "Repair and maintenance of electrical equipment"
         }
       }
     },
@@ -4092,7 +4170,7 @@
           "const": "3315"
         },
         "#text": {
-          "const": "Repair of transport equipment, except motor vehicles"
+          "const": "Repair and maintenance of transport equipment, except motor vehicles"
         }
       }
     },
@@ -4105,7 +4183,7 @@
           "const": "3319"
         },
         "#text": {
-          "const": "Repair of other equipment"
+          "const": "Repair and maintenance of other equipment"
         }
       }
     },
@@ -4170,7 +4248,7 @@
           "const": "351"
         },
         "#text": {
-          "const": "Electric power generation, transmission and distribution"
+          "const": "Electric power generation, transmission and distribution activities"
         }
       }
     },
@@ -4180,10 +4258,36 @@
           "const": "3"
         },
         "@classId": {
-          "const": "3510"
+          "const": "3511"
         },
         "#text": {
-          "const": "Electric power generation, transmission and distribution"
+          "const": "Electric power generation activities from non-renewable sources"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "3512"
+        },
+        "#text": {
+          "const": "Electric power generation activities from renewable sources"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "3513"
+        },
+        "#text": {
+          "const": "Electric power transmission and distribution activities"
         }
       }
     },
@@ -4236,6 +4340,32 @@
         },
         "#text": {
           "const": "Steam and air conditioning supply"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "354"
+        },
+        "#text": {
+          "const": "Activities of brokers and agents for electric power and natural gas"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "3540"
+        },
+        "#text": {
+          "const": "Activities of brokers and agents for electric power and natural gas"
         }
       }
     },
@@ -4339,7 +4469,7 @@
           "const": "38"
         },
         "#text": {
-          "const": "Waste collection, treatment and disposal activities; materials recovery"
+          "const": "Waste collection, treatment and disposal, and recovery activities"
         }
       }
     },
@@ -4352,7 +4482,7 @@
           "const": "381"
         },
         "#text": {
-          "const": "Waste collection"
+          "const": "Waste collection activities"
         }
       }
     },
@@ -4430,7 +4560,7 @@
           "const": "383"
         },
         "#text": {
-          "const": "Materials recovery"
+          "const": "Materials and other waste recovery"
         }
       }
     },
@@ -4443,7 +4573,7 @@
           "const": "3830"
         },
         "#text": {
-          "const": "Materials recovery"
+          "const": "Materials and other waste recovery"
         }
       }
     },
@@ -4456,7 +4586,7 @@
           "const": "39"
         },
         "#text": {
-          "const": "Remediation activities and other waste management services"
+          "const": "Remediation and other waste management service activities"
         }
       }
     },
@@ -4469,7 +4599,7 @@
           "const": "390"
         },
         "#text": {
-          "const": "Remediation activities and other waste management services"
+          "const": "Remediation and other waste management service activities"
         }
       }
     },
@@ -4482,7 +4612,7 @@
           "const": "3900"
         },
         "#text": {
-          "const": "Remediation activities and other waste management services"
+          "const": "Remediation and other waste management service activities"
         }
       }
     },
@@ -4508,7 +4638,7 @@
           "const": "41"
         },
         "#text": {
-          "const": "Construction of buildings"
+          "const": "Construction of residential and non-residential buildings"
         }
       }
     },
@@ -4521,7 +4651,7 @@
           "const": "410"
         },
         "#text": {
-          "const": "Construction of buildings"
+          "const": "Construction of residential and non-residential buildings"
         }
       }
     },
@@ -4534,7 +4664,7 @@
           "const": "4100"
         },
         "#text": {
-          "const": "Construction of buildings"
+          "const": "Construction of residential and non-residential buildings"
         }
       }
     },
@@ -4765,6 +4895,32 @@
           "const": "2"
         },
         "@classId": {
+          "const": "434"
+        },
+        "#text": {
+          "const": "Intermediation service activities for specialized construction services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "4340"
+        },
+        "#text": {
+          "const": "Intermediation service activities for specialized construction services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
           "const": "439"
         },
         "#text": {
@@ -4794,124 +4950,7 @@
           "const": "G"
         },
         "#text": {
-          "const": "Wholesale and retail trade; repair of motor vehicles and motorcycles"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "1"
-        },
-        "@classId": {
-          "const": "45"
-        },
-        "#text": {
-          "const": "Wholesale and retail trade and repair of motor vehicles and motorcycles"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "2"
-        },
-        "@classId": {
-          "const": "451"
-        },
-        "#text": {
-          "const": "Sale of motor vehicles"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "4510"
-        },
-        "#text": {
-          "const": "Sale of motor vehicles"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "2"
-        },
-        "@classId": {
-          "const": "452"
-        },
-        "#text": {
-          "const": "Maintenance and repair of motor vehicles"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "4520"
-        },
-        "#text": {
-          "const": "Maintenance and repair of motor vehicles"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "2"
-        },
-        "@classId": {
-          "const": "453"
-        },
-        "#text": {
-          "const": "Sale of motor vehicle parts and accessories"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "4530"
-        },
-        "#text": {
-          "const": "Sale of motor vehicle parts and accessories"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "2"
-        },
-        "@classId": {
-          "const": "454"
-        },
-        "#text": {
-          "const": "Sale, maintenance and repair of motorcycles and related parts and accessories"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "4540"
-        },
-        "#text": {
-          "const": "Sale, maintenance and repair of motorcycles and related parts and accessories"
+          "const": "Wholesale and retail trade"
         }
       }
     },
@@ -4924,7 +4963,7 @@
           "const": "46"
         },
         "#text": {
-          "const": "Wholesale trade, except of motor vehicles and motorcycles"
+          "const": "Wholesale trade"
         }
       }
     },
@@ -5038,6 +5077,19 @@
           "const": "3"
         },
         "@classId": {
+          "const": "4642"
+        },
+        "#text": {
+          "const": "Wholesale of household, office and shop furniture, carpets and lighting equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
           "const": "4649"
         },
         "#text": {
@@ -5119,7 +5171,7 @@
           "const": "466"
         },
         "#text": {
-          "const": "Other specialized wholesale"
+          "const": "Wholesale of motor vehicles, motorcycles and related parts and accessories"
         }
       }
     },
@@ -5132,7 +5184,7 @@
           "const": "4661"
         },
         "#text": {
-          "const": "Wholesale of solid, liquid and gaseous fuels and related products"
+          "const": "Wholesale of motor vehicles"
         }
       }
     },
@@ -5145,7 +5197,7 @@
           "const": "4662"
         },
         "#text": {
-          "const": "Wholesale of metals and metal ores"
+          "const": "Wholesale of motor vehicle parts and accessories"
         }
       }
     },
@@ -5158,6 +5210,58 @@
           "const": "4663"
         },
         "#text": {
+          "const": "Wholesale of motorcycles, motorcycle parts and accessories"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "467"
+        },
+        "#text": {
+          "const": "Other specialized wholesale"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "4671"
+        },
+        "#text": {
+          "const": "Wholesale of solid, liquid and gaseous fuels and related products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "4672"
+        },
+        "#text": {
+          "const": "Wholesale of metals and metal ores"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "4673"
+        },
+        "#text": {
           "const": "Wholesale of construction materials, hardware, plumbing and heating equipment and supplies"
         }
       }
@@ -5168,10 +5272,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "4669"
+          "const": "4679"
         },
         "#text": {
-          "const": "Wholesale of waste and scrap and other products n.e.c."
+          "const": "Wholesale of chemicals, waste and scrap and other products n.e.c."
         }
       }
     },
@@ -5210,7 +5314,7 @@
           "const": "47"
         },
         "#text": {
-          "const": "Retail trade, except of motor vehicles and motorcycles"
+          "const": "Retail trade"
         }
       }
     },
@@ -5223,7 +5327,7 @@
           "const": "471"
         },
         "#text": {
-          "const": "Retail sale in non-specialized stores"
+          "const": "Non-specialized retail sale"
         }
       }
     },
@@ -5236,7 +5340,7 @@
           "const": "4711"
         },
         "#text": {
-          "const": "Retail sale in non-specialized stores with food, beverages or tobacco predominating"
+          "const": "Non-specialized retail sale with food, beverages or tobacco predominating"
         }
       }
     },
@@ -5249,7 +5353,7 @@
           "const": "4719"
         },
         "#text": {
-          "const": "Other retail sale in non-specialized stores"
+          "const": "Other non-specialized retail sale"
         }
       }
     },
@@ -5262,7 +5366,7 @@
           "const": "472"
         },
         "#text": {
-          "const": "Retail sale of food, beverages and tobacco in specialized stores"
+          "const": "Retail sale of food, beverages and tobacco"
         }
       }
     },
@@ -5275,7 +5379,7 @@
           "const": "4721"
         },
         "#text": {
-          "const": "Retail sale of food in specialized stores"
+          "const": "Retail sale of food"
         }
       }
     },
@@ -5288,7 +5392,7 @@
           "const": "4722"
         },
         "#text": {
-          "const": "Retail sale of beverages in specialized stores"
+          "const": "Retail sale of beverages"
         }
       }
     },
@@ -5301,7 +5405,7 @@
           "const": "4723"
         },
         "#text": {
-          "const": "Retail sale of tobacco products in specialized stores"
+          "const": "Retail sale of tobacco products"
         }
       }
     },
@@ -5314,7 +5418,7 @@
           "const": "473"
         },
         "#text": {
-          "const": "Retail sale of automotive fuel in specialized stores"
+          "const": "Retail sale of automotive fuel"
         }
       }
     },
@@ -5327,7 +5431,7 @@
           "const": "4730"
         },
         "#text": {
-          "const": "Retail sale of automotive fuel in specialized stores"
+          "const": "Retail sale of automotive fuel"
         }
       }
     },
@@ -5340,7 +5444,7 @@
           "const": "474"
         },
         "#text": {
-          "const": "Retail sale of information and communications equipment in specialized stores"
+          "const": "Retail sale of information and communication equipment"
         }
       }
     },
@@ -5350,23 +5454,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "4741"
+          "const": "4740"
         },
         "#text": {
-          "const": "Retail sale of computers, peripheral units, software and telecommunications equipment in specialized stores"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "4742"
-        },
-        "#text": {
-          "const": "Retail sale of audio and video equipment in specialized stores"
+          "const": "Retail sale of information and communication equipment"
         }
       }
     },
@@ -5379,7 +5470,7 @@
           "const": "475"
         },
         "#text": {
-          "const": "Retail sale of other household equipment in specialized stores"
+          "const": "Retail sale of other household equipment"
         }
       }
     },
@@ -5392,7 +5483,7 @@
           "const": "4751"
         },
         "#text": {
-          "const": "Retail sale of textiles in specialized stores"
+          "const": "Retail sale of textiles"
         }
       }
     },
@@ -5405,7 +5496,7 @@
           "const": "4752"
         },
         "#text": {
-          "const": "Retail sale of hardware, paints and glass in specialized stores"
+          "const": "Retail sale of hardware, building materials, paints and glass"
         }
       }
     },
@@ -5418,7 +5509,7 @@
           "const": "4753"
         },
         "#text": {
-          "const": "Retail sale of carpets, rugs, wall and floor coverings in specialized stores"
+          "const": "Retail sale of carpets, rugs, wall and floor coverings"
         }
       }
     },
@@ -5431,7 +5522,7 @@
           "const": "4759"
         },
         "#text": {
-          "const": "Retail sale of electrical household appliances, furniture, lighting equipment and other household articles in specialized stores"
+          "const": "Retail sale of electrical household appliances, furniture, lighting equipment and other household articles"
         }
       }
     },
@@ -5444,7 +5535,7 @@
           "const": "476"
         },
         "#text": {
-          "const": "Retail sale of cultural and recreation goods in specialized stores"
+          "const": "Retail sale of cultural and recreational goods"
         }
       }
     },
@@ -5457,7 +5548,7 @@
           "const": "4761"
         },
         "#text": {
-          "const": "Retail sale of books, newspapers and stationary in specialized stores"
+          "const": "Retail sale of books, newspapers, stationery and office supplies"
         }
       }
     },
@@ -5470,7 +5561,7 @@
           "const": "4762"
         },
         "#text": {
-          "const": "Retail sale of music and video recordings in specialized stores"
+          "const": "Retail sale of sporting equipment"
         }
       }
     },
@@ -5483,7 +5574,7 @@
           "const": "4763"
         },
         "#text": {
-          "const": "Retail sale of sporting equipment in specialized stores"
+          "const": "Retail sale of games and toys"
         }
       }
     },
@@ -5493,10 +5584,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "4764"
+          "const": "4769"
         },
         "#text": {
-          "const": "Retail sale of games and toys in specialized stores"
+          "const": "Retail sale of cultural and recreational goods n.e.c."
         }
       }
     },
@@ -5509,7 +5600,7 @@
           "const": "477"
         },
         "#text": {
-          "const": "Retail sale of other goods in specialized stores"
+          "const": "Retail sale of other goods, except motor vehicles and motorcycles"
         }
       }
     },
@@ -5522,7 +5613,7 @@
           "const": "4771"
         },
         "#text": {
-          "const": "Retail sale of clothing, footwear and leather articles in specialized stores"
+          "const": "Retail sale of clothing, footwear and leather articles"
         }
       }
     },
@@ -5535,7 +5626,7 @@
           "const": "4772"
         },
         "#text": {
-          "const": "Retail sale of pharmaceutical and medical goods, cosmetic and toilet articles in specialized stores"
+          "const": "Retail sale of pharmaceutical and medical goods, cosmetic and toilet articles"
         }
       }
     },
@@ -5548,7 +5639,7 @@
           "const": "4773"
         },
         "#text": {
-          "const": "Other retail sale of new goods in specialized stores"
+          "const": "Retail sale of other new goods n.e.c."
         }
       }
     },
@@ -5574,7 +5665,7 @@
           "const": "478"
         },
         "#text": {
-          "const": "Retail sale via stalls and markets"
+          "const": "Retail sale of motor vehicles, motorcycles and related parts and accessories"
         }
       }
     },
@@ -5587,7 +5678,7 @@
           "const": "4781"
         },
         "#text": {
-          "const": "Retail sale via stalls and markets of food, beverages and tobacco products"
+          "const": "Retail sale of motor vehicles"
         }
       }
     },
@@ -5600,7 +5691,7 @@
           "const": "4782"
         },
         "#text": {
-          "const": "Retail sale via stalls and markets of textiles, clothing and footwear"
+          "const": "Retail sale of motor vehicle parts and accessories"
         }
       }
     },
@@ -5610,10 +5701,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "4789"
+          "const": "4783"
         },
         "#text": {
-          "const": "Retail sale via stalls and markets of other goods"
+          "const": "Retail sale of motorcycles, motorcycles parts and accessories"
         }
       }
     },
@@ -5626,7 +5717,7 @@
           "const": "479"
         },
         "#text": {
-          "const": "Retail trade not in stores, stalls or markets"
+          "const": "Intermediation service activities for retail sale"
         }
       }
     },
@@ -5636,23 +5727,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "4791"
+          "const": "4790"
         },
         "#text": {
-          "const": "Retail sale via mail order houses or via Internet"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "4799"
-        },
-        "#text": {
-          "const": "Other retail sale not in stores, stalls or markets"
+          "const": "Intermediation service activities for retail sale"
         }
       }
     },
@@ -6068,7 +6146,46 @@
           "const": "5229"
         },
         "#text": {
-          "const": "Other transportation support activities"
+          "const": "Other support activities for transportation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "523"
+        },
+        "#text": {
+          "const": "Intermediation service activities for transportation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "5231"
+        },
+        "#text": {
+          "const": "Intermediation service activities for freight transportation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "5232"
+        },
+        "#text": {
+          "const": "Intermediation service activities for passenger transportation"
         }
       }
     },
@@ -6140,6 +6257,32 @@
     {
       "properties": {
         "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "533"
+        },
+        "#text": {
+          "const": "Intermediation service activities for postal and courier activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "5330"
+        },
+        "#text": {
+          "const": "Intermediation service activities for postal and courier activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
           "const": "0"
         },
         "@classId": {
@@ -6172,7 +6315,7 @@
           "const": "551"
         },
         "#text": {
-          "const": "Short term accommodation activities"
+          "const": "Hotels and similar accommodation activities"
         }
       }
     },
@@ -6185,7 +6328,7 @@
           "const": "5510"
         },
         "#text": {
-          "const": "Short term accommodation activities"
+          "const": "Hotels and similar accommodation activities"
         }
       }
     },
@@ -6198,7 +6341,7 @@
           "const": "552"
         },
         "#text": {
-          "const": "Camping grounds, recreational vehicle parks and trailer parks"
+          "const": "Other short term accommodation activities"
         }
       }
     },
@@ -6211,7 +6354,59 @@
           "const": "5520"
         },
         "#text": {
+          "const": "Other short term accommodation activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "553"
+        },
+        "#text": {
           "const": "Camping grounds, recreational vehicle parks and trailer parks"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "5530"
+        },
+        "#text": {
+          "const": "Camping grounds, recreational vehicle parks and trailer parks"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "554"
+        },
+        "#text": {
+          "const": "Intermediation service activities for accommodation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "5540"
+        },
+        "#text": {
+          "const": "Intermediation service activities for accommodation"
         }
       }
     },
@@ -6224,7 +6419,7 @@
           "const": "559"
         },
         "#text": {
-          "const": "Other accommodation"
+          "const": "Other accommodation n.e.c."
         }
       }
     },
@@ -6237,7 +6432,7 @@
           "const": "5590"
         },
         "#text": {
-          "const": "Other accommodation"
+          "const": "Other accommodation n.e.c."
         }
       }
     },
@@ -6302,7 +6497,7 @@
           "const": "5621"
         },
         "#text": {
-          "const": "Event catering"
+          "const": "Event catering activities"
         }
       }
     },
@@ -6348,13 +6543,39 @@
     {
       "properties": {
         "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "564"
+        },
+        "#text": {
+          "const": "Intermediation service activities for food and beverage services activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "5640"
+        },
+        "#text": {
+          "const": "Intermediation service activities for food and beverage services activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
           "const": "0"
         },
         "@classId": {
           "const": "J"
         },
         "#text": {
-          "const": "Information and communication"
+          "const": "Publishing, broadcasting, and content production and distribution activities"
         }
       }
     },
@@ -6380,7 +6601,7 @@
           "const": "581"
         },
         "#text": {
-          "const": "Publishing of books, periodicals and other publishing activities"
+          "const": "Publishing of books, newspapers, periodicals and other publishing activities"
         }
       }
     },
@@ -6393,7 +6614,7 @@
           "const": "5811"
         },
         "#text": {
-          "const": "Book publishing"
+          "const": "Publishing of books"
         }
       }
     },
@@ -6406,7 +6627,7 @@
           "const": "5812"
         },
         "#text": {
-          "const": "Publishing of directories and mailing lists"
+          "const": "Publishing of newspapers"
         }
       }
     },
@@ -6419,7 +6640,7 @@
           "const": "5813"
         },
         "#text": {
-          "const": "Publishing of newspapers, journals and periodicals"
+          "const": "Publishing of journals and periodicals"
         }
       }
     },
@@ -6455,10 +6676,23 @@
           "const": "3"
         },
         "@classId": {
-          "const": "5820"
+          "const": "5821"
         },
         "#text": {
-          "const": "Software publishing"
+          "const": "Publishing of video games"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "5829"
+        },
+        "#text": {
+          "const": "Other software publishing"
         }
       }
     },
@@ -6575,7 +6809,7 @@
           "const": "60"
         },
         "#text": {
-          "const": "Programming and broadcasting activities"
+          "const": "Programming, broadcasting, news agency and other content distribution activities"
         }
       }
     },
@@ -6588,7 +6822,7 @@
           "const": "601"
         },
         "#text": {
-          "const": "Radio broadcasting"
+          "const": "Radio broadcasting and audio distribution activities"
         }
       }
     },
@@ -6601,7 +6835,7 @@
           "const": "6010"
         },
         "#text": {
-          "const": "Radio broadcasting"
+          "const": "Radio broadcasting and audio distribution activities"
         }
       }
     },
@@ -6614,7 +6848,7 @@
           "const": "602"
         },
         "#text": {
-          "const": "Television programming and broadcasting activities"
+          "const": "Television programming, broadcasting and video distribution activities"
         }
       }
     },
@@ -6627,7 +6861,59 @@
           "const": "6020"
         },
         "#text": {
-          "const": "Television programming and broadcasting activities"
+          "const": "Television programming, broadcasting and video distribution activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "603"
+        },
+        "#text": {
+          "const": "News agency and other content distribution activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "6031"
+        },
+        "#text": {
+          "const": "News agency activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "6039"
+        },
+        "#text": {
+          "const": "Social network sites and other content distribution activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "0"
+        },
+        "@classId": {
+          "const": "K"
+        },
+        "#text": {
+          "const": "Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities"
         }
       }
     },
@@ -6653,7 +6939,7 @@
           "const": "611"
         },
         "#text": {
-          "const": "Wired telecommunications activities"
+          "const": "Wired, wireless, and satellite telecommunication activities"
         }
       }
     },
@@ -6666,7 +6952,7 @@
           "const": "6110"
         },
         "#text": {
-          "const": "Wired telecommunications activities"
+          "const": "Wired, wireless, and satellite telecommunication activities"
         }
       }
     },
@@ -6679,7 +6965,7 @@
           "const": "612"
         },
         "#text": {
-          "const": "Wireless telecommunications activities"
+          "const": "Telecommunication reselling\u00a0activities\u00a0and intermediation service\u00a0activities\u00a0for telecommunication"
         }
       }
     },
@@ -6692,33 +6978,7 @@
           "const": "6120"
         },
         "#text": {
-          "const": "Wireless telecommunications activities"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "2"
-        },
-        "@classId": {
-          "const": "613"
-        },
-        "#text": {
-          "const": "Satellite telecommunications activities"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6130"
-        },
-        "#text": {
-          "const": "Satellite telecommunications activities"
+          "const": "Telecommunication reselling\u00a0activities\u00a0and intermediation service\u00a0activities\u00a0for telecommunication"
         }
       }
     },
@@ -6731,7 +6991,7 @@
           "const": "619"
         },
         "#text": {
-          "const": "Other telecommunications activities"
+          "const": "Other telecommunication activities"
         }
       }
     },
@@ -6744,7 +7004,7 @@
           "const": "6190"
         },
         "#text": {
-          "const": "Other telecommunications activities"
+          "const": "Other telecommunication activities"
         }
       }
     },
@@ -6767,20 +7027,7 @@
           "const": "2"
         },
         "@classId": {
-          "const": "620"
-        },
-        "#text": {
-          "const": "Computer programming, consultancy and related activities"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6201"
+          "const": "621"
         },
         "#text": {
           "const": "Computer programming activities"
@@ -6793,7 +7040,33 @@
           "const": "3"
         },
         "@classId": {
-          "const": "6202"
+          "const": "6211"
+        },
+        "#text": {
+          "const": "Development of video games, video game software, and video game software tools"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "6219"
+        },
+        "#text": {
+          "const": "Other computer programming activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "622"
         },
         "#text": {
           "const": "Computer consultancy and computer facilities management activities"
@@ -6806,7 +7079,33 @@
           "const": "3"
         },
         "@classId": {
-          "const": "6209"
+          "const": "6220"
+        },
+        "#text": {
+          "const": "Computer consultancy and computer facilities management activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "629"
+        },
+        "#text": {
+          "const": "Other information technology and computer service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "6290"
         },
         "#text": {
           "const": "Other information technology and computer service activities"
@@ -6822,7 +7121,7 @@
           "const": "63"
         },
         "#text": {
-          "const": "Information service activities"
+          "const": "Computing infrastructure, data processing, hosting, and other information service activities"
         }
       }
     },
@@ -6835,7 +7134,7 @@
           "const": "631"
         },
         "#text": {
-          "const": "Data processing, hosting and related activities; web portals"
+          "const": "Computing infrastructure, data processing, hosting and related activities"
         }
       }
     },
@@ -6845,23 +7144,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "6311"
+          "const": "6310"
         },
         "#text": {
-          "const": "Data processing, hosting and related activities"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6312"
-        },
-        "#text": {
-          "const": "Web portals"
+          "const": "Computing infrastructure, data processing, hosting and related activities"
         }
       }
     },
@@ -6874,7 +7160,7 @@
           "const": "639"
         },
         "#text": {
-          "const": "Other information service activities"
+          "const": "Web search portals activities and other information service activities"
         }
       }
     },
@@ -6884,23 +7170,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "6391"
+          "const": "6390"
         },
         "#text": {
-          "const": "News agency activities"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6399"
-        },
-        "#text": {
-          "const": "Other information service activities n.e.c."
+          "const": "Web search portals activities and other information service activities"
         }
       }
     },
@@ -6910,7 +7183,7 @@
           "const": "0"
         },
         "@classId": {
-          "const": "K"
+          "const": "L"
         },
         "#text": {
           "const": "Financial and insurance activities"
@@ -6978,6 +7251,19 @@
           "const": "642"
         },
         "#text": {
+          "const": "Activities of holding companies and financing conduits"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "6421"
+        },
+        "#text": {
           "const": "Activities of holding companies"
         }
       }
@@ -6988,10 +7274,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "6420"
+          "const": "6422"
         },
         "#text": {
-          "const": "Activities of holding companies"
+          "const": "Activities of financing conduits"
         }
       }
     },
@@ -7004,7 +7290,7 @@
           "const": "643"
         },
         "#text": {
-          "const": "Trusts, funds and similar financial entities"
+          "const": "Activities of trusts, funds and similar financial entities"
         }
       }
     },
@@ -7014,10 +7300,36 @@
           "const": "3"
         },
         "@classId": {
-          "const": "6430"
+          "const": "6431"
         },
         "#text": {
-          "const": "Trusts, funds and similar financial entities"
+          "const": "Activities of money market funds"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "6432"
+        },
+        "#text": {
+          "const": "Activities of non-money market investments funds"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "6433"
+        },
+        "#text": {
+          "const": "Activities of trust, estate and agency accounts"
         }
       }
     },
@@ -7043,7 +7355,7 @@
           "const": "6491"
         },
         "#text": {
-          "const": "Financial leasing"
+          "const": "Financial leasing activities"
         }
       }
     },
@@ -7056,7 +7368,46 @@
           "const": "6492"
         },
         "#text": {
-          "const": "Other credit granting"
+          "const": "International trade financing activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "6493"
+        },
+        "#text": {
+          "const": "Factoring activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "6494"
+        },
+        "#text": {
+          "const": "Securitisation activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "6495"
+        },
+        "#text": {
+          "const": "Other credit granting activities"
         }
       }
     },
@@ -7069,7 +7420,7 @@
           "const": "6499"
         },
         "#text": {
-          "const": "Other financial service activities, except insurance and pension funding activities, n.e.c."
+          "const": "Other financial service activities n.e.c., except insurance and pension funding activities"
         }
       }
     },
@@ -7199,7 +7550,7 @@
           "const": "661"
         },
         "#text": {
-          "const": "Activities auxiliary to financial service activities, except insurance and pension funding"
+          "const": "Activities auxiliary to financial services, except insurance and pension funding"
         }
       }
     },
@@ -7238,7 +7589,7 @@
           "const": "6619"
         },
         "#text": {
-          "const": "Other activities auxiliary to financial service activities"
+          "const": "Other activities auxiliary to financial service activities, except insurance and pension funding"
         }
       }
     },
@@ -7326,7 +7677,7 @@
           "const": "0"
         },
         "@classId": {
-          "const": "L"
+          "const": "M"
         },
         "#text": {
           "const": "Real estate activities"
@@ -7391,10 +7742,23 @@
           "const": "3"
         },
         "@classId": {
-          "const": "6820"
+          "const": "6821"
         },
         "#text": {
-          "const": "Real estate activities on a fee or contract basis"
+          "const": "Intermediation service activities for real estate"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "6829"
+        },
+        "#text": {
+          "const": "Other real estate activities on a fee or contract basis"
         }
       }
     },
@@ -7404,7 +7768,7 @@
           "const": "0"
         },
         "@classId": {
-          "const": "M"
+          "const": "N"
         },
         "#text": {
           "const": "Professional, scientific and technical activities"
@@ -7524,7 +7888,7 @@
           "const": "702"
         },
         "#text": {
-          "const": "Management consultancy activities"
+          "const": "Business and other management consultancy activities"
         }
       }
     },
@@ -7537,7 +7901,7 @@
           "const": "7020"
         },
         "#text": {
-          "const": "Management consultancy activities"
+          "const": "Business and other management consultancy activities"
         }
       }
     },
@@ -7563,7 +7927,7 @@
           "const": "711"
         },
         "#text": {
-          "const": "Architectural and engineering activities and related technical consultancy"
+          "const": "Architectural and engineering, and related technical consultancy activities"
         }
       }
     },
@@ -7576,7 +7940,7 @@
           "const": "7110"
         },
         "#text": {
-          "const": "Architectural and engineering activities and related technical consultancy"
+          "const": "Architectural and engineering, and related technical consultancy activities"
         }
       }
     },
@@ -7680,7 +8044,7 @@
           "const": "73"
         },
         "#text": {
-          "const": "Advertising and market research"
+          "const": "Activities of advertising, market research and public relations"
         }
       }
     },
@@ -7693,7 +8057,7 @@
           "const": "731"
         },
         "#text": {
-          "const": "Advertising"
+          "const": "Advertising activities"
         }
       }
     },
@@ -7706,7 +8070,7 @@
           "const": "7310"
         },
         "#text": {
-          "const": "Advertising"
+          "const": "Advertising activities"
         }
       }
     },
@@ -7719,7 +8083,7 @@
           "const": "732"
         },
         "#text": {
-          "const": "Market research and public opinion polling"
+          "const": "Market research and public opinion polling activities"
         }
       }
     },
@@ -7732,7 +8096,33 @@
           "const": "7320"
         },
         "#text": {
-          "const": "Market research and public opinion polling"
+          "const": "Market research and public opinion polling activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "733"
+        },
+        "#text": {
+          "const": "Public relations activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "7330"
+        },
+        "#text": {
+          "const": "Public relations activities"
         }
       }
     },
@@ -7807,6 +8197,32 @@
           "const": "2"
         },
         "@classId": {
+          "const": "743"
+        },
+        "#text": {
+          "const": "Translation and interpretation activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "7430"
+        },
+        "#text": {
+          "const": "Translation and interpretation activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
           "const": "749"
         },
         "#text": {
@@ -7820,10 +8236,23 @@
           "const": "3"
         },
         "@classId": {
-          "const": "7490"
+          "const": "7491"
         },
         "#text": {
-          "const": "Other professional, scientific and technical activities n.e.c."
+          "const": "Patent brokering and marketing service activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "7499"
+        },
+        "#text": {
+          "const": "All other professional, scientific and technical activities n.e.c."
         }
       }
     },
@@ -7872,7 +8301,7 @@
           "const": "0"
         },
         "@classId": {
-          "const": "N"
+          "const": "O"
         },
         "#text": {
           "const": "Administrative and support service activities"
@@ -7901,7 +8330,7 @@
           "const": "771"
         },
         "#text": {
-          "const": "Renting and leasing of motor vehicles"
+          "const": "Rental and leasing of motor vehicles"
         }
       }
     },
@@ -7914,7 +8343,7 @@
           "const": "7710"
         },
         "#text": {
-          "const": "Renting and leasing of motor vehicles"
+          "const": "Rental and leasing of motor vehicles"
         }
       }
     },
@@ -7927,7 +8356,7 @@
           "const": "772"
         },
         "#text": {
-          "const": "Renting and leasing of personal and household goods"
+          "const": "Rental and leasing of personal and household goods"
         }
       }
     },
@@ -7940,20 +8369,7 @@
           "const": "7721"
         },
         "#text": {
-          "const": "Renting and leasing of recreational and sports goods"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "7722"
-        },
-        "#text": {
-          "const": "Renting of video tapes and disks"
+          "const": "Rental and leasing of recreational and sports goods"
         }
       }
     },
@@ -7966,7 +8382,7 @@
           "const": "7729"
         },
         "#text": {
-          "const": "Renting and leasing of other personal and household goods"
+          "const": "Rental and leasing of other personal and household goods"
         }
       }
     },
@@ -7979,7 +8395,7 @@
           "const": "773"
         },
         "#text": {
-          "const": "Renting and leasing of other machinery, equipment and tangible goods"
+          "const": "Rental and leasing of other machinery, equipment and tangible goods"
         }
       }
     },
@@ -7992,7 +8408,7 @@
           "const": "7730"
         },
         "#text": {
-          "const": "Renting and leasing of other machinery, equipment and tangible goods"
+          "const": "Rental and leasing of other machinery, equipment and tangible goods"
         }
       }
     },
@@ -8019,6 +8435,45 @@
         },
         "#text": {
           "const": "Leasing of intellectual property and similar products, except copyrighted works"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "775"
+        },
+        "#text": {
+          "const": "Intermediation service activities for rental and leasing of tangible goods and non-financial intangible assets"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "7751"
+        },
+        "#text": {
+          "const": "Intermediation service activities for rental and leasing of cars, motorhomes and trailers"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "7752"
+        },
+        "#text": {
+          "const": "Intermediation service activities for rental and leasing of other tangible goods and non-financial intangible assets"
         }
       }
     },
@@ -8070,7 +8525,7 @@
           "const": "782"
         },
         "#text": {
-          "const": "Temporary employment agency activities"
+          "const": "Temporary employment agency activities and other human resource provisions"
         }
       }
     },
@@ -8083,33 +8538,7 @@
           "const": "7820"
         },
         "#text": {
-          "const": "Temporary employment agency activities"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "2"
-        },
-        "@classId": {
-          "const": "783"
-        },
-        "#text": {
-          "const": "Other human resources provision"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "7830"
-        },
-        "#text": {
-          "const": "Other human resources provision"
+          "const": "Temporary employment agency activities and other human resource provisions"
         }
       }
     },
@@ -8122,7 +8551,7 @@
           "const": "79"
         },
         "#text": {
-          "const": "Travel agency, tour operator, reservation service and related activities"
+          "const": "Travel agency, tour operator, and other travel related activities"
         }
       }
     },
@@ -8174,7 +8603,7 @@
           "const": "799"
         },
         "#text": {
-          "const": "Other reservation service and related activities"
+          "const": "Other travel related activities"
         }
       }
     },
@@ -8187,7 +8616,7 @@
           "const": "7990"
         },
         "#text": {
-          "const": "Other reservation service and related activities"
+          "const": "Other travel related activities"
         }
       }
     },
@@ -8200,7 +8629,7 @@
           "const": "80"
         },
         "#text": {
-          "const": "Security and investigation activities"
+          "const": "Investigation and security activities"
         }
       }
     },
@@ -8213,7 +8642,7 @@
           "const": "801"
         },
         "#text": {
-          "const": "Private security activities"
+          "const": "Investigation and security activities"
         }
       }
     },
@@ -8223,23 +8652,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8010"
+          "const": "8011"
         },
         "#text": {
-          "const": "Private security activities"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "2"
-        },
-        "@classId": {
-          "const": "802"
-        },
-        "#text": {
-          "const": "Security systems service activities"
+          "const": "Investigation and private security activities"
         }
       }
     },
@@ -8249,36 +8665,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8020"
+          "const": "8019"
         },
         "#text": {
-          "const": "Security systems service activities"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "2"
-        },
-        "@classId": {
-          "const": "803"
-        },
-        "#text": {
-          "const": "Investigation activities"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "8030"
-        },
-        "#text": {
-          "const": "Investigation activities"
+          "const": "Security activities n.e.c."
         }
       }
     },
@@ -8356,7 +8746,7 @@
           "const": "8129"
         },
         "#text": {
-          "const": "Other building and industrial cleaning activities"
+          "const": "Other cleaning activities"
         }
       }
     },
@@ -8369,7 +8759,7 @@
           "const": "813"
         },
         "#text": {
-          "const": "Landscape care and maintenance service activities"
+          "const": "Landscape service activities"
         }
       }
     },
@@ -8382,7 +8772,7 @@
           "const": "8130"
         },
         "#text": {
-          "const": "Landscape care and maintenance service activities"
+          "const": "Landscape service activities"
         }
       }
     },
@@ -8418,23 +8808,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8211"
+          "const": "8210"
         },
         "#text": {
-          "const": "Combined office administrative service activities"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "8219"
-        },
-        "#text": {
-          "const": "Photocopying, document preparation and other specialized office support activities"
+          "const": "Office administrative and support activities"
         }
       }
     },
@@ -8496,6 +8873,32 @@
           "const": "2"
         },
         "@classId": {
+          "const": "824"
+        },
+        "#text": {
+          "const": "Intermediation service activities for business support activities n.e.c., except financial intermediation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8240"
+        },
+        "#text": {
+          "const": "Intermediation service activities for business support activities n.e.c., except financial intermediation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
           "const": "829"
         },
         "#text": {
@@ -8548,7 +8951,7 @@
           "const": "0"
         },
         "@classId": {
-          "const": "O"
+          "const": "P"
         },
         "#text": {
           "const": "Public administration and defence; compulsory social security"
@@ -8577,7 +8980,7 @@
           "const": "841"
         },
         "#text": {
-          "const": "Administration of the State and the economic and social policy of the community"
+          "const": "Administration of the State and the economic, social and environmental policies of the community"
         }
       }
     },
@@ -8603,7 +9006,7 @@
           "const": "8412"
         },
         "#text": {
-          "const": "Regulation of the activities of providing health care, education, cultural services and other social services, excluding social security"
+          "const": "Regulation of the activities of providing health care, education, cultural services and other social services, excluding social security and environment"
         }
       }
     },
@@ -8614,6 +9017,19 @@
         },
         "@classId": {
           "const": "8413"
+        },
+        "#text": {
+          "const": "Regulation of the activities of providing environmental services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8414"
         },
         "#text": {
           "const": "Regulation of and contribution to more efficient operation of businesses"
@@ -8704,7 +9120,7 @@
           "const": "0"
         },
         "@classId": {
-          "const": "P"
+          "const": "Q"
         },
         "#text": {
           "const": "Education"
@@ -8733,7 +9149,7 @@
           "const": "851"
         },
         "#text": {
-          "const": "Pre-primary and primary education"
+          "const": "Pre-primary education"
         }
       }
     },
@@ -8746,7 +9162,7 @@
           "const": "8510"
         },
         "#text": {
-          "const": "Pre-primary and primary education"
+          "const": "Pre-primary education"
         }
       }
     },
@@ -8759,7 +9175,7 @@
           "const": "852"
         },
         "#text": {
-          "const": "Secondary education"
+          "const": "Primary education"
         }
       }
     },
@@ -8769,23 +9185,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8521"
+          "const": "8520"
         },
         "#text": {
-          "const": "General secondary education"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "8522"
-        },
-        "#text": {
-          "const": "Technical and vocational secondary education"
+          "const": "Primary education"
         }
       }
     },
@@ -8798,7 +9201,7 @@
           "const": "853"
         },
         "#text": {
-          "const": "Higher education"
+          "const": "Secondary and post-secondary non-tertiary education"
         }
       }
     },
@@ -8808,10 +9211,36 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8530"
+          "const": "8531"
         },
         "#text": {
-          "const": "Higher education"
+          "const": "General secondary education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8532"
+        },
+        "#text": {
+          "const": "Vocational secondary education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8533"
+        },
+        "#text": {
+          "const": "Post-secondary non-tertiary education"
         }
       }
     },
@@ -8824,7 +9253,7 @@
           "const": "854"
         },
         "#text": {
-          "const": "Other education"
+          "const": "Tertiary education"
         }
       }
     },
@@ -8834,36 +9263,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8541"
+          "const": "8540"
         },
         "#text": {
-          "const": "Sports and recreation education"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "8542"
-        },
-        "#text": {
-          "const": "Cultural education"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "8549"
-        },
-        "#text": {
-          "const": "Other education n.e.c."
+          "const": "Tertiary education"
         }
       }
     },
@@ -8876,6 +9279,71 @@
           "const": "855"
         },
         "#text": {
+          "const": "Other education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8551"
+        },
+        "#text": {
+          "const": "Sports and recreation education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8552"
+        },
+        "#text": {
+          "const": "Cultural education"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8553"
+        },
+        "#text": {
+          "const": "Driving school activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8559"
+        },
+        "#text": {
+          "const": "Other education n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "856"
+        },
+        "#text": {
           "const": "Educational support activities"
         }
       }
@@ -8886,10 +9354,23 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8550"
+          "const": "8561"
         },
         "#text": {
-          "const": "Educational support activities"
+          "const": "Intermediation service activities for courses and tutors"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8569"
+        },
+        "#text": {
+          "const": "Other educational support activities"
         }
       }
     },
@@ -8899,7 +9380,7 @@
           "const": "0"
         },
         "@classId": {
-          "const": "Q"
+          "const": "R"
         },
         "#text": {
           "const": "Human health and social work activities"
@@ -8990,10 +9471,23 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8690"
+          "const": "8691"
         },
         "#text": {
-          "const": "Other human health activities"
+          "const": "Intermediation service activities for medical, dental, and other human health services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8699"
+        },
+        "#text": {
+          "const": "Other human health activities n.e.c"
         }
       }
     },
@@ -9019,7 +9513,7 @@
           "const": "871"
         },
         "#text": {
-          "const": "Residential nursing care facilities"
+          "const": "Residential nursing care activities"
         }
       }
     },
@@ -9032,7 +9526,7 @@
           "const": "8710"
         },
         "#text": {
-          "const": "Residential nursing care facilities"
+          "const": "Residential nursing care activities"
         }
       }
     },
@@ -9045,7 +9539,7 @@
           "const": "872"
         },
         "#text": {
-          "const": "Residential care activities for mental retardation, mental health and substance abuse"
+          "const": "Residential care activities for persons living with or having a diagnosis of a mental illness or substance abuse"
         }
       }
     },
@@ -9058,7 +9552,7 @@
           "const": "8720"
         },
         "#text": {
-          "const": "Residential care activities for mental retardation, mental health and substance abuse"
+          "const": "Residential care activities for persons living with or having a diagnosis of a mental illness or substance abuse"
         }
       }
     },
@@ -9071,7 +9565,7 @@
           "const": "873"
         },
         "#text": {
-          "const": "Residential care activities for the elderly and disabled"
+          "const": "Residential care activities for older persons or persons with physical disabilities"
         }
       }
     },
@@ -9084,7 +9578,7 @@
           "const": "8730"
         },
         "#text": {
-          "const": "Residential care activities for the elderly and disabled"
+          "const": "Residential care activities for older persons or persons with physical disabilities"
         }
       }
     },
@@ -9107,10 +9601,23 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8790"
+          "const": "8791"
         },
         "#text": {
-          "const": "Other residential care activities"
+          "const": "Intermediation service activities for residential care activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8799"
+        },
+        "#text": {
+          "const": "Other residential care activities n.e.c."
         }
       }
     },
@@ -9136,7 +9643,7 @@
           "const": "881"
         },
         "#text": {
-          "const": "Social work activities without accommodation for the elderly and disabled"
+          "const": "Social work activities without accommodation for older persons or persons with disabilities"
         }
       }
     },
@@ -9149,7 +9656,7 @@
           "const": "8810"
         },
         "#text": {
-          "const": "Social work activities without accommodation for the elderly and disabled"
+          "const": "Social work activities without accommodation for older persons or persons with disabilities"
         }
       }
     },
@@ -9185,10 +9692,10 @@
           "const": "0"
         },
         "@classId": {
-          "const": "R"
+          "const": "S"
         },
         "#text": {
-          "const": "Arts, entertainment and recreation"
+          "const": "Arts, sports and recreation"
         }
       }
     },
@@ -9201,7 +9708,7 @@
           "const": "90"
         },
         "#text": {
-          "const": "Creative, arts and entertainment activities"
+          "const": "Arts creation and performing arts activities"
         }
       }
     },
@@ -9211,10 +9718,10 @@
           "const": "2"
         },
         "@classId": {
-          "const": "900"
+          "const": "901"
         },
         "#text": {
-          "const": "Creative, arts and entertainment activities"
+          "const": "Arts creation activities"
         }
       }
     },
@@ -9224,10 +9731,101 @@
           "const": "3"
         },
         "@classId": {
-          "const": "9000"
+          "const": "9011"
         },
         "#text": {
-          "const": "Creative, arts and entertainment activities"
+          "const": "Literary creation and musical composition activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9012"
+        },
+        "#text": {
+          "const": "Visual arts creation activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9013"
+        },
+        "#text": {
+          "const": "Other arts creation activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "902"
+        },
+        "#text": {
+          "const": "Activities of performing arts"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9020"
+        },
+        "#text": {
+          "const": "Activities of performing arts"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "903"
+        },
+        "#text": {
+          "const": "Support activities to arts creation and performing arts"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9031"
+        },
+        "#text": {
+          "const": "Operation of arts facilities and sites"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9039"
+        },
+        "#text": {
+          "const": "Other support activities to arts creation and performing arts"
         }
       }
     },
@@ -9240,7 +9838,7 @@
           "const": "91"
         },
         "#text": {
-          "const": "Libraries, archives, museums and other cultural activities"
+          "const": "Library, archives, museum and other cultural activities"
         }
       }
     },
@@ -9250,10 +9848,10 @@
           "const": "2"
         },
         "@classId": {
-          "const": "910"
+          "const": "911"
         },
         "#text": {
-          "const": "Libraries, archives, museums and other cultural activities"
+          "const": "Library and archive activities"
         }
       }
     },
@@ -9263,10 +9861,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "9101"
+          "const": "9111"
         },
         "#text": {
-          "const": "Library and archives activities"
+          "const": "Library activities"
         }
       }
     },
@@ -9276,10 +9874,23 @@
           "const": "3"
         },
         "@classId": {
-          "const": "9102"
+          "const": "9112"
         },
         "#text": {
-          "const": "Museums activities and operation of historical sites and buildings"
+          "const": "Archive activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "912"
+        },
+        "#text": {
+          "const": "Museum, collection, historical site and monument activities"
         }
       }
     },
@@ -9289,10 +9900,88 @@
           "const": "3"
         },
         "@classId": {
-          "const": "9103"
+          "const": "9121"
         },
         "#text": {
-          "const": "Botanical and zoological gardens and nature reserves activities"
+          "const": "Museum and collection activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9122"
+        },
+        "#text": {
+          "const": "Historical site and monument activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "913"
+        },
+        "#text": {
+          "const": "Conservation, restoration and other support activities for cultural heritage"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9130"
+        },
+        "#text": {
+          "const": "Conservation, restoration and other support activities for cultural heritage"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "914"
+        },
+        "#text": {
+          "const": "Botanical and zoological garden and nature reserve activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9141"
+        },
+        "#text": {
+          "const": "Botanical and zoological garden activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9142"
+        },
+        "#text": {
+          "const": "Nature reserve activities"
         }
       }
     },
@@ -9409,7 +10098,7 @@
           "const": "932"
         },
         "#text": {
-          "const": "Other amusement and recreation activities"
+          "const": "Amusement and recreation activities"
         }
       }
     },
@@ -9435,7 +10124,7 @@
           "const": "9329"
         },
         "#text": {
-          "const": "Other amusement and recreation activities n.e.c."
+          "const": "Other amusement and recreation activities"
         }
       }
     },
@@ -9445,7 +10134,7 @@
           "const": "0"
         },
         "@classId": {
-          "const": "S"
+          "const": "T"
         },
         "#text": {
           "const": "Other service activities"
@@ -9591,7 +10280,7 @@
           "const": "95"
         },
         "#text": {
-          "const": "Repair of computers and personal and household goods"
+          "const": "Repair and maintenance of computers, personal and household goods, and motor vehicles and motorcycles"
         }
       }
     },
@@ -9604,7 +10293,7 @@
           "const": "951"
         },
         "#text": {
-          "const": "Repair of computers and communication equipment"
+          "const": "Repair and maintenance of computers and communication equipment"
         }
       }
     },
@@ -9614,23 +10303,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "9511"
+          "const": "9510"
         },
         "#text": {
-          "const": "Repair of computers and peripheral equipment"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "9512"
-        },
-        "#text": {
-          "const": "Repair of communication equipment"
+          "const": "Repair and maintenance of computers and communication equipment"
         }
       }
     },
@@ -9643,7 +10319,7 @@
           "const": "952"
         },
         "#text": {
-          "const": "Repair of personal and household goods"
+          "const": "Repair and maintenance of personal and household goods"
         }
       }
     },
@@ -9656,7 +10332,7 @@
           "const": "9521"
         },
         "#text": {
-          "const": "Repair of consumer electronics"
+          "const": "Repair and maintenance of consumer electronics"
         }
       }
     },
@@ -9669,7 +10345,7 @@
           "const": "9522"
         },
         "#text": {
-          "const": "Repair of household appliances and home and garden equipment"
+          "const": "Repair and maintenance of household appliances and home and garden equipment"
         }
       }
     },
@@ -9682,7 +10358,7 @@
           "const": "9523"
         },
         "#text": {
-          "const": "Repair of footwear and leather goods"
+          "const": "Repair and maintenance of footwear and leather goods"
         }
       }
     },
@@ -9695,7 +10371,7 @@
           "const": "9524"
         },
         "#text": {
-          "const": "Repair of furniture and home furnishings"
+          "const": "Repair and maintenance of furniture and home furnishings"
         }
       }
     },
@@ -9708,7 +10384,72 @@
           "const": "9529"
         },
         "#text": {
-          "const": "Repair of other personal and household goods"
+          "const": "Repair and maintenance of other personal and household goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "953"
+        },
+        "#text": {
+          "const": "Repair and maintenance of motor vehicles and motorcycles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9531"
+        },
+        "#text": {
+          "const": "Repair and maintenance of motor vehicles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9532"
+        },
+        "#text": {
+          "const": "Repair and maintenance of motorcycles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "954"
+        },
+        "#text": {
+          "const": "Intermediation service activities for repair and maintenance of computers, personal and household goods, and motor vehicles and motorcycles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9540"
+        },
+        "#text": {
+          "const": "Intermediation service activities for repair and maintenance of computers, personal and household goods, and motor vehicles and motorcycles"
         }
       }
     },
@@ -9721,7 +10462,7 @@
           "const": "96"
         },
         "#text": {
-          "const": "Other personal service activities"
+          "const": "Personal service activities"
         }
       }
     },
@@ -9731,10 +10472,10 @@
           "const": "2"
         },
         "@classId": {
-          "const": "960"
+          "const": "961"
         },
         "#text": {
-          "const": "Other personal service activities"
+          "const": "Washing and cleaning of textile and fur products"
         }
       }
     },
@@ -9744,10 +10485,23 @@
           "const": "3"
         },
         "@classId": {
-          "const": "9601"
+          "const": "9610"
         },
         "#text": {
-          "const": "Washing and (dry-) cleaning of textile and fur products"
+          "const": "Washing and cleaning of textile and fur products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "962"
+        },
+        "#text": {
+          "const": "Hairdressing, beauty treatment, day spa and similar activities"
         }
       }
     },
@@ -9757,10 +10511,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "9602"
+          "const": "9621"
         },
         "#text": {
-          "const": "Hairdressing and other beauty treatment"
+          "const": "Hairdressing and barber activities"
         }
       }
     },
@@ -9770,7 +10524,33 @@
           "const": "3"
         },
         "@classId": {
-          "const": "9603"
+          "const": "9622"
+        },
+        "#text": {
+          "const": "Beauty care and other beauty treatment activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9623"
+        },
+        "#text": {
+          "const": "Day spa, sauna and steam bath activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "963"
         },
         "#text": {
           "const": "Funeral and related activities"
@@ -9783,7 +10563,59 @@
           "const": "3"
         },
         "@classId": {
-          "const": "9609"
+          "const": "9630"
+        },
+        "#text": {
+          "const": "Funeral and related activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "964"
+        },
+        "#text": {
+          "const": "Intermediation service activities for personal services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9640"
+        },
+        "#text": {
+          "const": "Intermediation service activities for personal services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "969"
+        },
+        "#text": {
+          "const": "Other personal service activities n.e.c."
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9690"
         },
         "#text": {
           "const": "Other personal service activities n.e.c."
@@ -9796,7 +10628,7 @@
           "const": "0"
         },
         "@classId": {
-          "const": "T"
+          "const": "U"
         },
         "#text": {
           "const": "Activities of households as employers; undifferentiated goods- and services-producing activities of households for own use"
@@ -9913,7 +10745,7 @@
           "const": "0"
         },
         "@classId": {
-          "const": "U"
+          "const": "V"
         },
         "#text": {
           "const": "Activities of extraterritorial organizations and bodies"
