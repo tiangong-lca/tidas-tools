@@ -1528,40 +1528,85 @@
           "type": "object",
           "properties": {
             "LCIAResult": {
-              "type": "object",
-              "properties": {
-                "referenceToLCIAMethodDataSet": {
-                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                  "description": "\"LCIA method data set\" applied to calculate the LCIA results."
-                },
-                "meanAmount": {
-                  "$ref": "tidas_data_types.json#/$defs/Real",
-                  "description": "Mean amount of the Input or Output. Only significant digits of the amount should be stated."
-                },
-                "uncertaintyDistributionType": {
-                  "type": "string",
-                  "enum": [
-                    "undefined",
-                    "log-normal",
-                    "normal",
-                    "triangular",
-                    "uniform"
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "referenceToLCIAMethodDataSet": {
+                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                      "description": "\"LCIA method data set\" applied to calculate the LCIA results."
+                    },
+                    "meanAmount": {
+                      "$ref": "tidas_data_types.json#/$defs/Real",
+                      "description": "Mean amount of the Input or Output. Only significant digits of the amount should be stated."
+                    },
+                    "uncertaintyDistributionType": {
+                      "type": "string",
+                      "enum": [
+                        "undefined",
+                        "log-normal",
+                        "normal",
+                        "triangular",
+                        "uniform"
+                      ]
+                    },
+                    "relativeStandardDeviation95In": {
+                      "$ref": "tidas_data_types.json#/$defs/Perc",
+                      "description": "The resulting overall uncertainty of the calculated variable value considering uncertainty of measurements, modelling, appropriateness etc. [Notes: For log-normal distribution the square of the geometric standard deviation (SDg^2) is stated. Mean value times SDg^2 equals the 97.5% value (= Maximum value), Mean value divided by SDg^2 equals the 2.5% value (= Minimum value). For normal distribution the doubled standard deviation value (2*SD) is entered. Mean value plus 2*SD equals 97.5% value (= Maximum value), Mean value minus 2*SD equals 2.5% value (= Minimum value). This data field remains empty when uniform or triangular uncertainty distribution is applied.]"
+                    },
+                    "generalComment": {
+                      "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                      "description": "General comment on this specific Input or Output, e.g. commenting on the data sources used and their specific representatuveness etc., on the status of \"finalisation\" of an entry as workflow information, etc."
+                    },
+                    "common:other": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "meanAmount"
                   ]
                 },
-                "relativeStandardDeviation95In": {
-                  "$ref": "tidas_data_types.json#/$defs/Perc",
-                  "description": "The resulting overall uncertainty of the calculated variable value considering uncertainty of measurements, modelling, appropriateness etc. [Notes: For log-normal distribution the square of the geometric standard deviation (SDg^2) is stated. Mean value times SDg^2 equals the 97.5% value (= Maximum value), Mean value divided by SDg^2 equals the 2.5% value (= Minimum value). For normal distribution the doubled standard deviation value (2*SD) is entered. Mean value plus 2*SD equals 97.5% value (= Maximum value), Mean value minus 2*SD equals 2.5% value (= Minimum value). This data field remains empty when uniform or triangular uncertainty distribution is applied.]"
-                },
-                "generalComment": {
-                  "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
-                  "description": "General comment on this specific Input or Output, e.g. commenting on the data sources used and their specific representatuveness etc., on the status of \"finalisation\" of an entry as workflow information, etc."
-                },
-                "common:other": {
-                  "type": "string"
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "referenceToLCIAMethodDataSet": {
+                        "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                        "description": "\"LCIA method data set\" applied to calculate the LCIA results."
+                      },
+                      "meanAmount": {
+                        "$ref": "tidas_data_types.json#/$defs/Real",
+                        "description": "Mean amount of the Input or Output. Only significant digits of the amount should be stated."
+                      },
+                      "uncertaintyDistributionType": {
+                        "type": "string",
+                        "enum": [
+                          "undefined",
+                          "log-normal",
+                          "normal",
+                          "triangular",
+                          "uniform"
+                        ]
+                      },
+                      "relativeStandardDeviation95In": {
+                        "$ref": "tidas_data_types.json#/$defs/Perc",
+                        "description": "The resulting overall uncertainty of the calculated variable value considering uncertainty of measurements, modelling, appropriateness etc. [Notes: For log-normal distribution the square of the geometric standard deviation (SDg^2) is stated. Mean value times SDg^2 equals the 97.5% value (= Maximum value), Mean value divided by SDg^2 equals the 2.5% value (= Minimum value). For normal distribution the doubled standard deviation value (2*SD) is entered. Mean value plus 2*SD equals 97.5% value (= Maximum value), Mean value minus 2*SD equals 2.5% value (= Minimum value). This data field remains empty when uniform or triangular uncertainty distribution is applied.]"
+                      },
+                      "generalComment": {
+                        "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                        "description": "General comment on this specific Input or Output, e.g. commenting on the data sources used and their specific representatuveness etc., on the status of \"finalisation\" of an entry as workflow information, etc."
+                      },
+                      "common:other": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "meanAmount"
+                    ]
+                  },
+                  "minItems": 1
                 }
-              },
-              "required": [
-                "meanAmount"
               ]
             },
             "common:other": {
