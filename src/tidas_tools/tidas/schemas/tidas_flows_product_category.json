@@ -621,7 +621,7 @@
           "const": "01231"
         },
         "#text": {
-          "const": "Chillies and peppers, green (<i>Capsicum</i> spp. and <i>Pimenta</i> spp.)"
+          "const": "Chillies and peppers, green (Capsicum spp. and Pimenta spp.)"
         }
       }
     },
@@ -878,10 +878,23 @@
           "const": "4"
         },
         "@classId": {
-          "const": "01270"
+          "const": "01271"
         },
         "#text": {
-          "const": "Mushrooms and truffles"
+          "const": "Mushrooms, farmed"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "01272"
+        },
+        "#text": {
+          "const": "Truffles, farmed"
         }
       }
     },
@@ -1336,7 +1349,7 @@
           "const": "01355"
         },
         "#text": {
-          "const": "Other berries; fruits of the genus <i>Vaccinium</i>"
+          "const": "Other berries; fruits of the genus Vaccinium"
         }
       }
     },
@@ -2194,7 +2207,7 @@
           "const": "01651"
         },
         "#text": {
-          "const": "Pepper (<i>Piper</i> spp.), raw"
+          "const": "Pepper (Piper spp.), raw"
         }
       }
     },
@@ -2207,7 +2220,7 @@
           "const": "01652"
         },
         "#text": {
-          "const": "Chillies and peppers, dry (<i>Capsicum</i> spp., <i>Pimenta</i> spp.), raw"
+          "const": "Chillies and peppers, dry (Capsicum spp., Pimenta spp.), raw"
         }
       }
     },
@@ -3647,10 +3660,23 @@
           "const": "4"
         },
         "@classId": {
-          "const": "02930"
+          "const": "02931"
         },
         "#text": {
-          "const": "Edible products of animal origin n.e.c."
+          "const": "Edible insects, not live"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "02939"
+        },
+        "#text": {
+          "const": "Other edible products of animal origin n.e.c."
         }
       }
     },
@@ -3871,7 +3897,7 @@
           "const": "0311"
         },
         "#text": {
-          "const": "Logs of coniferous wood"
+          "const": "Roundwood of coniferous wood"
         }
       }
     },
@@ -3881,10 +3907,36 @@
           "const": "4"
         },
         "@classId": {
-          "const": "03110"
+          "const": "03111"
         },
         "#text": {
-          "const": "Logs of coniferous wood"
+          "const": "Roundwood of coniferous wood, sawlogs and veneer logs"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "03112"
+        },
+        "#text": {
+          "const": "Roundwood of coniferous wood, pulpwood and wood for wood-based panels"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "03119"
+        },
+        "#text": {
+          "const": "Roundwood of coniferous wood, other"
         }
       }
     },
@@ -3897,7 +3949,7 @@
           "const": "0312"
         },
         "#text": {
-          "const": "Logs of non-coniferous wood"
+          "const": "Roundwood of non-coniferous wood"
         }
       }
     },
@@ -3907,10 +3959,36 @@
           "const": "4"
         },
         "@classId": {
-          "const": "03120"
+          "const": "03121"
         },
         "#text": {
-          "const": "Logs of non-coniferous wood"
+          "const": "Roundwood of non-coniferous wood, sawlogs and veneer logs"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "03122"
+        },
+        "#text": {
+          "const": "Roundwood of non-coniferous wood, pulpwood and wood for wood-based panels"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "03129"
+        },
+        "#text": {
+          "const": "Roundwood of non-coniferous wood, other"
         }
       }
     },
@@ -4050,10 +4128,62 @@
           "const": "4"
         },
         "@classId": {
-          "const": "03230"
+          "const": "03231"
         },
         "#text": {
-          "const": "Other wild edible products"
+          "const": "Wild edible nuts"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "03232"
+        },
+        "#text": {
+          "const": "Wild edible mushrooms"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "03233"
+        },
+        "#text": {
+          "const": "Wild edible truffles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "03234"
+        },
+        "#text": {
+          "const": "Wild edible berries"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "03239"
+        },
+        "#text": {
+          "const": "Other wild edible edible products n.e.c"
         }
       }
     },
@@ -4105,7 +4235,7 @@
           "const": "0325"
         },
         "#text": {
-          "const": "Vegetable materials of a kind used primarily for plaiting or as stuffing or padding; raw vegetable materials of a kind used primarily for dyeing or tanning; vegetable products n.e.c."
+          "const": "Vegetable materials of a kind used primarily for plaiting or as stuffing or padding; vegetable products n.e.c."
         }
       }
     },
@@ -4115,10 +4245,23 @@
           "const": "4"
         },
         "@classId": {
-          "const": "03250"
+          "const": "03251"
         },
         "#text": {
-          "const": "Vegetable materials of a kind used primarily for plaiting or as stuffing or padding; raw vegetable materials of a kind used primarily for dyeing or tanning; vegetable products n.e.c."
+          "const": "Cotton linters"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "03252"
+        },
+        "#text": {
+          "const": "Vegetable materials of a kind used primarily for plaiting or as stuffing or padding; other vegetable products except cotton linters"
         }
       }
     },
@@ -4131,7 +4274,7 @@
           "const": "04"
         },
         "#text": {
-          "const": "Fish and other fishing products"
+          "const": "Fish, crustaceans, molluscs and other aquatic invertebrates products"
         }
       }
     },
@@ -4443,7 +4586,7 @@
           "const": "0426"
         },
         "#text": {
-          "const": "Other pelagic fish, live, fresh or chilled"
+          "const": "Other pelagic fish (excluding tunas, skipjack, or stripe-bellied bonito), live, fresh or chilled"
         }
       }
     },
@@ -4456,7 +4599,7 @@
           "const": "04261"
         },
         "#text": {
-          "const": "Other wild pelagic fish, live, fresh or chilled"
+          "const": "Other wild pelagic fish (excluding tunas, skipjack, or stripe-bellied bonito), live, fresh or chilled"
         }
       }
     },
@@ -4469,7 +4612,7 @@
           "const": "04262"
         },
         "#text": {
-          "const": "Other farmed pelagic fish, live, fresh or chilled"
+          "const": "Other farmed pelagic fish (excluding tunas, skipjack, or stripe-bellied bonito), live, fresh or chilled"
         }
       }
     },
@@ -4612,7 +4755,7 @@
           "const": "0433"
         },
         "#text": {
-          "const": "Lobsters (<i>Homarus spp.</i>), live, fresh or chilled"
+          "const": "Lobsters (Homarus spp.), live, fresh or chilled"
         }
       }
     },
@@ -4625,7 +4768,7 @@
           "const": "04331"
         },
         "#text": {
-          "const": "Wild lobsters (<i>Homarus spp.</i>), live, fresh or chilled"
+          "const": "Wild lobsters (Homarus spp.), live, fresh or chilled"
         }
       }
     },
@@ -4638,7 +4781,7 @@
           "const": "04332"
         },
         "#text": {
-          "const": "Farmed lobsters (<i>Homarus spp.</i>), live, fresh or chilled"
+          "const": "Farmed lobsters (Homarus spp.), live, fresh or chilled"
         }
       }
     },
@@ -4690,7 +4833,7 @@
           "const": "0435"
         },
         "#text": {
-          "const": "Cold-water shrimps and prawns (<i>Pandalus spp.</i>, <i>Crangon crangon</i>), live, fresh or chilled"
+          "const": "Cold-water shrimps and prawns (Pandalus spp., Crangon crangon), live, fresh or chilled"
         }
       }
     },
@@ -4703,7 +4846,7 @@
           "const": "04351"
         },
         "#text": {
-          "const": "Wild cold-water shrimps and prawns (<i>Pandalus spp.</i>, <i>Crangon crangon</i>), live, fresh or chilled"
+          "const": "Wild cold-water shrimps and prawns (Pandalus spp., Crangon crangon), live, fresh or chilled"
         }
       }
     },
@@ -4716,7 +4859,7 @@
           "const": "04352"
         },
         "#text": {
-          "const": "Farmed cold-water shrimps and prawns (<i>Pandalus spp.</i>, <i>Crangon crangon</i>), live, fresh or chilled"
+          "const": "Farmed cold-water shrimps and prawns (Pandalus spp., Crangon crangon), live, fresh or chilled"
         }
       }
     },
@@ -5480,10 +5623,23 @@
           "const": "4"
         },
         "@classId": {
-          "const": "11010"
+          "const": "11011"
         },
         "#text": {
-          "const": "Hard coal"
+          "const": "Anthracite"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "11012"
+        },
+        "#text": {
+          "const": "Bituminous Coal"
         }
       }
     },
@@ -5532,10 +5688,23 @@
           "const": "4"
         },
         "@classId": {
-          "const": "11030"
+          "const": "11031"
         },
         "#text": {
-          "const": "Brown coal"
+          "const": "Sub-bituminous coal"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "11032"
+        },
+        "#text": {
+          "const": "Lignite"
         }
       }
     },
@@ -5574,6 +5743,19 @@
           "const": "1105"
         },
         "#text": {
+          "const": "Peat, whether or not agglomerated"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "11051"
+        },
+        "#text": {
           "const": "Peat"
         }
       }
@@ -5584,10 +5766,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "11050"
+          "const": "11052"
         },
         "#text": {
-          "const": "Peat"
+          "const": "Peat briquettes"
         }
       }
     },
@@ -5640,6 +5822,32 @@
         },
         "#text": {
           "const": "Petroleum oils and oils obtained from bituminous minerals, crude"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "12011"
+        },
+        "#text": {
+          "const": "Crude oil"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "12012"
+        },
+        "#text": {
+          "const": "Petroleum oils and oils obtained from bituminous minerals"
         }
       }
     },
@@ -6563,6 +6771,45 @@
         },
         "#text": {
           "const": "Coal gas, water gas, producer gas and similar gases, other than petroleum gases and other gaseous hydrocarbons"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "17201"
+        },
+        "#text": {
+          "const": "Coke oven gas"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "17202"
+        },
+        "#text": {
+          "const": "Gas works gas (and other manufactured gases for distribution)"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "17203"
+        },
+        "#text": {
+          "const": "Recovered gases"
         }
       }
     },
@@ -7524,7 +7771,7 @@
           "const": "21216"
         },
         "#text": {
-          "const": "Other pelagic fish, frozen"
+          "const": "Other pelagic fish (excluding tunas, skipjack, or stripe-bellied bonito), frozen"
         }
       }
     },
@@ -9367,45 +9614,6 @@
           "const": "2"
         },
         "@classId": {
-          "const": "218"
-        },
-        "#text": {
-          "const": "Cotton linters"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "2180"
-        },
-        "#text": {
-          "const": "Cotton linters"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "21800"
-        },
-        "#text": {
-          "const": "Cotton linters"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "2"
-        },
-        "@classId": {
           "const": "219"
         },
         "#text": {
@@ -10982,7 +11190,7 @@
           "const": "23914"
         },
         "#text": {
-          "const": "Extracts, essences and concentrates of tea or mate and preparations with a basis thereof or with a basis of tea or mate"
+          "const": "Extracts, essences and concentrates of tea or maté, and preparations with a basis thereof or with a basis of tea or maté"
         }
       }
     },
@@ -11217,6 +11425,19 @@
         },
         "#text": {
           "const": "Other prepared dishes and meals"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "23998"
+        },
+        "#text": {
+          "const": "Meatless meat and meat substitutes"
         }
       }
     },
@@ -11538,6 +11759,97 @@
           "const": "3"
         },
         "@classId": {
+          "const": "2442"
+        },
+        "#text": {
+          "const": "Milk from non-animal origin"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "24421"
+        },
+        "#text": {
+          "const": "Coconut milk"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "24422"
+        },
+        "#text": {
+          "const": "Almond milk"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "24423"
+        },
+        "#text": {
+          "const": "Soy milk"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "24424"
+        },
+        "#text": {
+          "const": "Rice milk"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "24425"
+        },
+        "#text": {
+          "const": "Oat milk"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "24429"
+        },
+        "#text": {
+          "const": "Other non-animal milk"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
           "const": "2449"
         },
         "#text": {
@@ -11551,10 +11863,36 @@
           "const": "4"
         },
         "@classId": {
-          "const": "24490"
+          "const": "24491"
         },
         "#text": {
-          "const": "Other non-alcoholic caloric beverages"
+          "const": "Non-alcoholic wine"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "24492"
+        },
+        "#text": {
+          "const": "Non-alcoholic beer"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "24499"
+        },
+        "#text": {
+          "const": "Other non-alcoholic caloric beverages, n.e.c."
         }
       }
     },
@@ -11655,10 +11993,23 @@
           "const": "4"
         },
         "@classId": {
-          "const": "25090"
+          "const": "25091"
         },
         "#text": {
-          "const": "Other manufactured tobacco and manufactured tobacco substitutes; \"homogenized\" or \"reconstituted\" tobacco; tobacco extracts and essences"
+          "const": "Manufactured tobacco"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "25092"
+        },
+        "#text": {
+          "const": "Products containing tobacco"
         }
       }
     },
@@ -15155,7 +15506,7 @@
           "const": "3131"
         },
         "#text": {
-          "const": "Wood in the rough, weather or not stripped of bark or sapwood, or roughly squared treated with paint, stains, creosote or other preservatives"
+          "const": "Wood in the rough, whether or not stripped of bark or sapwood, or roughly squared treated with paint, stains, creosote or other preservatives"
         }
       }
     },
@@ -15168,7 +15519,7 @@
           "const": "31310"
         },
         "#text": {
-          "const": "Wood in the rough, weather or not stripped of bark or sapwood, or roughly squared treated with paint, stains, creosote or other preservatives"
+          "const": "Wood in the rough, whether or not stripped of bark or sapwood, or roughly squared treated with paint, stains, creosote or other preservatives"
         }
       }
     },
@@ -15259,7 +15610,7 @@
           "const": "31411"
         },
         "#text": {
-          "const": "Plywood consisting solely of sheets, of coniferous wood"
+          "const": "Plywood consisting solely of sheets, with both outer plies of coniferous wood"
         }
       }
     },
@@ -15272,7 +15623,20 @@
           "const": "31412"
         },
         "#text": {
-          "const": "Plywood consisting solely of sheets, of non-coniferous wood"
+          "const": "Plywood consisting solely of sheets, with at least one outer ply of tropical wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "31413"
+        },
+        "#text": {
+          "const": "Plywood consisting solely of sheets, with at least one outer ply of non-coniferous wood other than tropical"
         }
       }
     },
@@ -15298,7 +15662,7 @@
           "const": "31421"
         },
         "#text": {
-          "const": "Other plywood, veneered panels and similar laminated wood, of coniferous wood"
+          "const": "Veneered panels and similar laminated wood, with both outer plies of coniferous wood"
         }
       }
     },
@@ -15311,7 +15675,20 @@
           "const": "31422"
         },
         "#text": {
-          "const": "Other plywood, veneered panels and similar laminated wood, of non-coniferous wood"
+          "const": "Veneered panels and similar laminated wood, with at least one outer ply of tropical wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "31423"
+        },
+        "#text": {
+          "const": "Veneered panels and similar laminated wood, with at least one outer ply of non-coniferous wood other than tropical"
         }
       }
     },
@@ -15337,7 +15714,7 @@
           "const": "31431"
         },
         "#text": {
-          "const": "Particle board"
+          "const": "Particle board of wood"
         }
       }
     },
@@ -15360,10 +15737,23 @@
           "const": "4"
         },
         "@classId": {
+          "const": "31433"
+        },
+        "#text": {
+          "const": "Particle board of ligno-cellulosic material other than wood (flax, bagasse, bamboo)"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
           "const": "31439"
         },
         "#text": {
-          "const": "Other board of wood or other ligneous materials"
+          "const": "Other particle boards of wood (e.g. waferboard)"
         }
       }
     },
@@ -15493,7 +15883,20 @@
           "const": "31512"
         },
         "#text": {
-          "const": "Veneer sheets and sheets for plywood and other wood sawn lengthwise, sliced or peeled, of a thickness not exceeding 6 mm, of non-coniferous wood"
+          "const": "Veneer sheets and sheets for plywood and other wood sawn lengthwise, sliced or peeled, of a thickness not exceeding 6 mm, of tropical non-coniferous wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "31513"
+        },
+        "#text": {
+          "const": "Veneer sheets and sheets for plywood and other wood sawn lengthwise, sliced or peeled, of a thickness not exceeding 6 mm, of other non-coniferous wood"
         }
       }
     },
@@ -15542,10 +15945,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "3160"
+          "const": "3161"
         },
         "#text": {
-          "const": "Builders' joinery and carpentry of wood (including cellular wood panels, assembled parquet panels, shingles and shakes)"
+          "const": "Cellular board"
         }
       }
     },
@@ -15555,10 +15958,127 @@
           "const": "4"
         },
         "@classId": {
-          "const": "31600"
+          "const": "31610"
         },
         "#text": {
-          "const": "Builders' joinery and carpentry of wood (including cellular wood panels, assembled parquet panels, shingles and shakes)"
+          "const": "Cellular board"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "3162"
+        },
+        "#text": {
+          "const": "Builder's joinery and carpentry of wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "31621"
+        },
+        "#text": {
+          "const": "Windows, French-windows and their frames made out of wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "31622"
+        },
+        "#text": {
+          "const": "Doors and their frames and thresholds made out of wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "31623"
+        },
+        "#text": {
+          "const": "Shuttering for concrete constructional work made out of wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "31624"
+        },
+        "#text": {
+          "const": "Shingles and shakes made out of wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "31625"
+        },
+        "#text": {
+          "const": "Posts and beams, other than engineered structural timber products made out of wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "31626"
+        },
+        "#text": {
+          "const": "Assembled flooring panels made out of wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "31627"
+        },
+        "#text": {
+          "const": "Engineered structural timber products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "31629"
+        },
+        "#text": {
+          "const": "Other builder's joinery and carpentry of wood and bamboo"
         }
       }
     },
@@ -15594,10 +16114,49 @@
           "const": "4"
         },
         "@classId": {
-          "const": "31700"
+          "const": "31701"
         },
         "#text": {
-          "const": "Packing cases, boxes, crates, drums and similar packings, of wood; cable-drums of wood; pallets, box pallets and other load boards, of wood; casks, barrels, vats, tubs and other coopers' products and parts thereof, of wood (including staves)"
+          "const": "Packing cases, boxes, crates, drums and similar packings, of wood; cable-drums of wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "31702"
+        },
+        "#text": {
+          "const": "Pallets, box pallets and other load boards, of wood; pallet collars of wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "31703"
+        },
+        "#text": {
+          "const": "Casks, barrels, vats, tubs and other coopers' products and parts thereof, of wood, including staves"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "31709"
+        },
+        "#text": {
+          "const": "Other wooden wrapping and packaging material"
         }
       }
     },
@@ -15805,7 +16364,20 @@
           "const": "32113"
         },
         "#text": {
-          "const": "Mechanical wood pulp; semi-chemical wood pulp; pulps of fibrous cellulosic material other than wood"
+          "const": "Mechanical wood pulp; semi-chemical wood pulp"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "32114"
+        },
+        "#text": {
+          "const": "Pulps of fibres derived from recovered (waste and scrap) paper or paperboard or of other fibrous cellulosic material"
         }
       }
     },
@@ -15818,7 +16390,7 @@
           "const": "3212"
         },
         "#text": {
-          "const": "Newsprint, hand-made paper and other uncoated paper and paperboard of a kind used for graphic purposes, and punch card stock and punch tape paper"
+          "const": "Newsprint and other uncoated paper and paperboard of a kind used for writing, printing or other graphic purposes, and non perforated punch cards and punch tape paper"
         }
       }
     },
@@ -15854,10 +16426,49 @@
           "const": "4"
         },
         "@classId": {
+          "const": "32123"
+        },
+        "#text": {
+          "const": "Paper and paperboard of a kind used as a base for photo-sensitive, heat-sensitive or electro-sensitive paper or paperboard"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "32124"
+        },
+        "#text": {
+          "const": "Wallpaper base"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "32125"
+        },
+        "#text": {
+          "const": "Uncoated graphic paper and paperboard, mechanical"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
           "const": "32129"
         },
         "#text": {
-          "const": "Other uncoated paper and paperboard, of a kind used for writing, printing or other graphic purposes, and punch card stock and punch tape paper"
+          "const": "Other uncoated graphic paper and paperboard, wood free"
         }
       }
     },
@@ -16000,7 +16611,7 @@
           "const": "32142"
         },
         "#text": {
-          "const": "Paper and paperboard, creped, crinkled, embossed or perforated n.e.c."
+          "const": "Paper and paperboard, creped, crinkled, embossed or perforated"
         }
       }
     },
@@ -16130,7 +16741,7 @@
           "const": "32193"
         },
         "#text": {
-          "const": "Toilet paper, handkerchiefs, towels, serviettes, napkins for babies, tampons, and similar household, sanitary or hospital articles, and articles of apparel, of paper pulp, paper, cellulose wadding or webs of cellulose fibres"
+          "const": "Toilet paper; handkerchiefs, cleansing or facial tissues and towels; tablecloths and serviettes, articles of apparel and clothing accessories, of paper pulp, paper, cellulose wadding or webs of cellulose fibres"
         }
       }
     },
@@ -16517,23 +17128,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "32511"
+          "const": "32510"
         },
         "#text": {
-          "const": "Maps and hydrographic or similar charts (including wall maps, topographical plans and maps for globes), printed, other than in book-form"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "32512"
-        },
-        "#text": {
-          "const": "Globes"
+          "const": "Maps and hydrographic or similar charts of all kinds, including atlases, wall maps, topographical plans and globes, printed other than book form"
         }
       }
     },
@@ -16650,7 +17248,7 @@
           "const": "326"
         },
         "#text": {
-          "const": "Stamps, cheque forms, banknotes, stock certificates, brochures and leaflets, advertising material and other printed matter"
+          "const": "Stamps, cheque forms, banknotes, stock certificates, advertising material and other printed matter"
         }
       }
     },
@@ -16868,10 +17466,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "3310"
+          "const": "3311"
         },
         "#text": {
-          "const": "Coke and semi-coke of coal, of lignite or of peat; retort carbon"
+          "const": "Coke and semi-coke of coal, or of lignite; retort carbon"
         }
       }
     },
@@ -16881,10 +17479,36 @@
           "const": "4"
         },
         "@classId": {
-          "const": "33100"
+          "const": "33110"
         },
         "#text": {
-          "const": "Coke and semi-coke of coal, of lignite or of peat; retort carbon"
+          "const": "Coke and semi-coke of coal, or of lignite; retort carbon"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "3312"
+        },
+        "#text": {
+          "const": "Coke and semi-coke of peat"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "33120"
+        },
+        "#text": {
+          "const": "Coke and semi-coke of peat"
         }
       }
     },
@@ -16907,10 +17531,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "3320"
+          "const": "3321"
         },
         "#text": {
-          "const": "Tar distilled from coal, from lignite or from peat, and other mineral tars"
+          "const": "Tar distilled from coal, from lignite, and other mineral tars"
         }
       }
     },
@@ -16920,10 +17544,36 @@
           "const": "4"
         },
         "@classId": {
-          "const": "33200"
+          "const": "33210"
         },
         "#text": {
-          "const": "Tar distilled from coal, from lignite or from peat, and other mineral tars"
+          "const": "Tar distilled from coal, from lignite, and other mineral tars"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "3322"
+        },
+        "#text": {
+          "const": "Tar distilled from peat"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "33220"
+        },
+        "#text": {
+          "const": "Tar distilled from peat"
         }
       }
     },
@@ -18639,7 +19289,7 @@
           "const": "34644"
         },
         "#text": {
-          "const": "Fertilizers containing two nutrients: nitrogen and phosphorus"
+          "const": "Fertilizers containing two nutrients: nitrogen and phosphorus; other than diammonium phosphate and monoammonium phosphate'"
         }
       }
     },
@@ -18666,6 +19316,19 @@
         },
         "#text": {
           "const": "Potassium nitrate"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "34647"
+        },
+        "#text": {
+          "const": "Fertilizers containing two nutrients: nitrogen and potassium; other than potassium nitrate"
         }
       }
     },
@@ -19351,10 +20014,49 @@
           "const": "4"
         },
         "@classId": {
-          "const": "35270"
+          "const": "35271"
         },
         "#text": {
-          "const": "Other pharmaceutical products"
+          "const": "Glands or other organs, their extracts and secretions, for organo-therapeutic uses"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "35272"
+        },
+        "#text": {
+          "const": "Human blood, animal blood, antisera and other blood fractions and immunological products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "35273"
+        },
+        "#text": {
+          "const": "Vaccines, toxins, cultures of micro-organisms (excluding yeasts) and similar products; cell cultures"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "35279"
+        },
+        "#text": {
+          "const": "Wadding, gauze, bandages and similar articles"
         }
       }
     },
@@ -22081,10 +22783,23 @@
           "const": "4"
         },
         "@classId": {
-          "const": "38140"
+          "const": "38141"
         },
         "#text": {
-          "const": "Other furniture n.e.c."
+          "const": "Other furniture n.e.c., made of wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "38149"
+        },
+        "#text": {
+          "const": "Other furniture n.e.c., not made of wood"
         }
       }
     },
@@ -22133,10 +22848,49 @@
           "const": "4"
         },
         "@classId": {
-          "const": "38160"
+          "const": "38161"
         },
         "#text": {
-          "const": "Parts of furniture"
+          "const": "Parts of furniture made from wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "38169"
+        },
+        "#text": {
+          "const": "Parts of furniture not made from wood"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "3817"
+        },
+        "#text": {
+          "const": "Wooden furniture of a kind used in the bedroom"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "38170"
+        },
+        "#text": {
+          "const": "Wooden furniture of a kind used in the bedroom"
         }
       }
     },
@@ -23849,10 +24603,49 @@
           "const": "4"
         },
         "@classId": {
-          "const": "39240"
+          "const": "39241"
         },
         "#text": {
-          "const": "Waste and scrap of paper or paperboard"
+          "const": "Recovered (waste and scrap) paper or paperboard, of unbleached kraft paper or paperboard or corrugated paper or paperboard"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "39242"
+        },
+        "#text": {
+          "const": "Recovered (waste and scrap) paper or paperboard, of other paper or paperboard made mainly of bleached chemical pulp, not coloured in the mass"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "39243"
+        },
+        "#text": {
+          "const": "Recovered (waste and scrap) paper or paperboard, made mainly of mechanical pulp (newspapers, journals and similar)"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "39249"
+        },
+        "#text": {
+          "const": "Other recovered (waste and scrap) paper or paperboard, including unsorted waste and scrap"
         }
       }
     },
@@ -23969,7 +24762,7 @@
           "const": "39282"
         },
         "#text": {
-          "const": "Agglomerated wood waste and scrap in forms other than pellets"
+          "const": "Agglomerated wood waste and scrap in forms other than pellets, including wood briquettes"
         }
       }
     },
@@ -26088,7 +26881,7 @@
           "const": "41601"
         },
         "#text": {
-          "const": "Tungsten, molybdenum, tantalum, magnesium, cobalt, cadmium, titanium, zirconium, beryllium, gallium, hafnium, indium, niobium, rhenium and thallium, germanium and vanadium, unwrought, and powders thereof, except powders of magnesium; waste and scrap of gallium, hafnium, indium, niobium, rhenium, germanium and vanadium; cobalt mattes and other intermediate products of cobalt metallurgy"
+          "const": "Tungsten, molybdenum, tantalum, magnesium, cobalt, cadmium, titanium, zirconium, beryllium, gallium, hafnium, indium, niobium, rhenium and thallium, germanium and vanadium, unwrought, and powders thereof, except powders of magnesium; cobalt mattes and other intermediate products of cobalt metallurgy"
         }
       }
     },
@@ -26124,10 +26917,23 @@
           "const": "4"
         },
         "@classId": {
-          "const": "41604"
+          "const": "41605"
         },
         "#text": {
           "const": "Cermets and articles thereof"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "41609"
+        },
+        "#text": {
+          "const": "Waste and scrap of tungsten, molybdenum, tantalum, magnesium, cobalt, titanium, zirconium, antinomy, beryllium, chromium, thallium, cadmium"
         }
       }
     },
@@ -27723,7 +28529,20 @@
           "const": "4"
         },
         "@classId": {
-          "const": "43560"
+          "const": "43561"
+        },
+        "#text": {
+          "const": "Industrial robots"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "43562"
         },
         "#text": {
           "const": "Other lifting, handling, loading or unloading machinery"
@@ -29962,7 +30781,20 @@
           "const": "44826"
         },
         "#text": {
-          "const": "Water heaters, instantaneous or storage, non-electric"
+          "const": "Solar water heaters"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "44827"
+        },
+        "#text": {
+          "const": "Other non-electric water heaters"
         }
       }
     },
@@ -30151,10 +30983,49 @@
     {
       "properties": {
         "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "4492"
+        },
+        "#text": {
+          "const": "Machines for additive manufacturing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
           "const": "4"
         },
         "@classId": {
-          "const": "44919"
+          "const": "44920"
+        },
+        "#text": {
+          "const": "Machines for additive manufacturing"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "4493"
+        },
+        "#text": {
+          "const": "Special-purpose machinery n.e.c. (including machinery for isotopic separation, machines for assembling electric lamps in glass envelopes, machines for manufacturing glassware and rope making machines)"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "44930"
         },
         "#text": {
           "const": "Special-purpose machinery n.e.c. (including machinery for isotopic separation, machines for assembling electric lamps in glass envelopes, machines for manufacturing glassware and rope making machines)"
@@ -30167,7 +31038,7 @@
           "const": "3"
         },
         "@classId": {
-          "const": "4492"
+          "const": "4494"
         },
         "#text": {
           "const": "Parts n.e.c. for special-purpose machinery"
@@ -30180,7 +31051,7 @@
           "const": "4"
         },
         "@classId": {
-          "const": "44921"
+          "const": "44941"
         },
         "#text": {
           "const": "Parts for the goods of subclass 44913"
@@ -30193,7 +31064,7 @@
           "const": "4"
         },
         "@classId": {
-          "const": "44922"
+          "const": "44942"
         },
         "#text": {
           "const": "Parts for the goods of subclasses 44914, 44917 and 45150"
@@ -30206,7 +31077,7 @@
           "const": "4"
         },
         "@classId": {
-          "const": "44923"
+          "const": "44943"
         },
         "#text": {
           "const": "Parts for the goods of subclass 44918"
@@ -30219,7 +31090,7 @@
           "const": "4"
         },
         "@classId": {
-          "const": "44929"
+          "const": "44949"
         },
         "#text": {
           "const": "Parts for the goods of subclass 44915; other parts n.e.c. of special-purpose machinery"
@@ -30820,7 +31691,7 @@
           "const": "46111"
         },
         "#text": {
-          "const": "Motors of an output not exceeding 37.5 W; other DC motors; DC generators"
+          "const": "Motors of an output not exceeding 37.5 W; other DC motors; DC generators other than photovoltaic generators"
         }
       }
     },
@@ -30833,7 +31704,7 @@
           "const": "46112"
         },
         "#text": {
-          "const": "Universal AC/DC motors of an output exceeding 37.5 W; other AC motors; AC generators (alternators)"
+          "const": "Universal AC/DC motors of an output exceeding 37.5 W; other AC motors; AC generators (alternators) other than photovoltaic generators"
         }
       }
     },
@@ -30844,6 +31715,19 @@
         },
         "@classId": {
           "const": "46113"
+        },
+        "#text": {
+          "const": "Photovoltaic AC/DC generators"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "46114"
         },
         "#text": {
           "const": "Electric generating sets and rotary converters"
@@ -31379,7 +32263,20 @@
           "const": "46532"
         },
         "#text": {
-          "const": "Lighting sets of a kind used for Christmas trees"
+          "const": "Lighting sets used for Christmas trees, not solely for LED light sources"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "46533"
+        },
+        "#text": {
+          "const": "Luminaires and lighting fittings, designed for use solely with light-emitting diode (LED) light sources"
         }
       }
     },
@@ -31392,7 +32289,7 @@
           "const": "46539"
         },
         "#text": {
-          "const": "Other electric lamps and lighting fittings (including lamps and lighting fittings of a kind used for lighting public open spaces or thorough-fares)"
+          "const": "Other electric lamps and lighting fittings (including lamps and lighting fittings of a kind used for lighting public open spaces or thorough-fares), not solely for LED light sources"
         }
       }
     },
@@ -32250,7 +33147,7 @@
           "const": "475"
         },
         "#text": {
-          "const": "Disks, tapes, solid-state non-volatile storage devices and other media, not recorded"
+          "const": "Discs, tapes, solid-state non-volatile storage devices and other media, not recorded"
         }
       }
     },
@@ -32367,7 +33264,7 @@
           "const": "476"
         },
         "#text": {
-          "const": "Audio, video and other disks, tapes and other physical media, recorded"
+          "const": "Audio and video discs, tapes and other physical media, recorded"
         }
       }
     },
@@ -32380,7 +33277,7 @@
           "const": "4761"
         },
         "#text": {
-          "const": "Musical audio disks, tapes or other physical media"
+          "const": "Musical audio discs, tapes or other physical media"
         }
       }
     },
@@ -32393,7 +33290,7 @@
           "const": "47610"
         },
         "#text": {
-          "const": "Musical audio disks, tapes or other physical media"
+          "const": "Musical audio discs, tapes or other physical media"
         }
       }
     },
@@ -32406,7 +33303,7 @@
           "const": "4762"
         },
         "#text": {
-          "const": "Films and other video content on disks, tape or other physical media"
+          "const": "Films and other video content on discs, tape or other physical media"
         }
       }
     },
@@ -32419,7 +33316,7 @@
           "const": "47620"
         },
         "#text": {
-          "const": "Films and other video content on disks, tape or other physical media"
+          "const": "Films and other video content on discs, tape or other physical media"
         }
       }
     },
@@ -32432,7 +33329,7 @@
           "const": "4769"
         },
         "#text": {
-          "const": "Other recorded disks, tapes or other physical media"
+          "const": "Other recorded discs, tapes or other physical media"
         }
       }
     },
@@ -32445,7 +33342,7 @@
           "const": "47691"
         },
         "#text": {
-          "const": "Audio books on disk, tape or other physical media"
+          "const": "Audio books on disc, tape or other physical media"
         }
       }
     },
@@ -32458,7 +33355,7 @@
           "const": "47692"
         },
         "#text": {
-          "const": "Text-based disks, tapes or other physical media"
+          "const": "Text-based discs, tapes or other physical media"
         }
       }
     },
@@ -32471,7 +33368,7 @@
           "const": "47699"
         },
         "#text": {
-          "const": "Other non-musical audio disks and tapes"
+          "const": "Other non-musical audio discs and tapes"
         }
       }
     },
@@ -32653,7 +33550,7 @@
           "const": "4792"
         },
         "#text": {
-          "const": "\"Smart cards\""
+          "const": "Smart cards"
         }
       }
     },
@@ -32666,7 +33563,7 @@
           "const": "47920"
         },
         "#text": {
-          "const": "\"Smart cards\""
+          "const": "Smart cards"
         }
       }
     },
@@ -34538,7 +35435,7 @@
           "const": "49621"
         },
         "#text": {
-          "const": "Helicopters"
+          "const": "Helicopters, except unmanned aircraft"
         }
       }
     },
@@ -34551,7 +35448,7 @@
           "const": "49622"
         },
         "#text": {
-          "const": "Aeroplanes and other powered aircraft of an unladen weight not exceeding 2000 kg"
+          "const": "Aeroplanes and other powered aircraft, , except unmanned aircraft, of an unladen weight not exceeding 2000 kg"
         }
       }
     },
@@ -34564,7 +35461,20 @@
           "const": "49623"
         },
         "#text": {
-          "const": "Aeroplanes and other powered aircraft of an unladen weight exceeding 2000 kg"
+          "const": "Aeroplanes and other powered aircraft, , except unmanned aircraft, of an unladen weight exceeding 2000 kg"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "49624"
+        },
+        "#text": {
+          "const": "Unmanned aircraft"
         }
       }
     },
@@ -36394,10 +37304,36 @@
           "const": "4"
         },
         "@classId": {
-          "const": "54650"
+          "const": "54651"
         },
         "#text": {
-          "const": "Insulation services"
+          "const": "Sound or vibration insulation services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "54652"
+        },
+        "#text": {
+          "const": "Thermal insulation services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "54659"
+        },
+        "#text": {
+          "const": "Other insulation services, n.e.c."
         }
       }
     },
@@ -36683,7 +37619,7 @@
           "const": "61"
         },
         "#text": {
-          "const": "Wholesale trade services"
+          "const": "Wholesale trade services, not on a fee or contract basis"
         }
       }
     },
@@ -36693,10 +37629,10 @@
           "const": "2"
         },
         "@classId": {
-          "const": "611"
+          "const": "610"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis"
+          "const": "Wholesale trade services, not on a fee or contract basis"
         }
       }
     },
@@ -36706,10 +37642,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "6111"
+          "const": "6101"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of raw agricultural products and live animals"
+          "const": "Wholesale trade services, not on a fee or contract basis, of raw agricultural products and live animals"
         }
       }
     },
@@ -36719,10 +37655,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61111"
+          "const": "61011"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of grains and oilseeds and oleaginous fruits, seeds and animal feed"
+          "const": "Wholesale trade services, not on a fee or contract basis, of grains and oilseeds and oleaginous fruits, seeds and animal feed"
         }
       }
     },
@@ -36732,10 +37668,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61112"
+          "const": "61012"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of flowers and plants"
+          "const": "Wholesale trade services, not on a fee or contract basis, of flowers and plants"
         }
       }
     },
@@ -36745,10 +37681,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61113"
+          "const": "61013"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of unmanufactured tobacco"
+          "const": "Wholesale trade services, not on a fee or contract basis, of unmanufactured tobacco"
         }
       }
     },
@@ -36758,10 +37694,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61114"
+          "const": "61014"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of live animals, including pet animals"
+          "const": "Wholesale trade services, not on a fee or contract basis, of live animals, including pet animals"
         }
       }
     },
@@ -36771,10 +37707,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61115"
+          "const": "61015"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of hides, skins and leather"
+          "const": "Wholesale trade services, not on a fee or contract basis, of hides, skins and leather"
         }
       }
     },
@@ -36784,140 +37720,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61119"
+          "const": "61019"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of agricultural raw materials n.e.c."
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6112"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of food, beverages and tobacco"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61121"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of fruits and vegetables"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61122"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of dairy products, eggs and edible oils and fats"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61123"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of meat, poultry and game"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61124"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of fish and other seafood"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61125"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of sugar confectionery and bakery products"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61126"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of beverages"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61127"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of coffee, tea and spices"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61128"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of tobacco products"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61129"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of food products n.e.c."
+          "const": "Wholesale trade services, not on a fee or contract basis, of agricultural raw materials n.e.c."
         }
       }
     },
@@ -36927,10 +37733,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "6113"
+          "const": "6102"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of textiles, clothing and footwear"
+          "const": "Wholesale trade services, not on a fee or contract basis, of food, beverages and tobacco"
         }
       }
     },
@@ -36940,10 +37746,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61131"
+          "const": "61021"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of yarn and fabrics"
+          "const": "Wholesale trade services, not on a fee or contract basis, of fruits and vegetables"
         }
       }
     },
@@ -36953,10 +37759,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61132"
+          "const": "61022"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of household linens, curtains, net curtains and diverse household articles of textile materials"
+          "const": "Wholesale trade services, not on a fee or contract basis, of dairy products, eggs and edible oils and fats"
         }
       }
     },
@@ -36966,10 +37772,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61133"
+          "const": "61023"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of articles of clothing, articles of fur and clothing accessories"
+          "const": "Wholesale trade services, not on a fee or contract basis, of meat, poultry and game"
         }
       }
     },
@@ -36979,23 +37785,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61134"
+          "const": "61024"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of footwear"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6114"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of household appliances, articles and equipment"
+          "const": "Wholesale trade services, not on a fee or contract basis, of fish and other seafood"
         }
       }
     },
@@ -37005,10 +37798,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61141"
+          "const": "61025"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of household furniture"
+          "const": "Wholesale trade services, not on a fee or contract basis, of sugar confectionery and bakery products"
         }
       }
     },
@@ -37018,10 +37811,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61142"
+          "const": "61026"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of radio and television equipment and recorded audio and video disks and tapes"
+          "const": "Wholesale trade services, not on a fee or contract basis, of beverages"
         }
       }
     },
@@ -37031,10 +37824,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61143"
+          "const": "61027"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of articles for lighting"
+          "const": "Wholesale trade services, not on a fee or contract basis, of coffee, tea and spices"
         }
       }
     },
@@ -37044,10 +37837,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61144"
+          "const": "61028"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of household appliances"
+          "const": "Wholesale trade services, not on a fee or contract basis, of tobacco products"
         }
       }
     },
@@ -37057,23 +37850,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61145"
+          "const": "61029"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of miscellaneous household utensils, cutlery, crockery, glassware, china and pottery"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61146"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of wickerwork, cork goods, cooper's ware and other wooden ware"
+          "const": "Wholesale trade services, not on a fee or contract basis, of food products n.e.c."
         }
       }
     },
@@ -37083,10 +37863,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "6115"
+          "const": "6103"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of miscellaneous consumer goods"
+          "const": "Wholesale trade services, not on a fee or contract basis, of textiles, clothing and footwear"
         }
       }
     },
@@ -37096,10 +37876,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61151"
+          "const": "61031"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of books, newspapers, magazines and stationery"
+          "const": "Wholesale trade services, not on a fee or contract basis, of yarn and fabrics"
         }
       }
     },
@@ -37109,10 +37889,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61152"
+          "const": "61032"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of photographic, optical and precision equipment"
+          "const": "Wholesale trade services, not on a fee or contract basis, of household linens, curtains, net curtains and diverse household articles of textile materials"
         }
       }
     },
@@ -37122,10 +37902,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61153"
+          "const": "61033"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of games and toys"
+          "const": "Wholesale trade services, not on a fee or contract basis, of articles of clothing, articles of fur and clothing accessories"
         }
       }
     },
@@ -37135,49 +37915,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61154"
+          "const": "61034"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of watches, clocks and jewellery"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61155"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of sports goods (incl. bicycles)"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61156"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of leather goods and travel accessories"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61159"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of miscellaneous consumer goods n.e.c."
+          "const": "Wholesale trade services, not on a fee or contract basis, of footwear"
         }
       }
     },
@@ -37187,10 +37928,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "6116"
+          "const": "6104"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of construction materials and hardware"
+          "const": "Wholesale trade services, not on a fee or contract basis, of household appliances, articles and equipment"
         }
       }
     },
@@ -37200,10 +37941,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61161"
+          "const": "61041"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of construction materials and flat glass"
+          "const": "Wholesale trade services, not on a fee or contract basis, of household furniture"
         }
       }
     },
@@ -37213,10 +37954,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61162"
+          "const": "61042"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of fittings, fixtures and ceramic sanitary fixtures"
+          "const": "Wholesale trade services, not on a fee or contract basis, of radio and television equipment and recorded audio and video disks and tapes"
         }
       }
     },
@@ -37226,10 +37967,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61163"
+          "const": "61043"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of wallpaper and floor coverings"
+          "const": "Wholesale trade services, not on a fee or contract basis, of articles for lighting"
         }
       }
     },
@@ -37239,10 +37980,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61164"
+          "const": "61044"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of paints, varnishes and lacquers"
+          "const": "Wholesale trade services, not on a fee or contract basis, of household appliances"
         }
       }
     },
@@ -37252,23 +37993,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61165"
+          "const": "61045"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of hardware and hand tools"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6117"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of chemical and pharmaceutical products"
+          "const": "Wholesale trade services, not on a fee or contract basis, of miscellaneous household utensils, cutlery, crockery, glassware, china and pottery"
         }
       }
     },
@@ -37278,75 +38006,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61171"
+          "const": "61046"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of basic industrial chemicals and synthetic resins"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61172"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of fertilizers and agrochemical products"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61173"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of pharmaceutical products"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61174"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of medical and orthopaedic goods"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61175"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of perfumery articles, cosmetic articles and toilet soaps"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61176"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of cleaning materials"
+          "const": "Wholesale trade services, not on a fee or contract basis, of wickerwork, cork goods, cooper's ware and other wooden ware"
         }
       }
     },
@@ -37356,10 +38019,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "6118"
+          "const": "6105"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of machinery, equipment and supplies"
+          "const": "Wholesale trade services, not on a fee or contract basis, of miscellaneous consumer goods"
         }
       }
     },
@@ -37369,10 +38032,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61181"
+          "const": "61051"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of motor vehicles, motorcycles, snowmobiles and related parts and accessories"
+          "const": "Wholesale trade services, not on a fee or contract basis, of books, newspapers, magazines and stationery"
         }
       }
     },
@@ -37382,10 +38045,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61182"
+          "const": "61052"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of other transport equipment, except bicycles"
+          "const": "Wholesale trade services, not on a fee or contract basis, of photographic, optical and precision equipment"
         }
       }
     },
@@ -37395,10 +38058,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61183"
+          "const": "61053"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of office machinery and equipment including office furniture"
+          "const": "Wholesale trade services, not on a fee or contract basis, of games and toys"
         }
       }
     },
@@ -37408,10 +38071,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61184"
+          "const": "61054"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of computers and packaged software"
+          "const": "Wholesale trade services, not on a fee or contract basis, of watches, clocks and jewellery"
         }
       }
     },
@@ -37421,10 +38084,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61185"
+          "const": "61055"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of electronic and telecommunications equipment and parts"
+          "const": "Wholesale trade services, not on a fee or contract basis, of sports goods (incl. bicycles)"
         }
       }
     },
@@ -37434,10 +38097,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61186"
+          "const": "61056"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of agricultural lawn and garden machinery and equipment, including tractors"
+          "const": "Wholesale trade services, not on a fee or contract basis, of leather goods and travel accessories"
         }
       }
     },
@@ -37447,36 +38110,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61187"
+          "const": "61059"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of mining, construction and civil engineering machinery and equipment"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61188"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of other industry-specific machinery and equipment and related operating supplies"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61189"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of other machinery and equipment n.e.c."
+          "const": "Wholesale trade services, not on a fee or contract basis, of miscellaneous consumer goods n.e.c."
         }
       }
     },
@@ -37486,10 +38123,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "6119"
+          "const": "6106"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of other products"
+          "const": "Wholesale trade services, not on a fee or contract basis, of construction materials and hardware"
         }
       }
     },
@@ -37499,10 +38136,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61191"
+          "const": "61061"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of solid, liquid and gaseous fuels and related products"
+          "const": "Wholesale trade services, not on a fee or contract basis, of construction materials and flat glass"
         }
       }
     },
@@ -37512,10 +38149,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61192"
+          "const": "61062"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of metal ores and metal in primary forms"
+          "const": "Wholesale trade services, not on a fee or contract basis, of fittings, fixtures and ceramic sanitary fixtures"
         }
       }
     },
@@ -37525,10 +38162,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61193"
+          "const": "61063"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of wood in the rough"
+          "const": "Wholesale trade services, not on a fee or contract basis, of wallpaper and floor coverings"
         }
       }
     },
@@ -37538,10 +38175,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61194"
+          "const": "61064"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of paper and paperboard"
+          "const": "Wholesale trade services, not on a fee or contract basis, of paints, varnishes and lacquers"
         }
       }
     },
@@ -37551,62 +38188,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61195"
+          "const": "61065"
         },
         "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of waste and scrap and materials for recycling"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61197"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of electricity"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61198"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of water"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61199"
-        },
-        "#text": {
-          "const": "Wholesale trade services, except on a fee or contract basis, of non-metallic minerals and other products n.e.c."
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "2"
-        },
-        "@classId": {
-          "const": "612"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis"
+          "const": "Wholesale trade services, not on a fee or contract basis, of hardware and hand tools"
         }
       }
     },
@@ -37616,10 +38201,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "6121"
+          "const": "6107"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of raw agricultural products and live animals"
+          "const": "Wholesale trade services, not on a fee or contract basis, of chemical and pharmaceutical products"
         }
       }
     },
@@ -37629,10 +38214,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61211"
+          "const": "61071"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of grains and oilseeds and oleaginous fruits, seeds and animal feed"
+          "const": "Wholesale trade services, not on a fee or contract basis, of basic industrial chemicals and synthetic resins"
         }
       }
     },
@@ -37642,10 +38227,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61212"
+          "const": "61072"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of flowers and plants"
+          "const": "Wholesale trade services, not on a fee or contract basis, of fertilizers and agrochemical products"
         }
       }
     },
@@ -37655,10 +38240,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61213"
+          "const": "61073"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of unmanufactured tobacco"
+          "const": "Wholesale trade services, not on a fee or contract basis, of pharmaceutical products"
         }
       }
     },
@@ -37668,10 +38253,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61214"
+          "const": "61074"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of live animals, including pet animals"
+          "const": "Wholesale trade services, not on a fee or contract basis, of medical and orthopaedic goods"
         }
       }
     },
@@ -37681,10 +38266,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61215"
+          "const": "61075"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of hides, skins and leather"
+          "const": "Wholesale trade services, not on a fee or contract basis, of perfumery articles, cosmetic articles and toilet soaps"
         }
       }
     },
@@ -37694,10 +38279,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61219"
+          "const": "61076"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of agricultural raw materials n.e.c."
+          "const": "Wholesale trade services, not on a fee or contract basis, of cleaning materials"
         }
       }
     },
@@ -37707,10 +38292,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "6122"
+          "const": "6108"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of food, beverages and tobacco"
+          "const": "Wholesale trade services, not on a fee or contract basis, of machinery, equipment and supplies"
         }
       }
     },
@@ -37720,10 +38305,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61221"
+          "const": "61081"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of fruits and vegetables"
+          "const": "Wholesale trade services, not on a fee or contract basis, of motor vehicles, motorcycles, snowmobiles and related parts and accessories"
         }
       }
     },
@@ -37733,10 +38318,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61222"
+          "const": "61082"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of dairy products, eggs and edible oils and fats"
+          "const": "Wholesale trade services, not on a fee or contract basis, of other transport equipment, except bicycles"
         }
       }
     },
@@ -37746,10 +38331,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61223"
+          "const": "61083"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of meat, poultry and game"
+          "const": "Wholesale trade services, not on a fee or contract basis, of office machinery and equipment including office furniture"
         }
       }
     },
@@ -37759,10 +38344,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61224"
+          "const": "61084"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of fish and other seafood"
+          "const": "Wholesale trade services, not on a fee or contract basis, of computers and packaged software"
         }
       }
     },
@@ -37772,10 +38357,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61225"
+          "const": "61085"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of sugar confectionery and bakery products"
+          "const": "Wholesale trade services, not on a fee or contract basis, of electronic and telecommunications equipment and parts"
         }
       }
     },
@@ -37785,10 +38370,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61226"
+          "const": "61086"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of beverages"
+          "const": "Wholesale trade services, not on a fee or contract basis, of agricultural lawn and garden machinery and equipment, including tractors"
         }
       }
     },
@@ -37798,10 +38383,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61227"
+          "const": "61087"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of coffee, tea and spices"
+          "const": "Wholesale trade services, not on a fee or contract basis, of mining, construction and civil engineering machinery and equipment"
         }
       }
     },
@@ -37811,10 +38396,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61228"
+          "const": "61088"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of tobacco products"
+          "const": "Wholesale trade services, not on a fee or contract basis, of other industry-specific machinery and equipment and related operating supplies"
         }
       }
     },
@@ -37824,10 +38409,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61229"
+          "const": "61089"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of food products n.e.c."
+          "const": "Wholesale trade services, not on a fee or contract basis, of other machinery and equipment n.e.c."
         }
       }
     },
@@ -37837,10 +38422,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "6123"
+          "const": "6109"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of textiles, clothing and footwear"
+          "const": "Wholesale trade services, not on a fee or contract basis, of other products"
         }
       }
     },
@@ -37850,10 +38435,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61231"
+          "const": "61091"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of yarn and fabrics"
+          "const": "Wholesale trade services, not on a fee or contract basis, of solid, liquid and gaseous fuels and related products"
         }
       }
     },
@@ -37863,10 +38448,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61232"
+          "const": "61092"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of household linens, curtains, net curtains and diverse household articles"
+          "const": "Wholesale trade services, not on a fee or contract basis, of metal ores and metal in primary forms"
         }
       }
     },
@@ -37876,10 +38461,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61233"
+          "const": "61093"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of articles of clothing, articles of fur and clothing accessories"
+          "const": "Wholesale trade services, not on a fee or contract basis, of wood in the rough"
         }
       }
     },
@@ -37889,23 +38474,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61234"
+          "const": "61094"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of footwear"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6124"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of household appliances, articles and equipment"
+          "const": "Wholesale trade services, not on a fee or contract basis, of paper and paperboard"
         }
       }
     },
@@ -37915,10 +38487,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61241"
+          "const": "61095"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of household furniture"
+          "const": "Wholesale trade services, not on a fee or contract basis, of waste and scrap and materials for recycling"
         }
       }
     },
@@ -37928,10 +38500,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61242"
+          "const": "61097"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of radio and television equipment and recorded audio and video disks and tapes"
+          "const": "Wholesale trade services, not on a fee or contract basis, of electricity"
         }
       }
     },
@@ -37941,10 +38513,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61243"
+          "const": "61098"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of articles for lighting"
+          "const": "Wholesale trade services, not on a fee or contract basis, of water"
         }
       }
     },
@@ -37954,556 +38526,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "61244"
+          "const": "61099"
         },
         "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of household appliances"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61245"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of miscellaneous household utensils, cutlery, crockery, glassware, china and pottery"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61246"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of wickerwork, cork goods, cooper's ware and other wooden ware"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6125"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of miscellaneous consumer goods"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61251"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of books, newspapers, magazines and stationery"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61252"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of photographic, optical and precision equipment"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61253"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of games and toys"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61254"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of watches, clocks and jewellery"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61255"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of sports goods (incl. bicycles)"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61256"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of leather goods and travel accessories"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61259"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of miscellaneous consumer goods n.e.c."
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6126"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of construction materials and hardware"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61261"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of construction materials and flat glass"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61262"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of fittings, fixtures and ceramic sanitary fixtures"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61263"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of wallpaper and floor coverings"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61264"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of paints, varnishes and lacquers"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61265"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of hardware and hand tools"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6127"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of chemical and pharmaceutical products"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61271"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of basic industrial chemicals and synthetic resins"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61272"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of fertilizers and agrochemical products"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61273"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of pharmaceutical products"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61274"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of medical and orthopaedic goods"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61275"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of perfumery articles, cosmetic articles and toilet soaps"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61276"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of cleaning materials"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6128"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of machinery, equipment and supplies"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61281"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of motor vehicles, motorcycles, snowmobiles and related parts and accessories"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61282"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of other transport equipment, except bicycles"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61283"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of office machinery and equipment including office furniture"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61284"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of computers and packaged software"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61285"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of electronic and telecommunications equipment and parts"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61286"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of agricultural, lawn and garden machinery and equipment, including tractors"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61287"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of mining, construction and civil engineering machinery and equipment"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61288"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of other industry-specific machinery and equipment and related operating supplies"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61289"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of other machinery and equipment n.e.c."
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6129"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of other products"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61291"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of solid, liquid and gaseous fuels and related products"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61292"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of metal ores and metal in primary forms"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61293"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of wood in the rough"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61294"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of paper and paperboard"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61295"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of waste and scrap and materials for recycling"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61297"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of electricity"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61298"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of water"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "61299"
-        },
-        "#text": {
-          "const": "Wholesale trade services on a fee or contract basis, of non-metallic minerals and other products n.e.c."
+          "const": "Wholesale trade services, not on a fee or contract basis, of non-metallic minerals and other products n.e.c."
         }
       }
     },
@@ -41825,851 +41851,6 @@
     {
       "properties": {
         "@level": {
-          "const": "2"
-        },
-        "@classId": {
-          "const": "625"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6251"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of raw agricultural products and live animals"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62511"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of grains and oilseeds and oleaginous fruits, seeds and animal feed"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62512"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of flowers and plants"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62514"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of live animals, including pet animals"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62515"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of hides, skins and leather"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62519"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of agricultural raw materials n.e.c."
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6252"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of food, beverages and tobacco"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62521"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of fruits and vegetables"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62522"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of dairy products, eggs and edible oils and fats"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62523"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of meat, poultry and game"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62524"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of fish and other seafood"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62525"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of sugar confectionery and bakery products"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62526"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of beverages"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62527"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of coffee, tea and spices"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62528"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of tobacco products"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62529"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of food products n.e.c."
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6253"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of textiles, clothing and footwear"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62531"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of yarn and fabrics"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62532"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of household linens, curtains, net curtains and diverse household articles of textile materials"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62533"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of articles of clothing, articles of fur and clothing accessories"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62534"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of footwear"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6254"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of household appliances, articles and equipment"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62541"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of household furniture"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62542"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of radio and television equipment and recorded audio and video disks and tapes"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62543"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of articles for lighting"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62544"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of household appliances"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62545"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of miscellaneous household utensils, cutlery, crockery, glassware, china and pottery"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62546"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of wickerwork, cork goods, cooper's ware and other wooden ware"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6255"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of miscellaneous consumer goods"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62551"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of books, newspapers, magazines and stationery"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62552"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of photographic, optical and precision equipment"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62553"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of games and toys"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62554"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of watches, clocks and jewellery"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62555"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of sports goods (incl. bicycles)"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62556"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of leather goods and travel accessories"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62559"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of miscellaneous consumer goods n.e.c."
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6256"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of construction materials and hardware"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62561"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of construction materials and flat glass"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62562"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of fittings, fixtures, and ceramic sanitary fixtures"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62563"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of wallpaper and floor coverings"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62564"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of paints, varnishes and lacquers"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62565"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of hardware and hand tools"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6257"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of chemical and pharmaceutical products"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62572"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of fertilizers and agrochemical products"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62573"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of pharmaceutical products"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62574"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of medical and orthopaedic goods"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62575"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of perfumery articles, cosmetic articles and toilet soaps"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62576"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of cleaning materials"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6258"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of machinery, equipment and supplies"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62581"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of motor vehicles, motorcycles, snowmobiles and related parts and accessories"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62582"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of other transport equipment, except bicycles"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62583"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of office machinery and equipment including office furniture"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62584"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of computers and packaged software"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62585"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of electronic and telecommunications equipment and parts"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62586"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of agricultural, lawn and garden machinery and equipment, including tractors"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62587"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of mining, construction and civil engineering machinery and equipment"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62588"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of other industry-specific machinery and equipment and related operating supplies"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62589"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of other machinery and equipment n.e.c."
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "6259"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of other products"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62591"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of solid, liquid and gaseous fuels and related products"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62594"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of paper and paperboard"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62597"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of electricity"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62598"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of water"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "62599"
-        },
-        "#text": {
-          "const": "Retail trade services on a fee or contract basis, of non-metallic minerals and other products n.e.c."
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
           "const": "1"
         },
         "@classId": {
@@ -42715,7 +41896,7 @@
           "const": "63111"
         },
         "#text": {
-          "const": "Room or unit accommodation services for visitors, with daily housekeeping services"
+          "const": "Room or unit accommodation services for visitors, with on-site reactive services"
         }
       }
     },
@@ -42728,7 +41909,7 @@
           "const": "63112"
         },
         "#text": {
-          "const": "Room or unit accommodation services for visitors, without daily housekeeping services"
+          "const": "Room or unit accommodation services for visitors, without on-site reactive services"
         }
       }
     },
@@ -44925,7 +44106,7 @@
           "const": "6791"
         },
         "#text": {
-          "const": "Freight transport agency services and other freight transport services"
+          "const": "Other freight transport services"
         }
       }
     },
@@ -44938,7 +44119,7 @@
           "const": "67910"
         },
         "#text": {
-          "const": "Freight transport agency services and other freight transport services"
+          "const": "Other freight transport services"
         }
       }
     },
@@ -45117,10 +44298,23 @@
           "const": "4"
         },
         "@classId": {
-          "const": "68030"
+          "const": "68031"
         },
         "#text": {
-          "const": "Local delivery services"
+          "const": "Local delivery services for food"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "68039"
+        },
+        "#text": {
+          "const": "Local delivery services for items other than food"
         }
       }
     },
@@ -45341,7 +44535,7 @@
           "const": "711"
         },
         "#text": {
-          "const": "Financial services, except investment banking, insurance services and pension services"
+          "const": "Financial services, except insurance services and pension services"
         }
       }
     },
@@ -45393,7 +44587,7 @@
           "const": "71121"
         },
         "#text": {
-          "const": "Deposit services to corporate and institutional depositors"
+          "const": "Deposit services to business and institutional depositors"
         }
       }
     },
@@ -45419,7 +44613,7 @@
           "const": "7113"
         },
         "#text": {
-          "const": "Credit-granting services"
+          "const": "Non-business credit-granting services"
         }
       }
     },
@@ -45481,19 +44675,6 @@
           "const": "4"
         },
         "@classId": {
-          "const": "71135"
-        },
-        "#text": {
-          "const": "Non-mortgage loan services for business purposes"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
           "const": "71139"
         },
         "#text": {
@@ -45507,7 +44688,33 @@
           "const": "3"
         },
         "@classId": {
-          "const": "7114"
+          "const": "7115"
+        },
+        "#text": {
+          "const": "Business credit granting services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "71151"
+        },
+        "#text": {
+          "const": "Loan services for business purposes"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "71152"
         },
         "#text": {
           "const": "Financial leasing services"
@@ -45520,10 +44727,49 @@
           "const": "4"
         },
         "@classId": {
-          "const": "71140"
+          "const": "71153"
         },
         "#text": {
-          "const": "Financial leasing services"
+          "const": "International trade financing activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "71154"
+        },
+        "#text": {
+          "const": "Securitisation activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "71155"
+        },
+        "#text": {
+          "const": "Factoring services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "71159"
+        },
+        "#text": {
+          "const": "Other business credit services"
         }
       }
     },
@@ -45536,7 +44782,7 @@
           "const": "7119"
         },
         "#text": {
-          "const": "Other financial services, except investment banking, insurance services and pension services"
+          "const": "Other financial services, except insurance services and pension services"
         }
       }
     },
@@ -45549,46 +44795,7 @@
           "const": "71190"
         },
         "#text": {
-          "const": "Other financial services, except investment banking, insurance services and pension services"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "2"
-        },
-        "@classId": {
-          "const": "712"
-        },
-        "#text": {
-          "const": "Investment banking services"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "7120"
-        },
-        "#text": {
-          "const": "Investment banking services"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "71200"
-        },
-        "#text": {
-          "const": "Investment banking services"
+          "const": "Other financial services, except insurance services and pension services"
         }
       }
     },
@@ -46264,7 +45471,20 @@
           "const": "71593"
         },
         "#text": {
-          "const": "Financial transactions processing and clearinghouse services"
+          "const": "Financial transactions processing and clearinghouse services, excluding mobile money operators and digital wallets"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "71594"
+        },
+        "#text": {
+          "const": "Services of mobile money operators and digital wallets utilizing financial information"
         }
       }
     },
@@ -46681,84 +45901,6 @@
         },
         "#text": {
           "const": "Time-share property management services on a fee or contract basis"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "7222"
-        },
-        "#text": {
-          "const": "Building sales on a fee or contract basis"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "72221"
-        },
-        "#text": {
-          "const": "Residential building sales on a fee or contract basis, except of time-share ownership properties"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "72222"
-        },
-        "#text": {
-          "const": "Non-residential building sales on a fee or contract basis"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "72223"
-        },
-        "#text": {
-          "const": "Sale of time-share properties on a fee or contract basis"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "7223"
-        },
-        "#text": {
-          "const": "Land sales on a fee or contract basis"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "72230"
-        },
-        "#text": {
-          "const": "Land sales on a fee or contract basis"
         }
       }
     },
@@ -47447,7 +46589,7 @@
           "const": "811"
         },
         "#text": {
-          "const": "Research and experimental development services in natural sciences and engineering"
+          "const": "Research and development services in natural sciences, engineering and technology"
         }
       }
     },
@@ -47460,7 +46602,7 @@
           "const": "8111"
         },
         "#text": {
-          "const": "Basic research services in natural sciences and engineering"
+          "const": "Research and development services in natural sciences"
         }
       }
     },
@@ -47473,7 +46615,7 @@
           "const": "81111"
         },
         "#text": {
-          "const": "Basic research services in physical sciences"
+          "const": "Research and development services in biological sciences"
         }
       }
     },
@@ -47486,7 +46628,7 @@
           "const": "81112"
         },
         "#text": {
-          "const": "Basic research services in chemistry and biology"
+          "const": "Research and development services in chemical sciences"
         }
       }
     },
@@ -47499,7 +46641,7 @@
           "const": "81113"
         },
         "#text": {
-          "const": "Basic research services in biotechnology"
+          "const": "Research and development services in computer and information sciences"
         }
       }
     },
@@ -47512,7 +46654,7 @@
           "const": "81114"
         },
         "#text": {
-          "const": "Basic research services in engineering and technology"
+          "const": "Research and development services in earth and environmental sciences"
         }
       }
     },
@@ -47525,7 +46667,7 @@
           "const": "81115"
         },
         "#text": {
-          "const": "Basic research services in medical sciences and pharmacy"
+          "const": "Reesarch and development services in mathematics"
         }
       }
     },
@@ -47538,7 +46680,7 @@
           "const": "81116"
         },
         "#text": {
-          "const": "Basic research services in agricultural sciences"
+          "const": "Research and development services in physical sciences"
         }
       }
     },
@@ -47551,7 +46693,7 @@
           "const": "81119"
         },
         "#text": {
-          "const": "Basic research services in other natural sciences"
+          "const": "Research and development services in other natural sciences"
         }
       }
     },
@@ -47564,7 +46706,7 @@
           "const": "8112"
         },
         "#text": {
-          "const": "Applied research services in natural sciences and engineering"
+          "const": "Research and development services in engineering"
         }
       }
     },
@@ -47577,7 +46719,7 @@
           "const": "81121"
         },
         "#text": {
-          "const": "Applied research services in physical sciences"
+          "const": "Research and development services in civil engineering"
         }
       }
     },
@@ -47590,7 +46732,7 @@
           "const": "81122"
         },
         "#text": {
-          "const": "Applied research services in chemistry and biology"
+          "const": "Research and development services in chemical engineering"
         }
       }
     },
@@ -47603,7 +46745,7 @@
           "const": "81123"
         },
         "#text": {
-          "const": "Applied research services in biotechnology"
+          "const": "Research and development services in electrical engineering"
         }
       }
     },
@@ -47616,7 +46758,7 @@
           "const": "81124"
         },
         "#text": {
-          "const": "Applied research services in engineering and technology"
+          "const": "Research and development services in electronic engineering"
         }
       }
     },
@@ -47629,7 +46771,7 @@
           "const": "81125"
         },
         "#text": {
-          "const": "Applied research services in medical sciences and pharmacy"
+          "const": "Research and development services in environmental engineering"
         }
       }
     },
@@ -47642,7 +46784,33 @@
           "const": "81126"
         },
         "#text": {
-          "const": "Applied research services in agricultural sciences"
+          "const": "Research and development services in materials engineering"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "81127"
+        },
+        "#text": {
+          "const": "Research and development services in mechanical engineering"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "81128"
+        },
+        "#text": {
+          "const": "Research and development services in medical engineering"
         }
       }
     },
@@ -47655,7 +46823,7 @@
           "const": "81129"
         },
         "#text": {
-          "const": "Applied research services in other natural sciences"
+          "const": "Research and development services in other engineering"
         }
       }
     },
@@ -47668,7 +46836,7 @@
           "const": "8113"
         },
         "#text": {
-          "const": "Experimental development services in natural sciences and engineering"
+          "const": "Research and development services in technology"
         }
       }
     },
@@ -47681,7 +46849,7 @@
           "const": "81131"
         },
         "#text": {
-          "const": "Experimental development services in physical sciences"
+          "const": "Research and development services in environmental biotechnology"
         }
       }
     },
@@ -47694,7 +46862,7 @@
           "const": "81132"
         },
         "#text": {
-          "const": "Experimental development services in chemistry and biology"
+          "const": "Research and development services in industrial biotechnology"
         }
       }
     },
@@ -47707,46 +46875,7 @@
           "const": "81133"
         },
         "#text": {
-          "const": "Experimental development services in biotechnology"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "81134"
-        },
-        "#text": {
-          "const": "Experimental development services in engineering and technology"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "81135"
-        },
-        "#text": {
-          "const": "Experimental development services in medical sciences and pharmacy"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "81136"
-        },
-        "#text": {
-          "const": "Experimental development services in agricultural sciences"
+          "const": "Research and development services in nanotechnology"
         }
       }
     },
@@ -47759,7 +46888,163 @@
           "const": "81139"
         },
         "#text": {
-          "const": "Experimental development services in other natural sciences"
+          "const": "Research and development services in other technology"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8114"
+        },
+        "#text": {
+          "const": "Research and development services in medical and health sciences"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "81141"
+        },
+        "#text": {
+          "const": "Research and development services in basic medicine"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "81142"
+        },
+        "#text": {
+          "const": "Research and development services in clinical medicine"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "81143"
+        },
+        "#text": {
+          "const": "Research and development services in health sciences"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "81144"
+        },
+        "#text": {
+          "const": "Research and development services in medical biotechnology"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "81149"
+        },
+        "#text": {
+          "const": "Research and development services in other medical and health sciences"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8115"
+        },
+        "#text": {
+          "const": "Research and development services in agricultural and veterinary sciences"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "81151"
+        },
+        "#text": {
+          "const": "Research and develoment services in agricultural biotechnology"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "81152"
+        },
+        "#text": {
+          "const": "Research and development services in agricultural, fisheries and forestry sciences"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "81153"
+        },
+        "#text": {
+          "const": "Research and development services in animal and dairy sciences"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "81154"
+        },
+        "#text": {
+          "const": "Research and development services in veterinary sciences"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "81159"
+        },
+        "#text": {
+          "const": "Research and development services in other agricultural and veterinary sciences"
         }
       }
     },
@@ -47772,7 +47057,7 @@
           "const": "812"
         },
         "#text": {
-          "const": "Research and experimental development services in social sciences and humanities"
+          "const": "Research and development services in social sciences and humanities"
         }
       }
     },
@@ -47785,7 +47070,7 @@
           "const": "8121"
         },
         "#text": {
-          "const": "Basic research services in social sciences and humanities"
+          "const": "Research and development services in social sciences"
         }
       }
     },
@@ -47798,7 +47083,7 @@
           "const": "81211"
         },
         "#text": {
-          "const": "Basic research services in psychology"
+          "const": "Research and development services in economics and business"
         }
       }
     },
@@ -47811,7 +47096,7 @@
           "const": "81212"
         },
         "#text": {
-          "const": "Basic research services in economics"
+          "const": "Research and development services in education"
         }
       }
     },
@@ -47824,7 +47109,7 @@
           "const": "81213"
         },
         "#text": {
-          "const": "Basic research services in law"
+          "const": "Research and development services in law"
         }
       }
     },
@@ -47837,7 +47122,59 @@
           "const": "81214"
         },
         "#text": {
-          "const": "Basic research services in languages and literature"
+          "const": "Research and development services in media and communications"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "81215"
+        },
+        "#text": {
+          "const": "Research and development services in political sciences"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "81216"
+        },
+        "#text": {
+          "const": "Research and development services psychology and cognitive sciences"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "81217"
+        },
+        "#text": {
+          "const": "Research and development services in social and economic geography"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "81218"
+        },
+        "#text": {
+          "const": "Research and development services in sociology"
         }
       }
     },
@@ -47850,7 +47187,7 @@
           "const": "81219"
         },
         "#text": {
-          "const": "Basic research services in other social sciences and humanities"
+          "const": "Research and development services in other social sciences"
         }
       }
     },
@@ -47863,7 +47200,7 @@
           "const": "8122"
         },
         "#text": {
-          "const": "Applied research services in social sciences and humanities"
+          "const": "Research and development services in humanities and the arts"
         }
       }
     },
@@ -47876,7 +47213,7 @@
           "const": "81221"
         },
         "#text": {
-          "const": "Applied research services in psychology"
+          "const": "Research and development services in arts (arts, history of arts, performing arts, music)"
         }
       }
     },
@@ -47889,7 +47226,7 @@
           "const": "81222"
         },
         "#text": {
-          "const": "Applied research services in economics"
+          "const": "Research and development services in history and archaeology"
         }
       }
     },
@@ -47902,7 +47239,7 @@
           "const": "81223"
         },
         "#text": {
-          "const": "Applied research services in law"
+          "const": "Research and development services in languages and literature"
         }
       }
     },
@@ -47915,7 +47252,7 @@
           "const": "81224"
         },
         "#text": {
-          "const": "Applied research services in language and literature"
+          "const": "Research and development services in philosophy, ethics and religion"
         }
       }
     },
@@ -47928,85 +47265,7 @@
           "const": "81229"
         },
         "#text": {
-          "const": "Applied research services on other social sciences and humanities"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "8123"
-        },
-        "#text": {
-          "const": "Experimental development services in social sciences and humanities"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "81231"
-        },
-        "#text": {
-          "const": "Experimental development services in psychology"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "81232"
-        },
-        "#text": {
-          "const": "Experimental development services in economics"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "81233"
-        },
-        "#text": {
-          "const": "Experimental development services in law"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "81234"
-        },
-        "#text": {
-          "const": "Experimental development services in languages and literature"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "81239"
-        },
-        "#text": {
-          "const": "Experimental development services in other social sciences and humanities"
+          "const": "Research and development services in other humanities"
         }
       }
     },
@@ -48019,7 +47278,7 @@
           "const": "813"
         },
         "#text": {
-          "const": "Interdisciplinary research and experimental development services"
+          "const": "Interdisciplinary research and development services"
         }
       }
     },
@@ -48032,7 +47291,7 @@
           "const": "8130"
         },
         "#text": {
-          "const": "Interdisciplinary research and experimental development services"
+          "const": "Interdisciplinary research and development services"
         }
       }
     },
@@ -48042,36 +47301,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "81301"
+          "const": "81300"
         },
         "#text": {
-          "const": "Interdisciplinary basic research services"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "81302"
-        },
-        "#text": {
-          "const": "Interdisciplinary applied research services"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "81303"
-        },
-        "#text": {
-          "const": "Interdisciplinary experimental development services"
+          "const": "Interdisciplinary research and development services"
         }
       }
     },
@@ -49657,7 +48890,7 @@
           "const": "837"
         },
         "#text": {
-          "const": "Market research and public opinion polling services"
+          "const": "Data and data compilation"
         }
       }
     },
@@ -49667,10 +48900,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8370"
+          "const": "8371"
         },
         "#text": {
-          "const": "Market research and public opinion polling services"
+          "const": "Data"
         }
       }
     },
@@ -49680,10 +48913,36 @@
           "const": "4"
         },
         "@classId": {
-          "const": "83700"
+          "const": "83710"
         },
         "#text": {
-          "const": "Market research and public opinion polling services"
+          "const": "Data"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8372"
+        },
+        "#text": {
+          "const": "Compilation services of data"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "83720"
+        },
+        "#text": {
+          "const": "Compilation services of data"
         }
       }
     },
@@ -49956,7 +49215,7 @@
           "const": "8394"
         },
         "#text": {
-          "const": "Original compilations of facts/information"
+          "const": "Market research and public opinion polling services"
         }
       }
     },
@@ -49969,7 +49228,7 @@
           "const": "83940"
         },
         "#text": {
-          "const": "Original compilations of facts/information"
+          "const": "Market research and public opinion polling services"
         }
       }
     },
@@ -50034,7 +49293,7 @@
           "const": "8399"
         },
         "#text": {
-          "const": "Other professional, technical and business services, n.e.c."
+          "const": "Other professional, technical and business services, n.e.c., (excluding the compilation of data)"
         }
       }
     },
@@ -50047,7 +49306,7 @@
           "const": "83990"
         },
         "#text": {
-          "const": "Other professional, technical and business services, n.e.c."
+          "const": "Other professional, technical and business services, n.e.c., (excluding the compilation of data)"
         }
       }
     },
@@ -51386,7 +50645,7 @@
           "const": "855"
         },
         "#text": {
-          "const": "Travel arrangement, tour operator and related services"
+          "const": "Intermediation services on goods"
         }
       }
     },
@@ -51399,7 +50658,7 @@
           "const": "8551"
         },
         "#text": {
-          "const": "Reservation services for transportation"
+          "const": "Intermediation services for wholesale trade"
         }
       }
     },
@@ -51412,7 +50671,7 @@
           "const": "85511"
         },
         "#text": {
-          "const": "Reservation services for air transportation"
+          "const": "Intermediation services for wholesale trade of raw agricultural products and live animals"
         }
       }
     },
@@ -51425,7 +50684,7 @@
           "const": "85512"
         },
         "#text": {
-          "const": "Reservation services for rail transportation"
+          "const": "Intermediation services for wholesale trade of food, beverages and tobacco"
         }
       }
     },
@@ -51438,7 +50697,7 @@
           "const": "85513"
         },
         "#text": {
-          "const": "Reservation services for bus transportation"
+          "const": "Intermediation services for wholesale trade of textiles, clothing and footwear"
         }
       }
     },
@@ -51451,7 +50710,59 @@
           "const": "85514"
         },
         "#text": {
-          "const": "Reservation services for vehicle rental"
+          "const": "Intermediation services for wholesale trade of household appliances, articles and equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85515"
+        },
+        "#text": {
+          "const": "Intermediation services for wholesale trade of miscellaneous consumer goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85516"
+        },
+        "#text": {
+          "const": "Intermediation services for wholesale trade of construction materials and hardware"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85517"
+        },
+        "#text": {
+          "const": "Intermediation services for wholesale trade of chemical and pharmaceutical products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85518"
+        },
+        "#text": {
+          "const": "Intermediation services for wholesale trade of machinery, equipment and supplies"
         }
       }
     },
@@ -51464,7 +50775,7 @@
           "const": "85519"
         },
         "#text": {
-          "const": "Other transportation arrangement and reservation services n.e.c."
+          "const": "Intermediation services for wholesale trade of other products"
         }
       }
     },
@@ -51477,7 +50788,7 @@
           "const": "8552"
         },
         "#text": {
-          "const": "Reservation services for accommodation, cruises and package tours"
+          "const": "Intermediation services for retail trade"
         }
       }
     },
@@ -51490,7 +50801,7 @@
           "const": "85521"
         },
         "#text": {
-          "const": "Reservation services for accommodation"
+          "const": "Intermediation services for retail trade of raw agricultural products and live animals"
         }
       }
     },
@@ -51503,7 +50814,7 @@
           "const": "85522"
         },
         "#text": {
-          "const": "Time-share exchange services"
+          "const": "Intermediation services for retail trade of food, beverages and tobacco"
         }
       }
     },
@@ -51516,7 +50827,7 @@
           "const": "85523"
         },
         "#text": {
-          "const": "Reservation services for cruises"
+          "const": "Intermediation services for retail trade of textiles, clothing and footwear"
         }
       }
     },
@@ -51529,7 +50840,85 @@
           "const": "85524"
         },
         "#text": {
-          "const": "Reservation services for package tours"
+          "const": "Intermediation services for retail trade of household appliances, articles and equipment"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85525"
+        },
+        "#text": {
+          "const": "Intermediation services for retail trade of miscellaneous consumer goods"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85526"
+        },
+        "#text": {
+          "const": "Intermediation services for retail trade of construction materials and hardware"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85527"
+        },
+        "#text": {
+          "const": "Intermediation services for retail trade of chemical and pharmaceutical products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85528"
+        },
+        "#text": {
+          "const": "Intermediation services for retail trade of machinery, equipment and supplies"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85529"
+        },
+        "#text": {
+          "const": "Intermediation services for retail trade of other products"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "856"
+        },
+        "#text": {
+          "const": "Intermediation services for accommodation, food and beverage, transport and electricity, gas and water distribution services"
         }
       }
     },
@@ -51539,10 +50928,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8553"
+          "const": "8561"
         },
         "#text": {
-          "const": "Other reservation services"
+          "const": "Intermediation service for passenger transportation"
         }
       }
     },
@@ -51552,23 +50941,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "85531"
+          "const": "85610"
         },
         "#text": {
-          "const": "Reservation services for convention centres, congress centres and exhibition halls"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "85539"
-        },
-        "#text": {
-          "const": "Reservation services for event tickets, entertainment and recreational services and other reservation services"
+          "const": "Intermediation service for passenger transportation"
         }
       }
     },
@@ -51578,10 +50954,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8554"
+          "const": "8562"
         },
         "#text": {
-          "const": "Tour operator services"
+          "const": "Intermediation service for accommodation"
         }
       }
     },
@@ -51591,10 +50967,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "85540"
+          "const": "85620"
         },
         "#text": {
-          "const": "Tour operator services"
+          "const": "Intermediation service for accommodation"
         }
       }
     },
@@ -51604,10 +50980,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8555"
+          "const": "8563"
         },
         "#text": {
-          "const": "Tourist guide services"
+          "const": "Intermediation services for freight transportation"
         }
       }
     },
@@ -51617,10 +50993,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "85550"
+          "const": "85630"
         },
         "#text": {
-          "const": "Tourist guide services"
+          "const": "Intermediation services for freight transportation"
         }
       }
     },
@@ -51630,10 +51006,10 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8556"
+          "const": "8564"
         },
         "#text": {
-          "const": "Tourism promotion and visitor information services"
+          "const": "Intermediation services for postal and courier activities"
         }
       }
     },
@@ -51643,10 +51019,23 @@
           "const": "4"
         },
         "@classId": {
-          "const": "85561"
+          "const": "85640"
         },
         "#text": {
-          "const": "Tourism promotion services"
+          "const": "Intermediation services for postal and courier activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8565"
+        },
+        "#text": {
+          "const": "Intermediation service for food and beverage services activities"
         }
       }
     },
@@ -51656,10 +51045,413 @@
           "const": "4"
         },
         "@classId": {
-          "const": "85562"
+          "const": "85650"
         },
         "#text": {
-          "const": "Visitor information services"
+          "const": "Intermediation service for food and beverage services activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8566"
+        },
+        "#text": {
+          "const": "Intermediation services for rental and leasing of other tangible goods and non-financial intangible assets"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85660"
+        },
+        "#text": {
+          "const": "Intermediation services for rental and leasing of other tangible goods and non-financial intangible assets"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8567"
+        },
+        "#text": {
+          "const": "Intermediation service for rental and leasing of cars, motorhomes and trailers"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85670"
+        },
+        "#text": {
+          "const": "Intermediation service for rental and leasing of cars, motorhomes and trailers"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8568"
+        },
+        "#text": {
+          "const": "Intermediation services to electricity, gas and water distribution"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85681"
+        },
+        "#text": {
+          "const": "Intermediation services for electricity transmission"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85682"
+        },
+        "#text": {
+          "const": "Intermediation services for electricity distribution"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85683"
+        },
+        "#text": {
+          "const": "Intermediation services for the distribution of gas through mains"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85684"
+        },
+        "#text": {
+          "const": "Intermediation services for the distribution of water through mains"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85685"
+        },
+        "#text": {
+          "const": "Intermediation services for the distribution of steam, hot water and air-conditioning supply through mains"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85686"
+        },
+        "#text": {
+          "const": "Intermediation services for the distribution of water, except through mains"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "857"
+        },
+        "#text": {
+          "const": "Intermediation for community, social and personal services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8571"
+        },
+        "#text": {
+          "const": "Intermediation service for courses and tutors"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85710"
+        },
+        "#text": {
+          "const": "Intermediation service for courses and tutors"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8572"
+        },
+        "#text": {
+          "const": "Intermediation service for medical, dental, and other human health services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85720"
+        },
+        "#text": {
+          "const": "Intermediation service for medical, dental, and other human health services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8573"
+        },
+        "#text": {
+          "const": "Intermediation service for residential care activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85730"
+        },
+        "#text": {
+          "const": "Intermediation service for residential care activities"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8579"
+        },
+        "#text": {
+          "const": "Other intermediation service for personal services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85790"
+        },
+        "#text": {
+          "const": "Other intermediation service for personal services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "2"
+        },
+        "@classId": {
+          "const": "858"
+        },
+        "#text": {
+          "const": "Other intermediation services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8581"
+        },
+        "#text": {
+          "const": "Intermediation services for specialized construction services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85810"
+        },
+        "#text": {
+          "const": "Intermediation services for specialized construction services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8582"
+        },
+        "#text": {
+          "const": "Intermediation services for telecommunication"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85820"
+        },
+        "#text": {
+          "const": "Intermediation services for telecommunication"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8583"
+        },
+        "#text": {
+          "const": "Intermediation service for real estate"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85830"
+        },
+        "#text": {
+          "const": "Intermediation service for real estate"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8585"
+        },
+        "#text": {
+          "const": "Intermediation service for repair and maintenance of computers, personal and household goods, and motor vehicles and motorcycles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85850"
+        },
+        "#text": {
+          "const": "Intermediation service for repair and maintenance of computers, personal and household goods, and motor vehicles and motorcycles"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8589"
+        },
+        "#text": {
+          "const": "Intermediation services for business support service activities n.e.c., except financial intermediation"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85890"
+        },
+        "#text": {
+          "const": "Intermediation services for business support service activities n.e.c., except financial intermediation"
         }
       }
     },
@@ -51685,6 +51477,19 @@
           "const": "8591"
         },
         "#text": {
+          "const": "Credit reporting and collection agency services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85911"
+        },
+        "#text": {
           "const": "Credit reporting services"
         }
       }
@@ -51695,10 +51500,10 @@
           "const": "4"
         },
         "@classId": {
-          "const": "85910"
+          "const": "85912"
         },
         "#text": {
-          "const": "Credit reporting services"
+          "const": "Collection agency services"
         }
       }
     },
@@ -51711,7 +51516,7 @@
           "const": "8592"
         },
         "#text": {
-          "const": "Collection agency services"
+          "const": "Telephone based support services"
         }
       }
     },
@@ -51721,33 +51526,7 @@
           "const": "4"
         },
         "@classId": {
-          "const": "85920"
-        },
-        "#text": {
-          "const": "Collection agency services"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "8593"
-        },
-        "#text": {
-          "const": "Telephone-based support services"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "85931"
+          "const": "85921"
         },
         "#text": {
           "const": "Telephone call centre services"
@@ -51760,7 +51539,7 @@
           "const": "4"
         },
         "@classId": {
-          "const": "85939"
+          "const": "85929"
         },
         "#text": {
           "const": "Other telephone-based support services"
@@ -51773,7 +51552,20 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8594"
+          "const": "8593"
+        },
+        "#text": {
+          "const": "Office administrative services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85931"
         },
         "#text": {
           "const": "Combined office administrative services"
@@ -51786,33 +51578,7 @@
           "const": "4"
         },
         "@classId": {
-          "const": "85940"
-        },
-        "#text": {
-          "const": "Combined office administrative services"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "8595"
-        },
-        "#text": {
-          "const": "Specialized office support services"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "85951"
+          "const": "85932"
         },
         "#text": {
           "const": "Duplicating services"
@@ -51825,20 +51591,7 @@
           "const": "4"
         },
         "@classId": {
-          "const": "85952"
-        },
-        "#text": {
-          "const": "Mailing list compilation services"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "85953"
+          "const": "85934"
         },
         "#text": {
           "const": "Mailing services"
@@ -51851,7 +51604,7 @@
           "const": "4"
         },
         "@classId": {
-          "const": "85954"
+          "const": "85939"
         },
         "#text": {
           "const": "Document preparation and other specialized office support services"
@@ -51864,7 +51617,7 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8596"
+          "const": "8594"
         },
         "#text": {
           "const": "Convention and trade show assistance and organization services"
@@ -51877,7 +51630,7 @@
           "const": "4"
         },
         "@classId": {
-          "const": "85961"
+          "const": "85941"
         },
         "#text": {
           "const": "Convention assistance and organization services"
@@ -51890,7 +51643,7 @@
           "const": "4"
         },
         "@classId": {
-          "const": "85962"
+          "const": "85942"
         },
         "#text": {
           "const": "Trade show assistance and organization services"
@@ -51903,7 +51656,7 @@
           "const": "3"
         },
         "@classId": {
-          "const": "8597"
+          "const": "8595"
         },
         "#text": {
           "const": "Landscape care and maintenance services"
@@ -51916,10 +51669,88 @@
           "const": "4"
         },
         "@classId": {
-          "const": "85970"
+          "const": "85950"
         },
         "#text": {
           "const": "Landscape care and maintenance services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8596"
+        },
+        "#text": {
+          "const": "Tourist operator and guide services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85961"
+        },
+        "#text": {
+          "const": "Tour operator services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85962"
+        },
+        "#text": {
+          "const": "Tourist guide services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "8597"
+        },
+        "#text": {
+          "const": "Tourism promotion and visitor information services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85971"
+        },
+        "#text": {
+          "const": "Tourism promotion services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "85972"
+        },
+        "#text": {
+          "const": "Visitor information services"
         }
       }
     },
@@ -52336,162 +52167,6 @@
         },
         "#text": {
           "const": "Other mining services on resources owned by others"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "2"
-        },
-        "@classId": {
-          "const": "863"
-        },
-        "#text": {
-          "const": "Support and operation services to electricity, gas and water distribution"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "8631"
-        },
-        "#text": {
-          "const": "Support services to electricity transmission and distribution"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "86311"
-        },
-        "#text": {
-          "const": "Electricity transmission services (on a fee or contract basis)"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "86312"
-        },
-        "#text": {
-          "const": "Electricity distribution services (on a fee or contract basis)"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "8632"
-        },
-        "#text": {
-          "const": "Gas distribution services through mains (on a fee or contract basis)"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "86320"
-        },
-        "#text": {
-          "const": "Gas distribution services through mains (on a fee or contract basis)"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "8633"
-        },
-        "#text": {
-          "const": "Water distribution services through mains (on a fee or contract basis)"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "86330"
-        },
-        "#text": {
-          "const": "Water distribution services through mains (on a fee or contract basis)"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "8634"
-        },
-        "#text": {
-          "const": "Distribution services of steam, hot water and air-conditioning supply through mains (on a fee or contract basis)"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "86340"
-        },
-        "#text": {
-          "const": "Distribution services of steam, hot water and air-conditioning supply through mains (on a fee or contract basis)"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "3"
-        },
-        "@classId": {
-          "const": "8635"
-        },
-        "#text": {
-          "const": "Water distribution services, except through mains (on a fee or contract basis)"
-        }
-      }
-    },
-    {
-      "properties": {
-        "@level": {
-          "const": "4"
-        },
-        "@classId": {
-          "const": "86350"
-        },
-        "#text": {
-          "const": "Water distribution services, except through mains (on a fee or contract basis)"
         }
       }
     },
@@ -55907,6 +55582,32 @@
           "const": "3"
         },
         "@classId": {
+          "const": "9114"
+        },
+        "#text": {
+          "const": "Public administrative services related to the provision on environmental services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "91140"
+        },
+        "#text": {
+          "const": "Public administrative services related to the provision on environmental services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
           "const": "9119"
         },
         "#text": {
@@ -56326,7 +56027,7 @@
           "const": "921"
         },
         "#text": {
-          "const": "Pre-primary education services"
+          "const": "Early childhood and pre-primary education services"
         }
       }
     },
@@ -56336,7 +56037,33 @@
           "const": "3"
         },
         "@classId": {
-          "const": "9210"
+          "const": "9211"
+        },
+        "#text": {
+          "const": "Early childhood development services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "92110"
+        },
+        "#text": {
+          "const": "Early childhood development services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9212"
         },
         "#text": {
           "const": "Pre-primary education services"
@@ -56349,7 +56076,7 @@
           "const": "4"
         },
         "@classId": {
-          "const": "92100"
+          "const": "92120"
         },
         "#text": {
           "const": "Pre-primary education services"
@@ -56599,7 +56326,7 @@
           "const": "9251"
         },
         "#text": {
-          "const": "First stage tertiary education services"
+          "const": "Short-cycle tertiary education services"
         }
       }
     },
@@ -56609,10 +56336,23 @@
           "const": "4"
         },
         "@classId": {
-          "const": "92510"
+          "const": "92511"
         },
         "#text": {
-          "const": "First stage tertiary education services"
+          "const": "Short-cycle tertiary general education services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "92512"
+        },
+        "#text": {
+          "const": "Short-cycle tertiary vocational education services"
         }
       }
     },
@@ -56625,7 +56365,7 @@
           "const": "9252"
         },
         "#text": {
-          "const": "Second stage tertiary education services"
+          "const": "Bachelors or equivalent education services"
         }
       }
     },
@@ -56638,7 +56378,85 @@
           "const": "92520"
         },
         "#text": {
-          "const": "Second stage tertiary education services"
+          "const": "Bachelors or equivalent education services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9253"
+        },
+        "#text": {
+          "const": "Masters or equivalent education services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "92530"
+        },
+        "#text": {
+          "const": "Masters or equivalent education services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9254"
+        },
+        "#text": {
+          "const": "Doctoral or equivalent education services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "92540"
+        },
+        "#text": {
+          "const": "Doctoral or equivalent education services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9259"
+        },
+        "#text": {
+          "const": "Other tertiary education services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "92590"
+        },
+        "#text": {
+          "const": "Other tertiary education services"
         }
       }
     },
@@ -57900,6 +57718,58 @@
         },
         "#text": {
           "const": "Building remediation services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9444"
+        },
+        "#text": {
+          "const": "Treatment of air pollution"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "94440"
+        },
+        "#text": {
+          "const": "Treatment of air pollution"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "3"
+        },
+        "@classId": {
+          "const": "9445"
+        },
+        "#text": {
+          "const": "Carbon capture and storage services"
+        }
+      }
+    },
+    {
+      "properties": {
+        "@level": {
+          "const": "4"
+        },
+        "@classId": {
+          "const": "94450"
+        },
+        "#text": {
+          "const": "Carbon capture and storage services"
         }
       }
     },
