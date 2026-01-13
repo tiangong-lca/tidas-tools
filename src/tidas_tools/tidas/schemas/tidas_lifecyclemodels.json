@@ -516,7 +516,6 @@
                                           }
                                         },
                                         "required": [
-                                          "@dominant",
                                           "@flowUUID",
                                           "downstreamProcess"
                                         ]
@@ -608,7 +607,6 @@
                                             }
                                           },
                                           "required": [
-                                            "@dominant",
                                             "@flowUUID",
                                             "downstreamProcess"
                                           ]
@@ -816,7 +814,6 @@
                                         }
                                       },
                                       "required": [
-                                        "@dominant",
                                         "@flowUUID",
                                         "downstreamProcess"
                                       ]
@@ -908,7 +905,6 @@
                                           }
                                         },
                                         "required": [
-                                          "@dominant",
                                           "@flowUUID",
                                           "downstreamProcess"
                                         ]
