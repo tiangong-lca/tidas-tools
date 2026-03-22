@@ -3,6 +3,7 @@ import importlib.resources as pkg_resources
 import json
 import logging
 import os
+import re
 import sys
 
 from jsonschema import Draft7Validator
@@ -11,6 +12,8 @@ from referencing.jsonschema import DRAFT7
 from .tidas_log import setup_logging
 
 import tidas_tools.tidas.schemas as schemas
+
+CHINESE_CHARACTER_RE = re.compile(r"[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]")
 
 
 def validate_elementary_flows_classification_hierarchy(class_items):
@@ -175,6 +178,45 @@ def validate_sources_classification_hierarchy(class_items):
         return {"valid": True}
 
 
+def validate_localized_text_language_constraints(node, path=""):
+    errors = []
+
+    if isinstance(node, dict):
+        language = node.get("@xml:lang")
+        text = node.get("#text")
+        location = path or "<root>"
+
+        if isinstance(language, str) and isinstance(text, str):
+            normalized_language = language.lower()
+            has_chinese = bool(CHINESE_CHARACTER_RE.search(text))
+
+            if normalized_language == "zh" or normalized_language.startswith("zh-"):
+                if not has_chinese:
+                    errors.append(
+                        f"Localized text error at {location}: @xml:lang '{language}' must include at least one Chinese character"
+                    )
+            elif normalized_language == "en" or normalized_language.startswith("en-"):
+                if has_chinese:
+                    errors.append(
+                        f"Localized text error at {location}: @xml:lang '{language}' must not contain Chinese characters"
+                    )
+
+        for key, value in node.items():
+            child_path = f"{path}/{key}" if path else key
+            errors.extend(
+                validate_localized_text_language_constraints(value, child_path)
+            )
+
+    elif isinstance(node, list):
+        for index, value in enumerate(node):
+            child_path = f"{path}/{index}" if path else str(index)
+            errors.extend(
+                validate_localized_text_language_constraints(value, child_path)
+            )
+
+    return errors
+
+
 def retrieve_schema(uri):
     """Custom retrieval function for schema references"""
     # Handle both local and remote references
@@ -232,6 +274,10 @@ def category_validate(json_file_path: str, category: str):
                             f"Unexpected validation error: {type(e).__name__}: {e}"
                         )
                         errors.append(f"Validation error: {e}")
+
+                    errors.extend(
+                        validate_localized_text_language_constraints(json_item)
+                    )
 
                     if category == "flows":
                         if (

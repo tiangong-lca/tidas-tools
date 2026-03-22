@@ -10,44 +10,106 @@
       "type": "string",
       "description": "Free text with an unlimited length."
     },
+    "LocalizedTextItem": {
+      "description": "Language-tagged text with optional script checks for selected languages.",
+      "type": "object",
+      "properties": {
+        "@xml:lang": {
+          "type": "string"
+        },
+        "#text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "@xml:lang",
+        "#text"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "@xml:lang": {
+                "pattern": "^[zZ][hH](?:-|$)"
+              }
+            },
+            "required": [
+              "@xml:lang"
+            ]
+          },
+          "then": {
+            "properties": {
+              "#text": {
+                "pattern": "[\\u3400-\\u4DBF\\u4E00-\\u9FFF\\uF900-\\uFAFF]"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "@xml:lang": {
+                "pattern": "^[eE][nN](?:-|$)"
+              }
+            },
+            "required": [
+              "@xml:lang"
+            ]
+          },
+          "then": {
+            "properties": {
+              "#text": {
+                "not": {
+                  "pattern": "[\\u3400-\\u4DBF\\u4E00-\\u9FFF\\uF900-\\uFAFF]"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "LocalizedText500Item": {
+      "description": "Language-tagged text with a maximum length of 500 characters.",
+      "allOf": [
+        {
+          "$ref": "#/$defs/LocalizedTextItem"
+        },
+        {
+          "properties": {
+            "#text": {
+              "maxLength": 500
+            }
+          }
+        }
+      ]
+    },
+    "LocalizedText1000Item": {
+      "description": "Language-tagged text with a maximum length of 1000 characters.",
+      "allOf": [
+        {
+          "$ref": "#/$defs/LocalizedTextItem"
+        },
+        {
+          "properties": {
+            "#text": {
+              "maxLength": 1000
+            }
+          }
+        }
+      ]
+    },
     "StringMultiLang": {
       "description": "Multi-language string with a maximum length of 500 characters",
       "anyOf": [
         {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "@xml:lang": {
-                "type": "string"
-              },
-              "#text": {
-                "type": "string",
-                "maxLength": 500
-              }
-            },
-            "required": [
-              "@xml:lang",
-              "#text"
-            ]
+            "$ref": "#/$defs/LocalizedText500Item"
           },
           "uniqueItems": true
         },
         {
-          "type": "object",
-          "properties": {
-            "@xml:lang": {
-              "type": "string"
-            },
-            "#text": {
-              "type": "string",
-              "maxLength": 500
-            }
-          },
-          "required": [
-            "@xml:lang",
-            "#text"
-          ]
+          "$ref": "#/$defs/LocalizedText500Item"
         }
       ]
     },
@@ -105,38 +167,12 @@
         {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "@xml:lang": {
-                "type": "string"
-              },
-              "#text": {
-                "type": "string",
-                "maxLength": 1000
-              }
-            },
-            "required": [
-              "@xml:lang",
-              "#text"
-            ]
+            "$ref": "#/$defs/LocalizedText1000Item"
           },
           "uniqueItems": true
         },
         {
-          "type": "object",
-          "properties": {
-            "@xml:lang": {
-              "type": "string"
-            },
-            "#text": {
-              "type": "string",
-              "maxLength": 1000
-            }
-          },
-          "required": [
-            "@xml:lang",
-            "#text"
-          ]
+          "$ref": "#/$defs/LocalizedText1000Item"
         }
       ]
     },
@@ -146,36 +182,12 @@
         {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "@xml:lang": {
-                "type": "string"
-              },
-              "#text": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "@xml:lang",
-              "#text"
-            ]
+            "$ref": "#/$defs/LocalizedTextItem"
           },
           "uniqueItems": true
         },
         {
-          "type": "object",
-          "properties": {
-            "@xml:lang": {
-              "type": "string"
-            },
-            "#text": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "@xml:lang",
-            "#text"
-          ]
+          "$ref": "#/$defs/LocalizedTextItem"
         }
       ]
     },
