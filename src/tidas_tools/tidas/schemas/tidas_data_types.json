@@ -180,7 +180,7 @@
       ]
     },
     "GlobalReferenceType": {
-      "description": "Represents a reference to another dataset or file. Either refObjectId and version, or uri, or both have to be specified.",
+      "description": "Represents a reference to another dataset or file. In TIDAS, references must include type, refObjectId, version, uri, and shortDescription.",
       "anyOf": [
         {
           "type": "object",
@@ -190,7 +190,7 @@
             },
             "@refObjectId": {
               "type": "string",
-                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
             },
             "@version": {
               "type": "string"
@@ -220,7 +220,7 @@
               },
               "@refObjectId": {
                 "type": "string",
-                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
               },
               "@version": {
                 "type": "string"

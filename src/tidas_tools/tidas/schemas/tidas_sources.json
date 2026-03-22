@@ -178,7 +178,7 @@
                 },
                 "common:referenceToPrecedingDataSetVersion": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                  "description": "Last preceding data set, which was replaced by this version. Either a URI of that data set (i.e. an internet address) or its UUID plus version number is given (or both)."
+                  "description": "Last preceding data set, which was replaced by this version. In TIDAS, this reference includes the preceding data set URI, UUID, and version number."
                 },
                 "common:permanentDataSetURI": {
                   "type": "string",
