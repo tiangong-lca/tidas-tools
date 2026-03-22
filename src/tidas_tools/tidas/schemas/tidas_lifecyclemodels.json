@@ -352,7 +352,7 @@
                               },
                               "referenceToProcess": {
                                 "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                                "description": "Reference to the process data set and (optional) identifying its version, that is included in the eILCD archive of the Life cycle model and/or accessible at a remote location, i.e. an URI or URL."
+                                "description": "Reference to the process data set, including its version, that is included in the eILCD archive of the Life cycle model and/or accessible at a remote location, i.e. a URI or URL."
                               },
                               "scalingFactors": {
                                 "$ref": "tidas_data_types.json#/$defs/Real",
@@ -642,7 +642,7 @@
                             },
                             "referenceToProcess": {
                               "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                              "description": "Reference to the process data set and (optional) identifying its version, that is included in the eILCD archive of the Life cycle model and/or accessible at a remote location, i.e. an URI or URL."
+                              "description": "Reference to the process data set, including its version, that is included in the eILCD archive of the Life cycle model and/or accessible at a remote location, i.e. a URI or URL."
                             },
                             "scalingFactors": {
                               "$ref": "tidas_data_types.json#/$defs/Real",
@@ -1278,7 +1278,7 @@
               "required": [
                 "common:timeStamp",
                 "common:referenceToDataSetFormat",
-                "common:referenceToPersonOrEntityEnteringTheDataSet"
+                "common:referenceToPersonOrEntityEnteringTheData"
               ]
             },
             "publicationAndOwnership": {
@@ -1291,7 +1291,7 @@
                 },
                 "common:referenceToPrecedingDataSetVersion": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                  "description": "Last preceding data set, which was replaced by this version. Either a URI of that data set (i.e. an internet address) or its UUID plus version number is given (or both)."
+                  "description": "Last preceding data set, which was replaced by this version. In TIDAS, this reference includes the preceding data set URI, UUID, and version number."
                 },
                 "common:permanentDataSetURI": {
                   "type": "string",
