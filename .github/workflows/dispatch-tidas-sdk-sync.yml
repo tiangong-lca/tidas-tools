@@ -1,0 +1,129 @@
+name: Dispatch tidas-sdk Sync
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/tidas_tools/tidas/schemas/**"
+      - "src/tidas_tools/tidas/methodologies/**"
+
+permissions:
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.TIDAS_SDK_AUTOMATION_TOKEN }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate automation token
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "error: missing TIDAS_SDK_AUTOMATION_TOKEN secret" >&2
+            exit 1
+          fi
+
+      - name: Detect SDK impact
+        id: impact
+        env:
+          BASE_REF: ${{ github.event.before }}
+          HEAD_REF: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          if [ "$BASE_REF" = "0000000000000000000000000000000000000000" ]; then
+            BASE_REF="$HEAD_REF^"
+          fi
+
+          CHANGED_FILES="$(git diff --name-only "$BASE_REF" "$HEAD_REF" -- \
+            src/tidas_tools/tidas/schemas \
+            src/tidas_tools/tidas/methodologies)"
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "any_changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          TYPESCRIPT=false
+          PYTHON=false
+          REASON_PARTS=()
+
+          if printf '%s\n' "$CHANGED_FILES" | grep -q '^src/tidas_tools/tidas/schemas/'; then
+            TYPESCRIPT=true
+            PYTHON=true
+            REASON_PARTS+=("schema update")
+          fi
+
+          if printf '%s\n' "$CHANGED_FILES" | grep -q '^src/tidas_tools/tidas/methodologies/'; then
+            TYPESCRIPT=true
+            REASON_PARTS+=("methodology update")
+          fi
+
+          PACKAGES_JSON="[]"
+          if [ "$TYPESCRIPT" = "true" ] && [ "$PYTHON" = "true" ]; then
+            PACKAGES_JSON='["typescript","python"]'
+          elif [ "$TYPESCRIPT" = "true" ]; then
+            PACKAGES_JSON='["typescript"]'
+          elif [ "$PYTHON" = "true" ]; then
+            PACKAGES_JSON='["python"]'
+          fi
+
+          {
+            echo "any_changed=true"
+            echo "packages_json=$PACKAGES_JSON"
+            echo "typescript_bump=patch"
+            echo "python_bump=patch"
+            echo "reason=${REASON_PARTS[*]}"
+            echo "changed_files<<EOF"
+            printf '%s\n' "$CHANGED_FILES"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Stop when nothing affects generated SDKs
+        if: steps.impact.outputs.any_changed != 'true'
+        run: echo "No SDK-impacting upstream change detected."
+
+      - name: Dispatch sync request to tidas-sdk
+        if: steps.impact.outputs.any_changed == 'true'
+        env:
+          TARGET_SHA: ${{ github.sha }}
+          TARGET_REF: ${{ github.ref }}
+          PACKAGES_JSON: ${{ steps.impact.outputs.packages_json }}
+          TYPESCRIPT_BUMP: ${{ steps.impact.outputs.typescript_bump }}
+          PYTHON_BUMP: ${{ steps.impact.outputs.python_bump }}
+          REASON: ${{ steps.impact.outputs.reason }}
+        run: |
+          python3 - <<'PY' > dispatch.json
+          import json
+          import os
+
+          payload = {
+              "event_type": "tidas_tools_changed",
+              "client_payload": {
+                  "tidas_tools_sha": os.environ["TARGET_SHA"],
+                  "tidas_tools_ref": os.environ["TARGET_REF"],
+                  "packages": json.loads(os.environ["PACKAGES_JSON"]),
+                  "typescript_bump": os.environ["TYPESCRIPT_BUMP"],
+                  "python_bump": os.environ["PYTHON_BUMP"],
+                  "reason": os.environ["REASON"],
+              },
+          }
+          print(json.dumps(payload))
+          PY
+
+          gh api "repos/tiangong-lca/tidas-sdk/dispatches" \
+            --method POST \
+            --input dispatch.json
+
+      - name: Report dispatched payload
+        if: steps.impact.outputs.any_changed == 'true'
+        run: |
+          echo "Dispatched packages: ${{ steps.impact.outputs.packages_json }}"
+          echo "Dispatch reason: ${{ steps.impact.outputs.reason }}"
