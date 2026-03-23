@@ -229,6 +229,10 @@ git tag v0.0.1
 git push origin v0.0.1
 ```
 
+Schema and methodology updates on `main` can also trigger a cross-repository SDK sync into `tiangong-lca/tidas-sdk` through `.github/workflows/dispatch-tidas-sdk-sync.yml`.
+
+That automation requires the repository secret `TIDAS_SDK_AUTOMATION_TOKEN`.
+
 ---
 
 ## 9. Contribution
