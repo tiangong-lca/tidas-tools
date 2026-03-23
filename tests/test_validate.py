@@ -6,6 +6,7 @@ from jsonschema import Draft7Validator
 import tidas_tools.tidas.schemas as schemas
 from tidas_tools.validate import (
     category_validate,
+    validate_package_dir,
     validate_localized_text_language_constraints,
 )
 
@@ -29,6 +30,51 @@ def test_category_validate(tmp_path):
     sources_dir.mkdir()
 
     category_validate(str(sources_dir), "sources")
+
+
+def test_category_validate_returns_structured_issues(tmp_path):
+    sources_dir = tmp_path / "sources"
+    sources_dir.mkdir()
+    (sources_dir / "bad.json").write_text("{}", encoding="utf-8")
+
+    report = category_validate(str(sources_dir), "sources")
+
+    assert report["category"] == "sources"
+    assert report["summary"]["issue_count"] >= 1
+    first_issue = report["issues"][0]
+    assert first_issue["issue_code"] in {
+        "schema_error",
+        "validation_error",
+        "localized_text_language_error",
+        "classification_hierarchy_error",
+    }
+    assert first_issue["severity"] == "error"
+    assert first_issue["category"] == "sources"
+    assert first_issue["file_path"].endswith("bad.json")
+
+
+def test_category_validate_avoids_cascading_classification_errors(tmp_path):
+    sources_dir = tmp_path / "sources"
+    sources_dir.mkdir()
+    (sources_dir / "bad.json").write_text("{}", encoding="utf-8")
+
+    report = category_validate(str(sources_dir), "sources")
+
+    assert [issue["issue_code"] for issue in report["issues"]] == ["schema_error"]
+
+
+def test_validate_package_dir_returns_structured_report(tmp_path):
+    package_dir = tmp_path / "package"
+    sources_dir = package_dir / "sources"
+    sources_dir.mkdir(parents=True)
+    (sources_dir / "bad.json").write_text("{}", encoding="utf-8")
+
+    report = validate_package_dir(str(package_dir))
+
+    assert report["ok"] is False
+    assert report["summary"]["issue_count"] >= 1
+    assert report["summary"]["error_count"] >= 1
+    assert report["issues"][0]["category"] == "sources"
 
 
 def test_string_multilang_schema_requires_chinese_for_zh():
