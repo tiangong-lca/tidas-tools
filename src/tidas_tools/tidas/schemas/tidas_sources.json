@@ -41,7 +41,7 @@
                 },
                 "classificationInformation": {
                   "type": "object",
-                  "description": "Hierachical classification of the Source foreseen to be used to structure the Source content of the database. (Note: This entry is NOT required for the identification of a Source. It should nevertheless be avoided to use identical names for Source in the same class.",
+                  "description": "Hierarchical classification of the Source foreseen to be used to structure the Source content of the database. (Note: This entry is NOT required for the identification of a Source. It should nevertheless be avoided to use identical names for Source in the same class.",
                   "properties": {
                     "common:classification": {
                       "type": "object",
