@@ -46,7 +46,7 @@
                 },
                 "classificationInformation": {
                   "type": "object",
-                  "description": "Hierachical classification of the contact foreseen to be used to structure the contact content of the database. (Note: This entry is NOT required for the identification of the contact data set. It should nevertheless be avoided to use identical names for contacts in the same class.",
+                  "description": "Hierarchical classification of the contact foreseen to be used to structure the contact content of the database. (Note: This entry is NOT required for the identification of the contact data set. It should nevertheless be avoided to use identical names for contacts in the same class.",
                   "properties": {
                     "common:classification": {
                       "type": "object",

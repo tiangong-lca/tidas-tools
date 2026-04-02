@@ -11,6 +11,7 @@ import xmltodict
 from dotenv import load_dotenv
 from tqdm import tqdm
 
+from .package_versions import normalize_package_versions
 from .tidas_log import setup_logging
 
 
@@ -293,6 +294,9 @@ def main():
         # Close database connection
         conn.close()
         logging.info("Database connection closed")
+
+        if args.to_tidas:
+            normalize_package_versions(args.output_dir)
 
         # Download external documents if needed
         if not args.skip_external_docs:
