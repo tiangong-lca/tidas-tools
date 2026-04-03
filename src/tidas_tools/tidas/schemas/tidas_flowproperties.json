@@ -44,7 +44,7 @@
                   "description": "Synonyms are alternative names for the \"Name\" of the Flow property."
                 },
                 "classificationInformation": {
-                  "description": "Hierachical classification of the Flow property foreseen to be used to structure the Flow property content of the database. (Note: This entry is NOT required for the identification of the Flow property data set. It should nevertheless be avoided to use identical names for Flow properties in the same class.",
+                  "description": "Hierarchical classification of the Flow property foreseen to be used to structure the Flow property content of the database. (Note: This entry is NOT required for the identification of the Flow property data set. It should nevertheless be avoided to use identical names for Flow properties in the same class.",
                   "type": "object",
                   "properties": {
                     "common:classification": {
