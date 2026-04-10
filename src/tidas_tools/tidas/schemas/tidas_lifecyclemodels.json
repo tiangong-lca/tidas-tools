@@ -623,8 +623,7 @@
                             "required": [
                             "@dataSetInternalID",
                             "@multiplicationFactor",
-                            "referenceToProcess",
-                            "connections"
+                            "referenceToProcess"
                             ]
                           }
                         },
@@ -924,8 +923,7 @@
                           "required": [
                           "@dataSetInternalID",
                           "@multiplicationFactor",
-                          "referenceToProcess",
-                          "connections"
+                          "referenceToProcess"
                           ]
                         }
                       ]
