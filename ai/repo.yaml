@@ -139,7 +139,7 @@
       "notes": [
         "Use uv sync --dev before running local tests if the environment is not prepared.",
         "Manual --help probes for convert, validate, and export are the safest narrow checks when a change only touches one CLI surface.",
-        "AI-doc changes should still run the root warning-only ai-doc-lint."
+        "AI-doc changes should still run the repo-local ai-doc-lint workflow or the equivalent local node command."
       ]
     }
   }

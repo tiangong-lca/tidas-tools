@@ -56,6 +56,7 @@ When working inside `tidas-tools`, load docs in this order:
 | Change downstream SDK dispatch behavior | `.github/workflows/dispatch-tidas-sdk-sync.yml` | `ai/validation.md`, `ai/architecture.md` | This repo owns the dispatch contract that tells `tidas-sdk` to refresh. |
 | Change generated SDK package surfaces | `tidas-sdk`, not this repo | root `ai/task-router.md` | Generated package output belongs downstream in `tidas-sdk`. |
 | Change public spec/docs wording only | `tidas`, not this repo | root `ai/task-router.md` | Public site content belongs in `tidas`. |
+| Change repo-local AI-doc maintenance only | `AGENTS.md`, `ai/**`, `.github/workflows/ai-doc-lint.yml`, `.github/scripts/ai-doc-lint.*` | `ai/validation.md` when present, otherwise `ai/repo.yaml` | Keep the repo-local maintenance gate aligned with root `ai/ci-lint-spec.md` and `ai/review-matrix.md`. |
 | Decide whether work is delivery-complete after merge | root workspace docs, not repo code paths | root `AGENTS.md`, `_docs/workspace-branch-policy-contract.md` | Root integration remains a separate phase. |
 
 ## Wrong Turns To Avoid

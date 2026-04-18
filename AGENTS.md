@@ -76,6 +76,7 @@ Route those tasks to:
 
 ## Runtime Facts
 
+- Repo-local AI-doc maintenance is enforced by `.github/workflows/ai-doc-lint.yml` using the vendored `.github/scripts/ai-doc-lint.*` files.
 - Python package manager and runner: `uv`
 - Canonical local setup: `uv sync --dev`
 - Canonical local test command: `uv run pytest`
