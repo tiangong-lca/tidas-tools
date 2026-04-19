@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "lastReviewedAt": "2026-04-18",
+  "lastReviewedCommit": "19d0d16cb047a533c9cc99f422eebff56e038ee4",
+  "repo": {
+    "id": "tidas-tools",
+    "path": "tidas-tools",
+    "canonicalRepo": "tiangong-lca/tidas-tools",
+    "purpose": "Standalone TIDAS conversion, validation, export, and upstream asset repository.",
+    "entryDoc": "AGENTS.md",
+    "taskRouterDoc": "ai/task-router.md",
+    "validationDoc": "ai/validation.md",
+    "architectureDoc": "ai/architecture.md",
+    "readmeDoc": "README.md",
+    "defaultBranch": "main",
+    "dailyTrunk": "main",
+    "routinePrBase": "main",
+    "branchModel": "M1",
+    "workspaceIntegrationRequired": true,
+    "rootIntegrationRule": "lca-workspace/main may bump merged main-branch tooling snapshots when the workspace intends to ship the updated TIDAS tooling state.",
+    "trackedBy": {
+      "workspaceParentIssue": "https://github.com/tiangong-lca/workspace/issues/73",
+      "repoIssue": "https://github.com/tiangong-lca/tidas-tools/issues/34"
+    },
+    "runtime": {
+      "pythonManager": "uv",
+      "baselineSetupCommand": "uv sync --dev",
+      "baselineValidationCommands": [
+        "uv run pytest"
+      ],
+      "manualToolProbeCommands": [
+        "uv run python src/tidas_tools/convert.py --help",
+        "uv run python src/tidas_tools/validate.py --help",
+        "uv run python src/tidas_tools/export.py --help"
+      ],
+      "releaseTagPattern": "v<version>"
+    },
+    "sourceOfTruth": {
+      "stableManualEditPaths": [
+        {
+          "path": "pyproject.toml",
+          "role": "package metadata and dependency baseline"
+        },
+        {
+          "path": "src/tidas_tools/convert.py",
+          "role": "standalone TIDAS and eILCD conversion CLI behavior"
+        },
+        {
+          "path": "src/tidas_tools/validate.py",
+          "role": "standalone validation CLI behavior"
+        },
+        {
+          "path": "src/tidas_tools/validation_report.py",
+          "role": "structured validation-report rendering"
+        },
+        {
+          "path": "src/tidas_tools/export.py",
+          "role": "standalone export CLI behavior"
+        },
+        {
+          "path": "src/tidas_tools/package_versions.py",
+          "role": "package versioning and export version normalization logic"
+        },
+        {
+          "path": "src/tidas_tools/tidas/**",
+          "role": "packaged TIDAS schemas and methodologies"
+        },
+        {
+          "path": "src/tidas_tools/eilcd/**",
+          "role": "packaged eILCD schemas and stylesheets"
+        },
+        {
+          "path": "tests/**",
+          "role": "repo-level automated tests"
+        },
+        {
+          "path": ".github/workflows/dispatch-tidas-sdk-sync.yml",
+          "role": "dispatch contract to downstream tidas-sdk refresh automation"
+        },
+        {
+          "path": ".github/workflows/python-package-deploy.yml",
+          "role": "tag-driven PyPI publish workflow"
+        }
+      ],
+      "nonOwnerBoundaries": [
+        {
+          "repo": "tidas-sdk",
+          "doesNotOwn": [
+            "generated package surfaces",
+            "package-specific release automation"
+          ]
+        },
+        {
+          "repo": "tidas",
+          "doesNotOwn": [
+            "public spec/docs-site presentation"
+          ]
+        },
+        {
+          "repo": "lca-workspace",
+          "doesNotOwn": [
+            "root integration state",
+            "submodule pointer updates"
+          ]
+        }
+      ]
+    },
+    "taskHotspots": [
+      {
+        "topic": "standalone conversion, validation, and export behavior",
+        "paths": [
+          "src/tidas_tools/convert.py",
+          "src/tidas_tools/validate.py",
+          "src/tidas_tools/validation_report.py",
+          "src/tidas_tools/export.py",
+          "src/tidas_tools/package_versions.py"
+        ]
+      },
+      {
+        "topic": "packaged upstream asset changes",
+        "paths": [
+          "src/tidas_tools/tidas/**",
+          "src/tidas_tools/eilcd/**"
+        ]
+      },
+      {
+        "topic": "downstream SDK refresh and release automation",
+        "paths": [
+          ".github/workflows/dispatch-tidas-sdk-sync.yml",
+          ".github/workflows/python-package-deploy.yml",
+          "pyproject.toml"
+        ]
+      }
+    ],
+    "validation": {
+      "baselineLocalCommands": [
+        "uv run pytest"
+      ],
+      "notes": [
+        "Use uv sync --dev before running local tests if the environment is not prepared.",
+        "Manual --help probes for convert, validate, and export are the safest narrow checks when a change only touches one CLI surface.",
+        "AI-doc changes should still run the repo-local ai-doc-lint workflow or the equivalent local node command."
+      ]
+    }
+  }
+}

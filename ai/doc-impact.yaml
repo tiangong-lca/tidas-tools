@@ -1,0 +1,221 @@
+{
+  "version": 1,
+  "lastReviewedAt": "2026-04-18",
+  "lastReviewedCommit": "19d0d16cb047a533c9cc99f422eebff56e038ee4",
+  "rules": [
+    {
+      "id": "tidas-tools-bootstrap-contract",
+      "scope": "repo",
+      "repo": "tidas-tools",
+      "triggers": [
+        {
+          "path": "AGENTS.md",
+          "kind": "doc-contract"
+        },
+        {
+          "path": "README.md",
+          "kind": "doc-entry"
+        },
+        {
+          "path": "README_CN.md",
+          "kind": "doc-entry"
+        },
+        {
+          "path": "ai/**",
+          "kind": "doc-ai-layer"
+        }
+      ],
+      "requiredDocs": [
+        {
+          "path": "AGENTS.md",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/repo.yaml",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/task-router.md",
+          "mode": "review_or_update"
+        }
+      ],
+      "reason": "Entry guidance, repo facts, and routing docs must stay aligned."
+    },
+    {
+      "id": "tidas-tools-runtime-contract",
+      "scope": "repo",
+      "repo": "tidas-tools",
+      "triggers": [
+        {
+          "path": "pyproject.toml",
+          "kind": "runtime-config"
+        },
+        {
+          "path": "src/tidas_tools/convert.py",
+          "kind": "tooling"
+        },
+        {
+          "path": "src/tidas_tools/validate.py",
+          "kind": "tooling"
+        },
+        {
+          "path": "src/tidas_tools/validation_report.py",
+          "kind": "tooling"
+        },
+        {
+          "path": "src/tidas_tools/export.py",
+          "kind": "tooling"
+        },
+        {
+          "path": "src/tidas_tools/package_versions.py",
+          "kind": "tooling"
+        }
+      ],
+      "requiredDocs": [
+        {
+          "path": "AGENTS.md",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/repo.yaml",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/task-router.md",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/validation.md",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/architecture.md",
+          "mode": "review_or_update"
+        }
+      ],
+      "reason": "Core standalone tooling changes alter the repo's executable contract and should refresh the AI bootstrap docs."
+    },
+    {
+      "id": "tidas-tools-asset-contract",
+      "scope": "repo",
+      "repo": "tidas-tools",
+      "triggers": [
+        {
+          "path": "src/tidas_tools/tidas/**",
+          "kind": "tidas-asset"
+        },
+        {
+          "path": "src/tidas_tools/eilcd/**",
+          "kind": "eilcd-asset"
+        }
+      ],
+      "requiredDocs": [
+        {
+          "path": "AGENTS.md",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/repo.yaml",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/task-router.md",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/validation.md",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/architecture.md",
+          "mode": "review_or_update"
+        }
+      ],
+      "reason": "Packaged schemas, methodologies, and stylesheets are executable upstream assets and should refresh the repo contract when they change."
+    },
+    {
+      "id": "tidas-tools-tests-and-automation-contract",
+      "scope": "repo",
+      "repo": "tidas-tools",
+      "triggers": [
+        {
+          "path": "tests/**",
+          "kind": "repo-test"
+        },
+        {
+          "path": "test_data/**",
+          "kind": "repo-fixture"
+        },
+        {
+          "path": ".github/workflows/dispatch-tidas-sdk-sync.yml",
+          "kind": "automation"
+        },
+        {
+          "path": ".github/workflows/python-package-deploy.yml",
+          "kind": "automation"
+        }
+      ],
+      "requiredDocs": [
+        {
+          "path": "AGENTS.md",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/repo.yaml",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/task-router.md",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/validation.md",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/architecture.md",
+          "mode": "review_or_update"
+        }
+      ],
+      "reason": "Test, fixture, and automation changes affect how future tooling work is validated and how downstream SDK refresh is triggered."
+    },
+    {
+      "id": "tidas-tools-ai-doc-maintenance-contract",
+      "scope": "repo",
+      "repo": "tidas-tools",
+      "triggers": [
+        {
+          "path": ".github/workflows/ai-doc-lint.yml",
+          "kind": "automation"
+        },
+        {
+          "path": ".github/scripts/ai-doc-lint.mjs",
+          "kind": "automation"
+        },
+        {
+          "path": ".github/scripts/ai-doc-lint.test.mjs",
+          "kind": "automation"
+        }
+      ],
+      "requiredDocs": [
+        {
+          "path": "AGENTS.md",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/repo.yaml",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/doc-impact.yaml",
+          "mode": "review_or_update"
+        },
+        {
+          "path": "ai/validation.md",
+          "mode": "review_or_update"
+        }
+      ],
+      "reason": "Repo-local AI doc maintenance automation changes alter the maintenance gate and should refresh the AI contract docs."
+    }
+  ]
+}
