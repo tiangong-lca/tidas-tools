@@ -8,9 +8,9 @@ owner: tidas-tools
 language: zh-CN
 whenToUse:
   - when you need Chinese user-facing CLI examples or basic development commands
-  - when deciding which retained AI docs to read next inside tidas-tools
+  - when deciding which repo governance docs to read next inside tidas-tools
 whenToUpdate:
-  - when Chinese CLI examples, development commands, release notes, or AI docs entrypoints change
+  - when Chinese CLI examples, development commands, release notes, or repo governance doc entrypoints change
 checkPaths:
   - README_CN.md
   - AGENTS.md
@@ -42,9 +42,9 @@ related:
 
 ---
 
-## AI 文档入口
+## 维护者文档
 
-面向 AI 的仓库工作，请按以下顺序读取：
+维护本仓库时，请按以下顺序读取：
 
 1. [AGENTS.md](./AGENTS.md)
 2. [.docpact/config.yaml](./.docpact/config.yaml)

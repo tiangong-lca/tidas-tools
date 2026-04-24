@@ -8,9 +8,9 @@ owner: tidas-tools
 language: en
 whenToUse:
   - when you need user-facing CLI examples or basic development commands
-  - when deciding which retained AI docs to read next inside tidas-tools
+  - when deciding which repo governance docs to read next inside tidas-tools
 whenToUpdate:
-  - when CLI examples, development commands, release notes, or AI docs entrypoints change
+  - when CLI examples, development commands, release notes, or repo governance doc entrypoints change
 checkPaths:
   - README.md
   - AGENTS.md
@@ -42,9 +42,9 @@ This toolkit is used for conversion and validation of TianGong TIDAS data format
 
 ---
 
-## AI Docs Entry
+## Maintainer Docs
 
-For AI-first repo work, load docs in this order:
+For repository maintenance, use these docs in this order:
 
 1. [AGENTS.md](./AGENTS.md)
 2. [.docpact/config.yaml](./.docpact/config.yaml)
