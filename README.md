@@ -8,9 +8,8 @@ owner: tidas-tools
 language: en
 whenToUse:
   - when you need user-facing CLI examples or basic development commands
-  - when deciding which repo governance docs to read next inside tidas-tools
 whenToUpdate:
-  - when CLI examples, development commands, release notes, or repo governance doc entrypoints change
+  - when CLI examples, development commands, or release notes change
 checkPaths:
   - README.md
   - AGENTS.md
@@ -39,17 +38,6 @@ related:
 [English](https://github.com/tiangong-lca/tidas-tools/blob/main/README.md) | [中文](https://github.com/tiangong-lca/tidas-tools/blob/main/README_CN.md)
 
 This toolkit is used for conversion and validation of TianGong TIDAS data formats.
-
----
-
-## Maintainer Docs
-
-For repository maintenance, use these docs in this order:
-
-1. [AGENTS.md](./AGENTS.md)
-2. [.docpact/config.yaml](./.docpact/config.yaml)
-3. [docs/agents/repo-validation.md](./docs/agents/repo-validation.md) or [docs/agents/repo-architecture.md](./docs/agents/repo-architecture.md)
-4. this README only for user-facing CLI examples
 
 ---
 

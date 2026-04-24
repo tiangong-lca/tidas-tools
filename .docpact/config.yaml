@@ -201,7 +201,7 @@ rules:
         mode: review_or_update
       - path: .docpact/config.yaml
         mode: review_or_update
-    reason: User-facing landing docs should stay aligned with the current repo contract and governance doc entry surface.
+    reason: User-facing landing docs should stay aligned with the current repo contract and CLI/release surface.
   - id: tidas-tools-runtime-contract
     scope: repo
     repo: tidas-tools

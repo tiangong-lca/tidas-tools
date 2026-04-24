@@ -8,9 +8,8 @@ owner: tidas-tools
 language: zh-CN
 whenToUse:
   - when you need Chinese user-facing CLI examples or basic development commands
-  - when deciding which repo governance docs to read next inside tidas-tools
 whenToUpdate:
-  - when Chinese CLI examples, development commands, release notes, or repo governance doc entrypoints change
+  - when Chinese CLI examples, development commands, or release notes change
 checkPaths:
   - README_CN.md
   - AGENTS.md
@@ -39,17 +38,6 @@ related:
 [English](https://github.com/tiangong-lca/tidas-tools/blob/main/README.md) | [中文](https://github.com/tiangong-lca/tidas-tools/blob/main/README_CN.md)
 
 本工具箱用于 TianGong TIDAS 数据格式的转换和验证。
-
----
-
-## 维护者文档
-
-维护本仓库时，请按以下顺序读取：
-
-1. [AGENTS.md](./AGENTS.md)
-2. [.docpact/config.yaml](./.docpact/config.yaml)
-3. [docs/agents/repo-validation.md](./docs/agents/repo-validation.md) 或 [docs/agents/repo-architecture.md](./docs/agents/repo-architecture.md)
-4. 只有需要面向用户的中文 CLI 示例时，再读取本文档
 
 ---
 
