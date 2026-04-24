@@ -15,20 +15,20 @@ whenToUpdate:
   - when change categories require different proof
   - when release or dispatch behavior changes
 checkPaths:
-  - ai/validation.md
-  - ai/task-router.md
+  - docs/agents/repo-validation.md
+  - .docpact/config.yaml
   - pyproject.toml
   - src/tidas_tools/**
   - tests/**
+  - test_data/**
   - .github/workflows/**
-lastReviewedAt: 2026-04-18
-lastReviewedCommit: 19d0d16cb047a533c9cc99f422eebff56e038ee4
+lastReviewedAt: 2026-04-24
+lastReviewedCommit: 7984b9bc9f820da7bc31520e8334c9fddedc85d4
 related:
-  - ../AGENTS.md
-  - ./repo.yaml
-  - ./task-router.md
-  - ./architecture.md
-  - ../README.md
+  - ../../AGENTS.md
+  - ../../.docpact/config.yaml
+  - ./repo-architecture.md
+  - ../../README.md
 ---
 
 ## Default Baseline
@@ -48,10 +48,10 @@ Use narrower manual probes only when the task touches one CLI surface and full t
 | --- | --- | --- | --- |
 | `convert.py` or eILCD asset changes | `uv run pytest`; `uv run python src/tidas_tools/convert.py --help` | run one representative conversion path if the task explicitly changes data transformation behavior | Keep packaged asset and conversion logic aligned. |
 | `validate.py`, `validation_report.py`, or TIDAS schema changes | `uv run pytest`; `uv run python src/tidas_tools/validate.py --help` | run one representative validation path and record entity types touched | Validation categories and packaged schemas both matter here. |
-| `export.py` or `package_versions.py` changes | `uv run pytest`; `uv run python src/tidas_tools/export.py --help` | if the task includes live export proof, record the DB and S3 assumptions separately | Export behavior depends on external DB and object-storage state. |
+| `export.py` or `package_versions.py` changes | `uv run pytest`; `uv run python src/tidas_tools/export.py --help` | if the task includes live export proof, record the DB and storage assumptions separately | Export behavior depends on external DB and object-storage state. |
 | packaged methodology or schema asset changes | `uv run pytest` | record whether `tidas-sdk` follow-up is required; run the relevant manual probe if a specific CLI surface depends on the asset | These paths are the current executable upstream for downstream package refresh. |
 | workflow or release automation changes | `uv run pytest` | inspect the touched workflow and record any tag or dispatch assumptions checked locally | Downstream dispatch and tag-based publish are separate from local tool tests. |
-| AI docs only | run repo-local `ai-doc-lint` against touched files or the equivalent local PR check | do one scenario-based routing check from root into this repo | Refresh review metadata even when prose-only docs change. |
+| repo contract or governed-doc changes only | `docpact validate-config --root . --strict` and `docpact lint --root . --staged --mode enforce` | run one focused route check such as `docpact route --root . --intent repo-docs --format text` or `sdk-dispatch` when the change touches dispatch docs | Refresh review evidence even when prose-only governed docs change. |
 
 ## Minimum PR Note Quality
 

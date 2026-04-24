@@ -1,3 +1,34 @@
+---
+title: tidas-tools README CN
+docType: guide
+scope: repo
+status: active
+authoritative: false
+owner: tidas-tools
+language: zh-CN
+whenToUse:
+  - when you need Chinese user-facing CLI examples or basic development commands
+  - when deciding which retained AI docs to read next inside tidas-tools
+whenToUpdate:
+  - when Chinese CLI examples, development commands, release notes, or AI docs entrypoints change
+checkPaths:
+  - README_CN.md
+  - AGENTS.md
+  - .docpact/config.yaml
+  - docs/agents/**
+  - pyproject.toml
+  - src/tidas_tools/**
+  - .github/workflows/**
+lastReviewedAt: 2026-04-24
+lastReviewedCommit: 7984b9bc9f820da7bc31520e8334c9fddedc85d4
+related:
+  - AGENTS.md
+  - .docpact/config.yaml
+  - docs/agents/repo-validation.md
+  - docs/agents/repo-architecture.md
+  - README.md
+---
+
 # TianGong TIDAS Tools 使用说明
 
 [![PyPI](https://img.shields.io/pypi/v/tidas-tools.svg)][pypi status]
@@ -8,6 +39,17 @@
 [English](https://github.com/tiangong-lca/tidas-tools/blob/main/README.md) | [中文](https://github.com/tiangong-lca/tidas-tools/blob/main/README_CN.md)
 
 本工具箱用于 TianGong TIDAS 数据格式的转换和验证。
+
+---
+
+## AI 文档入口
+
+面向 AI 的仓库工作，请按以下顺序读取：
+
+1. [AGENTS.md](./AGENTS.md)
+2. [.docpact/config.yaml](./.docpact/config.yaml)
+3. [docs/agents/repo-validation.md](./docs/agents/repo-validation.md) 或 [docs/agents/repo-architecture.md](./docs/agents/repo-architecture.md)
+4. 只有需要面向用户的中文 CLI 示例时，再读取本文档
 
 ---
 
@@ -230,6 +272,10 @@ git tag v0.0.1
 # 将新创建的 tag 推送到远程仓库，触发自动构建和发布
 git push origin v0.0.1
 ```
+
+当 `main` 上的 schema 或 methodology 路径变化时，`.github/workflows/dispatch-tidas-sdk-sync.yml` 也可以触发 `tiangong-lca/tidas-sdk` 的下游 SDK 同步。
+
+该自动化需要仓库 secret：`TIDAS_SDK_AUTOMATION_TOKEN`。
 
 ---
 

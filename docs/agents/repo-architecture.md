@@ -15,24 +15,23 @@ whenToUpdate:
   - when downstream dispatch or release architecture changes
   - when stable versus packaged paths move
 checkPaths:
-  - ai/architecture.md
-  - ai/repo.yaml
+  - docs/agents/repo-architecture.md
+  - .docpact/config.yaml
   - pyproject.toml
   - src/tidas_tools/**
   - .github/workflows/**
-lastReviewedAt: 2026-04-18
-lastReviewedCommit: 19d0d16cb047a533c9cc99f422eebff56e038ee4
+lastReviewedAt: 2026-04-24
+lastReviewedCommit: 7984b9bc9f820da7bc31520e8334c9fddedc85d4
 related:
-  - ../AGENTS.md
-  - ./repo.yaml
-  - ./task-router.md
-  - ./validation.md
-  - ../README.md
+  - ../../AGENTS.md
+  - ../../.docpact/config.yaml
+  - ./repo-validation.md
+  - ../../README.md
 ---
 
 ## Repo Shape
 
-This repo packages standalone tooling plus the schema and stylesheet assets those tools execute against.
+This repo packages standalone tooling plus the schema, methodology, and stylesheet assets those tools execute against.
 
 ## Stable Path Map
 
