@@ -1,3 +1,33 @@
+---
+title: tidas-tools README
+docType: guide
+scope: repo
+status: active
+authoritative: false
+owner: tidas-tools
+language: en
+whenToUse:
+  - when you need user-facing CLI examples or basic development commands
+whenToUpdate:
+  - when CLI examples, development commands, or release notes change
+checkPaths:
+  - README.md
+  - AGENTS.md
+  - .docpact/config.yaml
+  - docs/agents/**
+  - pyproject.toml
+  - src/tidas_tools/**
+  - .github/workflows/**
+lastReviewedAt: 2026-04-24
+lastReviewedCommit: 7984b9bc9f820da7bc31520e8334c9fddedc85d4
+related:
+  - AGENTS.md
+  - .docpact/config.yaml
+  - docs/agents/repo-validation.md
+  - docs/agents/repo-architecture.md
+  - README_CN.md
+---
+
 # TianGong TIDAS Tools User Guide
 
 [![PyPI](https://img.shields.io/pypi/v/tidas-tools.svg)][pypi status]

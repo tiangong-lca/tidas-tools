@@ -138,6 +138,7 @@ myenv/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+.docpact/runs/
 
 # Pyre type checker
 .pyre/

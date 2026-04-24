@@ -1,0 +1,284 @@
+version: 1
+layout: repo
+lastReviewedAt: 2026-04-24
+lastReviewedCommit: 7984b9bc9f820da7bc31520e8334c9fddedc85d4
+
+catalog:
+  repos:
+    - id: tidas-tools
+      path: .
+      canonicalRepo: tiangong-lca/tidas-tools
+      entryDoc: AGENTS.md
+      workflowDocs:
+        - docs/agents/repo-validation.md
+        - docs/agents/repo-architecture.md
+      workspaceIntegrationRequired: true
+
+ownership:
+  domains:
+    - id: repo-governance-and-docs
+      paths:
+        include:
+          - AGENTS.md
+          - README.md
+          - README_CN.md
+          - .docpact/config.yaml
+          - docs/agents/**
+          - .github/workflows/ai-doc-lint.yml
+      ownerRepo: tidas-tools
+    - id: tool-runtime
+      paths:
+        include:
+          - pyproject.toml
+          - src/tidas_tools/convert.py
+          - src/tidas_tools/validate.py
+          - src/tidas_tools/validation_report.py
+          - src/tidas_tools/export.py
+          - src/tidas_tools/package_versions.py
+      ownerRepo: tidas-tools
+    - id: packaged-assets
+      paths:
+        include:
+          - src/tidas_tools/tidas/**
+          - src/tidas_tools/eilcd/**
+      ownerRepo: tidas-tools
+    - id: tests-and-automation
+      paths:
+        include:
+          - tests/**
+          - test_data/**
+          - .github/workflows/dispatch-tidas-sdk-sync.yml
+          - .github/workflows/python-package-deploy.yml
+      ownerRepo: tidas-tools
+
+coverage:
+  include:
+    - AGENTS.md
+    - README.md
+    - README_CN.md
+    - .docpact/config.yaml
+    - docs/agents/**
+    - pyproject.toml
+    - src/tidas_tools/convert.py
+    - src/tidas_tools/validate.py
+    - src/tidas_tools/validation_report.py
+    - src/tidas_tools/export.py
+    - src/tidas_tools/package_versions.py
+    - src/tidas_tools/tidas/**
+    - src/tidas_tools/eilcd/**
+    - tests/**
+    - test_data/**
+    - .github/workflows/ai-doc-lint.yml
+    - .github/workflows/dispatch-tidas-sdk-sync.yml
+    - .github/workflows/python-package-deploy.yml
+  exclude:
+    - .git/**
+    - .github/scripts/**
+    - .docpact/runs/**
+    - .venv/**
+    - __pycache__/**
+    - "**/__pycache__/**"
+    - "*.pyc"
+    - build/**
+    - dist/**
+    - "*.egg-info/**"
+    - htmlcov/**
+    - .pytest_cache/**
+    - .mypy_cache/**
+
+freshness:
+  warn_after_commits: 40
+  warn_after_days: 60
+  critical_after_days: 120
+
+routing:
+  intents:
+    tool-runtime:
+      paths:
+        - pyproject.toml
+        - src/tidas_tools/convert.py
+        - src/tidas_tools/validate.py
+        - src/tidas_tools/validation_report.py
+        - src/tidas_tools/export.py
+        - src/tidas_tools/package_versions.py
+    conversion:
+      paths:
+        - src/tidas_tools/convert.py
+        - src/tidas_tools/eilcd/**
+        - src/tidas_tools/tidas/**
+    validation:
+      paths:
+        - src/tidas_tools/validate.py
+        - src/tidas_tools/validation_report.py
+        - src/tidas_tools/tidas/schemas/**
+    export:
+      paths:
+        - src/tidas_tools/export.py
+        - src/tidas_tools/package_versions.py
+    packaged-assets:
+      paths:
+        - src/tidas_tools/tidas/**
+        - src/tidas_tools/eilcd/**
+    sdk-dispatch:
+      paths:
+        - .github/workflows/dispatch-tidas-sdk-sync.yml
+        - src/tidas_tools/tidas/schemas/**
+        - src/tidas_tools/tidas/methodologies/**
+    release:
+      paths:
+        - pyproject.toml
+        - .github/workflows/python-package-deploy.yml
+    proof:
+      paths:
+        - docs/agents/repo-validation.md
+        - pyproject.toml
+        - src/tidas_tools/**
+        - tests/**
+        - test_data/**
+        - .github/workflows/dispatch-tidas-sdk-sync.yml
+        - .github/workflows/python-package-deploy.yml
+    repo-docs:
+      paths:
+        - AGENTS.md
+        - README.md
+        - README_CN.md
+        - .docpact/config.yaml
+        - docs/agents/**
+    root-integration:
+      paths:
+        - AGENTS.md
+
+docInventory:
+  include:
+    - AGENTS.md
+    - README.md
+    - README_CN.md
+    - .docpact/config.yaml
+    - docs/agents/repo-validation.md
+    - docs/agents/repo-architecture.md
+
+repo:
+  id: tidas-tools
+  owner: tidas-tools
+
+rules:
+  - id: tidas-tools-bootstrap-contract
+    scope: repo
+    repo: tidas-tools
+    triggers:
+      - path: AGENTS.md
+        kind: doc-contract
+      - path: .docpact/config.yaml
+        kind: doc-ai-layer
+      - path: docs/agents/repo-validation.md
+        kind: deep-doc
+      - path: docs/agents/repo-architecture.md
+        kind: deep-doc
+    requiredDocs:
+      - path: AGENTS.md
+        mode: review_or_update
+      - path: .docpact/config.yaml
+        mode: review_or_update
+      - path: docs/agents/repo-validation.md
+        mode: review_or_update
+      - path: docs/agents/repo-architecture.md
+        mode: review_or_update
+    reason: Repo entry guidance, machine-readable routing, and retained source docs must stay aligned.
+  - id: tidas-tools-readme-contract
+    scope: repo
+    repo: tidas-tools
+    triggers:
+      - path: README.md
+        kind: repo-landing
+      - path: README_CN.md
+        kind: repo-landing
+    requiredDocs:
+      - path: AGENTS.md
+        mode: review_or_update
+      - path: README.md
+        mode: review_or_update
+      - path: README_CN.md
+        mode: review_or_update
+      - path: .docpact/config.yaml
+        mode: review_or_update
+    reason: User-facing landing docs should stay aligned with the current repo contract and CLI/release surface.
+  - id: tidas-tools-runtime-contract
+    scope: repo
+    repo: tidas-tools
+    triggers:
+      - path: pyproject.toml
+        kind: runtime-config
+      - path: src/tidas_tools/convert.py
+        kind: tooling
+      - path: src/tidas_tools/validate.py
+        kind: tooling
+      - path: src/tidas_tools/validation_report.py
+        kind: tooling
+      - path: src/tidas_tools/export.py
+        kind: tooling
+      - path: src/tidas_tools/package_versions.py
+        kind: tooling
+    requiredDocs:
+      - path: AGENTS.md
+        mode: review_or_update
+      - path: .docpact/config.yaml
+        mode: review_or_update
+      - path: docs/agents/repo-validation.md
+        mode: review_or_update
+      - path: docs/agents/repo-architecture.md
+        mode: review_or_update
+    reason: Core standalone tooling changes alter the repo's executable contract and proof expectations.
+  - id: tidas-tools-asset-contract
+    scope: repo
+    repo: tidas-tools
+    triggers:
+      - path: src/tidas_tools/tidas/**
+        kind: tidas-asset
+      - path: src/tidas_tools/eilcd/**
+        kind: eilcd-asset
+    requiredDocs:
+      - path: AGENTS.md
+        mode: review_or_update
+      - path: .docpact/config.yaml
+        mode: review_or_update
+      - path: docs/agents/repo-validation.md
+        mode: review_or_update
+      - path: docs/agents/repo-architecture.md
+        mode: review_or_update
+    reason: Packaged schemas, methodologies, and stylesheets are executable upstream assets and can require downstream SDK follow-up.
+  - id: tidas-tools-tests-and-automation-contract
+    scope: repo
+    repo: tidas-tools
+    triggers:
+      - path: tests/**
+        kind: repo-test
+      - path: test_data/**
+        kind: repo-fixture
+      - path: .github/workflows/dispatch-tidas-sdk-sync.yml
+        kind: automation
+      - path: .github/workflows/python-package-deploy.yml
+        kind: automation
+    requiredDocs:
+      - path: AGENTS.md
+        mode: review_or_update
+      - path: .docpact/config.yaml
+        mode: review_or_update
+      - path: docs/agents/repo-validation.md
+        mode: review_or_update
+      - path: docs/agents/repo-architecture.md
+        mode: review_or_update
+    reason: Test, fixture, release, and downstream dispatch changes affect future tooling validation and SDK refresh routing.
+  - id: tidas-tools-doc-maintenance-contract
+    scope: repo
+    repo: tidas-tools
+    triggers:
+      - path: .github/workflows/ai-doc-lint.yml
+        kind: automation
+    requiredDocs:
+      - path: AGENTS.md
+        mode: review_or_update
+      - path: .docpact/config.yaml
+        mode: review_or_update
+      - path: docs/agents/repo-validation.md
+        mode: review_or_update
+    reason: Repo-local documentation maintenance automation must stay aligned with the repo contract and governed-doc rules.
