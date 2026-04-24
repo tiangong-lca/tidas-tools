@@ -23,7 +23,7 @@ checkPaths:
   - test_data/**
   - .github/workflows/**
 lastReviewedAt: 2026-04-24
-lastReviewedCommit: d93cd6dcc3cddeedb16dd6a382e73de8e3eaae27
+lastReviewedCommit: d71f5dfa68aa49e10860ba6912a7c7ee91509989
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
