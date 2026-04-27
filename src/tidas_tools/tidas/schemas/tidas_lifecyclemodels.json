@@ -1237,7 +1237,8 @@
                 }
               },
               "required": [
-                "common:referenceToCommissioner"
+                "common:referenceToCommissioner",
+                "common:intendedApplications"
               ]
             },
             "dataGenerator": {
