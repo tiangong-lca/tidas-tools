@@ -58,7 +58,7 @@
                       "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
                     },
                     "common:other": {
-                      "type": "string"
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
                     }
                   },
                   "required": [
@@ -240,11 +240,11 @@
                                   }
                                 }
                               }
-                            }      
+                            }
                           ]
                         },
                         "common:other": {
-                          "type": "string"
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
                         }
                       },
                       "required": [
@@ -265,7 +265,7 @@
                   "description": "\"Source data set(s)\" of detailed LCA study on the process or product represented by this data set, as well as documents / files with overarching documentative information on technology, geographical and / or time aspects etc. (e.g. basic engineering studies, process simulation results, patents, plant documentation, model behind the parameterisation of the \"Mathematical model\" section, etc.) (Note: can indirectly reference to digital file.)"
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -295,7 +295,7 @@
                   "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -319,7 +319,7 @@
                   "description": "Description of the valid time span of the data set including information on limited usability within sub-time spans, if any."
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -345,7 +345,7 @@
                       "description": "Further explanations about additional aspects of the location: e.g. a company and/or site description and address, whether for certain sub-areas within the \"Location\" the data set is not valid, whether data is only valid for certain regions within the location indicated, or whether certain elementary flows or intermediate product flows are extrapolated from another geographical area."
                     },
                     "common:other": {
-                      "type": "string"
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
                     }
                   },
                   "required": [
@@ -368,12 +368,12 @@
                       "description": "Further explanations about additional aspects of the location: e.g. a company and/or site description and address, whether for certain sub-areas within the \"Location\" the data set is not valid, whether data is only valid for certain regions within the location indicated, or whether certain elementary flows or intermediate product flows are extrapolated from another geographical area."
                     },
                     "common:other": {
-                      "type": "string"
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
                     }
                   }
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -404,7 +404,7 @@
                   "description": "\"Source data set\" of the flow diagramm(s) and/or photo(s) of the good, service, technology, plant etc represented by this data set. For clearer illustration and documentation of data set."
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -450,7 +450,7 @@
                         "normal",
                         "triangular",
                         "uniform"
-                      ] 
+                      ]
                     },
                     "relativeStandardDeviation95In": {
                       "$ref": "tidas_data_types.json#/$defs/Perc"
@@ -459,17 +459,17 @@
                       "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
                     },
                     "common:other": {
-                      "type": "string"
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
                     }
                   }
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               }
             },
             "common:other": {
-              "type": "string"
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
             }
           },
           "required": [
@@ -557,8 +557,8 @@
                   "description": "\"Source data set\"(s) where the generally used LCA methods including the LCI method principles and specific approaches, the modelling constants details, as well as any other applied methodological conventions are described."
                 },
                 "common:other": {
-                  "type": "string"
-              }
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
               },
               "required": [
                 "typeOfDataSet"
@@ -569,7 +569,7 @@
               "properties": {
                 "dataCutOffAndCompletenessPrinciples": {
                   "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
-                  "description": "Principles applied in data collection regarding completeness of (also intermediate) product and waste flows and of elementary flows. Examples are: cut-off rules, systematic exclusion of infrastructure, services or auxiliaries, etc. systematic exclusion of air in incineration processes, coling water, etc."  
+                  "description": "Principles applied in data collection regarding completeness of (also intermediate) product and waste flows and of elementary flows. Examples are: cut-off rules, systematic exclusion of infrastructure, services or auxiliaries, etc. systematic exclusion of air in incineration processes, coling water, etc."
                 },
                 "deviationsFromCutOffAndCompletenessPrinciples": {
                   "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
@@ -624,8 +624,8 @@
                   "description": "Specific methodological advice for data set users that requires attention. E.g. on inclusion/exclusion of recycling e.g. in material data sets, specific use phase behavior to be modelled, and other methodological advices. See also field \"Technological applicability\"."
                 },
                 "common:other": {
-                  "type": "string"
-              }
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
               },
               "required": [
                 "dataCutOffAndCompletenessPrinciples",
@@ -692,7 +692,7 @@
                   "description": "Completeness of coverage of elementary flows that contribute to other problem fields that are named here as free text, preferably using the same terminology as for the specified environmental problems."
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               }
             },
@@ -985,7 +985,7 @@
                       "description": "\"Source data set\" of the complete review report."
                     },
                     "common:other": {
-                      "type": "string"
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
                     }
                   },
                   "required": [
@@ -1013,7 +1013,7 @@
                   ]
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -1089,7 +1089,7 @@
                           ]
                         },
                         "common:other": {
-                          "type": "string"
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
                         }
                       },
                       "required": [
@@ -1166,7 +1166,7 @@
                             ]
                           },
                           "common:other": {
-                            "type": "string"
+                            "$ref": "tidas_data_types.json#/$defs/CommonOther"
                           }
                         },
                         "required": [
@@ -1184,7 +1184,7 @@
                   ]
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -1192,14 +1192,14 @@
               ]
             },
             "common:other": {
-              "type": "string"
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
             }
           },
           "required": [
             "LCIMethodAndAllocation",
             "validation",
             "complianceDeclarations"
-          ] 
+          ]
         },
         "administrativeInformation": {
           "description": "Information on data set management and administration.",
@@ -1222,7 +1222,7 @@
                   "description": "Documentation of the intended application(s) of data collection and data set modelling. This indicates / includes information on the level of detail, the specifidity, and the quality ambition in the effort."
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -1239,7 +1239,7 @@
                   "description": "\"Contact data set\" of the person(s), working group(s), organisation(s) or database network, that generated the data set, i.e. being responsible for its correctness regarding methods, inventory, and documentation."
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               }
             },
@@ -1267,7 +1267,7 @@
                   "description": "\"Source data set\": Names exclusively the producer or operator of the good, service or technology represented by this data set, which officially has approved this data set in all its parts. In case of nationally or internationally averaged data sets, this will be the respective business association. If no official approval has been given, the entry \"No official approval by producer or operator\" is to be entered and the reference will point to an empty \"Contact data set\". [Notes: The producer or operator may only be named here, if a written approval of this data set was given. A recognition of this data set by any other organisation then the producer/operator of the good, service, or process is not to be stated here, but as a \"review\" in the validation section.]"
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -1307,7 +1307,7 @@
                     "Final draft for external review",
                     "Data set finalised; unpublished",
                     "Under revision",
-                    "Withdrawn", 
+                    "Withdrawn",
                     "Data set finalised; subsystems published",
                     "Data set finalised; entirely published"
                   ]
@@ -1356,7 +1356,7 @@
                   "description": "Access restrictions / use conditions for this data set as free text or referring to e.g. license conditions. In case of no restrictions \"None\" is entered."
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -1368,7 +1368,7 @@
               ]
             },
             "common:other": {
-              "type": "string"
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
             }
           },
           "required": [
@@ -1494,7 +1494,7 @@
                         "description": "\"Source data set\" of data source(s) used for the value of this specific Input or Output, especially if differing from the general data source used for this data set."
                       },
                       "common:other": {
-                        "type": "string"
+                        "$ref": "tidas_data_types.json#/$defs/CommonOther"
                       }
                     }
                   },
@@ -1503,7 +1503,7 @@
                     "description": "General comment on this specific Input or Output, e.g. commenting on the data sources used and their specific representatuveness etc., on the status of \"finalisation\" of an entry as workflow information, etc."
                   },
                   "common:other": {
-                    "type": "string"
+                    "$ref": "tidas_data_types.json#/$defs/CommonOther"
                   }
                 },
                 "required": [
@@ -1517,7 +1517,7 @@
               }
             },
             "common:other": {
-              "type": "string"
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
             }
           },
           "required": [
@@ -1559,7 +1559,7 @@
                       "description": "General comment on this specific Input or Output, e.g. commenting on the data sources used and their specific representatuveness etc., on the status of \"finalisation\" of an entry as workflow information, etc."
                     },
                     "common:other": {
-                      "type": "string"
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
                     }
                   },
                   "required": [
@@ -1598,7 +1598,7 @@
                         "description": "General comment on this specific Input or Output, e.g. commenting on the data sources used and their specific representatuveness etc., on the status of \"finalisation\" of an entry as workflow information, etc."
                       },
                       "common:other": {
-                        "type": "string"
+                        "$ref": "tidas_data_types.json#/$defs/CommonOther"
                       }
                     },
                     "required": [
@@ -1610,12 +1610,12 @@
               ]
             },
             "common:other": {
-              "type": "string"
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
             }
           }
         },
         "common:other": {
-          "type": "string"
+          "$ref": "tidas_data_types.json#/$defs/CommonOther"
         }
       },
       "required": [

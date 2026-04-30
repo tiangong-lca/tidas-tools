@@ -75,7 +75,7 @@
                           }
                         },
                         "common:other": {
-                          "type": "string"
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
                         }
                       },
                       "required": [
@@ -92,7 +92,7 @@
                   "description": "Free text for general information about the data set. E.g. coverage of different unit systems, information sources used, etc."
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -105,10 +105,10 @@
               "type": "object",
               "properties": {
                 "referenceToReferenceUnit": {
-                   "$ref": "tidas_data_types.json#/$defs/Int5"
+                  "$ref": "tidas_data_types.json#/$defs/Int5"
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -116,7 +116,7 @@
               ]
             },
             "common:other": {
-              "type": "string"
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
             }
           },
           "required": [
@@ -148,7 +148,7 @@
                           ]
                         },
                         "common:other": {
-                          "type": "string"
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
                         }
                       },
                       "required": [
@@ -173,7 +173,7 @@
                             ]
                           },
                           "common:other": {
-                            "type": "string"
+                            "$ref": "tidas_data_types.json#/$defs/CommonOther"
                           }
                         },
                         "required": [
@@ -186,7 +186,7 @@
                   ]
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -194,7 +194,7 @@
               ]
             },
             "common:other": {
-              "type": "string"
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
             }
           },
           "required": [
@@ -206,7 +206,7 @@
           "properties": {
             "dataEntryBy": {
               "type": "object",
-               "properties": {
+              "properties": {
                 "common:timeStamp": {
                   "$ref": "tidas_data_types.json#/$defs/dateTime",
                   "description": "Date and time stamp of data set generation, typically an automated entry (\"last saved\")."
@@ -216,7 +216,7 @@
                   "description": "\"Source data set\" of the used version of the ILCD format. If additional data format fields have been integrated into the data set file, using the \"namespace\" option, the used format namespace(s) are to be given. This is the case if the data sets carries additional information as specified by other, particular LCA formats, e.g. of other database networks or LCA softwares."
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -245,7 +245,7 @@
                   "description": "\"Contact data set\" of the person or entity who owns this data set. (Note: this is not necessarily the publisher of the data set.)"
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -254,7 +254,7 @@
               ]
             },
             "common:other": {
-              "type": "string"
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
             }
           },
           "required": [
@@ -284,7 +284,7 @@
                       "description": "General comment on each single unit, typically giving the long name and unit system from which this unit stems, and (if necessary) referring to specifc data sources used, or for workflow purposes about status of \"finalisation\" of an entry etc."
                     },
                     "common:other": {
-                      "type": "string"
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
                     }
                   }
                 },
@@ -312,12 +312,12 @@
               ]
             },
             "common:other": {
-              "type": "string"
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
             }
           }
         },
         "common:other": {
-          "type": "string"
+          "$ref": "tidas_data_types.json#/$defs/CommonOther"
         }
       },
       "required": [

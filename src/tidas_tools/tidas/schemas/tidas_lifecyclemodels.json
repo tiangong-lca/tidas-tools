@@ -66,7 +66,7 @@
                       "description": "Further, quantitative specifying information on the good, service or function in technical term(s): qualifying constituent(s)-content and / or energy-content per unit etc. as appropriate. Separated by commata. (Note: non-qualifying flow properties, CAS No, Synonyms, Chemical formulas etc. are to be documented exclusively in the \"Flow data set\" of the reference flow of this life cycle model.)"
                     },
                     "common:other": {
-                      "type": "string"
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
                     }
                   },
                   "required": [
@@ -232,11 +232,11 @@
                                   }
                                 }
                               }
-                            }      
+                            }
                           ]
                         },
                         "common:other": {
-                          "type": "string"
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
                         }
                       },
                       "required": [
@@ -261,7 +261,7 @@
                   "description": "\"Source data set(s)\" of detailed LCI or LCA study or other study on the process or product represented by this data set, as well as documents / files with overarching documentative information on technology, geographical and / or time aspects etc. on the level of the life cycle model. (Note: can indirectly reference to electronic and online files.)"
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -280,7 +280,7 @@
                   "pattern": "^-?\\d+$"
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -617,13 +617,13 @@
                                 }
                               },
                               "common:other": {
-                                "type": "string"
+                                "$ref": "tidas_data_types.json#/$defs/CommonOther"
                               }
                             },
                             "required": [
-                            "@dataSetInternalID",
-                            "@multiplicationFactor",
-                            "referenceToProcess"
+                              "@dataSetInternalID",
+                              "@multiplicationFactor",
+                              "referenceToProcess"
                             ]
                           }
                         },
@@ -804,8 +804,8 @@
                                                   }
                                                 },
                                                 "required": [
-                                                "@id",
-                                                "@flowUUID"
+                                                  "@id",
+                                                  "@flowUUID"
                                                 ]
                                               }
                                             }
@@ -863,8 +863,8 @@
                                                   }
                                                 },
                                                 "required": [
-                                                "@id",
-                                                "@flowUUID"
+                                                  "@id",
+                                                  "@flowUUID"
                                                 ]
                                               },
                                               {
@@ -891,7 +891,7 @@
                                                       "enum": [
                                                         "true",
                                                         "false"
-                                                      ] 
+                                                      ]
                                                     }
                                                   },
                                                   "required": [
@@ -917,13 +917,13 @@
                               ]
                             },
                             "common:other": {
-                              "type": "string"
+                              "$ref": "tidas_data_types.json#/$defs/CommonOther"
                             }
                           },
                           "required": [
-                          "@dataSetInternalID",
-                          "@multiplicationFactor",
-                          "referenceToProcess"
+                            "@dataSetInternalID",
+                            "@multiplicationFactor",
+                            "referenceToProcess"
                           ]
                         }
                       ]
@@ -935,7 +935,7 @@
                   "description": "\"Source data set\" of the flow diagramm(s), and/or screenshot(s) of the life cycle model represented by this data set. For clearer illustration and documentation of the model. Note: The source data set references the actual picture as jpd or png file or as e.g. pdf file with several pictures."
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -962,7 +962,7 @@
                   "description": "Specific methodological advice for data set users that requires attention. E.g. on inclusion/exclusion of whole life cycle stages, specific use phase behavior to be modelled, and other methodological advices."
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               }
             },
@@ -989,7 +989,7 @@
                           "description": "\"Source data set\" of the complete review report."
                         },
                         "common:other": {
-                          "type": "string"
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
                         }
                       },
                       "required": [
@@ -1014,7 +1014,7 @@
                             "description": "\"Source data set\" of the complete review report."
                           },
                           "common:other": {
-                            "type": "string"
+                            "$ref": "tidas_data_types.json#/$defs/CommonOther"
                           }
                         },
                         "required": [
@@ -1025,7 +1025,7 @@
                   ]
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -1101,7 +1101,7 @@
                           ]
                         },
                         "common:other": {
-                          "type": "string"
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
                         }
                       },
                       "required": [
@@ -1178,7 +1178,7 @@
                             ]
                           },
                           "common:other": {
-                            "type": "string"
+                            "$ref": "tidas_data_types.json#/$defs/CommonOther"
                           }
                         },
                         "required": [
@@ -1196,7 +1196,7 @@
                   ]
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -1204,7 +1204,7 @@
               ]
             },
             "common:other": {
-              "type": "string"
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
             }
           },
           "required": [
@@ -1233,7 +1233,7 @@
                   "description": "Documentation of the intended application(s) of data collection and data set modelling. This indicates / includes information on the level of detail, the specifidity, and the quality ambition in the effort."
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -1250,7 +1250,7 @@
                   "description": "\"Contact data set\" of the person(s), working group(s), organisation(s) or database network, that generated the data set, i.e. being responsible for its correctness regarding methods, inventory, and documentative information."
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               }
             },
@@ -1271,7 +1271,7 @@
                   "description": "\"Contact data set\" of the responsible person or entity that has documented this data set, i.e. entered the data and the descriptive information."
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -1286,7 +1286,7 @@
               "properties": {
                 "common:dataSetVersion": {
                   "type": "string",
-                  "description": "Version number of data set. First two digits refer to major updates, the second two digits to minor revisions and error corrections etc. The third three digits are intended for automatic and internal counting of versions during data set development. Together with the data set's UUID, the \"Data set version\" uniquely identifies each data set." 
+                  "description": "Version number of data set. First two digits refer to major updates, the second two digits to minor revisions and error corrections etc. The third three digits are intended for automatic and internal counting of versions during data set development. Together with the data set's UUID, the \"Data set version\" uniquely identifies each data set."
                 },
                 "common:referenceToPrecedingDataSetVersion": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
@@ -1307,7 +1307,7 @@
                   "enum": [
                     "true",
                     "false"
-                  ] 
+                  ]
                 },
                 "common:referenceToEntitiesWithExclusiveAccess": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
@@ -1329,7 +1329,7 @@
                   "description": "Access restrictions / use conditions for this data set as free text or referring to e.g. license conditions. In case of no restrictions \"None\" is entered."
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -1341,7 +1341,7 @@
               ]
             },
             "common:other": {
-              "type": "string"
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
             }
           },
           "required": [
@@ -1351,7 +1351,7 @@
           ]
         },
         "common:other": {
-          "type": "string"
+          "$ref": "tidas_data_types.json#/$defs/CommonOther"
         }
       },
       "required": [

@@ -167,7 +167,7 @@
                       ]
                     },
                     "common:other": {
-                      "type": "string"
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
                     }
                   },
                   "required": [
@@ -209,18 +209,18 @@
                   "description": "\"Source data set\" of the logo of the organisation or source to be used in reports etc."
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
-                "common:UUID", 
-                "common:shortName", 
+                "common:UUID",
+                "common:shortName",
                 "common:name",
                 "classificationInformation"
               ]
             },
             "common:other": {
-              "type": "string"
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
             }
           },
           "required": [
@@ -242,11 +242,11 @@
                   "description": "\"Source data set\" of the used version of the ILCD format. If additional data format fields have been integrated into the data set file, using the \"namespace\" option, the used format namespace(s) are to be given. This is the case if the data sets carries additional information as specified by other, particular LCA formats, e.g. of other database networks or LCA softwares."
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
-                "common:timeStamp", 
+                "common:timeStamp",
                 "common:referenceToDataSetFormat"
               ]
             },
@@ -271,7 +271,7 @@
                   "description": "\"Contact data set\" of the person or entity who owns this data set. (Note: this is not necessarily the publisher of the data set.)"
                 },
                 "common:other": {
-                  "type": "string"
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
                 }
               },
               "required": [
@@ -280,7 +280,7 @@
               ]
             },
             "common:other": {
-              "type": "string"
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
             }
           },
           "required": [
@@ -289,7 +289,7 @@
           ]
         },
         "common:other": {
-          "type": "string"
+          "$ref": "tidas_data_types.json#/$defs/CommonOther"
         }
       },
       "required": [
@@ -303,7 +303,7 @@
       ]
     },
     "common:other": {
-      "type": "string"
+      "$ref": "tidas_data_types.json#/$defs/CommonOther"
     }
   },
   "required": [

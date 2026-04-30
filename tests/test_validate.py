@@ -111,6 +111,86 @@ def test_string_multilang_schema_accepts_valid_localized_text():
     assert errors == []
 
 
+def test_common_other_schema_accepts_non_common_extension_elements():
+    validator = build_data_type_validator("CommonOther")
+
+    errors = list(
+        validator.iter_errors(
+            {
+                "@xmlns:ecn": "http://echa.europa.eu/schema/ecn",
+                "ecn:ECNumber": "600-786-0",
+                "customElement": {
+                    "@unit": "kg",
+                    "#text": "1.0",
+                },
+            }
+        )
+    )
+
+    assert errors == []
+
+
+def test_common_other_schema_rejects_legacy_string_payload():
+    validator = build_data_type_validator("CommonOther")
+
+    errors = list(validator.iter_errors("legacy extension text"))
+
+    assert errors
+
+
+def test_common_other_schema_requires_extension_content():
+    validator = build_data_type_validator("CommonOther")
+
+    assert list(validator.iter_errors({}))
+    assert list(
+        validator.iter_errors({"@xmlns:ecn": "http://echa.europa.eu/schema/ecn"})
+    )
+
+
+def test_common_other_schema_rejects_common_namespace_children():
+    validator = build_data_type_validator("CommonOther")
+
+    errors = list(validator.iter_errors({"common:note": "not allowed here"}))
+
+    assert errors
+
+
+def test_common_other_schema_references_common_other_definition():
+    schema_dir = pkg_resources.files(schemas)
+    expected = {"$ref": "tidas_data_types.json#/$defs/CommonOther"}
+    mismatches = []
+
+    for schema_file_path in sorted(
+        item
+        for item in schema_dir.iterdir()
+        if item.name.startswith("tidas_") and item.name.endswith(".json")
+    ):
+        if schema_file_path.name in {
+            "tidas_data_types.json",
+            "tidas_flows_elementary_category.json",
+            "tidas_flows_product_category.json",
+            "tidas_processes_category.json",
+        }:
+            continue
+
+        schema = json.loads(schema_file_path.read_text(encoding="utf-8"))
+
+        def walk(node, path=""):
+            if isinstance(node, dict):
+                for key, value in node.items():
+                    child_path = f"{path}/{key}" if path else key
+                    if key == "common:other" and value != expected:
+                        mismatches.append(f"{schema_file_path.name}:{child_path}")
+                    walk(value, child_path)
+            elif isinstance(node, list):
+                for index, value in enumerate(node):
+                    walk(value, f"{path}/{index}")
+
+        walk(schema)
+
+    assert mismatches == []
+
+
 def test_validate_localized_text_language_constraints_reports_nested_paths():
     payload = {
         "processDataSet": {

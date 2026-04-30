@@ -191,6 +191,54 @@
         }
       ]
     },
+    "AnyXmlElement": {
+      "description": "JSON representation of an arbitrary XML element payload.",
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/AnyXmlElement"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/AnyXmlElement"
+          }
+        }
+      ]
+    },
+    "CommonOther": {
+      "description": "ILCD common:other extension container. The container must include at least one non-common extension element; namespace declarations are allowed but do not count as extension content.",
+      "type": "object",
+      "patternProperties": {
+        "^@xmlns(:[A-Za-z_][A-Za-z0-9_.-]*)?$": {
+          "type": "string"
+        },
+        "^(?!(common|xmlns):)([A-Za-z_][A-Za-z0-9_.-]*:)?[A-Za-z_][A-Za-z0-9_.-]*$": {
+          "$ref": "#/$defs/AnyXmlElement"
+        }
+      },
+      "additionalProperties": false,
+      "not": {
+        "propertyNames": {
+          "pattern": "^@xmlns(:[A-Za-z_][A-Za-z0-9_.-]*)?$"
+        }
+      }
+    },
     "GlobalReferenceType": {
       "description": "Represents a reference to another dataset or file. In TIDAS, references must include type, refObjectId, version, uri, and shortDescription.",
       "anyOf": [
