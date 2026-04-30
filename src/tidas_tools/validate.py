@@ -9,12 +9,21 @@ import sys
 from jsonschema import Draft7Validator
 from referencing import Registry
 from referencing.jsonschema import DRAFT7
-from .tidas_log import setup_logging
-from .validation_report import (
-    ValidationIssue,
-    build_category_report,
-    build_package_report,
-)
+
+if __package__:
+    from .tidas_log import setup_logging
+    from .validation_report import (
+        ValidationIssue,
+        build_category_report,
+        build_package_report,
+    )
+else:
+    from tidas_tools.tidas_log import setup_logging
+    from tidas_tools.validation_report import (
+        ValidationIssue,
+        build_category_report,
+        build_package_report,
+    )
 
 import tidas_tools.tidas.schemas as schemas
 
