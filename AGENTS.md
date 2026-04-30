@@ -25,8 +25,8 @@ checkPaths:
   - tests/**
   - test_data/**
   - .github/workflows/**
-lastReviewedAt: 2026-04-24
-lastReviewedCommit: d71f5dfa68aa49e10860ba6912a7c7ee91509989
+lastReviewedAt: 2026-04-30
+lastReviewedCommit: 745103e0005800aa00587e615516286c70e9fb15
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md
