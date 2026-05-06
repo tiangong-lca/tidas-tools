@@ -20,8 +20,8 @@ checkPaths:
   - pyproject.toml
   - src/tidas_tools/**
   - .github/workflows/**
-lastReviewedAt: 2026-04-30
-lastReviewedCommit: 745103e0005800aa00587e615516286c70e9fb15
+lastReviewedAt: 2026-05-06
+lastReviewedCommit: 1137823f533dbef0be5d98fd14e5f22776d68830
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
