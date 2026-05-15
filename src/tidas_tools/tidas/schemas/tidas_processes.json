@@ -604,7 +604,7 @@
                   "description": "Percentage of the overall supply, consumption, or production of the specific good, service, or technology represented by this data set, in the region/market of the stated \"Location\". For multi-functional processes the market share of the specific technology is stated. If data that is representative for a process operated in one \"Location\" is used for another \"Location\", the entry is '0'. The representativity for the original \"Location\" is documented in the field \"Deviation from data treatment and extrapolation principles, explanations\"."
                 },
                 "annualSupplyOrProductionVolume": {
-                  "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                  "$ref": "tidas_data_types.json#/$defs/Real",
                   "description": "Supply / consumption or production volume of the specific good, service, or technology in the region/market of the stated \"Location\". The market volume is given in absolute numbers per year, in common units, for the stated \"Reference year\". For multi-fucntional processes the data should be given for all co-functions (good and services)."
                 },
                 "samplingProcedure": {
@@ -629,7 +629,8 @@
               },
               "required": [
                 "dataCutOffAndCompletenessPrinciples",
-                "referenceToDataSource"
+                "referenceToDataSource",
+                "annualSupplyOrProductionVolume"
               ]
             },
             "completeness": {
