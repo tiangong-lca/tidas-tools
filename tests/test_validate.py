@@ -25,6 +25,29 @@ def build_data_type_validator(definition_name):
     )
 
 
+def load_tidas_schema(schema_name):
+    schema_file_path = pkg_resources.files(schemas) / schema_name
+    with schema_file_path.open() as schema_file:
+        return json.load(schema_file)
+
+
+def test_process_supply_volume_schema_contract():
+    schema = load_tidas_schema("tidas_processes.json")
+    data_sources_schema = schema["properties"]["processDataSet"]["properties"][
+        "modellingAndValidation"
+    ]["properties"]["dataSourcesTreatmentAndRepresentativeness"]
+
+    properties = data_sources_schema["properties"]
+
+    assert properties["annualSupplyOrProductionVolume"]["$ref"] == (
+        "tidas_data_types.json#/$defs/Real"
+    )
+    assert properties["percentageSupplyOrProductionCovered"]["$ref"] == (
+        "tidas_data_types.json#/$defs/Perc"
+    )
+    assert "annualSupplyOrProductionVolume" in data_sources_schema["required"]
+
+
 def test_category_validate(tmp_path):
     sources_dir = tmp_path / "sources"
     sources_dir.mkdir()
