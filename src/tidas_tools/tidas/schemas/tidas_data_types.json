@@ -83,6 +83,36 @@
         }
       ]
     },
+    "AnnualSupplyOrProductionVolumeTextItem": {
+      "description": "Language-tagged annual supply or production volume text. The text must start with a real number followed by whitespace and a non-empty unit or context suffix.",
+      "allOf": [
+        {
+          "$ref": "#/$defs/LocalizedText500Item"
+        },
+        {
+          "properties": {
+            "#text": {
+              "pattern": "^[+-]?(\\d+(\\.\\d*)?|\\.\\d+)([Ee][+-]?\\d+)?\\s+\\S.*$"
+            }
+          }
+        }
+      ]
+    },
+    "AnnualSupplyOrProductionVolumeMultiLang": {
+      "description": "Multi-language annual supply or production volume text with a numeric prefix and unit or context suffix.",
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AnnualSupplyOrProductionVolumeTextItem"
+          },
+          "uniqueItems": true
+        },
+        {
+          "$ref": "#/$defs/AnnualSupplyOrProductionVolumeTextItem"
+        }
+      ]
+    },
     "LocalizedText1000Item": {
       "description": "Language-tagged text with a maximum length of 1000 characters.",
       "allOf": [

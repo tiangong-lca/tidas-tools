@@ -40,12 +40,50 @@ def test_process_supply_volume_schema_contract():
     properties = data_sources_schema["properties"]
 
     assert properties["annualSupplyOrProductionVolume"]["$ref"] == (
-        "tidas_data_types.json#/$defs/Real"
+        "tidas_data_types.json#/$defs/AnnualSupplyOrProductionVolumeMultiLang"
     )
     assert properties["percentageSupplyOrProductionCovered"]["$ref"] == (
         "tidas_data_types.json#/$defs/Perc"
     )
     assert "annualSupplyOrProductionVolume" in data_sources_schema["required"]
+
+
+def test_annual_supply_volume_multilang_accepts_numeric_text_with_suffix():
+    validator = build_data_type_validator("AnnualSupplyOrProductionVolumeMultiLang")
+
+    assert (
+        list(validator.iter_errors({"@xml:lang": "en", "#text": "123 kg/year"})) == []
+    )
+    assert (
+        list(
+            validator.iter_errors(
+                [
+                    {"@xml:lang": "en", "#text": "1.23E+4 kg/year"},
+                    {"@xml:lang": "zh-CN", "#text": "123 千克/年"},
+                ]
+            )
+        )
+        == []
+    )
+
+
+def test_annual_supply_volume_multilang_rejects_missing_suffix():
+    validator = build_data_type_validator("AnnualSupplyOrProductionVolumeMultiLang")
+
+    assert list(validator.iter_errors({"@xml:lang": "en", "#text": "123"}))
+    assert list(validator.iter_errors({"@xml:lang": "en", "#text": "123 "}))
+
+
+def test_annual_supply_volume_multilang_rejects_non_numeric_prefix():
+    validator = build_data_type_validator("AnnualSupplyOrProductionVolumeMultiLang")
+
+    assert list(validator.iter_errors({"@xml:lang": "en", "#text": "abc kg/year"}))
+
+
+def test_annual_supply_volume_multilang_keeps_localized_language_rules():
+    validator = build_data_type_validator("AnnualSupplyOrProductionVolumeMultiLang")
+
+    assert list(validator.iter_errors({"@xml:lang": "en", "#text": "123 千克/年"}))
 
 
 def test_category_validate(tmp_path):
