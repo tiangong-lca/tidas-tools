@@ -1394,8 +1394,15 @@
                     "description": "\"Flow data set\" of this Input or Output."
                   },
                   "location": {
-                    "$ref": "tidas_data_types.json#/$defs/String",
-                    "description": "Location where exchange of elementary flow occurs. Used only for those LCIA methods, that make use of this information. This information refers to the entry within the same field in the \"Inputs and Outpts\" section of the \"Process or LCI result data set\"."
+                    "description": "Location where exchange of elementary flow occurs. For technosphere input exchanges this field may also identify the explicit supply-region anchor used by downstream provider-linking logic. Canonical values should use the predefined TIDAS/ILCD location category codes, while legacy non-empty string values remain accepted for external data compatibility.",
+                    "anyOf": [
+                      {
+                        "$ref": "tidas_locations_category.json"
+                      },
+                      {
+                        "$ref": "tidas_data_types.json#/$defs/String"
+                      }
+                    ]
                   },
                   "functionType": {
                     "type": "string",

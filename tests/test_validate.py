@@ -2,10 +2,12 @@ import importlib.resources as pkg_resources
 import json
 
 from jsonschema import Draft7Validator
+from referencing import Registry
 
 import tidas_tools.tidas.schemas as schemas
 from tidas_tools.validate import (
     category_validate,
+    retrieve_schema,
     validate_package_dir,
     validate_localized_text_language_constraints,
 )
@@ -31,6 +33,17 @@ def load_tidas_schema(schema_name):
         return json.load(schema_file)
 
 
+def build_tidas_schema_fragment_validator(schema_fragment):
+    return Draft7Validator(schema_fragment, registry=Registry(retrieve=retrieve_schema))
+
+
+def process_exchange_location_schema():
+    schema = load_tidas_schema("tidas_processes.json")
+    return schema["properties"]["processDataSet"]["properties"]["exchanges"][
+        "properties"
+    ]["exchange"]["items"]["properties"]["location"]
+
+
 def test_process_supply_volume_schema_contract():
     schema = load_tidas_schema("tidas_processes.json")
     data_sources_schema = schema["properties"]["processDataSet"]["properties"][
@@ -46,6 +59,36 @@ def test_process_supply_volume_schema_contract():
         "tidas_data_types.json#/$defs/Perc"
     )
     assert "annualSupplyOrProductionVolume" in data_sources_schema["required"]
+
+
+def test_process_exchange_location_schema_prefers_location_codes_but_keeps_string_compatibility():
+    location_schema = process_exchange_location_schema()
+
+    assert location_schema["anyOf"] == [
+        {"$ref": "tidas_locations_category.json"},
+        {"$ref": "tidas_data_types.json#/$defs/String"},
+    ]
+    assert "StringMultiLang" not in json.dumps(location_schema)
+
+
+def test_process_exchange_location_accepts_location_code_and_legacy_string():
+    validator = build_tidas_schema_fragment_validator(
+        process_exchange_location_schema()
+    )
+
+    assert list(validator.iter_errors("CN")) == []
+    assert list(validator.iter_errors("GLO")) == []
+    assert list(validator.iter_errors("Legacy plant area")) == []
+
+
+def test_process_exchange_location_rejects_empty_and_multilang_shapes():
+    validator = build_tidas_schema_fragment_validator(
+        process_exchange_location_schema()
+    )
+
+    assert list(validator.iter_errors(""))
+    assert list(validator.iter_errors({"@xml:lang": "en", "#text": "CN"}))
+    assert list(validator.iter_errors([{"@xml:lang": "en", "#text": "CN"}]))
 
 
 def test_annual_supply_volume_multilang_accepts_numeric_text_with_suffix():
