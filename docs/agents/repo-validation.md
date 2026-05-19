@@ -25,8 +25,8 @@ checkPaths:
   - .githooks/pre-push
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-05-18
-lastReviewedCommit: 2bdd98c2339193752c3b968513c04c9aa64b4643
+lastReviewedAt: 2026-05-19
+lastReviewedCommit: c5dbc9efe3c8af0817dd30a29594bd14830d0054
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -50,7 +50,7 @@ Use narrower manual probes only when the task touches one CLI surface and full t
 | Change type | Minimum local proof | Additional proof when risk is higher | Notes |
 | --- | --- | --- | --- |
 | `convert.py` or eILCD asset changes | `uv run pytest`; `uv run python src/tidas_tools/convert.py --help` | run one representative conversion path if the task explicitly changes data transformation behavior | Keep packaged asset and conversion logic aligned. |
-| `validate.py`, `validation_report.py`, or TIDAS schema changes | `uv run pytest`; `uv run python src/tidas_tools/validate.py --help` | run one representative validation path and record entity types touched | Validation categories and packaged schemas both matter here. |
+| `validate.py`, `validation_report.py`, TIDAS schema changes, or eILCD schema validation changes | `uv run pytest`; `uv run python src/tidas_tools/validate.py --help` | run one representative TIDAS JSON or eILCD/ILCD XML validation path and record entity types touched | Validation categories, packaged JSON schemas, and packaged XSD schemas all matter here. |
 | `export.py` or `package_versions.py` changes | `uv run pytest`; `uv run python src/tidas_tools/export.py --help` | if the task includes live export proof, record the DB and storage assumptions separately | Export behavior depends on external DB and object-storage state. |
 | packaged methodology or schema asset changes | `uv run pytest` | record whether `tidas-sdk` follow-up is required; run the relevant manual probe if a specific CLI surface depends on the asset | These paths are the current executable upstream for downstream package refresh. |
 | workflow or release automation changes | `uv run pytest` | inspect the touched workflow and record any tag or dispatch assumptions checked locally | Downstream dispatch and tag-based publish are separate from local tool tests. |
@@ -61,7 +61,7 @@ Use narrower manual probes only when the task touches one CLI surface and full t
 A good PR note for this repo should say:
 
 1. whether `uv run pytest` ran
-2. which manual CLI probes ran, if any
+2. which manual CLI probes ran, if any, including the data format used for validation probes
 3. whether downstream `tidas-sdk` follow-up is required
 4. whether any export proof is deferred because it depends on live DB or storage state
 

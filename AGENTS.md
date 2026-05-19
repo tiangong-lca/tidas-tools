@@ -28,8 +28,8 @@ checkPaths:
   - .githooks/**
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-05-18
-lastReviewedCommit: 2bdd98c2339193752c3b968513c04c9aa64b4643
+lastReviewedAt: 2026-05-19
+lastReviewedCommit: c5dbc9efe3c8af0817dd30a29594bd14830d0054
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md
@@ -79,6 +79,7 @@ Keep these entry-level facts in `AGENTS.md`. Use `README.md`, `README_CN.md`, an
 - routine PR base: `main`
 - canonical setup: `uv sync --dev`
 - canonical local test command: `uv run pytest`
+- after every code fix, run Black lint before final validation: `uv run black --check --target-version py313 src tests`
 - common manual probes:
   - `uv run python src/tidas_tools/convert.py --help`
   - `uv run python src/tidas_tools/validate.py --help`

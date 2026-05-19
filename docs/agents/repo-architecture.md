@@ -23,8 +23,8 @@ checkPaths:
   - .githooks/pre-push
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-05-18
-lastReviewedCommit: 2bdd98c2339193752c3b968513c04c9aa64b4643
+lastReviewedAt: 2026-05-19
+lastReviewedCommit: c5dbc9efe3c8af0817dd30a29594bd14830d0054
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -59,7 +59,7 @@ This repo packages standalone tooling plus the schema, methodology, and styleshe
 
 ### Validation
 
-`validate.py` plus `validation_report.py` own standalone validation semantics and structured reporting.
+`validate.py` plus `validation_report.py` own standalone validation semantics and structured reporting. The validator covers TIDAS JSON with packaged JSON schemas and eILCD/ILCD XML with packaged XSD schemas.
 
 ### Export
 

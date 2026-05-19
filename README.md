@@ -7,16 +7,17 @@
 
 [English](https://github.com/tiangong-lca/tidas-tools/blob/main/README.md) | [中文](https://github.com/tiangong-lca/tidas-tools/blob/main/README_CN.md)
 
-This toolkit is used for conversion and validation of TianGong TIDAS data formats.
+This toolkit is used for conversion and validation of TianGong TIDAS and eILCD/ILCD data formats.
 
 ---
 
 ## 1. Introduction
 
-This toolkit contains two independent tools:
+This toolkit contains these independent tools:
 
 - **TIDAS and eILCD Data Format Conversion Tool**
-- **TIDAS Data Validation Tool**
+- **TIDAS and eILCD/ILCD Data Validation Tool**
+- **TIDAS and eILCD Data Export Tool**
 
 ---
 
@@ -59,25 +60,29 @@ tidas-convert --input-dir <eILCD_data_directory> --output-dir <TIDAS_output_dire
 
 ---
 
-## 3. TIDAS Data Validation Tool Usage
+## 3. TIDAS and eILCD/ILCD Data Validation Tool Usage
 
 ### (1) Tool Functionalities
 
-This tool validates whether TIDAS data complies with the specified format standards.
+This tool validates whether TIDAS JSON data or eILCD/ILCD XML data complies with the packaged schema standards.
 
 ### (2) Command-line Arguments
 
 | Argument | Short form | Description |
 |----------|------------|-------------|
 | `--help` | `-h` | Display help message |
-| `--input-dir` | `-i` | Directory containing TIDAS data to validate (note: this directory must directly contain the data files, not their parent directory) |
+| `--input-dir` | `-i` | Directory containing data to validate |
 | `--verbose` | `-v` | Enable verbose logging |
+| `--data-format` | | Input data format to validate: `tidas`, `ilcd`, or `eilcd` (default: `tidas`) |
 
 ### (3) Usage Example
 
 ```bash
 # Validate TIDAS data format
-tidas-validate --input-dir <TIDAS_data_directory>
+tidas-validate --input-dir <TIDAS_data_directory> --data-format tidas
+
+# Validate eILCD/ILCD XML data format
+tidas-validate --input-dir <eILCD_data_directory> --data-format ilcd
 ```
 
 ## 4. TIDAS Export Tool Documentation
@@ -204,12 +209,15 @@ uv run python src/tidas_tools/convert.py -i <TIDAS_data_directory> -o <eILCD_dat
 # Test converting eILCD data to TIDAS format
 uv run python src/tidas_tools/convert.py --input-dir <eILCD_data_directory> --output-dir <TIDAS_data_directory> --to-tidas
 
-# Test TIDAS data validation functionality
+# Test TIDAS and eILCD/ILCD data validation functionality
 # Execute automated tests
 uv run pytest
 
 # Validate TIDAS data
-uv run python src/tidas_tools/validate.py -i <eILCD_data_directory>
+uv run python src/tidas_tools/validate.py -i <TIDAS_data_directory> --data-format tidas
+
+# Validate eILCD/ILCD data
+uv run python src/tidas_tools/validate.py -i <eILCD_data_directory> --data-format ilcd
 ```
 
 ---

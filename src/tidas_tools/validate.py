@@ -5,8 +5,11 @@ import logging
 import os
 import re
 import sys
+from collections import defaultdict
+from pathlib import Path
 
 from jsonschema import Draft7Validator
+from lxml import etree
 from referencing import Registry
 from referencing.jsonschema import DRAFT7
 
@@ -26,6 +29,7 @@ else:
     )
 
 import tidas_tools.tidas.schemas as schemas
+import tidas_tools.eilcd.schemas as eilcd_schemas
 
 CHINESE_CHARACTER_RE = re.compile(r"[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]")
 SUPPORTED_CATEGORIES = [
@@ -38,6 +42,53 @@ SUPPORTED_CATEGORIES = [
     "sources",
     "unitgroups",
 ]
+ILCD_SCHEMA_BY_ROOT = {
+    ("http://lca.jrc.it/ILCD/Wrapper", "ILCD"): ("wrapper", "ILCD_ILCD.xsd"),
+    ("http://lca.jrc.it/ILCD/Contact", "contactDataSet"): (
+        "contacts",
+        "ILCD_ContactDataSet.xsd",
+    ),
+    ("http://lca.jrc.it/ILCD/FlowProperty", "flowPropertyDataSet"): (
+        "flowproperties",
+        "ILCD_FlowPropertyDataSet.xsd",
+    ),
+    ("http://lca.jrc.it/ILCD/Flow", "flowDataSet"): (
+        "flows",
+        "ILCD_FlowDataSet.xsd",
+    ),
+    ("http://lca.jrc.it/ILCD/LCIAMethod", "LCIAMethodDataSet"): (
+        "lciamethods",
+        "ILCD_LCIAMethodDataSet.xsd",
+    ),
+    (
+        "http://eplca.jrc.ec.europa.eu/ILCD/LifeCycleModel/2017",
+        "lifeCycleModelDataSet",
+    ): ("lifecyclemodels", "ILCD_LifeCycleModelDataSet.xsd"),
+    ("http://lca.jrc.it/ILCD/Process", "processDataSet"): (
+        "processes",
+        "ILCD_ProcessDataSet.xsd",
+    ),
+    ("http://lca.jrc.it/ILCD/Source", "sourceDataSet"): (
+        "sources",
+        "ILCD_SourceDataSet.xsd",
+    ),
+    ("http://lca.jrc.it/ILCD/UnitGroup", "unitGroupDataSet"): (
+        "unitgroups",
+        "ILCD_UnitGroupDataSet.xsd",
+    ),
+    ("http://lca.jrc.it/ILCD/Categories", "CategorySystem"): (
+        "categories",
+        "ILCD_Categories.xsd",
+    ),
+    ("http://lca.jrc.it/ILCD/Locations", "ILCDLocations"): (
+        "locations",
+        "ILCD_Locations.xsd",
+    ),
+    ("http://lca.jrc.it/ILCD/LCIAMethodologies", "ILCDLCIAMethodologies"): (
+        "lciamethodologies",
+        "ILCD_LCIAMethodologies.xsd",
+    ),
+}
 
 
 def validate_elementary_flows_classification_hierarchy(class_items):
@@ -265,9 +316,9 @@ def _collect_classification_issues(json_item: dict, category: str, file_path: st
     issues = []
     try:
         if category == "flows":
-            data_set_type = json_item["flowDataSet"]["modellingAndValidation"]["LCIMethod"][
-                "typeOfDataSet"
-            ]
+            data_set_type = json_item["flowDataSet"]["modellingAndValidation"][
+                "LCIMethod"
+            ]["typeOfDataSet"]
             if data_set_type == "Product flow":
                 validation_result = validate_product_flows_classification_hierarchy(
                     json_item["flowDataSet"]["flowInformation"]["dataSetInformation"][
@@ -358,7 +409,9 @@ def _collect_classification_issues(json_item: dict, category: str, file_path: st
     return issues
 
 
-def _collect_item_issues(validator: Draft7Validator, json_item: dict, category: str, file_path: str):
+def _collect_item_issues(
+    validator: Draft7Validator, json_item: dict, category: str, file_path: str
+):
     issues = []
     try:
         for schema_error in validator.iter_errors(json_item):
@@ -457,7 +510,9 @@ def category_validate(json_file_path: str, category: str, emit_logs: bool = True
                     )
                     continue
 
-                item_issues = _collect_item_issues(validator, json_item, category, full_path)
+                item_issues = _collect_item_issues(
+                    validator, json_item, category, full_path
+                )
                 issues.extend(item_issues)
 
                 if emit_logs:
@@ -497,6 +552,181 @@ def validate_package_dir(input_dir: str, emit_logs: bool = False):
     return build_package_report(input_dir, category_reports)
 
 
+def _split_xml_tag(tag: str) -> tuple[str, str]:
+    if tag.startswith("{") and "}" in tag:
+        namespace, local_name = tag[1:].split("}", 1)
+        return namespace, local_name
+    return "", tag
+
+
+def _iter_ilcd_xml_files(input_dir: str):
+    root = Path(input_dir)
+    data_root = root / "data"
+    search_root = data_root if data_root.is_dir() else root
+
+    for xml_path in sorted(search_root.rglob("*.xml")):
+        if not xml_path.is_file():
+            continue
+        if xml_path.name == "reference_types.xml":
+            continue
+        if search_root == root:
+            relative_parts = xml_path.relative_to(root).parts[:-1]
+            if "schemas" in relative_parts or "stylesheets" in relative_parts:
+                continue
+        yield xml_path
+
+
+def _build_ilcd_schema(schema_filename: str):
+    schema_path = pkg_resources.files(eilcd_schemas) / schema_filename
+    schema_doc = etree.parse(str(schema_path))
+    return etree.XMLSchema(schema_doc)
+
+
+def _lxml_error_to_issue(
+    *,
+    issue_code: str,
+    category: str,
+    file_path: str,
+    error,
+) -> ValidationIssue:
+    line = getattr(error, "line", None)
+    column = getattr(error, "column", None)
+    path = getattr(error, "path", None)
+    location = path or "<root>"
+    if line:
+        location = f"{location}:line {line}"
+        if column:
+            location = f"{location}:column {column}"
+
+    context = {
+        "domain": getattr(error, "domain_name", None),
+        "level": getattr(error, "level_name", None),
+        "type": getattr(error, "type_name", None),
+        "line": line,
+        "column": column,
+    }
+    return _make_issue(
+        issue_code=issue_code,
+        category=category,
+        file_path=file_path,
+        location=location,
+        message=getattr(error, "message", str(error)),
+        context={key: value for key, value in context.items() if value is not None},
+    )
+
+
+def validate_ilcd_file(
+    xml_file_path: str | Path,
+    schema_cache: dict[str, etree.XMLSchema] | None = None,
+):
+    schema_cache = schema_cache if schema_cache is not None else {}
+    file_path = str(xml_file_path)
+    parser = etree.XMLParser(resolve_entities=False, no_network=True)
+
+    try:
+        document = etree.parse(file_path, parser)
+    except etree.XMLSyntaxError as e:
+        issues = [
+            _lxml_error_to_issue(
+                issue_code="invalid_xml",
+                category="ilcd",
+                file_path=file_path,
+                error=error,
+            )
+            for error in e.error_log
+        ]
+        if not issues:
+            issues.append(
+                _make_issue(
+                    issue_code="invalid_xml",
+                    category="ilcd",
+                    file_path=file_path,
+                    message=str(e),
+                )
+            )
+        return "ilcd", issues
+
+    namespace, local_name = _split_xml_tag(document.getroot().tag)
+    schema_info = ILCD_SCHEMA_BY_ROOT.get((namespace, local_name))
+    if schema_info is None:
+        return (
+            "ilcd",
+            [
+                _make_issue(
+                    issue_code="unsupported_ilcd_root",
+                    category="ilcd",
+                    file_path=file_path,
+                    location=f"/{local_name}",
+                    message=(
+                        "Unsupported ILCD XML root element "
+                        f"{{{namespace}}}{local_name}"
+                    ),
+                    context={"namespace": namespace, "local_name": local_name},
+                )
+            ],
+        )
+
+    category, schema_filename = schema_info
+    try:
+        schema = schema_cache.get(schema_filename)
+        if schema is None:
+            schema = _build_ilcd_schema(schema_filename)
+            schema_cache[schema_filename] = schema
+    except etree.XMLSchemaParseError as e:
+        return (
+            category,
+            [
+                _lxml_error_to_issue(
+                    issue_code="ilcd_schema_load_error",
+                    category=category,
+                    file_path=file_path,
+                    error=error,
+                )
+                for error in e.error_log
+            ],
+        )
+
+    if schema.validate(document):
+        return category, []
+
+    return (
+        category,
+        [
+            _lxml_error_to_issue(
+                issue_code="ilcd_schema_error",
+                category=category,
+                file_path=file_path,
+                error=error,
+            )
+            for error in schema.error_log
+        ],
+    )
+
+
+def validate_ilcd_package_dir(input_dir: str, emit_logs: bool = False):
+    schema_cache: dict[str, etree.XMLSchema] = {}
+    issues_by_category: dict[str, list[ValidationIssue]] = defaultdict(list)
+    seen_categories = set()
+
+    for xml_file_path in _iter_ilcd_xml_files(input_dir):
+        category, issues = validate_ilcd_file(xml_file_path, schema_cache=schema_cache)
+        seen_categories.add(category)
+        issues_by_category[category].extend(issues)
+
+        if emit_logs:
+            if issues:
+                for issue in issues:
+                    logging.error(f"ERROR: {xml_file_path} {issue.message}")
+            else:
+                logging.info(f"INFO: {xml_file_path} PASSED.")
+
+    category_reports = [
+        build_category_report(category, issues_by_category[category])
+        for category in sorted(seen_categories)
+    ]
+    return build_package_report(input_dir, category_reports)
+
+
 def main():
     parser = argparse.ArgumentParser(description="TIDAS format validator.")
     parser.add_argument(
@@ -509,19 +739,38 @@ def main():
         "--verbose", "-v", action="store_true", help="Enable verbose logging"
     )
     parser.add_argument(
-        "--format",
+        "--report-format",
         choices=["text", "json"],
         default="text",
-        help="Output format. Defaults to text logging.",
+        help=(
+            "Validation report output format. This does not change the input "
+            "data format. Defaults to text logging."
+        ),
+    )
+    parser.add_argument(
+        "--data-format",
+        choices=["tidas", "ilcd", "eilcd"],
+        default="tidas",
+        help="Input data format to validate. Defaults to TIDAS JSON.",
     )
     try:
         args = parser.parse_args()
 
-        if args.format == "text":
+        if not args.input_dir:
+            parser.error("the following arguments are required: --input-dir/-i")
+
+        data_format = "ilcd" if args.data_format == "eilcd" else args.data_format
+        if args.report_format == "text":
             setup_logging(args.verbose, "validate")
-            report = validate_package_dir(args.input_dir, emit_logs=True)
+            if data_format == "ilcd":
+                report = validate_ilcd_package_dir(args.input_dir, emit_logs=True)
+            else:
+                report = validate_package_dir(args.input_dir, emit_logs=True)
         else:
-            report = validate_package_dir(args.input_dir, emit_logs=False)
+            if data_format == "ilcd":
+                report = validate_ilcd_package_dir(args.input_dir, emit_logs=False)
+            else:
+                report = validate_package_dir(args.input_dir, emit_logs=False)
             print(json.dumps(report, indent=2, ensure_ascii=False))
 
         if not report["ok"]:
