@@ -36,7 +36,9 @@ def summarize_issues(issues: list[ValidationIssue]) -> dict[str, int]:
     }
 
 
-def build_category_report(category: str, issues: list[ValidationIssue]) -> dict[str, Any]:
+def build_category_report(
+    category: str, issues: list[ValidationIssue]
+) -> dict[str, Any]:
     return {
         "category": category,
         "ok": len(issues) == 0,

@@ -4,10 +4,12 @@ import json
 from jsonschema import Draft7Validator
 from referencing import Registry
 
+import tidas_tools.eilcd.stylesheets as eilcd_stylesheets
 import tidas_tools.tidas.schemas as schemas
 from tidas_tools.validate import (
     category_validate,
     retrieve_schema,
+    validate_ilcd_package_dir,
     validate_package_dir,
     validate_localized_text_language_constraints,
 )
@@ -179,6 +181,61 @@ def test_validate_package_dir_returns_structured_report(tmp_path):
     assert report["summary"]["issue_count"] >= 1
     assert report["summary"]["error_count"] >= 1
     assert report["issues"][0]["category"] == "sources"
+
+
+def test_validate_ilcd_package_dir_accepts_valid_location_xml(tmp_path):
+    source_path = pkg_resources.files(eilcd_stylesheets) / "ILCDLocations_Reference.xml"
+    xml_path = tmp_path / "ILCDLocations.xml"
+    xml_path.write_text(source_path.read_text(encoding="utf-8"), encoding="utf-8")
+
+    report = validate_ilcd_package_dir(str(tmp_path))
+
+    assert report["ok"] is True
+    assert report["summary"]["category_count"] == 1
+    assert report["categories"][0]["category"] == "locations"
+
+
+def test_validate_ilcd_package_dir_returns_schema_errors(tmp_path):
+    xml_path = tmp_path / "bad-locations.xml"
+    xml_path.write_text(
+        '<ILCDLocations xmlns="http://lca.jrc.it/ILCD/Locations"/>',
+        encoding="utf-8",
+    )
+
+    report = validate_ilcd_package_dir(str(tmp_path))
+
+    assert report["ok"] is False
+    assert report["summary"]["issue_count"] == 1
+    issue = report["issues"][0]
+    assert issue["issue_code"] == "ilcd_schema_error"
+    assert issue["category"] == "locations"
+    assert issue["file_path"].endswith("bad-locations.xml")
+
+
+def test_validate_ilcd_package_dir_rejects_unknown_xml_roots(tmp_path):
+    xml_path = tmp_path / "unknown.xml"
+    xml_path.write_text("<custom />", encoding="utf-8")
+
+    report = validate_ilcd_package_dir(str(tmp_path))
+
+    assert report["ok"] is False
+    assert report["issues"][0]["issue_code"] == "unsupported_ilcd_root"
+
+
+def test_validate_ilcd_package_dir_skips_packaged_stylesheet_helpers(tmp_path):
+    data_dir = tmp_path / "data"
+    stylesheets_dir = tmp_path / "stylesheets"
+    data_dir.mkdir()
+    stylesheets_dir.mkdir()
+    (stylesheets_dir / "reference_types.xml").write_text(
+        "<referenceTypes />",
+        encoding="utf-8",
+    )
+
+    report = validate_ilcd_package_dir(str(tmp_path))
+
+    assert report["ok"] is True
+    assert report["summary"]["category_count"] == 0
 
 
 def test_string_multilang_schema_requires_chinese_for_zh():

@@ -59,7 +59,7 @@ This repo packages standalone tooling plus the schema, methodology, and styleshe
 
 ### Validation
 
-`validate.py` plus `validation_report.py` own standalone validation semantics and structured reporting.
+`validate.py` plus `validation_report.py` own standalone validation semantics and structured reporting. The validator covers TIDAS JSON with packaged JSON schemas and eILCD/ILCD XML with packaged XSD schemas.
 
 ### Export
 

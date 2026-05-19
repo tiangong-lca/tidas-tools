@@ -203,21 +203,27 @@ def _normalize_payload_references(
                         changed = True
 
             if key in node:
-                changed = _normalize_payload_references(
-                    node[key],
-                    latest_versions=latest_versions,
-                    versions_by_dataset=versions_by_dataset,
-                    summary=summary,
-                ) or changed
+                changed = (
+                    _normalize_payload_references(
+                        node[key],
+                        latest_versions=latest_versions,
+                        versions_by_dataset=versions_by_dataset,
+                        summary=summary,
+                    )
+                    or changed
+                )
 
     elif isinstance(node, list):
         for item in node:
-            changed = _normalize_payload_references(
-                item,
-                latest_versions=latest_versions,
-                versions_by_dataset=versions_by_dataset,
-                summary=summary,
-            ) or changed
+            changed = (
+                _normalize_payload_references(
+                    item,
+                    latest_versions=latest_versions,
+                    versions_by_dataset=versions_by_dataset,
+                    summary=summary,
+                )
+                or changed
+            )
 
     return changed
 

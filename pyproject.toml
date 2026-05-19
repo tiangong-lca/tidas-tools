@@ -6,15 +6,24 @@ authors = [
     { name = "Nan LI", email = "linanenv@gmail.com" },
 ]
 readme = "README.md"
-requires-python = ">=3.9,<4.0"
+requires-python = ">=3.10,<4.0"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
 dependencies = [
-    "boto3>=1.40.62",
-    "jsonschema>=4.25.1",
-    "psycopg2-binary>=2.9.11",
-    "python-dotenv>=1.2.1",
-    "referencing>=0.36.2,<0.37.0",
-    "tqdm>=4.67.1",
-    "xmltodict>=1.0.2",
+    "boto3>=1.43.10",
+    "jsonschema>=4.26.0",
+    "lxml>=6.1.1",
+    "psycopg2-binary>=2.9.12",
+    "python-dotenv>=1.2.2",
+    "referencing>=0.37.0",
+    "tqdm>=4.67.3",
+    "xmltodict>=1.0.4",
     "PyYAML>=6.0.3",
 ]
 
@@ -25,8 +34,8 @@ tidas-validate = "tidas_tools.validate:main"
 
 [dependency-groups]
 dev = [
-    "black>=25.9.0",
-    "pytest>=8.4.2",
+    "black>=26.5.1",
+    "pytest>=9.0.3",
 ]
 
 [tool.setuptools]
@@ -42,5 +51,5 @@ tidas_tools = [
 ]
 
 [build-system]
-requires = ["setuptools>=69", "wheel"]
+requires = ["setuptools>=82.0.1", "wheel>=0.47.0"]
 build-backend = "setuptools.build_meta"

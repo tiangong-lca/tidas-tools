@@ -127,6 +127,7 @@ routing:
         - src/tidas_tools/validate.py
         - src/tidas_tools/validation_report.py
         - src/tidas_tools/tidas/schemas/**
+        - src/tidas_tools/eilcd/schemas/**
     export:
       paths:
         - src/tidas_tools/export.py
