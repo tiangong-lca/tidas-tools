@@ -8,7 +8,7 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-from jsonschema import Draft7Validator
+from jsonschema import Draft7Validator, FormatChecker
 from lxml import etree
 from referencing import Registry
 from referencing.jsonschema import DRAFT7
@@ -32,6 +32,8 @@ import tidas_tools.tidas.schemas as schemas
 import tidas_tools.eilcd.schemas as eilcd_schemas
 
 CHINESE_CHARACTER_RE = re.compile(r"[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]")
+CAS_NUMBER_RE = re.compile(r"^[0-9]{2,7}-[0-9]{2}-[0-9]$")
+FORMAT_CHECKER = FormatChecker()
 SUPPORTED_CATEGORIES = [
     "contacts",
     "flowproperties",
@@ -89,6 +91,26 @@ ILCD_SCHEMA_BY_ROOT = {
         "ILCD_LCIAMethodologies.xsd",
     ),
 }
+
+
+def is_valid_cas_number(value: str) -> bool:
+    """Return True when a CAS number has valid structure and check digit."""
+    if not isinstance(value, str) or not CAS_NUMBER_RE.fullmatch(value):
+        return False
+
+    body, check_digit = value.rsplit("-", 1)
+    digits = body.replace("-", "")
+    checksum = sum(
+        int(digit) * weight for weight, digit in enumerate(reversed(digits), start=1)
+    )
+    return checksum % 10 == int(check_digit)
+
+
+@FORMAT_CHECKER.checks("cas-number")
+def _check_cas_number_format(value):
+    if not isinstance(value, str):
+        return True
+    return is_valid_cas_number(value)
 
 
 def validate_elementary_flows_classification_hierarchy(class_items):
@@ -491,7 +513,9 @@ def category_validate(json_file_path: str, category: str, emit_logs: bool = True
         # Add the main schema to the registry
         registry = registry.with_resource(schema_uri, DRAFT7.create_resource(schema))
         # Instantiate validator once per category for efficiency
-        validator = Draft7Validator(schema, registry=registry)
+        validator = Draft7Validator(
+            schema, registry=registry, format_checker=FORMAT_CHECKER
+        )
 
         for filename in sorted(os.listdir(json_file_path)):
             if filename.endswith(".json"):
@@ -615,6 +639,35 @@ def _lxml_error_to_issue(
     )
 
 
+def _collect_ilcd_cas_number_issues(
+    document: etree._ElementTree,
+    category: str,
+    file_path: str,
+) -> list[ValidationIssue]:
+    if category != "flows":
+        return []
+
+    namespaces = {"flow": "http://lca.jrc.it/ILCD/Flow"}
+    issues = []
+    for cas_number in document.xpath("//flow:CASNumber", namespaces=namespaces):
+        value = cas_number.text or ""
+        if not CAS_NUMBER_RE.fullmatch(value) or is_valid_cas_number(value):
+            continue
+
+        issues.append(
+            _make_issue(
+                issue_code="cas_number_checksum_error",
+                category=category,
+                file_path=file_path,
+                location=document.getpath(cas_number),
+                message=f"CASNumber '{value}' has an invalid check digit.",
+                context={"validator": "cas-number"},
+            )
+        )
+
+    return issues
+
+
 def validate_ilcd_file(
     xml_file_path: str | Path,
     schema_cache: dict[str, etree.XMLSchema] | None = None,
@@ -686,12 +739,9 @@ def validate_ilcd_file(
             ],
         )
 
-    if schema.validate(document):
-        return category, []
-
-    return (
-        category,
-        [
+    schema_issues = []
+    if not schema.validate(document):
+        schema_issues = [
             _lxml_error_to_issue(
                 issue_code="ilcd_schema_error",
                 category=category,
@@ -699,8 +749,10 @@ def validate_ilcd_file(
                 error=error,
             )
             for error in schema.error_log
-        ],
-    )
+        ]
+
+    schema_issues.extend(_collect_ilcd_cas_number_issues(document, category, file_path))
+    return category, schema_issues
 
 
 def validate_ilcd_package_dir(input_dir: str, emit_logs: bool = False):

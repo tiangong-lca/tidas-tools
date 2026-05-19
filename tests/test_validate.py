@@ -2,12 +2,16 @@ import importlib.resources as pkg_resources
 import json
 
 from jsonschema import Draft7Validator
+from lxml import etree
 from referencing import Registry
 
 import tidas_tools.eilcd.stylesheets as eilcd_stylesheets
 import tidas_tools.tidas.schemas as schemas
 from tidas_tools.validate import (
+    FORMAT_CHECKER,
+    _collect_ilcd_cas_number_issues,
     category_validate,
+    is_valid_cas_number,
     retrieve_schema,
     validate_ilcd_package_dir,
     validate_package_dir,
@@ -25,7 +29,8 @@ def build_data_type_validator(definition_name):
             "$schema": root_schema["$schema"],
             "$defs": root_schema["$defs"],
             **root_schema["$defs"][definition_name],
-        }
+        },
+        format_checker=FORMAT_CHECKER,
     )
 
 
@@ -36,7 +41,11 @@ def load_tidas_schema(schema_name):
 
 
 def build_tidas_schema_fragment_validator(schema_fragment):
-    return Draft7Validator(schema_fragment, registry=Registry(retrieve=retrieve_schema))
+    return Draft7Validator(
+        schema_fragment,
+        registry=Registry(retrieve=retrieve_schema),
+        format_checker=FORMAT_CHECKER,
+    )
 
 
 def process_exchange_location_schema():
@@ -91,6 +100,62 @@ def test_process_exchange_location_rejects_empty_and_multilang_shapes():
     assert list(validator.iter_errors(""))
     assert list(validator.iter_errors({"@xml:lang": "en", "#text": "CN"}))
     assert list(validator.iter_errors([{"@xml:lang": "en", "#text": "CN"}]))
+
+
+def test_cas_number_checksum_validator():
+    assert is_valid_cas_number("64-17-5")
+    assert is_valid_cas_number("7732-18-5")
+    assert is_valid_cas_number("007732-18-5")
+    assert is_valid_cas_number("50-00-0")
+
+    assert not is_valid_cas_number("64-17-6")
+    assert not is_valid_cas_number("7732-18-4")
+    assert not is_valid_cas_number("")
+    assert not is_valid_cas_number("2023600")
+
+
+def test_tidas_cas_number_schema_enforces_checksum_format():
+    validator = build_data_type_validator("CASNumber")
+
+    assert list(validator.iter_errors("64-17-5")) == []
+
+    errors = list(validator.iter_errors("64-17-6"))
+
+    assert [error.validator for error in errors] == ["format"]
+
+
+def test_ilcd_cas_number_supplemental_validation_enforces_checksum():
+    document = etree.ElementTree(etree.fromstring("""
+            <flowDataSet xmlns="http://lca.jrc.it/ILCD/Flow">
+              <flowInformation>
+                <dataSetInformation>
+                  <CASNumber>64-17-6</CASNumber>
+                </dataSetInformation>
+              </flowInformation>
+            </flowDataSet>
+            """))
+
+    issues = _collect_ilcd_cas_number_issues(document, "flows", "flow.xml")
+
+    assert len(issues) == 1
+    assert issues[0].issue_code == "cas_number_checksum_error"
+    assert "invalid check digit" in issues[0].message
+
+
+def test_ilcd_cas_number_supplemental_validation_defers_structure_errors_to_xsd():
+    document = etree.ElementTree(etree.fromstring("""
+            <flowDataSet xmlns="http://lca.jrc.it/ILCD/Flow">
+              <flowInformation>
+                <dataSetInformation>
+                  <CASNumber>2023600</CASNumber>
+                  <CASNumber> 64-17-6 </CASNumber>
+                  <CASNumber />
+                </dataSetInformation>
+              </flowInformation>
+            </flowDataSet>
+            """))
+
+    assert _collect_ilcd_cas_number_issues(document, "flows", "flow.xml") == []
 
 
 def test_annual_supply_volume_multilang_accepts_numeric_text_with_suffix():
