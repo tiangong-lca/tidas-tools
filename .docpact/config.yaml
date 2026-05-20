@@ -31,6 +31,7 @@ ownership:
         include:
           - pyproject.toml
           - src/tidas_tools/convert.py
+          - src/tidas_tools/import_lca/**
           - src/tidas_tools/validate.py
           - src/tidas_tools/validation_report.py
           - src/tidas_tools/export.py
@@ -71,6 +72,7 @@ coverage:
     - docs/agents/**
     - pyproject.toml
     - src/tidas_tools/convert.py
+    - src/tidas_tools/import_lca/**
     - src/tidas_tools/validate.py
     - src/tidas_tools/validation_report.py
     - src/tidas_tools/export.py
@@ -113,6 +115,7 @@ routing:
       paths:
         - pyproject.toml
         - src/tidas_tools/convert.py
+        - src/tidas_tools/import_lca/**
         - src/tidas_tools/validate.py
         - src/tidas_tools/validation_report.py
         - src/tidas_tools/export.py
@@ -120,6 +123,7 @@ routing:
     conversion:
       paths:
         - src/tidas_tools/convert.py
+        - src/tidas_tools/import_lca/**
         - src/tidas_tools/eilcd/**
         - src/tidas_tools/tidas/**
     validation:
@@ -222,6 +226,8 @@ rules:
       - path: pyproject.toml
         kind: runtime-config
       - path: src/tidas_tools/convert.py
+        kind: tooling
+      - path: src/tidas_tools/import_lca/**
         kind: tooling
       - path: src/tidas_tools/validate.py
         kind: tooling

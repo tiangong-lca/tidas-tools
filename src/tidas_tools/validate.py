@@ -125,7 +125,7 @@ def validate_elementary_flows_classification_hierarchy(class_items):
             )
 
     for i in range(1, len(class_items)):
-        parent_id = class_items[i - 2]["@catId"]
+        parent_id = class_items[i - 1]["@catId"]
         child_id = class_items[i]["@catId"]
 
         if not child_id.startswith(parent_id):

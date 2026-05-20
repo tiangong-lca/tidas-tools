@@ -41,6 +41,7 @@ This repo packages standalone tooling plus the schema, methodology, and styleshe
 | Path group | Role |
 | --- | --- |
 | `src/tidas_tools/convert.py` | standalone conversion CLI |
+| `src/tidas_tools/import_lca/**` | external LCA import CLI scaffolding, format detection, canonical import model, and staged source adapters |
 | `src/tidas_tools/validate.py` | standalone validation CLI |
 | `src/tidas_tools/validation_report.py` | structured validation-report rendering |
 | `src/tidas_tools/export.py` | standalone export CLI |
@@ -56,6 +57,8 @@ This repo packages standalone tooling plus the schema, methodology, and styleshe
 ### Conversion
 
 `convert.py` owns standalone TIDAS and eILCD conversion behavior.
+
+`import_lca/` owns staged external LCA source import behavior for `tidas-import`. The current foundation covers CLI dispatch, format detection, `.zolca` rejection, canonical store scaffolding, TIDAS package layout helpers, ILCD bridging, and conversion reports. Validated adapters currently exist for openLCA JSON-LD, EcoSpold 1, SimaPro CSV, EcoSpold 2, and openLCA process XLSX, with canonical contact/source writing and generated unit group / flow property support for source units.
 
 ### Validation
 

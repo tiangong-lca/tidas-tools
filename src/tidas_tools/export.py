@@ -11,8 +11,12 @@ import xmltodict
 from dotenv import load_dotenv
 from tqdm import tqdm
 
-from .package_versions import normalize_package_versions
-from .tidas_log import setup_logging
+if __package__:
+    from .package_versions import normalize_package_versions
+    from .tidas_log import setup_logging
+else:
+    from tidas_tools.package_versions import normalize_package_versions
+    from tidas_tools.tidas_log import setup_logging
 
 
 def zip_folder(folder_path, output_path):
@@ -242,7 +246,7 @@ def main():
     args = parse_arguments()
 
     # Set up logging
-    setup_logging(args.verbose)
+    setup_logging(args.verbose, "export")
 
     # Load environment variables
     if os.path.exists(args.env_file):

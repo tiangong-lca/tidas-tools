@@ -102,6 +102,24 @@ def test_process_exchange_location_rejects_empty_and_multilang_shapes():
     assert list(validator.iter_errors([{"@xml:lang": "en", "#text": "CN"}]))
 
 
+def test_elementary_flow_classification_hierarchy_checks_adjacent_parent():
+    from tidas_tools.validate import validate_elementary_flows_classification_hierarchy
+
+    result = validate_elementary_flows_classification_hierarchy(
+        [
+            {"@level": "0", "@catId": "1", "#text": "Emissions"},
+            {"@level": "1", "@catId": "1.3", "#text": "Emissions to air"},
+            {
+                "@level": "2",
+                "@catId": "1.3.4",
+                "#text": "Emissions to air, unspecified",
+            },
+        ]
+    )
+
+    assert result == {"valid": True}
+
+
 def test_cas_number_checksum_validator():
     assert is_valid_cas_number("64-17-5")
     assert is_valid_cas_number("7732-18-5")

@@ -148,6 +148,9 @@ dmypy.json
 
 tidas_validate.log
 
+multi_format_to_ilcd_tidas_implementation_plan.md
+openlca_ilcd_conversion_report.md
+
 test_data/*
 
 /*.py

@@ -30,6 +30,7 @@ dependencies = [
 [project.scripts]
 tidas-convert = "tidas_tools.convert:main"
 tidas-export = "tidas_tools.export:main"
+tidas-import = "tidas_tools.import_lca.cli:main"
 tidas-validate = "tidas_tools.validate:main"
 
 [dependency-groups]

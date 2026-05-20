@@ -6,7 +6,11 @@ import shutil
 import sys
 
 import xmltodict
-from .tidas_log import setup_logging
+
+if __package__:
+    from .tidas_log import setup_logging
+else:
+    from tidas_tools.tidas_log import setup_logging
 
 
 def convert_format(data, to_xml=True):

@@ -82,6 +82,7 @@ Keep these entry-level facts in `AGENTS.md`. Use `README.md`, `README_CN.md`, an
 - after every code fix, run Black lint before final validation: `uv run black --check --target-version py313 src tests`
 - common manual probes:
   - `uv run python src/tidas_tools/convert.py --help`
+  - `uv run python src/tidas_tools/import_lca/cli.py --help`
   - `uv run python src/tidas_tools/validate.py --help`
   - `uv run python src/tidas_tools/export.py --help`
 - release tag pattern: `v<version>`
@@ -92,7 +93,7 @@ The authoritative path-level ownership map lives in `.docpact/config.yaml`.
 
 At a human-readable level, this repo owns:
 
-- standalone CLI behavior in `src/tidas_tools/convert.py`, `src/tidas_tools/validate.py`, and `src/tidas_tools/export.py`
+- standalone CLI behavior in `src/tidas_tools/convert.py`, `src/tidas_tools/import_lca/**`, `src/tidas_tools/validate.py`, and `src/tidas_tools/export.py`
 - validation report and version/export helpers in `src/tidas_tools/validation_report.py` and `src/tidas_tools/package_versions.py`
 - packaged TIDAS schemas and methodologies under `src/tidas_tools/tidas/**`
 - packaged eILCD schemas and stylesheets under `src/tidas_tools/eilcd/**`

@@ -16,6 +16,7 @@ This toolkit is used for conversion and validation of TianGong TIDAS and eILCD/I
 This toolkit contains these independent tools:
 
 - **TIDAS and eILCD Data Format Conversion Tool**
+- **External LCA Format Import Tool**
 - **TIDAS and eILCD/ILCD Data Validation Tool**
 - **TIDAS and eILCD Data Export Tool**
 
@@ -60,7 +61,36 @@ tidas-convert --input-dir <eILCD_data_directory> --output-dir <TIDAS_output_dire
 
 ---
 
-## 3. TIDAS and eILCD/ILCD Data Validation Tool Usage
+## 3. External LCA Format Import Tool Usage
+
+### (1) Current Scope
+
+`tidas-import` is the staged entry point for importing external LCA formats into TIDAS and optionally ILCD/eILCD. The current implementation provides CLI dispatch, source format detection, `.zolca` rejection, machine-readable conversion reports, and minimal validated adapters for openLCA JSON-LD, EcoSpold 1, SimaPro CSV, EcoSpold 2, and openLCA process XLSX.
+
+Current source status:
+
+- openLCA JSON-LD zip/directory: minimal import to TIDAS and ILCD/eILCD
+- EcoSpold 1 XML/zip: minimal import to TIDAS and ILCD/eILCD
+- SimaPro CSV block format: minimal import to TIDAS and ILCD/eILCD
+- EcoSpold 2 `.spold`/zip: minimal import to TIDAS and ILCD/eILCD
+- openLCA process XLSX: minimal import to TIDAS and ILCD/eILCD
+
+`.zolca` is intentionally out of scope.
+
+Imported JSON-LD actors and sources are written as TIDAS contacts and sources.
+Source units from EcoSpold, SimaPro CSV, and process XLSX inputs are propagated
+into generated unit groups and flow properties when no explicit reference data
+is available.
+
+### (2) Usage Example
+
+```bash
+tidas-import --input <source_file_or_dir> --output-dir <output_directory> --detect-only
+```
+
+---
+
+## 4. TIDAS and eILCD/ILCD Data Validation Tool Usage
 
 ### (1) Tool Functionalities
 
@@ -85,7 +115,7 @@ tidas-validate --input-dir <TIDAS_data_directory> --data-format tidas
 tidas-validate --input-dir <eILCD_data_directory> --data-format ilcd
 ```
 
-## 4. TIDAS Export Tool Documentation
+## 5. TIDAS Export Tool Documentation
 
 ### (1) Tool Functionalities
 
@@ -138,7 +168,7 @@ tidas-export -z <eILCD_ZIP_File> --to-eilcd --skip-external-docs
 
 ---
 
-## 5. Log File Information
+## 6. Log File Information
 
 Both data conversion and validation tools will automatically generate execution logs. The log file name is:
 
@@ -148,7 +178,7 @@ tidas-{function_name}.log
 
 ---
 
-## 6. Development Environment Setup and Contribution Guide
+## 7. Development Environment Setup and Contribution Guide
 
 If you wish to participate in development, you can set up your environment following these steps:
 
@@ -189,7 +219,7 @@ uv run python src/tidas_tools/convert.py --help
 
 ---
 
-## 7. Code Standards and Testing
+## 8. Code Standards and Testing
 
 ### (1) Code Formatting Tool (black recommended)
 
@@ -209,6 +239,9 @@ uv run python src/tidas_tools/convert.py -i <TIDAS_data_directory> -o <eILCD_dat
 # Test converting eILCD data to TIDAS format
 uv run python src/tidas_tools/convert.py --input-dir <eILCD_data_directory> --output-dir <TIDAS_data_directory> --to-tidas
 
+# Test external LCA format detection
+uv run python src/tidas_tools/import_lca/cli.py --input <source_file_or_dir> --output-dir <output_directory> --detect-only
+
 # Test TIDAS and eILCD/ILCD data validation functionality
 # Execute automated tests
 uv run pytest
@@ -222,7 +255,7 @@ uv run python src/tidas_tools/validate.py -i <eILCD_data_directory> --data-forma
 
 ---
 
-## 8. Automatic Building and Publishing (CI/CD)
+## 9. Automatic Building and Publishing (CI/CD)
 
 This project supports automatic building and publishing. When you push a git tag named with the `v<version>` format to the repository, it will trigger the workflow automatically. For example:
 
@@ -243,6 +276,6 @@ That automation requires the repository secret `TIDAS_SDK_AUTOMATION_TOKEN`.
 
 ---
 
-## 9. Contribution
+## 10. Contribution
 
 We welcome your contributions! You can participate in the project by submitting issues or pull requests.
