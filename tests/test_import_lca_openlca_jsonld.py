@@ -9,6 +9,8 @@ UNIT_GROUP_ID = "33333333-3333-4333-8333-333333333333"
 FLOW_PROPERTY_ID = "44444444-4444-4444-8444-444444444444"
 ACTOR_ID = "55555555-5555-4555-8555-555555555555"
 SOURCE_ID = "66666666-6666-4666-8666-666666666666"
+PROVIDER_PROCESS_ID = "77777777-7777-4777-8777-777777777777"
+CONSUMER_PROCESS_ID = "88888888-8888-4888-8888-888888888888"
 
 
 def test_openlca_jsonld_minimal_import_writes_valid_tidas_package(tmp_path):
@@ -44,6 +46,17 @@ def test_openlca_jsonld_minimal_import_writes_valid_tidas_package(tmp_path):
     assert report["summary"]["processes"] == 1
     assert report["summary"]["sources"] == 1
     assert report["validation"]["tidas"]["ok"] is True
+    process_payload = json.loads(
+        (output_dir / "tidas" / "processes" / f"{PROCESS_ID}.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert (
+        process_payload["processDataSet"]["processInformation"]["time"][
+            "common:referenceYear"
+        ]
+        == 9999
+    )
 
 
 def test_openlca_jsonld_minimal_import_can_write_valid_ilcd(tmp_path):
@@ -71,6 +84,65 @@ def test_openlca_jsonld_minimal_import_can_write_valid_ilcd(tmp_path):
     assert report["validation"]["tidas"]["ok"] is True
     assert report["validation"]["ilcd"]["ok"] is True
     assert (output_dir / "ilcd" / "data" / "flows" / f"{FLOW_ID}.xml").is_file()
+
+
+def test_openlca_jsonld_provider_links_create_valid_lifecycle_model(tmp_path):
+    source_dir = write_provider_graph_jsonld_fixture(tmp_path)
+    output_dir = tmp_path / "out"
+
+    status = main(
+        [
+            "--input",
+            str(source_dir),
+            "--output-dir",
+            str(output_dir),
+            "--from-format",
+            "openlca-jsonld",
+        ]
+    )
+
+    report = json.loads(
+        (output_dir / "conversion-report.json").read_text(encoding="utf-8")
+    )
+    lifecycle_files = list((output_dir / "tidas" / "lifecyclemodels").glob("*.json"))
+
+    assert status == 0
+    assert report["summary"]["lifecyclemodels"] == 1
+    assert report["validation"]["tidas"]["ok"] is True
+    assert len(lifecycle_files) == 1
+
+    lifecycle = json.loads(lifecycle_files[0].read_text(encoding="utf-8"))
+    model = lifecycle["lifeCycleModelDataSet"]
+    instances = model["lifeCycleModelInformation"]["technology"]["processes"][
+        "processInstance"
+    ]
+    instance_by_process = {
+        item["referenceToProcess"]["@refObjectId"]: item for item in instances
+    }
+    provider_instance = instance_by_process[PROVIDER_PROCESS_ID]
+    consumer_instance = instance_by_process[CONSUMER_PROCESS_ID]
+    output_exchange = provider_instance["connections"]["outputExchange"]
+    downstream = output_exchange["downstreamProcess"]
+
+    assert output_exchange["@flowUUID"] == FLOW_ID
+    assert downstream["@id"] == consumer_instance["@dataSetInternalID"]
+    assert downstream["@flowUUID"] == FLOW_ID
+    assert (
+        model["lifeCycleModelInformation"]["dataSetInformation"]["common:other"][
+            "tidasimport:sourceTrace"
+        ]["@marker"]
+        == "TIDAS_IMPORT_TRACE_V1"
+    )
+
+    consumer = json.loads(
+        (output_dir / "tidas" / "processes" / f"{CONSUMER_PROCESS_ID}.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    exchange = consumer["processDataSet"]["exchanges"]["exchange"][0]
+    trace = exchange["common:other"]["tidasimport:sourceTrace"]
+    assert trace["@marker"] == "TIDAS_IMPORT_TRACE_V1"
+    assert trace["payload"]["exchangeMetadata"]["providerRefId"] == PROVIDER_PROCESS_ID
 
 
 def write_minimal_jsonld_fixture(tmp_path):
@@ -155,6 +227,95 @@ def write_minimal_jsonld_fixture(tmp_path):
                         "isInput": False,
                         "isQuantitativeReference": True,
                     }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    return source_dir
+
+
+def write_provider_graph_jsonld_fixture(tmp_path):
+    source_dir = write_minimal_jsonld_fixture(tmp_path)
+    (source_dir / "provider_process.json").write_text(
+        json.dumps(
+            {
+                "@type": "Process",
+                "@id": PROVIDER_PROCESS_ID,
+                "name": "Steel billet production",
+                "description": "Provider process fixture",
+                "processType": "UNIT_PROCESS",
+                "processDocumentation": {
+                    "validFrom": "2020-01-01",
+                    "validUntil": "2024-12-31",
+                    "technologyDescription": "Electric arc furnace route",
+                    "sources": [
+                        {
+                            "@type": "Source",
+                            "@id": SOURCE_ID,
+                            "name": "Example source",
+                        }
+                    ],
+                    "dataGenerator": {
+                        "@type": "Actor",
+                        "@id": ACTOR_ID,
+                        "name": "Example data author",
+                    },
+                },
+                "exchanges": [
+                    {
+                        "internalId": 1,
+                        "flow": {"@id": FLOW_ID, "name": "Steel product"},
+                        "amount": 1.0,
+                        "isInput": False,
+                        "isQuantitativeReference": True,
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (source_dir / "consumer_process.json").write_text(
+        json.dumps(
+            {
+                "@type": "Process",
+                "@id": CONSUMER_PROCESS_ID,
+                "name": "Steel sheet production",
+                "description": "Consumer process fixture",
+                "processType": "UNIT_PROCESS",
+                "defaultAllocationMethod": "PHYSICAL_ALLOCATION",
+                "processDocumentation": {
+                    "validFrom": "2021-01-01",
+                    "geographyDescription": "United States",
+                    "samplingDescription": "Secondary data sample",
+                    "intendedApplication": "Provider graph test fixture",
+                },
+                "exchanges": [
+                    {
+                        "internalId": 1,
+                        "flow": {"@id": FLOW_ID, "name": "Steel product"},
+                        "amount": 2.5,
+                        "isInput": True,
+                        "unit": {"@id": "kg", "name": "kg"},
+                        "defaultProvider": {
+                            "@type": "Process",
+                            "@id": PROVIDER_PROCESS_ID,
+                            "name": "Steel billet production",
+                        },
+                        "uncertainty": {
+                            "@type": "Uncertainty",
+                            "distributionType": "TRIANGLE_DISTRIBUTION",
+                            "minimum": 2.0,
+                            "maximum": 3.0,
+                        },
+                    },
+                    {
+                        "internalId": 2,
+                        "flow": {"@id": FLOW_ID, "name": "Steel product"},
+                        "amount": 1.0,
+                        "isInput": False,
+                        "isQuantitativeReference": True,
+                    },
                 ],
             }
         ),

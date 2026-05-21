@@ -26,6 +26,8 @@ PLACEHOLDER_DATA_CUTOFF = f"{PLACEHOLDER_PREFIX}:DATA_CUTOFF_NOT_AVAILABLE"
 PLACEHOLDER_DATA_SOURCE = f"{PLACEHOLDER_PREFIX}:DATA_SOURCE_NOT_AVAILABLE"
 PLACEHOLDER_ANNUAL_VOLUME = f"0 {PLACEHOLDER_PREFIX}:ANNUAL_VOLUME_NOT_AVAILABLE"
 PLACEHOLDER_CONVERTED_APPLICATION = f"{PLACEHOLDER_PREFIX}:CONVERTED_EXTERNAL_LCA_DATA"
+PLACEHOLDER_YEAR = 9999
+PLACEHOLDER_REVIEW_NOT_AVAILABLE = f"{PLACEHOLDER_PREFIX}:REVIEW_NOT_AVAILABLE"
 IMPORT_CONTACT_ID = str(
     uuid.uuid5(uuid.NAMESPACE_URL, f"{IMPORT_ID_NAMESPACE}/contact")
 )
@@ -120,6 +122,12 @@ def write_tidas_package(store: MemoryCanonicalStore, output_dir: str | Path) -> 
             _process_dataset(entity),
         )
 
+    for entity in store.iter_type("lifecyclemodels"):
+        _write_json(
+            root / "lifecyclemodels" / f"{entity.internal_id}.json",
+            _lifecycle_model_dataset(entity),
+        )
+
 
 def _write_json(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -128,6 +136,19 @@ def _write_json(path: Path, payload: dict[str, Any]) -> None:
 
 def _ml(text: str, lang: str = "en") -> dict[str, str]:
     return {"@xml:lang": lang, "#text": text or PLACEHOLDER_UNSPECIFIED_TEXT}
+
+
+def _ml_500(text: Any, lang: str = "en") -> dict[str, str]:
+    value = str(text or PLACEHOLDER_UNSPECIFIED_TEXT)
+    return _ml(_truncate(value, 500), lang=lang)
+
+
+def _truncate(text: str, max_length: int) -> str:
+    if len(text) <= max_length:
+        return text
+    if max_length <= 3:
+        return text[:max_length]
+    return text[: max_length - 3].rstrip() + "..."
 
 
 def _now() -> str:
@@ -178,6 +199,20 @@ def _owner_ref() -> dict[str, Any]:
     )
 
 
+def _contact_ref_from_raw(value: Any) -> dict[str, Any] | None:
+    if not isinstance(value, dict):
+        return None
+    ref_id = value.get("id")
+    if not _uuid_text(ref_id):
+        return None
+    return _ref(
+        ref_type="contact data set",
+        ref_id=str(ref_id),
+        short_description=str(value.get("name") or ref_id),
+        category="contacts",
+    )
+
+
 def _permanent_dataset_uri(
     category: str, dataset_id: str, version: str = DEFAULT_VERSION
 ) -> str:
@@ -193,13 +228,20 @@ def _admin_info(
     dataset_id: str,
     version: str = DEFAULT_VERSION,
     process: bool = False,
+    timestamp: Any = None,
+    data_entry_ref: dict[str, Any] | None = None,
+    owner_ref: dict[str, Any] | None = None,
+    copyright_value: Any = None,
+    access_restrictions: Any = None,
 ) -> dict[str, Any]:
     data_entry = {
-        "common:timeStamp": _now(),
+        "common:timeStamp": _date_time(timestamp) or _now(),
         "common:referenceToDataSetFormat": _format_ref(),
     }
     if process:
-        data_entry["common:referenceToPersonOrEntityEnteringTheData"] = _owner_ref()
+        data_entry["common:referenceToPersonOrEntityEnteringTheData"] = (
+            data_entry_ref or _owner_ref()
+        )
 
     publication = {
         "common:dataSetVersion": version,
@@ -210,13 +252,17 @@ def _admin_info(
     if process:
         publication.update(
             {
-                "common:referenceToOwnershipOfDataSet": _owner_ref(),
-                "common:copyright": "false",
+                "common:referenceToOwnershipOfDataSet": owner_ref or _owner_ref(),
+                "common:copyright": _bool_text(copyright_value),
                 "common:licenseType": "Free of charge for all users and uses",
             }
         )
+        if _text(access_restrictions):
+            publication["common:accessRestrictions"] = _ml(
+                str(access_restrictions).strip()
+            )
     else:
-        publication["common:referenceToOwnershipOfDataSet"] = _owner_ref()
+        publication["common:referenceToOwnershipOfDataSet"] = owner_ref or _owner_ref()
 
     return {
         "dataEntryBy": data_entry,
@@ -261,6 +307,7 @@ def _contact_dataset(entity: CanonicalEntity) -> dict[str, Any]:
         website=raw.get("website") or raw.get("url"),
         address=raw.get("address"),
         description=raw.get("description"),
+        source_trace=raw.get("sourceTrace"),
     )
 
 
@@ -274,11 +321,12 @@ def _contact_payload(
     website: Any = None,
     address: Any = None,
     description: Any = None,
+    source_trace: Any = None,
 ) -> dict[str, Any]:
     dataset_info = {
         "common:UUID": contact_id,
-        "common:shortName": _ml(str(short_name)),
-        "common:name": _ml(str(name)),
+        "common:shortName": _ml_500(short_name),
+        "common:name": _ml_500(name),
         "classificationInformation": {
             "common:classification": {
                 "common:class": {
@@ -299,6 +347,9 @@ def _contact_payload(
         dataset_info["contactAddress"] = _ml(str(address).strip())
     if _text(description):
         dataset_info["contactDescriptionOrComment"] = _ml(str(description).strip())
+    common_other = _common_other_trace(source_trace)
+    if common_other:
+        dataset_info["common:other"] = common_other
 
     return {
         "contactDataSet": {
@@ -358,7 +409,7 @@ def _source_payload(
 ) -> dict[str, Any]:
     dataset_info = {
         "common:UUID": source_id,
-        "common:shortName": _ml(str(short_name)),
+        "common:shortName": _ml_500(short_name),
         "classificationInformation": {
             "common:classification": {
                 "common:class": {
@@ -424,6 +475,22 @@ def _unit_group_dataset(entity: CanonicalEntity) -> dict[str, Any]:
                 ),
             }
         )
+    dataset_info = {
+        "common:UUID": entity.internal_id,
+        "common:name": _ml_500(entity.name or "Unit group"),
+        "classificationInformation": {
+            "common:classification": {
+                "common:class": {
+                    "@level": "0",
+                    "@classId": "4",
+                    "#text": "Other unit groups",
+                }
+            }
+        },
+    }
+    common_other = _common_other_trace(entity.raw.get("sourceTrace"))
+    if common_other:
+        dataset_info["common:other"] = common_other
 
     return {
         "unitGroupDataSet": {
@@ -433,19 +500,7 @@ def _unit_group_dataset(entity: CanonicalEntity) -> dict[str, Any]:
             "@version": "1.1",
             "@xsi:schemaLocation": "http://lca.jrc.it/ILCD/UnitGroup ../../schemas/ILCD_UnitGroupDataSet.xsd",
             "unitGroupInformation": {
-                "dataSetInformation": {
-                    "common:UUID": entity.internal_id,
-                    "common:name": _ml(entity.name or "Unit group"),
-                    "classificationInformation": {
-                        "common:classification": {
-                            "common:class": {
-                                "@level": "0",
-                                "@classId": "4",
-                                "#text": "Other unit groups",
-                            }
-                        }
-                    },
-                },
+                "dataSetInformation": dataset_info,
                 "quantitativeReference": {"referenceToReferenceUnit": "1"},
             },
             "modellingAndValidation": {
@@ -466,6 +521,22 @@ def _flow_property_dataset(
     unit_group_name = (
         entity.raw.get("unitGroupName") or default_unit_group.name or "Unit group"
     )
+    dataset_info = {
+        "common:UUID": entity.internal_id,
+        "common:name": _ml_500(entity.name or "Flow property"),
+        "classificationInformation": {
+            "common:classification": {
+                "common:class": {
+                    "@level": "0",
+                    "@classId": "4",
+                    "#text": "Other flow properties",
+                }
+            }
+        },
+    }
+    common_other = _common_other_trace(entity.raw.get("sourceTrace"))
+    if common_other:
+        dataset_info["common:other"] = common_other
     return {
         "flowPropertyDataSet": {
             "@xmlns": "http://lca.jrc.it/ILCD/FlowProperty",
@@ -474,19 +545,7 @@ def _flow_property_dataset(
             "@version": "1.1",
             "@xsi:schemaLocation": "http://lca.jrc.it/ILCD/FlowProperty ../../schemas/ILCD_FlowPropertyDataSet.xsd",
             "flowPropertiesInformation": {
-                "dataSetInformation": {
-                    "common:UUID": entity.internal_id,
-                    "common:name": _ml(entity.name or "Flow property"),
-                    "classificationInformation": {
-                        "common:classification": {
-                            "common:class": {
-                                "@level": "0",
-                                "@classId": "4",
-                                "#text": "Other flow properties",
-                            }
-                        }
-                    },
-                },
+                "dataSetInformation": dataset_info,
                 "quantitativeReference": {
                     "referenceToReferenceUnitGroup": _ref(
                         ref_type="unit group data set",
@@ -586,10 +645,14 @@ def _flow_dataset(
 
 def _process_dataset(entity: CanonicalEntity):
     exchanges = entity.raw.get("exchanges") or []
-    exchange_items = [
-        _exchange_item(exchange, idx) for idx, exchange in enumerate(exchanges, 1)
-    ]
-    reference_flow = _reference_flow_id(exchange_items)
+    exchange_items = []
+    reference_flow = None
+    for idx, exchange in enumerate(exchanges, 1):
+        exchange_items.append(_exchange_item(exchange, idx))
+        if exchange.get("isQuantitativeReference") and reference_flow is None:
+            reference_flow = str(idx)
+    if reference_flow is None:
+        reference_flow = _reference_flow_id(exchange_items)
     reference_year = _reference_year(entity.raw.get("referenceYear"))
     valid_until = _optional_year(entity.raw.get("dataSetValidUntil"))
     location = _location_code(entity.raw.get("location"))
@@ -634,9 +697,7 @@ def _process_dataset(entity: CanonicalEntity):
     if technology:
         process_information["technology"] = technology
 
-    modelling_and_validation = {
-        "LCIMethodAndAllocation": {"typeOfDataSet": "Unit process, single operation"}
-    }
+    modelling_and_validation = {"LCIMethodAndAllocation": _process_lci_method(entity)}
     data_sources = _data_sources_treatment_and_representativeness(entity)
     if data_sources:
         modelling_and_validation["dataSourcesTreatmentAndRepresentativeness"] = (
@@ -664,6 +725,39 @@ def _process_dataset(entity: CanonicalEntity):
         ]
         reference_flow = "1"
 
+    commissioner_and_goal = {
+        "common:referenceToCommissioner": _process_commissioner_ref(entity),
+        "common:intendedApplications": _ml(
+            str(
+                entity.raw.get("intendedApplications")
+                or PLACEHOLDER_CONVERTED_APPLICATION
+            )
+        ),
+    }
+    if _text(entity.raw.get("project")):
+        commissioner_and_goal["common:project"] = _ml_500(
+            str(entity.raw["project"]).strip()
+        )
+    administrative_information = {
+        "common:commissionerAndGoal": commissioner_and_goal,
+        **_admin_info(
+            category="processes",
+            dataset_id=entity.internal_id,
+            version=_dataset_version(entity.raw.get("version")),
+            process=True,
+            timestamp=entity.raw.get("lastChange") or entity.raw.get("creationDate"),
+            data_entry_ref=_contact_ref_from_raw(entity.raw.get("dataEntryByRef")),
+            owner_ref=_contact_ref_from_raw(entity.raw.get("dataSetOwnerRef")),
+            copyright_value=entity.raw.get("copyright"),
+            access_restrictions=entity.raw.get("accessRestrictions"),
+        ),
+    }
+    data_generator_ref = _contact_ref_from_raw(entity.raw.get("dataGeneratorRef"))
+    if data_generator_ref:
+        administrative_information["dataGenerator"] = {
+            "common:referenceToPersonOrEntityGeneratingTheDataSet": data_generator_ref
+        }
+
     return {
         "processDataSet": {
             "@xmlns": "http://lca.jrc.it/ILCD/Process",
@@ -674,6 +768,57 @@ def _process_dataset(entity: CanonicalEntity):
             "@xsi:schemaLocation": "http://lca.jrc.it/ILCD/Process ../../schemas/ILCD_ProcessDataSet.xsd",
             "processInformation": process_information,
             "modellingAndValidation": modelling_and_validation,
+            "administrativeInformation": administrative_information,
+            "exchanges": {"exchange": exchange_items},
+        }
+    }
+
+
+def _lifecycle_model_dataset(entity: CanonicalEntity) -> dict[str, Any]:
+    raw = entity.raw or {}
+    process_instances = _lifecycle_process_instances(entity)
+    reference_instance = _lifecycle_reference_instance(raw, process_instances)
+    dataset_info = {
+        "common:UUID": entity.internal_id,
+        "name": _name_parts(entity.name or "Life cycle model"),
+        "classificationInformation": _default_process_classification(),
+        "common:generalComment": _ml(
+            raw.get("description") or PLACEHOLDER_CONVERTED_APPLICATION
+        ),
+    }
+    common_other = _common_other_trace(raw.get("sourceTrace"))
+    if common_other:
+        dataset_info["common:other"] = common_other
+
+    return {
+        "lifeCycleModelDataSet": {
+            "@xmlns": "http://eplca.jrc.ec.europa.eu/ILCD/LifeCycleModel/2017",
+            "@xmlns:acme": "http://acme.com/custom",
+            "@xmlns:common": "http://lca.jrc.it/ILCD/Common",
+            "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "@locations": "../ILCDLocations.xml",
+            "@version": "1.1",
+            "@xsi:schemaLocation": "http://eplca.jrc.ec.europa.eu/ILCD/LifeCycleModel/2017 ../../schemas/ILCD_LifeCycleModelDataSet.xsd",
+            "lifeCycleModelInformation": {
+                "dataSetInformation": dataset_info,
+                "quantitativeReference": {
+                    "referenceToReferenceProcess": reference_instance
+                },
+                "technology": {
+                    "processes": {"processInstance": process_instances},
+                },
+            },
+            "modellingAndValidation": {
+                "validation": {
+                    "review": {
+                        "common:referenceToNameOfReviewerAndInstitution": _owner_ref(),
+                        "common:otherReviewDetails": _ml(
+                            PLACEHOLDER_REVIEW_NOT_AVAILABLE
+                        ),
+                    }
+                },
+                "complianceDeclarations": _compliance_declarations(process=True),
+            },
             "administrativeInformation": {
                 "common:commissionerAndGoal": {
                     "common:referenceToCommissioner": _owner_ref(),
@@ -682,14 +827,109 @@ def _process_dataset(entity: CanonicalEntity):
                     ),
                 },
                 **_admin_info(
-                    category="processes",
+                    category="lifecyclemodels",
                     dataset_id=entity.internal_id,
+                    version=_dataset_version(raw.get("version")),
                     process=True,
                 ),
             },
-            "exchanges": {"exchange": exchange_items},
         }
     }
+
+
+def _lifecycle_process_instances(entity: CanonicalEntity) -> list[dict[str, Any]]:
+    raw = entity.raw or {}
+    refs = [
+        ref
+        for ref in raw.get("processRefs") or []
+        if isinstance(ref, dict) and _uuid_text(ref.get("id"))
+    ]
+    instance_by_process = {
+        str(ref["id"]): str(index) for index, ref in enumerate(refs, start=1)
+    }
+    connections_by_provider: dict[str, dict[str, list[dict[str, Any]]]] = {}
+    for connection in raw.get("connections") or []:
+        if not isinstance(connection, dict):
+            continue
+        provider_id = str(connection.get("providerProcessId") or "")
+        consumer_id = str(connection.get("consumerProcessId") or "")
+        flow_id = str(connection.get("flowRefId") or "")
+        if (
+            provider_id not in instance_by_process
+            or consumer_id not in instance_by_process
+            or not _uuid_text(flow_id)
+        ):
+            continue
+        downstream = {
+            "@id": instance_by_process[consumer_id],
+            "@flowUUID": flow_id,
+        }
+        location = _location_code(connection.get("location"))
+        if connection.get("location") and location != "GLO":
+            downstream["@location"] = location
+        connections_by_provider.setdefault(provider_id, {}).setdefault(
+            flow_id, []
+        ).append(downstream)
+
+    instances = []
+    for ref in refs:
+        process_id = str(ref["id"])
+        instance = {
+            "@dataSetInternalID": instance_by_process[process_id],
+            "@multiplicationFactor": "1",
+            "referenceToProcess": _ref(
+                ref_type="process data set",
+                ref_id=process_id,
+                short_description=str(ref.get("name") or "Process"),
+                category="processes",
+            ),
+        }
+        output_exchanges = []
+        for flow_id, downstream_items in sorted(
+            connections_by_provider.get(process_id, {}).items()
+        ):
+            output_exchanges.append(
+                {
+                    "@flowUUID": flow_id,
+                    "@dominant": "true",
+                    "downstreamProcess": (
+                        downstream_items[0]
+                        if len(downstream_items) == 1
+                        else downstream_items
+                    ),
+                }
+            )
+        if output_exchanges:
+            instance["connections"] = {
+                "outputExchange": (
+                    output_exchanges[0]
+                    if len(output_exchanges) == 1
+                    else output_exchanges
+                )
+            }
+        trace = _common_other_trace(
+            {
+                "sourceProcessType": ref.get("processType"),
+                "sourceProcessId": process_id,
+            }
+        )
+        if trace:
+            instance["common:other"] = trace
+        instances.append(instance)
+    return instances
+
+
+def _lifecycle_reference_instance(
+    raw: dict[str, Any], process_instances: list[dict[str, Any]]
+) -> str:
+    reference_process_id = raw.get("referenceProcessId")
+    process_refs = raw.get("processRefs") or []
+    for index, ref in enumerate(process_refs, start=1):
+        if isinstance(ref, dict) and ref.get("id") == reference_process_id:
+            return str(index)
+    if process_instances:
+        return str(process_instances[0].get("@dataSetInternalID") or "1")
+    return "1"
 
 
 def _default_process_classification() -> dict[str, Any]:
@@ -721,6 +961,60 @@ def _default_process_classification() -> dict[str, Any]:
     }
 
 
+def _process_lci_method(entity: CanonicalEntity) -> dict[str, Any]:
+    raw = entity.raw
+    section: dict[str, Any] = {
+        "typeOfDataSet": _process_type(raw.get("sourceProcessType")),
+    }
+    allocation = _allocation_method(raw.get("sourceDefaultAllocationMethod"))
+    if allocation:
+        section["LCIMethodApproaches"] = allocation
+    if _text(raw.get("deviationsFromLCIMethodPrinciple")):
+        section["deviationsFromLCIMethodPrinciple"] = _ml(
+            str(raw["deviationsFromLCIMethodPrinciple"]).strip()
+        )
+    if _text(raw.get("modellingConstants")):
+        section["modellingConstants"] = _ml(str(raw["modellingConstants"]).strip())
+    common_other = _common_other_trace(
+        {
+            "sourceProcessType": raw.get("sourceProcessType"),
+            "sourceDefaultAllocationMethod": raw.get("sourceDefaultAllocationMethod"),
+        }
+    )
+    if common_other:
+        section["common:other"] = common_other
+    return section
+
+
+def _process_type(value: Any) -> str:
+    text = str(value or "").strip().upper()
+    if text == "LCI_RESULT":
+        return "LCI result"
+    if text == "PARTLY_TERMINATED_SYSTEM":
+        return "Partly terminated system"
+    if text == "AVOIDED_PRODUCT_SYSTEM":
+        return "Avoided product system"
+    return "Unit process, single operation"
+
+
+def _allocation_method(value: Any) -> str | None:
+    text = str(value or "").strip().upper()
+    return {
+        "ECONOMIC_ALLOCATION": "Allocation - market value",
+        "PHYSICAL_ALLOCATION": "Allocation - physical causality",
+        "CAUSAL_ALLOCATION": "Allocation - physical causality",
+        "NO_ALLOCATION": "Not applicable",
+    }.get(text)
+
+
+def _process_commissioner_ref(entity: CanonicalEntity) -> dict[str, Any]:
+    return (
+        _contact_ref_from_raw(entity.raw.get("dataSetOwnerRef"))
+        or _contact_ref_from_raw(entity.raw.get("dataGeneratorRef"))
+        or _owner_ref()
+    )
+
+
 def _technology_section(entity: CanonicalEntity) -> dict[str, Any] | None:
     description = entity.raw.get("technologyDescription")
     applicability = entity.raw.get("technologicalApplicability")
@@ -749,33 +1043,63 @@ def _data_sources_treatment_and_representativeness(
         "uncertaintyAdjustments",
         "useAdviceForDataSet",
         "dataCollectionPeriod",
+        "dataSelectionAndCombinationPrinciples",
+        "dataTreatmentAndExtrapolationsPrinciples",
+        "dataCutOffAndCompletenessPrinciples",
     }
     if not source_refs and not any(_text(raw.get(key)) for key in relevant_keys):
         return None
 
-    source_ref = source_refs[0] if source_refs else {}
-    source_id = source_ref.get("id") or FORMAT_SOURCE_ID
-    source_name = (
-        source_ref.get("name") or raw.get("sourceLabel") or PLACEHOLDER_DATA_SOURCE
-    )
+    source_refs_payload = [
+        _ref(
+            ref_type="source data set",
+            ref_id=source_ref.get("id"),
+            short_description=str(
+                source_ref.get("name")
+                or raw.get("sourceLabel")
+                or PLACEHOLDER_DATA_SOURCE
+            ),
+            category="sources",
+        )
+        for source_ref in source_refs
+        if _uuid_text(source_ref.get("id"))
+    ]
+    if not source_refs_payload:
+        source_refs_payload = [
+            _ref(
+                ref_type="source data set",
+                ref_id=FORMAT_SOURCE_ID,
+                short_description=PLACEHOLDER_DATA_SOURCE,
+                category="sources",
+            )
+        ]
     section: dict[str, Any] = {
         "dataCutOffAndCompletenessPrinciples": _ml(
             raw.get("dataCutOffAndCompletenessPrinciples") or PLACEHOLDER_DATA_CUTOFF
         ),
-        "referenceToDataSource": _ref(
-            ref_type="source data set",
-            ref_id=source_id,
-            short_description=str(source_name),
-            category="sources",
+        "referenceToDataSource": (
+            source_refs_payload[0]
+            if len(source_refs_payload) == 1
+            else source_refs_payload
         ),
         "annualSupplyOrProductionVolume": _annual_supply_or_production_volume(
             raw.get("productionVolume")
         ),
     }
+    if _text(raw.get("dataSelectionAndCombinationPrinciples")):
+        section["dataSelectionAndCombinationPrinciples"] = _ml(
+            str(raw["dataSelectionAndCombinationPrinciples"]).strip()
+        )
+    if _text(raw.get("dataTreatmentAndExtrapolationsPrinciples")):
+        section["dataTreatmentAndExtrapolationsPrinciples"] = _ml(
+            str(raw["dataTreatmentAndExtrapolationsPrinciples"]).strip()
+        )
     if _text(raw.get("samplingProcedure")):
         section["samplingProcedure"] = _ml(str(raw["samplingProcedure"]).strip())
     if _text(raw.get("dataCollectionPeriod")):
-        section["dataCollectionPeriod"] = _ml(str(raw["dataCollectionPeriod"]).strip())
+        section["dataCollectionPeriod"] = _ml_500(
+            str(raw["dataCollectionPeriod"]).strip()
+        )
     if _text(raw.get("uncertaintyAdjustments")):
         section["uncertaintyAdjustments"] = _ml(
             str(raw["uncertaintyAdjustments"]).strip()
@@ -821,6 +1145,9 @@ def _exchange_item(exchange: dict[str, Any], idx: int) -> dict[str, Any]:
         "meanAmount": amount,
         "resultingAmount": amount,
     }
+    location = _location_code(exchange.get("location"))
+    if exchange.get("location") and location != "GLO":
+        item["location"] = location
     minimum_amount = _optional_real(exchange.get("minimumAmount"))
     if minimum_amount is not None:
         item["minimumAmount"] = minimum_amount
@@ -846,10 +1173,12 @@ def _exchange_item(exchange: dict[str, Any], idx: int) -> dict[str, Any]:
         comments.append(
             f"Source EcoSpold2 exchange id: {exchange['sourceExchangeId']}."
         )
+    elif exchange.get("internalId") is not None:
+        comments.append(f"Source exchange internal id: {exchange['internalId']}.")
     if _text(exchange.get("generalComment")):
         comments.append(str(exchange["generalComment"]).strip())
     if comments:
-        item["generalComment"] = _ml(" ".join(comments))
+        item["generalComment"] = _ml_500(" ".join(comments))
 
     common_other = _common_other_trace(
         _exchange_trace_payload(exchange),
@@ -874,6 +1203,17 @@ def _exchange_trace_payload(exchange: dict[str, Any]) -> dict[str, Any] | None:
         "activityLinkId": exchange.get("activityLinkId"),
         "productionVolumeAmount": exchange.get("productionVolumeAmount"),
         "isCalculatedAmount": exchange.get("isCalculatedAmount"),
+        "amountFormula": exchange.get("amountFormula"),
+        "isQuantitativeReference": exchange.get("isQuantitativeReference"),
+        "isAvoidedProduct": exchange.get("isAvoidedProduct"),
+        "unitId": exchange.get("unitId"),
+        "unitName": exchange.get("unitName"),
+        "flowPropertyRefId": exchange.get("flowPropertyRefId"),
+        "flowPropertyName": exchange.get("flowPropertyName"),
+        "providerRefId": exchange.get("providerRefId"),
+        "providerName": exchange.get("providerName"),
+        "provider": exchange.get("provider"),
+        "dqEntry": exchange.get("dqEntry"),
     }
     if not source_trace and not any(value is not None for value in extra.values()):
         return None
@@ -887,9 +1227,9 @@ def _exchange_trace_payload(exchange: dict[str, Any]) -> dict[str, Any] | None:
 
 def _name_parts(name: str) -> dict[str, Any]:
     return {
-        "baseName": _ml(name),
-        "treatmentStandardsRoutes": _ml(""),
-        "mixAndLocationTypes": _ml(""),
+        "baseName": _ml_500(name),
+        "treatmentStandardsRoutes": _ml_500(""),
+        "mixAndLocationTypes": _ml_500(""),
     }
 
 
@@ -961,11 +1301,11 @@ def _generated_flow_property_for(
 
 def _reference_year(value: Any) -> int:
     if value is None:
-        return 2026
+        return PLACEHOLDER_YEAR
     text = str(value).strip()
     match = re.search(r"\b(\d{4})\b", text)
     if not match:
-        return 2026
+        return PLACEHOLDER_YEAR
     return int(match.group(1))
 
 
@@ -977,6 +1317,44 @@ def _optional_year(value: Any) -> int | None:
     if not match:
         return None
     return int(match.group(1))
+
+
+def _dataset_version(value: Any) -> str:
+    if value is None:
+        return DEFAULT_VERSION
+    text = str(value).strip()
+    return text or DEFAULT_VERSION
+
+
+def _date_time(value: Any) -> str | None:
+    if value is None:
+        return None
+    text = str(value).strip()
+    if "T" not in text:
+        return None
+    if text.endswith("Z"):
+        return text
+    if re.search(r"[+-]\d{2}:\d{2}$", text):
+        return text
+    return None
+
+
+def _bool_text(value: Any) -> str:
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    text = str(value or "").strip().casefold()
+    if text in {"true", "1", "yes"}:
+        return "true"
+    return "false"
+
+
+def _uuid_text(value: Any) -> bool:
+    return isinstance(value, str) and bool(
+        re.fullmatch(
+            r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+            value,
+        )
+    )
 
 
 def _cas_number(value: Any) -> str | None:
