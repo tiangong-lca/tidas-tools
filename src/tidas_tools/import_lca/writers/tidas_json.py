@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from functools import lru_cache
 import json
 from pathlib import Path
+import re
 from typing import Any
 import uuid
 
@@ -488,6 +490,16 @@ def _flow_dataset(
 ):
     flow_type = _flow_type(entity.raw.get("flowType"))
     classification = _flow_classification(flow_type)
+    dataset_info = {
+        "common:UUID": entity.internal_id,
+        "name": _name_parts(entity.name or "Flow"),
+        "classificationInformation": classification,
+    }
+    cas_number = _cas_number(entity.raw.get("CASNumber"))
+    if cas_number:
+        dataset_info["CASNumber"] = cas_number
+    if _text(entity.raw.get("sumFormula")):
+        dataset_info["sumFormula"] = str(entity.raw["sumFormula"]).strip()
     generated_flow_property = _generated_flow_property_for(entity, generated_units)
     flow_property_id = (
         entity.raw.get("flowPropertyRefId")
@@ -518,11 +530,7 @@ def _flow_dataset(
             "@locations": "../ILCDLocations.xml",
             "@xsi:schemaLocation": "http://lca.jrc.it/ILCD/Flow ../../schemas/ILCD_FlowDataSet.xsd",
             "flowInformation": {
-                "dataSetInformation": {
-                    "common:UUID": entity.internal_id,
-                    "name": _name_parts(entity.name or "Flow"),
-                    "classificationInformation": classification,
-                },
+                "dataSetInformation": dataset_info,
                 "quantitativeReference": {"referenceToReferenceFlowProperty": "1"},
             },
             "modellingAndValidation": {
@@ -554,6 +562,8 @@ def _process_dataset(entity: CanonicalEntity):
         _exchange_item(exchange, idx) for idx, exchange in enumerate(exchanges, 1)
     ]
     reference_flow = _reference_flow_id(exchange_items)
+    reference_year = _reference_year(entity.raw.get("referenceYear"))
+    location = _location_code(entity.raw.get("location"))
     if not exchange_items:
         exchange_items = [
             {
@@ -618,9 +628,9 @@ def _process_dataset(entity: CanonicalEntity):
                     "@type": "Reference flow(s)",
                     "referenceToReferenceFlow": reference_flow,
                 },
-                "time": {"common:referenceYear": 2026},
+                "time": {"common:referenceYear": reference_year},
                 "geography": {
-                    "locationOfOperationSupplyOrProduction": {"@location": "GLO"}
+                    "locationOfOperationSupplyOrProduction": {"@location": location}
                 },
             },
             "modellingAndValidation": {
@@ -670,6 +680,10 @@ def _exchange_item(exchange: dict[str, Any], idx: int) -> dict[str, Any]:
     if exchange.get("sourceExchangeNumber"):
         item["generalComment"] = _ml(
             f"Source EcoSpold1 exchange number: {exchange['sourceExchangeNumber']}."
+        )
+    elif exchange.get("sourceExchangeId"):
+        item["generalComment"] = _ml(
+            f"Source EcoSpold2 exchange id: {exchange['sourceExchangeId']}."
         )
     return item
 
@@ -751,6 +765,55 @@ def _generated_flow_property_for(
         return None
     generated = generated_units.get(str(unit_name).strip())
     return generated[1] if generated else None
+
+
+def _reference_year(value: Any) -> int:
+    if value is None:
+        return 2026
+    text = str(value).strip()
+    match = re.search(r"\b(\d{4})\b", text)
+    if not match:
+        return 2026
+    return int(match.group(1))
+
+
+def _cas_number(value: Any) -> str | None:
+    if value is None:
+        return None
+    text = str(value).strip()
+    return text if re.fullmatch(r"[0-9]{2,7}-[0-9]{2}-[0-9]", text) else None
+
+
+def _location_code(value: Any) -> str:
+    if value is None:
+        return "GLO"
+    text = str(value).strip()
+    if not text:
+        return "GLO"
+    if text.casefold() == "row":
+        return "GLO"
+    if text in _location_codes():
+        return text
+    return "GLO"
+
+
+@lru_cache(maxsize=1)
+def _location_codes() -> frozenset[str]:
+    schema_path = (
+        Path(__file__).resolve().parents[2]
+        / "tidas"
+        / "schemas"
+        / "tidas_locations_category.json"
+    )
+    try:
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    except OSError:
+        return frozenset({"GLO"})
+    return frozenset(
+        option["const"]
+        for option in schema.get("oneOf", [])
+        if isinstance(option, dict) and isinstance(option.get("const"), str)
+    )
 
 
 def _flow_classification(flow_type: str) -> dict[str, Any]:
