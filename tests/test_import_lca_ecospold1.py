@@ -138,6 +138,86 @@ def test_ecospold1_import_uses_filename_uuid_and_local_exchange_ids(tmp_path):
     )
 
 
+def test_ecospold1_import_merges_duplicate_flows_across_processes(tmp_path):
+    source_dir = tmp_path / "source"
+    source_dir.mkdir()
+    first_uuid = "00000000-0000-4000-8000-000000000001"
+    second_uuid = "00000000-0000-4000-8000-000000000002"
+    _write_ecospold1_process(
+        source_dir / f"process_{first_uuid}.xml",
+        process_name="market for steel",
+        product_name="steel",
+    )
+    _write_ecospold1_process(
+        source_dir / f"process_{second_uuid}.xml",
+        process_name="market for aluminium",
+        product_name="aluminium",
+    )
+
+    output_dir = tmp_path / "out"
+    status = main(
+        [
+            "--input",
+            str(source_dir),
+            "--output-dir",
+            str(output_dir),
+            "--target",
+            "both",
+        ]
+    )
+
+    report = json.loads(
+        (output_dir / "conversion-report.json").read_text(encoding="utf-8")
+    )
+    first_process = _read_process(output_dir / "tidas", first_uuid)
+    second_process = _read_process(output_dir / "tidas", second_uuid)
+    first_co2_ref = _flow_ref_for_exchange(first_process, "carbon dioxide")
+    second_co2_ref = _flow_ref_for_exchange(second_process, "carbon dioxide")
+
+    assert status == 0
+    assert report["validation"]["tidas"]["ok"] is True
+    assert report["validation"]["ilcd"]["ok"] is True
+    assert report["summary"]["processes"] == 2
+    assert report["summary"]["flows"] == 3
+    assert first_co2_ref == second_co2_ref
+    assert len(list((output_dir / "tidas" / "flows").glob("*.json"))) == 3
+
+
+def _write_ecospold1_process(path, *, process_name, product_name):
+    path.write_text(
+        f"""<?xml version="1.0" encoding="UTF-8"?>
+<ecoSpold xmlns="http://www.EcoInvent.org/EcoSpold01">
+  <dataset>
+    <metaInformation>
+      <processInformation>
+        <referenceFunction name="{process_name}" />
+      </processInformation>
+    </metaInformation>
+    <flowData>
+      <exchange number="1" name="{product_name}" unit="kg" amount="1" outputGroup="0" />
+      <exchange number="2" name="carbon dioxide" unit="kg" meanValue="2.5" outputGroup="4" category="air" subCategory="unspecified" />
+    </flowData>
+  </dataset>
+</ecoSpold>
+""",
+        encoding="utf-8",
+    )
+
+
+def _read_process(tidas_dir, process_id):
+    return json.loads(
+        (tidas_dir / "processes" / f"{process_id}.json").read_text(encoding="utf-8")
+    )["processDataSet"]
+
+
+def _flow_ref_for_exchange(process, flow_name):
+    for exchange in process["exchanges"]["exchange"]:
+        ref = exchange["referenceToFlowDataSet"]
+        if ref["common:shortDescription"]["#text"] == flow_name:
+            return ref["@refObjectId"]
+    raise AssertionError(f"Exchange not found: {flow_name}")
+
+
 def _has_flow_property(tidas_dir, expected_name):
     for path in (tidas_dir / "flowproperties").glob("*.json"):
         data = json.loads(path.read_text(encoding="utf-8"))
