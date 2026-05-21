@@ -1,5 +1,7 @@
 import argparse
+from collections.abc import Callable
 from concurrent.futures import ProcessPoolExecutor
+from dataclasses import dataclass
 from functools import lru_cache
 import importlib.resources as pkg_resources
 import json
@@ -10,6 +12,7 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+import fastjsonschema
 from jsonschema import Draft7Validator, FormatChecker
 from lxml import etree
 from referencing import Registry
@@ -95,8 +98,14 @@ ILCD_SCHEMA_BY_ROOT = {
     ),
 }
 _TIDAS_WORKER_CATEGORY: str | None = None
-_TIDAS_WORKER_VALIDATOR: Draft7Validator | None = None
+_TIDAS_WORKER_VALIDATOR: "TidasSchemaValidator | None" = None
 _ILCD_WORKER_SCHEMA_CACHE: dict[str, etree.XMLSchema] | None = None
+
+
+@dataclass(frozen=True)
+class TidasSchemaValidator:
+    strict_validator: Draft7Validator
+    fast_validator: Callable[[dict], dict] | None
 
 
 def is_valid_cas_number(value: str) -> bool:
@@ -114,6 +123,12 @@ def is_valid_cas_number(value: str) -> bool:
 
 @FORMAT_CHECKER.checks("cas-number")
 def _check_cas_number_format(value):
+    if not isinstance(value, str):
+        return True
+    return is_valid_cas_number(value)
+
+
+def _fast_check_cas_number_format(value):
     if not isinstance(value, str):
         return True
     return is_valid_cas_number(value)
@@ -437,9 +452,9 @@ def _collect_classification_issues(json_item: dict, category: str, file_path: st
     return issues
 
 
-def _collect_item_issues(
+def _collect_strict_schema_issues(
     validator: Draft7Validator, json_item: dict, category: str, file_path: str
-):
+) -> list[ValidationIssue]:
     issues = []
     try:
         for schema_error in validator.iter_errors(json_item):
@@ -467,6 +482,41 @@ def _collect_item_issues(
                 message=f"Validation error: {e}",
             )
         )
+
+    return issues
+
+
+def _collect_schema_issues(
+    validator: TidasSchemaValidator, json_item: dict, category: str, file_path: str
+) -> list[ValidationIssue]:
+    if validator.fast_validator is not None:
+        try:
+            validator.fast_validator(json_item)
+            return []
+        except fastjsonschema.JsonSchemaValueException:
+            pass
+        except fastjsonschema.JsonSchemaException as e:
+            logging.debug(
+                "fastjsonschema skipped for %s after validation engine error: %s",
+                file_path,
+                e,
+            )
+        except Exception as e:
+            logging.debug(
+                "fastjsonschema skipped for %s after unexpected error: %s",
+                file_path,
+                e,
+            )
+
+    return _collect_strict_schema_issues(
+        validator.strict_validator, json_item, category, file_path
+    )
+
+
+def _collect_item_issues(
+    validator: TidasSchemaValidator, json_item: dict, category: str, file_path: str
+):
+    issues = _collect_schema_issues(validator, json_item, category, file_path)
 
     localized_text_errors = validate_localized_text_language_constraints(json_item)
     for message in localized_text_errors:
@@ -514,6 +564,63 @@ def _load_tidas_schema(schema_filename: str) -> dict:
         return json.load(schema_file)
 
 
+def _fastjsonschema_schema_handler(uri: str) -> dict:
+    schema_name = Path(uri.split("#", 1)[0]).name
+    if not schema_name:
+        raise fastjsonschema.JsonSchemaDefinitionException(
+            f"Unsupported empty schema reference: {uri}"
+        )
+    schema = _load_tidas_schema(schema_name)
+    return _normalize_fastjsonschema_schema({**schema, "$id": schema_name})
+
+
+def _normalize_fastjsonschema_schema(node):
+    if isinstance(node, dict):
+        normalized = {
+            key: _normalize_fastjsonschema_schema(value) for key, value in node.items()
+        }
+        if normalized.get("then") == {}:
+            normalized.pop("then")
+        if normalized.get("else") == {}:
+            normalized.pop("else")
+        return normalized
+    if isinstance(node, list):
+        return [_normalize_fastjsonschema_schema(value) for value in node]
+    return node
+
+
+@lru_cache(maxsize=1)
+def _fastjsonschema_handlers() -> dict[str, Callable[[str], dict]]:
+    schemas_root = pkg_resources.files(schemas)
+    handlers: dict[str, Callable[[str], dict]] = {"": _fastjsonschema_schema_handler}
+    for schema_path in schemas_root.iterdir():
+        if not schema_path.name.startswith("tidas_") or not schema_path.name.endswith(
+            ".json"
+        ):
+            continue
+        handlers[schema_path.name] = _fastjsonschema_schema_handler
+        handlers[f"./{schema_path.name}"] = _fastjsonschema_schema_handler
+    return handlers
+
+
+def _compile_fast_tidas_schema_definition(
+    schema_id: str, schema_definition: dict
+) -> Callable[[dict], dict]:
+    schema = _normalize_fastjsonschema_schema({**schema_definition, "$id": schema_id})
+    return fastjsonschema.compile(
+        schema,
+        handlers=_fastjsonschema_handlers(),
+        formats={"cas-number": _fast_check_cas_number_format},
+        use_default=False,
+    )
+
+
+def _compile_fast_tidas_schema(schema_filename: str) -> Callable[[dict], dict]:
+    return _compile_fast_tidas_schema_definition(
+        schema_filename, _load_tidas_schema(schema_filename)
+    )
+
+
 @lru_cache(maxsize=1)
 def _tidas_schema_registry() -> Registry:
     registry = Registry(retrieve=retrieve_schema)
@@ -531,21 +638,31 @@ def _tidas_schema_registry() -> Registry:
     return registry.crawl()
 
 
-def _build_tidas_validator(category: str) -> Draft7Validator:
+def _build_tidas_validator(category: str) -> TidasSchemaValidator:
     schema_file_path = pkg_resources.files(schemas) / f"tidas_{category.lower()}.json"
     schema_uri = f"file://{schema_file_path}"
-    schema = {**_load_tidas_schema(schema_file_path.name), "$id": schema_uri}
-    return Draft7Validator(
-        schema,
+    strict_schema = {**_load_tidas_schema(schema_file_path.name), "$id": schema_uri}
+    strict_validator = Draft7Validator(
+        strict_schema,
         registry=_tidas_schema_registry(),
         format_checker=FORMAT_CHECKER,
     )
+    try:
+        fast_validator = _compile_fast_tidas_schema(schema_file_path.name)
+    except Exception as e:
+        logging.debug(
+            "fastjsonschema compilation skipped for %s: %s",
+            schema_file_path.name,
+            e,
+        )
+        fast_validator = None
+    return TidasSchemaValidator(strict_validator, fast_validator)
 
 
 def _collect_tidas_file_issues(
     full_path: str,
     category: str,
-    validator: Draft7Validator,
+    validator: TidasSchemaValidator,
 ) -> list[ValidationIssue]:
     try:
         with open(full_path, "r") as json_file:

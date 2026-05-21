@@ -122,7 +122,7 @@ tidas-import --input <源文件或目录> --output-dir <输出目录> --target b
 
 ### （一）工具功能说明
 
-本工具用于验证 TIDAS JSON 数据或 eILCD/ILCD XML 数据是否符合随包提供的 schema 规范要求。
+本工具用于验证 TIDAS JSON 数据或 eILCD/ILCD XML 数据是否符合随包提供的 schema 规范要求。TIDAS JSON 校验会先使用编译型 schema 快速路径，发现 schema 问题时再回退到完整错误收集。
 
 ### （二）命令行参数说明
 

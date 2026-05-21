@@ -25,7 +25,7 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-05-21
-lastReviewedCommit: 03a10e0f3c0468d41a948becadf38402a7d5c5d9
+lastReviewedCommit: 2a93b8a63a04bb0c4ce05513faee6077972f82e3
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -63,7 +63,7 @@ This repo packages standalone tooling plus the schema, methodology, and styleshe
 
 ### Validation
 
-`validate.py` plus `validation_report.py` own standalone validation semantics and structured reporting. The validator covers TIDAS JSON with packaged JSON schemas and eILCD/ILCD XML with packaged XSD schemas.
+`validate.py` plus `validation_report.py` own standalone validation semantics and structured reporting. The validator covers TIDAS JSON with packaged JSON schemas and eILCD/ILCD XML with packaged XSD schemas. TIDAS JSON validation uses a compiled `fastjsonschema` fast path for files that pass schema validation, while falling back to `jsonschema` for complete error collection when the fast path detects a schema failure.
 
 ### Export
 

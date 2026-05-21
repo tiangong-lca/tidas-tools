@@ -1,6 +1,8 @@
 import importlib.resources as pkg_resources
 import json
 
+import fastjsonschema
+import pytest
 from jsonschema import Draft7Validator
 from lxml import etree
 from referencing import Registry
@@ -9,7 +11,12 @@ import tidas_tools.eilcd.stylesheets as eilcd_stylesheets
 import tidas_tools.tidas.schemas as schemas
 from tidas_tools.validate import (
     FORMAT_CHECKER,
+    SUPPORTED_CATEGORIES,
+    _build_tidas_validator,
+    _compile_fast_tidas_schema_definition,
     _collect_ilcd_cas_number_issues,
+    _collect_schema_issues,
+    _collect_strict_schema_issues,
     category_validate,
     is_valid_cas_number,
     retrieve_schema,
@@ -140,6 +147,59 @@ def test_tidas_cas_number_schema_enforces_checksum_format():
     errors = list(validator.iter_errors("64-17-6"))
 
     assert [error.validator for error in errors] == ["format"]
+
+
+def test_fastjsonschema_tidas_validator_supports_refs_and_cas_format():
+    validator = _compile_fast_tidas_schema_definition(
+        "test_schema.json",
+        {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {"cas": {"$ref": "tidas_data_types.json#/$defs/CASNumber"}},
+            "required": ["cas"],
+        },
+    )
+
+    assert validator({"cas": "64-17-5"}) == {"cas": "64-17-5"}
+
+    with pytest.raises(fastjsonschema.JsonSchemaValueException) as exc_info:
+        validator({"cas": "64-17-6"})
+
+    assert exc_info.value.rule == "format"
+
+
+def test_fastjsonschema_tidas_validator_does_not_apply_defaults():
+    validator = _compile_fast_tidas_schema_definition(
+        "test_defaults.json",
+        {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {"name": {"type": "string", "default": "generated"}},
+        },
+    )
+    payload = {}
+
+    assert validator(payload) == {}
+    assert payload == {}
+
+
+def test_fastjsonschema_compiles_all_packaged_tidas_category_schemas():
+    for category in SUPPORTED_CATEGORIES:
+        assert _build_tidas_validator(category).fast_validator is not None
+
+
+def test_fastjsonschema_schema_failure_falls_back_to_strict_error_collection():
+    validator = _build_tidas_validator("sources")
+    payload = {}
+
+    fast_path_issues = _collect_schema_issues(validator, payload, "sources", "bad.json")
+    strict_issues = _collect_strict_schema_issues(
+        validator.strict_validator, payload, "sources", "bad.json"
+    )
+
+    assert [issue.message for issue in fast_path_issues] == [
+        issue.message for issue in strict_issues
+    ]
 
 
 def test_ilcd_cas_number_supplemental_validation_enforces_checksum():

@@ -95,7 +95,7 @@ tidas-import --input <source_file_or_dir> --output-dir <output_directory> --targ
 
 ### (1) Tool Functionalities
 
-This tool validates whether TIDAS JSON data or eILCD/ILCD XML data complies with the packaged schema standards.
+This tool validates whether TIDAS JSON data or eILCD/ILCD XML data complies with the packaged schema standards. TIDAS JSON validation uses a compiled schema fast path and falls back to complete error collection when a schema issue is found.
 
 ### (2) Command-line Arguments
 
