@@ -266,12 +266,42 @@ def test_validate_package_dir_returns_structured_report(tmp_path):
     assert report["issues"][0]["category"] == "sources"
 
 
+def test_validate_package_dir_supports_parallel_jobs(tmp_path):
+    package_dir = tmp_path / "package"
+    sources_dir = package_dir / "sources"
+    sources_dir.mkdir(parents=True)
+    (sources_dir / "bad-1.json").write_text("{}", encoding="utf-8")
+    (sources_dir / "bad-2.json").write_text("{}", encoding="utf-8")
+
+    report = validate_package_dir(str(package_dir), jobs=2)
+
+    assert report["ok"] is False
+    assert report["summary"]["issue_count"] == 2
+    assert {issue["file_path"].rsplit("/", 1)[-1] for issue in report["issues"]} == {
+        "bad-1.json",
+        "bad-2.json",
+    }
+
+
 def test_validate_ilcd_package_dir_accepts_valid_location_xml(tmp_path):
     source_path = pkg_resources.files(eilcd_stylesheets) / "ILCDLocations_Reference.xml"
     xml_path = tmp_path / "ILCDLocations.xml"
     xml_path.write_text(source_path.read_text(encoding="utf-8"), encoding="utf-8")
 
     report = validate_ilcd_package_dir(str(tmp_path))
+
+    assert report["ok"] is True
+    assert report["summary"]["category_count"] == 1
+    assert report["categories"][0]["category"] == "locations"
+
+
+def test_validate_ilcd_package_dir_supports_parallel_jobs(tmp_path):
+    source_path = pkg_resources.files(eilcd_stylesheets) / "ILCDLocations_Reference.xml"
+    for index in range(2):
+        xml_path = tmp_path / f"ILCDLocations-{index}.xml"
+        xml_path.write_text(source_path.read_text(encoding="utf-8"), encoding="utf-8")
+
+    report = validate_ilcd_package_dir(str(tmp_path), jobs=2)
 
     assert report["ok"] is True
     assert report["summary"]["category_count"] == 1

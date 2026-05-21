@@ -86,6 +86,7 @@ is available.
 
 ```bash
 tidas-import --input <source_file_or_dir> --output-dir <output_directory> --detect-only
+tidas-import --input <source_file_or_dir> --output-dir <output_directory> --target both --validation-jobs 0
 ```
 
 ---
@@ -104,6 +105,7 @@ This tool validates whether TIDAS JSON data or eILCD/ILCD XML data complies with
 | `--input-dir` | `-i` | Directory containing data to validate |
 | `--verbose` | `-v` | Enable verbose logging |
 | `--data-format` | | Input data format to validate: `tidas`, `ilcd`, or `eilcd` (default: `tidas`) |
+| `--jobs` | | Number of parallel validation worker processes; use `0` for all CPU cores |
 
 ### (3) Usage Example
 
@@ -113,6 +115,9 @@ tidas-validate --input-dir <TIDAS_data_directory> --data-format tidas
 
 # Validate eILCD/ILCD XML data format
 tidas-validate --input-dir <eILCD_data_directory> --data-format ilcd
+
+# Validate large packages with all CPU cores
+tidas-validate --input-dir <TIDAS_data_directory> --data-format tidas --jobs 0
 ```
 
 ## 5. TIDAS Export Tool Documentation

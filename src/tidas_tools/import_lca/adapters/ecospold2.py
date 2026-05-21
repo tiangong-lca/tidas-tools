@@ -104,11 +104,13 @@ def _parse_xml(data: bytes):
 
 
 def _datasets(root) -> list:
-    datasets = root.xpath(".//*[local-name()='activityDataset']")
+    datasets = root.xpath(
+        ".//*[local-name()='activityDataset' or local-name()='childActivityDataset']"
+    )
     if datasets:
         return datasets
     local_name = etree.QName(root).localname
-    return [root] if local_name == "activityDataset" else []
+    return [root] if local_name in {"activityDataset", "childActivityDataset"} else []
 
 
 def _exchange_elements(dataset) -> list:
@@ -130,11 +132,13 @@ def _process_entity(dataset, label: str, index: int) -> CanonicalEntity:
     name = name or f"EcoSpold 2 activity {index}"
     activity_id = _attr(activity, "id") if activity is not None else None
     activity_uuid = _uuid_value(activity_id)
-    filename_uuid = _uuid_from_label(label)
-    process_id = (
-        activity_uuid
-        or filename_uuid
-        or _stable_id(f"ecospold2/process/{label}/{index}/{name}")
+    filename_uuids = _uuids_from_label(label)
+    process_id = _process_id(
+        label=label,
+        index=index,
+        name=name,
+        activity_uuid=activity_uuid,
+        filename_uuids=filename_uuids,
     )
     description = _first_text(
         dataset,
@@ -146,12 +150,14 @@ def _process_entity(dataset, label: str, index: int) -> CanonicalEntity:
     return CanonicalEntity(
         entity_type="processes",
         internal_id=process_id,
-        external_id=activity_id or filename_uuid,
+        external_id=activity_id or (filename_uuids[0] if filename_uuids else None),
         name=name,
         raw={
             "description": description or f"Imported from EcoSpold 2 source {label}.",
             "location": _location(dataset),
             "referenceYear": _reference_year(dataset),
+            "sourceActivityId": activity_id,
+            "sourceFileUUIDs": filename_uuids,
         },
     )
 
@@ -230,6 +236,21 @@ def _flow_name(element, index: int) -> str:
         )
         or f"EcoSpold 2 exchange {index}"
     )
+
+
+def _process_id(
+    *,
+    label: str,
+    index: int,
+    name: str,
+    activity_uuid: str | None,
+    filename_uuids: list[str],
+) -> str:
+    if len(filename_uuids) == 1:
+        return filename_uuids[0]
+    if len(filename_uuids) > 1:
+        return _stable_id(f"ecospold2/process/file/{Path(label).stem}")
+    return activity_uuid or _stable_id(f"ecospold2/process/{label}/{index}/{name}")
 
 
 def _exchange(element, flow: CanonicalEntity, index: int) -> dict[str, Any]:
@@ -420,9 +441,8 @@ def _key_text(value: str | None) -> str:
     return " ".join(value.strip().split()).casefold()
 
 
-def _uuid_from_label(label: str) -> str | None:
-    match = UUID_RE.search(Path(label).name)
-    return match.group("uuid").lower() if match else None
+def _uuids_from_label(label: str) -> list[str]:
+    return [match.group("uuid").lower() for match in UUID_RE.finditer(Path(label).name)]
 
 
 def _uuid_value(value: str | None) -> str | None:

@@ -210,6 +210,54 @@ def test_ecospold2_import_keeps_distinct_native_flow_uuids(tmp_path):
     assert set(co2_refs) == {first_flow_id, second_flow_id}
 
 
+def test_ecospold2_import_reads_child_activity_datasets_without_process_collisions(
+    tmp_path,
+):
+    source_dir = tmp_path / "source"
+    source_dir.mkdir()
+    activity_id = "bbbbbbbb-0000-4000-8000-000000000001"
+    first_product_id = "cccccccc-0000-4000-8000-000000000001"
+    second_product_id = "cccccccc-0000-4000-8000-000000000002"
+    _write_ecospold2_process(
+        source_dir / f"{activity_id}_{first_product_id}.spold",
+        process_name="multi output activity",
+        product_name="first reference product",
+        dataset_element="childActivityDataset",
+        activity_id=activity_id,
+        product_id=first_product_id,
+    )
+    _write_ecospold2_process(
+        source_dir / f"{activity_id}_{second_product_id}.spold",
+        process_name="multi output activity",
+        product_name="second reference product",
+        dataset_element="childActivityDataset",
+        activity_id=activity_id,
+        product_id=second_product_id,
+    )
+
+    output_dir = tmp_path / "out"
+    status = main(
+        [
+            "--input",
+            str(source_dir),
+            "--output-dir",
+            str(output_dir),
+            "--target",
+            "both",
+        ]
+    )
+
+    report = json.loads(
+        (output_dir / "conversion-report.json").read_text(encoding="utf-8")
+    )
+
+    assert status == 0
+    assert report["validation"]["tidas"]["ok"] is True
+    assert report["validation"]["ilcd"]["ok"] is True
+    assert report["summary"]["processes"] == 2
+    assert len(list((output_dir / "tidas" / "processes").glob("*.json"))) == 2
+
+
 def _has_flow_property(tidas_dir, expected_name):
     for path in (tidas_dir / "flowproperties").glob("*.json"):
         data = json.loads(path.read_text(encoding="utf-8"))
@@ -221,18 +269,28 @@ def _has_flow_property(tidas_dir, expected_name):
     return False
 
 
-def _write_ecospold2_process(path, *, process_name, product_name):
+def _write_ecospold2_process(
+    path,
+    *,
+    process_name,
+    product_name,
+    dataset_element="activityDataset",
+    activity_id=None,
+    product_id=None,
+):
+    activity_attribute = f' id="{activity_id}"' if activity_id else ""
+    product_attribute = f' intermediateExchangeId="{product_id}"' if product_id else ""
     path.write_text(
         f"""<?xml version="1.0" encoding="UTF-8"?>
 <ecoSpold xmlns="http://www.EcoInvent.org/EcoSpold02">
-  <activityDataset>
+  <{dataset_element}>
     <activityDescription>
-      <activity>
+      <activity{activity_attribute}>
         <activityName xml:lang="en">{process_name}</activityName>
       </activity>
     </activityDescription>
     <flowData>
-      <intermediateExchange amount="1">
+      <intermediateExchange amount="1"{product_attribute}>
         <name xml:lang="en">{product_name}</name>
         <unitName xml:lang="en">kg</unitName>
         <outputGroup>0</outputGroup>
@@ -247,7 +305,7 @@ def _write_ecospold2_process(path, *, process_name, product_name):
         <outputGroup>4</outputGroup>
       </elementaryExchange>
     </flowData>
-  </activityDataset>
+  </{dataset_element}>
 </ecoSpold>
 """,
         encoding="utf-8",
