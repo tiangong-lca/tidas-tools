@@ -1,4 +1,8 @@
 import argparse
+from collections.abc import Callable
+from concurrent.futures import ProcessPoolExecutor
+from dataclasses import dataclass
+from functools import lru_cache
 import importlib.resources as pkg_resources
 import json
 import logging
@@ -8,6 +12,7 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+import fastjsonschema
 from jsonschema import Draft7Validator, FormatChecker
 from lxml import etree
 from referencing import Registry
@@ -34,6 +39,7 @@ import tidas_tools.eilcd.schemas as eilcd_schemas
 CHINESE_CHARACTER_RE = re.compile(r"[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]")
 CAS_NUMBER_RE = re.compile(r"^[0-9]{2,7}-[0-9]{2}-[0-9]$")
 FORMAT_CHECKER = FormatChecker()
+DEFAULT_VALIDATION_JOBS = 1
 SUPPORTED_CATEGORIES = [
     "contacts",
     "flowproperties",
@@ -91,6 +97,15 @@ ILCD_SCHEMA_BY_ROOT = {
         "ILCD_LCIAMethodologies.xsd",
     ),
 }
+_TIDAS_WORKER_CATEGORY: str | None = None
+_TIDAS_WORKER_VALIDATOR: "TidasSchemaValidator | None" = None
+_ILCD_WORKER_SCHEMA_CACHE: dict[str, etree.XMLSchema] | None = None
+
+
+@dataclass(frozen=True)
+class TidasSchemaValidator:
+    strict_validator: Draft7Validator
+    fast_validator: Callable[[dict], dict] | None
 
 
 def is_valid_cas_number(value: str) -> bool:
@@ -108,6 +123,12 @@ def is_valid_cas_number(value: str) -> bool:
 
 @FORMAT_CHECKER.checks("cas-number")
 def _check_cas_number_format(value):
+    if not isinstance(value, str):
+        return True
+    return is_valid_cas_number(value)
+
+
+def _fast_check_cas_number_format(value):
     if not isinstance(value, str):
         return True
     return is_valid_cas_number(value)
@@ -431,9 +452,9 @@ def _collect_classification_issues(json_item: dict, category: str, file_path: st
     return issues
 
 
-def _collect_item_issues(
+def _collect_strict_schema_issues(
     validator: Draft7Validator, json_item: dict, category: str, file_path: str
-):
+) -> list[ValidationIssue]:
     issues = []
     try:
         for schema_error in validator.iter_errors(json_item):
@@ -462,6 +483,41 @@ def _collect_item_issues(
             )
         )
 
+    return issues
+
+
+def _collect_schema_issues(
+    validator: TidasSchemaValidator, json_item: dict, category: str, file_path: str
+) -> list[ValidationIssue]:
+    if validator.fast_validator is not None:
+        try:
+            validator.fast_validator(json_item)
+            return []
+        except fastjsonschema.JsonSchemaValueException:
+            pass
+        except fastjsonschema.JsonSchemaException as e:
+            logging.debug(
+                "fastjsonschema skipped for %s after validation engine error: %s",
+                file_path,
+                e,
+            )
+        except Exception as e:
+            logging.debug(
+                "fastjsonschema skipped for %s after unexpected error: %s",
+                file_path,
+                e,
+            )
+
+    return _collect_strict_schema_issues(
+        validator.strict_validator, json_item, category, file_path
+    )
+
+
+def _collect_item_issues(
+    validator: TidasSchemaValidator, json_item: dict, category: str, file_path: str
+):
+    issues = _collect_schema_issues(validator, json_item, category, file_path)
+
     localized_text_errors = validate_localized_text_language_constraints(json_item)
     for message in localized_text_errors:
         location = "<root>"
@@ -481,6 +537,7 @@ def _collect_item_issues(
     return issues
 
 
+@lru_cache(maxsize=None)
 def retrieve_schema(uri):
     """Custom retrieval function for schema references"""
     # Handle both local and remote references
@@ -500,56 +557,207 @@ def retrieve_schema(uri):
     return None
 
 
-def category_validate(json_file_path: str, category: str, emit_logs: bool = True):
+@lru_cache(maxsize=None)
+def _load_tidas_schema(schema_filename: str) -> dict:
+    schema_file_path = pkg_resources.files(schemas) / schema_filename
+    with schema_file_path.open() as schema_file:
+        return json.load(schema_file)
+
+
+def _fastjsonschema_schema_handler(uri: str) -> dict:
+    schema_name = Path(uri.split("#", 1)[0]).name
+    if not schema_name:
+        raise fastjsonschema.JsonSchemaDefinitionException(
+            f"Unsupported empty schema reference: {uri}"
+        )
+    schema = _load_tidas_schema(schema_name)
+    return _normalize_fastjsonschema_schema({**schema, "$id": schema_name})
+
+
+def _normalize_fastjsonschema_schema(node):
+    if isinstance(node, dict):
+        normalized = {
+            key: _normalize_fastjsonschema_schema(value) for key, value in node.items()
+        }
+        if normalized.get("then") == {}:
+            normalized.pop("then")
+        if normalized.get("else") == {}:
+            normalized.pop("else")
+        return normalized
+    if isinstance(node, list):
+        return [_normalize_fastjsonschema_schema(value) for value in node]
+    return node
+
+
+@lru_cache(maxsize=1)
+def _fastjsonschema_handlers() -> dict[str, Callable[[str], dict]]:
+    schemas_root = pkg_resources.files(schemas)
+    handlers: dict[str, Callable[[str], dict]] = {"": _fastjsonschema_schema_handler}
+    for schema_path in schemas_root.iterdir():
+        if not schema_path.name.startswith("tidas_") or not schema_path.name.endswith(
+            ".json"
+        ):
+            continue
+        handlers[schema_path.name] = _fastjsonschema_schema_handler
+        handlers[f"./{schema_path.name}"] = _fastjsonschema_schema_handler
+    return handlers
+
+
+def _compile_fast_tidas_schema_definition(
+    schema_id: str, schema_definition: dict
+) -> Callable[[dict], dict]:
+    schema = _normalize_fastjsonschema_schema({**schema_definition, "$id": schema_id})
+    return fastjsonschema.compile(
+        schema,
+        handlers=_fastjsonschema_handlers(),
+        formats={"cas-number": _fast_check_cas_number_format},
+        use_default=False,
+    )
+
+
+def _compile_fast_tidas_schema(schema_filename: str) -> Callable[[dict], dict]:
+    return _compile_fast_tidas_schema_definition(
+        schema_filename, _load_tidas_schema(schema_filename)
+    )
+
+
+@lru_cache(maxsize=1)
+def _tidas_schema_registry() -> Registry:
+    registry = Registry(retrieve=retrieve_schema)
+    schemas_root = pkg_resources.files(schemas)
+    schema_files = sorted(
+        schema_path
+        for schema_path in schemas_root.iterdir()
+        if schema_path.name.startswith("tidas_") and schema_path.name.endswith(".json")
+    )
+    for schema_path in schema_files:
+        registry = registry.with_resource(
+            f"file://{schema_path}",
+            DRAFT7.create_resource(_load_tidas_schema(schema_path.name)),
+        )
+    return registry.crawl()
+
+
+def _build_tidas_validator(category: str) -> TidasSchemaValidator:
     schema_file_path = pkg_resources.files(schemas) / f"tidas_{category.lower()}.json"
     schema_uri = f"file://{schema_file_path}"
-    issues = []
-
-    with schema_file_path.open() as f:
-        schema = json.load(f)
-
-        # Create registry with our retrieve function
-        registry = Registry(retrieve=retrieve_schema)
-        # Add the main schema to the registry
-        registry = registry.with_resource(schema_uri, DRAFT7.create_resource(schema))
-        # Instantiate validator once per category for efficiency
-        validator = Draft7Validator(
-            schema, registry=registry, format_checker=FORMAT_CHECKER
+    strict_schema = {**_load_tidas_schema(schema_file_path.name), "$id": schema_uri}
+    strict_validator = Draft7Validator(
+        strict_schema,
+        registry=_tidas_schema_registry(),
+        format_checker=FORMAT_CHECKER,
+    )
+    try:
+        fast_validator = _compile_fast_tidas_schema(schema_file_path.name)
+    except Exception as e:
+        logging.debug(
+            "fastjsonschema compilation skipped for %s: %s",
+            schema_file_path.name,
+            e,
         )
+        fast_validator = None
+    return TidasSchemaValidator(strict_validator, fast_validator)
 
-        for filename in sorted(os.listdir(json_file_path)):
-            if filename.endswith(".json"):
-                full_path = os.path.join(json_file_path, filename)
-                try:
-                    with open(full_path, "r") as json_file:
-                        json_item = json.load(json_file)
-                except Exception as e:
-                    issues.append(
-                        _make_issue(
-                            issue_code="invalid_json",
-                            category=category,
-                            file_path=full_path,
-                            message=f"Invalid JSON: {type(e).__name__}: {e}",
-                        )
-                    )
-                    continue
 
-                item_issues = _collect_item_issues(
-                    validator, json_item, category, full_path
-                )
-                issues.extend(item_issues)
+def _collect_tidas_file_issues(
+    full_path: str,
+    category: str,
+    validator: TidasSchemaValidator,
+) -> list[ValidationIssue]:
+    try:
+        with open(full_path, "r") as json_file:
+            json_item = json.load(json_file)
+    except Exception as e:
+        return [
+            _make_issue(
+                issue_code="invalid_json",
+                category=category,
+                file_path=full_path,
+                message=f"Invalid JSON: {type(e).__name__}: {e}",
+            )
+        ]
 
-                if emit_logs:
-                    if item_issues:
-                        for issue in item_issues:
-                            logging.error(f"ERROR: {full_path} {issue.message}")
-                    else:
-                        logging.info(f"INFO: {full_path} PASSED.")
+    return _collect_item_issues(validator, json_item, category, full_path)
+
+
+def _init_tidas_validation_worker(category: str) -> None:
+    global _TIDAS_WORKER_CATEGORY, _TIDAS_WORKER_VALIDATOR
+    _TIDAS_WORKER_CATEGORY = category
+    _TIDAS_WORKER_VALIDATOR = _build_tidas_validator(category)
+
+
+def _collect_tidas_file_issues_worker(full_path: str) -> list[ValidationIssue]:
+    if _TIDAS_WORKER_CATEGORY is None or _TIDAS_WORKER_VALIDATOR is None:
+        raise RuntimeError("TIDAS validation worker was not initialized")
+    return _collect_tidas_file_issues(
+        full_path, _TIDAS_WORKER_CATEGORY, _TIDAS_WORKER_VALIDATOR
+    )
+
+
+def _normalize_jobs(jobs: int | None) -> int:
+    if jobs is None:
+        return DEFAULT_VALIDATION_JOBS
+    if jobs <= 0:
+        return os.cpu_count() or 1
+    return jobs
+
+
+def _map_chunksize(item_count: int, jobs: int) -> int:
+    if item_count <= 0 or jobs <= 1:
+        return 1
+    return max(1, min(64, item_count // (jobs * 16) or 1))
+
+
+def category_validate(
+    json_file_path: str,
+    category: str,
+    emit_logs: bool = True,
+    jobs: int | None = DEFAULT_VALIDATION_JOBS,
+):
+    issues = []
+    json_files = [
+        os.path.join(json_file_path, filename)
+        for filename in sorted(os.listdir(json_file_path))
+        if filename.endswith(".json")
+    ]
+    worker_count = min(_normalize_jobs(jobs), len(json_files)) if json_files else 1
+
+    if worker_count <= 1:
+        validator = _build_tidas_validator(category)
+        results = (
+            (full_path, _collect_tidas_file_issues(full_path, category, validator))
+            for full_path in json_files
+        )
+    else:
+        with ProcessPoolExecutor(
+            max_workers=worker_count,
+            initializer=_init_tidas_validation_worker,
+            initargs=(category,),
+        ) as executor:
+            item_results = executor.map(
+                _collect_tidas_file_issues_worker,
+                json_files,
+                chunksize=_map_chunksize(len(json_files), worker_count),
+            )
+            results = zip(json_files, item_results)
+
+    for full_path, item_issues in results:
+        issues.extend(item_issues)
+        if emit_logs:
+            if item_issues:
+                for issue in item_issues:
+                    logging.error(f"ERROR: {full_path} {issue.message}")
+            else:
+                logging.info(f"INFO: {full_path} PASSED.")
 
     return build_category_report(category, issues)
 
 
-def validate_package_dir(input_dir: str, emit_logs: bool = False):
+def validate_package_dir(
+    input_dir: str,
+    emit_logs: bool = False,
+    jobs: int | None = DEFAULT_VALIDATION_JOBS,
+):
     schemas_root = pkg_resources.files(schemas)
     category_reports = []
     for category in SUPPORTED_CATEGORIES:
@@ -570,7 +778,9 @@ def validate_package_dir(input_dir: str, emit_logs: bool = False):
                 )
             continue
 
-        category_report = category_validate(category_dir, category, emit_logs=emit_logs)
+        category_report = category_validate(
+            category_dir, category, emit_logs=emit_logs, jobs=jobs
+        )
         category_reports.append(category_report)
 
     return build_package_report(input_dir, category_reports)
@@ -755,13 +965,51 @@ def validate_ilcd_file(
     return category, schema_issues
 
 
-def validate_ilcd_package_dir(input_dir: str, emit_logs: bool = False):
+def _init_ilcd_validation_worker() -> None:
+    global _ILCD_WORKER_SCHEMA_CACHE
+    _ILCD_WORKER_SCHEMA_CACHE = {}
+
+
+def _validate_ilcd_file_worker(
+    xml_file_path: Path,
+) -> tuple[str, list[ValidationIssue]]:
+    if _ILCD_WORKER_SCHEMA_CACHE is None:
+        raise RuntimeError("ILCD validation worker was not initialized")
+    return validate_ilcd_file(xml_file_path, schema_cache=_ILCD_WORKER_SCHEMA_CACHE)
+
+
+def validate_ilcd_package_dir(
+    input_dir: str,
+    emit_logs: bool = False,
+    jobs: int | None = DEFAULT_VALIDATION_JOBS,
+):
     schema_cache: dict[str, etree.XMLSchema] = {}
     issues_by_category: dict[str, list[ValidationIssue]] = defaultdict(list)
     seen_categories = set()
+    xml_files = list(_iter_ilcd_xml_files(input_dir))
+    worker_count = min(_normalize_jobs(jobs), len(xml_files)) if xml_files else 1
 
-    for xml_file_path in _iter_ilcd_xml_files(input_dir):
-        category, issues = validate_ilcd_file(xml_file_path, schema_cache=schema_cache)
+    if worker_count <= 1:
+        results = (
+            (
+                xml_file_path,
+                validate_ilcd_file(xml_file_path, schema_cache=schema_cache),
+            )
+            for xml_file_path in xml_files
+        )
+    else:
+        with ProcessPoolExecutor(
+            max_workers=worker_count,
+            initializer=_init_ilcd_validation_worker,
+        ) as executor:
+            item_results = executor.map(
+                _validate_ilcd_file_worker,
+                xml_files,
+                chunksize=_map_chunksize(len(xml_files), worker_count),
+            )
+            results = zip(xml_files, item_results)
+
+    for xml_file_path, (category, issues) in results:
         seen_categories.add(category)
         issues_by_category[category].extend(issues)
 
@@ -805,6 +1053,15 @@ def main():
         default="tidas",
         help="Input data format to validate. Defaults to TIDAS JSON.",
     )
+    parser.add_argument(
+        "--jobs",
+        type=int,
+        default=DEFAULT_VALIDATION_JOBS,
+        help=(
+            "Number of parallel validation worker processes. "
+            "Use 0 to use all CPU cores. Defaults to 1."
+        ),
+    )
     try:
         args = parser.parse_args()
 
@@ -815,14 +1072,22 @@ def main():
         if args.report_format == "text":
             setup_logging(args.verbose, "validate")
             if data_format == "ilcd":
-                report = validate_ilcd_package_dir(args.input_dir, emit_logs=True)
+                report = validate_ilcd_package_dir(
+                    args.input_dir, emit_logs=True, jobs=args.jobs
+                )
             else:
-                report = validate_package_dir(args.input_dir, emit_logs=True)
+                report = validate_package_dir(
+                    args.input_dir, emit_logs=True, jobs=args.jobs
+                )
         else:
             if data_format == "ilcd":
-                report = validate_ilcd_package_dir(args.input_dir, emit_logs=False)
+                report = validate_ilcd_package_dir(
+                    args.input_dir, emit_logs=False, jobs=args.jobs
+                )
             else:
-                report = validate_package_dir(args.input_dir, emit_logs=False)
+                report = validate_package_dir(
+                    args.input_dir, emit_logs=False, jobs=args.jobs
+                )
             print(json.dumps(report, indent=2, ensure_ascii=False))
 
         if not report["ok"]:

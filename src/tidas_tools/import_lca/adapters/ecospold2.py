@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 from typing import Any, Iterable
 import uuid
 import zipfile
@@ -13,6 +14,12 @@ from .base import SourceAdapter
 from ..model import CanonicalEntity
 from ..report import ConversionReport
 from ..store import MemoryCanonicalStore
+
+UUID_RE = re.compile(
+    r"(?P<uuid>[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})"
+)
+YEAR_RE = re.compile(r"\b(?P<year>\d{4})\b")
+FlowKey = tuple[str, ...]
 
 
 class EcoSpold2Adapter(SourceAdapter):
@@ -27,6 +34,7 @@ class EcoSpold2Adapter(SourceAdapter):
         report: ConversionReport,
     ) -> None:
         count = 0
+        flow_cache: dict[str, CanonicalEntity] = {}
         for label, data in _iter_xml_payloads(Path(source)):
             root = _parse_xml(data)
             if root is None:
@@ -43,8 +51,11 @@ class EcoSpold2Adapter(SourceAdapter):
                 for exchange_index, element in enumerate(
                     _exchange_elements(dataset), 1
                 ):
-                    flow = _flow_entity(element, label, exchange_index)
-                    store.add(flow)
+                    flow, is_new_flow = _cached_flow_entity(
+                        element, exchange_index, flow_cache
+                    )
+                    if is_new_flow:
+                        store.add(flow)
                     exchanges.append(_exchange(element, flow, exchange_index))
                 process.raw["exchanges"] = _reference_first(exchanges)
                 store.add(process)
@@ -52,10 +63,7 @@ class EcoSpold2Adapter(SourceAdapter):
                 report.add_issue(
                     severity="warning",
                     code="ecospold2_minimal_mapping",
-                    message=(
-                        "Mapped EcoSpold 2 activity dataset with the current "
-                        "minimal adapter."
-                    ),
+                    message="Mapped EcoSpold 2 activity dataset.",
                     source_object=label,
                     context={
                         "process_id": process.internal_id,
@@ -96,11 +104,13 @@ def _parse_xml(data: bytes):
 
 
 def _datasets(root) -> list:
-    datasets = root.xpath(".//*[local-name()='activityDataset']")
+    datasets = root.xpath(
+        ".//*[local-name()='activityDataset' or local-name()='childActivityDataset']"
+    )
     if datasets:
         return datasets
     local_name = etree.QName(root).localname
-    return [root] if local_name == "activityDataset" else []
+    return [root] if local_name in {"activityDataset", "childActivityDataset"} else []
 
 
 def _exchange_elements(dataset) -> list:
@@ -121,10 +131,14 @@ def _process_entity(dataset, label: str, index: int) -> CanonicalEntity:
     )
     name = name or f"EcoSpold 2 activity {index}"
     activity_id = _attr(activity, "id") if activity is not None else None
-    process_id = (
-        activity_id
-        if _is_uuid(activity_id)
-        else _stable_id(f"ecospold2/process/{label}/{index}/{name}")
+    activity_uuid = _uuid_value(activity_id)
+    filename_uuids = _uuids_from_label(label)
+    process_id = _process_id(
+        label=label,
+        index=index,
+        name=name,
+        activity_uuid=activity_uuid,
+        filename_uuids=filename_uuids,
     )
     description = _first_text(
         dataset,
@@ -136,45 +150,124 @@ def _process_entity(dataset, label: str, index: int) -> CanonicalEntity:
     return CanonicalEntity(
         entity_type="processes",
         internal_id=process_id,
-        external_id=activity_id,
+        external_id=activity_id or (filename_uuids[0] if filename_uuids else None),
         name=name,
-        raw={"description": description or f"Imported from EcoSpold 2 source {label}."},
+        raw={
+            "description": description or f"Imported from EcoSpold 2 source {label}.",
+            "location": _location(dataset),
+            "referenceYear": _reference_year(dataset),
+            "sourceActivityId": activity_id,
+            "sourceFileUUIDs": filename_uuids,
+        },
     )
 
 
-def _flow_entity(element, label: str, index: int) -> CanonicalEntity:
-    name = _first_text(element, [".//*[local-name()='name']/text()", ".//@name"])
-    name = name or f"EcoSpold 2 exchange {index}"
-    flow_external_id = (
+def _cached_flow_entity(
+    element, index: int, flow_cache: dict[str, CanonicalEntity]
+) -> tuple[CanonicalEntity, bool]:
+    flow_id = _flow_id(element, index)
+    flow = flow_cache.get(flow_id)
+    if flow is None:
+        flow = _flow_entity(element, index, flow_id)
+        flow_cache[flow_id] = flow
+        return flow, True
+    return flow, False
+
+
+def _flow_entity(element, index: int, flow_id: str) -> CanonicalEntity:
+    raw = {"flowType": _flow_type(element), "unitName": _unit_name(element)}
+    cas_number = _cas_number(element)
+    sum_formula = _sum_formula(element)
+    if cas_number:
+        raw["CASNumber"] = cas_number
+    if sum_formula:
+        raw["sumFormula"] = sum_formula
+    return CanonicalEntity(
+        entity_type="flows",
+        internal_id=flow_id,
+        external_id=_flow_external_id(element),
+        name=_flow_name(element, index),
+        category_path=_category_path(element),
+        raw=raw,
+    )
+
+
+def _flow_id(element, index: int) -> str:
+    flow_uuid = _uuid_value(_flow_external_id(element))
+    if flow_uuid:
+        return flow_uuid
+    return _stable_id(_flow_key_seed(_flow_key(element, index)))
+
+
+def _flow_external_id(element) -> str | None:
+    return (
         _attr(element, "intermediateExchangeId")
         or _attr(element, "elementaryExchangeId")
         or _attr(element, "id")
     )
-    flow_id = (
-        flow_external_id
-        if _is_uuid(flow_external_id)
-        else _stable_id(f"ecospold2/flow/{label}/{name}/{_flow_type(element)}")
+
+
+def _flow_key(element, index: int) -> FlowKey:
+    return (
+        _key_text(etree.QName(element).localname),
+        _key_text(_flow_type(element)),
+        _key_text(_flow_name(element, index)),
+        _key_text(_cas_number(element)),
+        _key_text(_sum_formula(element)),
+        _key_text(" / ".join(_category_path(element))),
+        _key_text(_unit_name(element)),
     )
-    return CanonicalEntity(
-        entity_type="flows",
-        internal_id=flow_id,
-        external_id=flow_external_id,
-        name=name,
-        category_path=_category_path(element),
-        raw={"flowType": _flow_type(element), "unitName": _unit_name(element)},
+
+
+def _flow_key_seed(key: FlowKey) -> str:
+    return "ecospold2/flow/" + "\x1f".join(key)
+
+
+def _flow_name(element, index: int) -> str:
+    return (
+        _first_text(
+            element,
+            [
+                "./*[local-name()='name']/text()",
+                "./@name",
+                ".//*[local-name()='name']/text()",
+                ".//@name",
+            ],
+        )
+        or f"EcoSpold 2 exchange {index}"
     )
+
+
+def _process_id(
+    *,
+    label: str,
+    index: int,
+    name: str,
+    activity_uuid: str | None,
+    filename_uuids: list[str],
+) -> str:
+    if len(filename_uuids) == 1:
+        return filename_uuids[0]
+    if len(filename_uuids) > 1:
+        return _stable_id(f"ecospold2/process/file/{Path(label).stem}")
+    return activity_uuid or _stable_id(f"ecospold2/process/{label}/{index}/{name}")
 
 
 def _exchange(element, flow: CanonicalEntity, index: int) -> dict[str, Any]:
     amount = _attr(element, "amount") or "0"
     return {
         "internalId": index,
+        "sourceExchangeId": _source_exchange_id(element),
         "flow": {"@id": flow.internal_id, "name": flow.name},
         "flowRefId": flow.internal_id,
         "flowName": flow.name,
         "isInput": _is_input(element),
         "amount": amount,
     }
+
+
+def _source_exchange_id(element) -> str | None:
+    return _attr(element, "id") or _flow_external_id(element)
 
 
 def _reference_first(exchanges: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -213,15 +306,95 @@ def _category_path(element) -> list[str]:
     compartment = _first_text(
         element,
         [
-            ".//*[local-name()='compartment']/*[local-name()='compartment']/text()",
-            ".//*[local-name()='classificationValue']/text()",
+            "./*[local-name()='compartment']/*[local-name()='compartment']/text()",
+            "./*[local-name()='compartment']/@compartment",
         ],
     )
     subcompartment = _first_text(
         element,
-        [".//*[local-name()='compartment']/*[local-name()='subcompartment']/text()"],
+        [
+            "./*[local-name()='compartment']/*[local-name()='subcompartment']/text()",
+            "./*[local-name()='compartment']/@subcompartment",
+        ],
     )
-    return [part for part in (compartment, subcompartment) if part]
+    parts = [part for part in (compartment, subcompartment) if part]
+    parts.extend(
+        value
+        for value in _all_texts(
+            element, [".//*[local-name()='classificationValue']/text()"]
+        )
+        if value not in parts
+    )
+    return parts
+
+
+def _cas_number(element) -> str | None:
+    return _first_text(
+        element,
+        [
+            "./*[local-name()='CASNumber']/text()",
+            "./*[local-name()='casNumber']/text()",
+            "./@CASNumber",
+            "./@casNumber",
+        ],
+    )
+
+
+def _sum_formula(element) -> str | None:
+    return _first_text(
+        element,
+        [
+            "./*[local-name()='sumFormula']/text()",
+            "./*[local-name()='formula']/text()",
+            "./@sumFormula",
+            "./@formula",
+            "./@chemicalFormula",
+        ],
+    )
+
+
+def _location(dataset) -> str | None:
+    value = _first_text(
+        dataset,
+        [
+            ".//*[local-name()='activityDescription']/*[local-name()='geography']/*[local-name()='shortname']/text()",
+            ".//*[local-name()='geography']/*[local-name()='shortname']/text()",
+            ".//*[local-name()='geography']/@shortname",
+            ".//*[local-name()='geography']/@location",
+            ".//*[local-name()='activity']/@geography",
+        ],
+    )
+    return _location_code(value)
+
+
+def _location_code(value: str | None) -> str | None:
+    if not value:
+        return None
+    text = value.strip()
+    if text.casefold() == "row":
+        return "GLO"
+    if text.upper() == text and re.fullmatch(r"[A-Z]{2,7}|EU-[A-Z0-9&-]+", text):
+        return text
+    return None
+
+
+def _reference_year(dataset) -> int | None:
+    value = _first_text(
+        dataset,
+        [
+            ".//*[local-name()='activityDescription']/*[local-name()='timePeriod']/*[local-name()='startDate']/text()",
+            ".//*[local-name()='timePeriod']/@startDate",
+            ".//*[local-name()='timePeriod']/@startYear",
+            ".//*[local-name()='timePeriod']/*[local-name()='startYear']/text()",
+            ".//*[local-name()='timePeriod']/*[local-name()='startDate']/text()",
+        ],
+    )
+    if not value:
+        return None
+    match = YEAR_RE.search(value)
+    if not match:
+        return None
+    return int(match.group("year"))
 
 
 def _first_element(element, expression: str):
@@ -241,6 +414,17 @@ def _first_text(element, expressions: list[str]) -> str | None:
     return None
 
 
+def _all_texts(element, expressions: list[str]) -> list[str]:
+    texts = []
+    for expression in expressions:
+        values = element.xpath(expression)
+        for value in values:
+            text = value if isinstance(value, str) else getattr(value, "text", None)
+            if text and text.strip():
+                texts.append(text.strip())
+    return texts
+
+
 def _attr(element, name: str) -> str | None:
     if element is None:
         return None
@@ -251,14 +435,23 @@ def _attr(element, name: str) -> str | None:
     return value or None
 
 
-def _is_uuid(value: str | None) -> bool:
+def _key_text(value: str | None) -> str:
+    if value is None:
+        return ""
+    return " ".join(value.strip().split()).casefold()
+
+
+def _uuids_from_label(label: str) -> list[str]:
+    return [match.group("uuid").lower() for match in UUID_RE.finditer(Path(label).name)]
+
+
+def _uuid_value(value: str | None) -> str | None:
     if not value:
-        return False
+        return None
     try:
-        uuid.UUID(str(value))
+        return str(uuid.UUID(str(value)))
     except ValueError:
-        return False
-    return True
+        return None
 
 
 def _stable_id(seed: str) -> str:

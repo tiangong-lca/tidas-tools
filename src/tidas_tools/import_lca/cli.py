@@ -52,6 +52,7 @@ else:
 
 TARGETS = {"tidas", "ilcd", "both"}
 FROM_FORMATS = {"auto", *SUPPORTED_FORMATS}
+DEFAULT_VALIDATION_JOBS = 1
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -97,6 +98,15 @@ def build_parser() -> argparse.ArgumentParser:
         "--fail-on-warning",
         action="store_true",
         help="Return a non-zero exit code when warnings are present.",
+    )
+    parser.add_argument(
+        "--validation-jobs",
+        type=int,
+        default=DEFAULT_VALIDATION_JOBS,
+        help=(
+            "Number of parallel validation worker processes. "
+            "Use 0 to use all CPU cores. Defaults to 1."
+        ),
     )
     parser.add_argument(
         "--detect-only",
@@ -226,7 +236,9 @@ def run_import(args: argparse.Namespace) -> int:
 
     tidas_dir = Path(report.tidas_dir)
     write_tidas_package(store, tidas_dir)
-    tidas_validation = validate_package_dir(str(tidas_dir), emit_logs=False)
+    tidas_validation = validate_package_dir(
+        str(tidas_dir), emit_logs=False, jobs=args.validation_jobs
+    )
     report.validation["tidas"] = tidas_validation
     if not tidas_validation["ok"]:
         report.add_issue(
@@ -242,7 +254,9 @@ def run_import(args: argparse.Namespace) -> int:
     if args.target in {"ilcd", "both"}:
         ilcd_dir = Path(report.ilcd_dir)
         write_ilcd_from_tidas(tidas_dir, ilcd_dir)
-        ilcd_validation = validate_ilcd_package_dir(str(ilcd_dir), emit_logs=False)
+        ilcd_validation = validate_ilcd_package_dir(
+            str(ilcd_dir), emit_logs=False, jobs=args.validation_jobs
+        )
         report.validation["ilcd"] = ilcd_validation
         if not ilcd_validation["ok"]:
             report.add_issue(

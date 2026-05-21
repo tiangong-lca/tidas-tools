@@ -113,6 +113,7 @@ tidas-convert --input-dir <eILCD数据目录> --output-dir <TIDAS数据输出目
 
 ```bash
 tidas-import --input <源文件或目录> --output-dir <输出目录> --detect-only
+tidas-import --input <源文件或目录> --output-dir <输出目录> --target both --validation-jobs 0
 ```
 
 ---
@@ -121,7 +122,7 @@ tidas-import --input <源文件或目录> --output-dir <输出目录> --detect-o
 
 ### （一）工具功能说明
 
-本工具用于验证 TIDAS JSON 数据或 eILCD/ILCD XML 数据是否符合随包提供的 schema 规范要求。
+本工具用于验证 TIDAS JSON 数据或 eILCD/ILCD XML 数据是否符合随包提供的 schema 规范要求。TIDAS JSON 校验会先使用编译型 schema 快速路径，发现 schema 问题时再回退到完整错误收集。
 
 ### （二）命令行参数说明
 
@@ -131,6 +132,7 @@ tidas-import --input <源文件或目录> --output-dir <输出目录> --detect-o
 | `--input-dir` | `-i` | 待验证数据所在目录 |
 | `--verbose` | `-v` | 开启详细日志模式 |
 | `--data-format` | | 待验证的数据格式：`tidas`、`ilcd` 或 `eilcd`（默认：`tidas`） |
+| `--jobs` | | 并行校验进程数；使用 `0` 表示使用全部 CPU 核心 |
 
 ### （三）使用示例
 
@@ -140,6 +142,9 @@ tidas-validate --input-dir <TIDAS数据目录> --data-format tidas
 
 # 验证 eILCD/ILCD XML 数据格式
 tidas-validate --input-dir <eILCD数据目录> --data-format ilcd
+
+# 使用全部 CPU 核心校验大型数据包
+tidas-validate --input-dir <TIDAS数据目录> --data-format tidas --jobs 0
 ```
 
 ## 五、TIDAS 数据导出工具使用说明

@@ -25,6 +25,7 @@ dependencies = [
     "tqdm>=4.67.3",
     "xmltodict>=1.0.4",
     "PyYAML>=6.0.3",
+    "fastjsonschema>=2.21.2",
 ]
 
 [project.scripts]
