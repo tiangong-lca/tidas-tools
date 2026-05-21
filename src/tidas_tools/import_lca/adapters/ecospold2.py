@@ -11,6 +11,7 @@ import zipfile
 from lxml import etree
 
 from .base import SourceAdapter
+from .xml_trace import element_trace
 from ..model import CanonicalEntity
 from ..report import ConversionReport
 from ..store import MemoryCanonicalStore
@@ -46,7 +47,7 @@ class EcoSpold2Adapter(SourceAdapter):
                 )
                 continue
             for index, dataset in enumerate(_datasets(root), start=1):
-                process = _process_entity(dataset, label, index)
+                process = _process_entity(dataset, label, index, root)
                 exchanges = []
                 for exchange_index, element in enumerate(
                     _exchange_elements(dataset), 1
@@ -62,8 +63,10 @@ class EcoSpold2Adapter(SourceAdapter):
                 count += 1
                 report.add_issue(
                     severity="warning",
-                    code="ecospold2_minimal_mapping",
-                    message="Mapped EcoSpold 2 activity dataset.",
+                    code="ecospold2_mapping_with_trace",
+                    message=(
+                        "Mapped EcoSpold 2 activity dataset and preserved source trace metadata."
+                    ),
                     source_object=label,
                     context={
                         "process_id": process.internal_id,
@@ -119,7 +122,7 @@ def _exchange_elements(dataset) -> list:
     )
 
 
-def _process_entity(dataset, label: str, index: int) -> CanonicalEntity:
+def _process_entity(dataset, label: str, index: int, root) -> CanonicalEntity:
     activity = _first_element(dataset, ".//*[local-name()='activity']")
     name = _first_text(
         dataset,
@@ -147,6 +150,22 @@ def _process_entity(dataset, label: str, index: int) -> CanonicalEntity:
             ".//*[local-name()='activity']/*[local-name()='includedActivitiesStart']/text()",
         ],
     )
+    time_period = _first_element(
+        dataset, ".//*[local-name()='activityDescription']/*[local-name()='timePeriod']"
+    )
+    if time_period is None:
+        time_period = _first_element(dataset, ".//*[local-name()='timePeriod']")
+    geography = _first_element(
+        dataset, ".//*[local-name()='activityDescription']/*[local-name()='geography']"
+    )
+    if geography is None:
+        geography = _first_element(dataset, ".//*[local-name()='geography']")
+    technology = _first_element(
+        dataset, ".//*[local-name()='activityDescription']/*[local-name()='technology']"
+    )
+    if technology is None:
+        technology = _first_element(dataset, ".//*[local-name()='technology']")
+    file_attributes = _first_element(root, ".//*[local-name()='fileAttributes']")
     return CanonicalEntity(
         entity_type="processes",
         internal_id=process_id,
@@ -155,9 +174,44 @@ def _process_entity(dataset, label: str, index: int) -> CanonicalEntity:
         raw={
             "description": description or f"Imported from EcoSpold 2 source {label}.",
             "location": _location(dataset),
+            "locationDescription": _first_text(
+                geography,
+                [
+                    "./*[local-name()='comment']/*[local-name()='text']/text()",
+                    "./*[local-name()='comment']/text()",
+                    "./*[local-name()='shortname']/text()",
+                ],
+            ),
             "referenceYear": _reference_year(dataset),
+            "dataSetValidUntil": _end_year(time_period),
+            "timeDescription": _time_description(time_period),
+            "technologyDescription": _first_text(
+                technology,
+                [
+                    "./*[local-name()='comment']/*[local-name()='text']/text()",
+                    "./*[local-name()='comment']/text()",
+                    ".//*[local-name()='text']/text()",
+                ],
+            ),
+            "technologicalApplicability": description,
             "sourceActivityId": activity_id,
             "sourceFileUUIDs": filename_uuids,
+            "sourceFormat": "ecospold2",
+            "sourceLabel": label,
+            "sourceTrace": {
+                "format": "ecospold2",
+                "sourceObject": label,
+                "rootAttributes": element_trace(
+                    root,
+                    exclude_child_names={"activityDataset", "childActivityDataset"},
+                ),
+                "fileAttributes": (
+                    element_trace(file_attributes)
+                    if file_attributes is not None
+                    else None
+                ),
+                "dataset": element_trace(dataset, exclude_child_names={"flowData"}),
+            },
         },
     )
 
@@ -175,7 +229,16 @@ def _cached_flow_entity(
 
 
 def _flow_entity(element, index: int, flow_id: str) -> CanonicalEntity:
-    raw = {"flowType": _flow_type(element), "unitName": _unit_name(element)}
+    raw = {
+        "flowType": _flow_type(element),
+        "unitName": _unit_name(element),
+        "unitId": _attr(element, "unitId"),
+        "sourceTrace": {
+            "format": "ecospold2",
+            "sourceObject": "exchange",
+            "exchange": element_trace(element),
+        },
+    }
     cas_number = _cas_number(element)
     sum_formula = _sum_formula(element)
     if cas_number:
@@ -263,6 +326,23 @@ def _exchange(element, flow: CanonicalEntity, index: int) -> dict[str, Any]:
         "flowName": flow.name,
         "isInput": _is_input(element),
         "amount": amount,
+        "activityLinkId": _attr(element, "activityLinkId"),
+        "productionVolumeAmount": _attr(element, "productionVolumeAmount"),
+        "isCalculatedAmount": _attr(element, "isCalculatedAmount"),
+        "dataDerivationTypeStatus": _data_derivation_type(element),
+        "uncertaintyDistributionType": _uncertainty_distribution_type(element),
+        "generalComment": _first_text(
+            element,
+            [
+                "./*[local-name()='comment']/*[local-name()='text']/text()",
+                "./*[local-name()='comment']/text()",
+            ],
+        ),
+        "sourceTrace": {
+            "format": "ecospold2",
+            "sourceObject": "exchange",
+            "exchange": element_trace(element),
+        },
     }
 
 
@@ -280,6 +360,32 @@ def _reference_first(exchanges: list[dict[str, Any]]) -> list[dict[str, Any]]:
     for index, exchange in enumerate(ordered, start=1):
         exchange["internalId"] = index
     return ordered
+
+
+def _data_derivation_type(element) -> str | None:
+    value = _attr(element, "isCalculatedAmount")
+    if value and value.casefold() == "true":
+        return "Calculated"
+    return None
+
+
+def _uncertainty_distribution_type(element) -> str | None:
+    uncertainty = _first_element(element, "./*[local-name()='uncertainty']")
+    if uncertainty is None:
+        return None
+    for child in uncertainty:
+        if not isinstance(child.tag, str):
+            continue
+        local_name = etree.QName(child).localname.casefold()
+        mapping = {
+            "lognormal": "log-normal",
+            "normal": "normal",
+            "triangular": "triangular",
+            "uniform": "uniform",
+        }
+        if local_name in mapping:
+            return mapping[local_name]
+    return None
 
 
 def _is_input(element) -> bool:
@@ -397,12 +503,70 @@ def _reference_year(dataset) -> int | None:
     return int(match.group("year"))
 
 
+def _end_year(time_period) -> int | None:
+    if time_period is None:
+        return None
+    value = _first_text(
+        time_period,
+        [
+            "./*[local-name()='endDate']/text()",
+            "./*[local-name()='endYear']/text()",
+            "./@endDate",
+            "./@endYear",
+        ],
+    )
+    if not value:
+        return None
+    match = YEAR_RE.search(value)
+    return int(match.group("year")) if match else None
+
+
+def _time_description(time_period) -> str | None:
+    if time_period is None:
+        return None
+    start = _first_text(
+        time_period,
+        [
+            "./*[local-name()='startDate']/text()",
+            "./*[local-name()='startYear']/text()",
+            "./@startDate",
+            "./@startYear",
+        ],
+    )
+    end = _first_text(
+        time_period,
+        [
+            "./*[local-name()='endDate']/text()",
+            "./*[local-name()='endYear']/text()",
+            "./@endDate",
+            "./@endYear",
+        ],
+    )
+    comment = _first_text(
+        time_period,
+        [
+            "./*[local-name()='comment']/*[local-name()='text']/text()",
+            "./*[local-name()='comment']/text()",
+        ],
+    )
+    parts = []
+    if start or end:
+        parts.append(" - ".join(part for part in (start, end) if part))
+    if comment:
+        parts.append(comment)
+    return "; ".join(parts) if parts else None
+
+
 def _first_element(element, expression: str):
+    if element is None:
+        return None
     values = element.xpath(expression)
     return values[0] if values else None
 
 
 def _first_text(element, expressions: list[str]) -> str | None:
+    if element is None:
+        return None
     for expression in expressions:
         values = element.xpath(expression)
         for value in values:

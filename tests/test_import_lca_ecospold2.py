@@ -94,6 +94,106 @@ def test_ecospold2_minimal_import_can_write_valid_tidas_and_ilcd(tmp_path):
     assert co2["sumFormula"] == "CO2"
 
 
+def test_ecospold2_import_maps_semantic_fields_and_source_trace(tmp_path):
+    process_uuid = "22222222-2222-4222-8222-222222222222"
+    product_id = "11111111-1111-4111-8111-111111111111"
+    source = tmp_path / f"{process_uuid}_{product_id}.spold"
+    source.write_text(
+        f"""<?xml version="1.0" encoding="UTF-8"?>
+<ecoSpold xmlns="http://www.EcoInvent.org/EcoSpold02">
+  <fileAttributes majorRelease="3" minorRelease="12" internalSchemaVersion="2.0" defaultLanguage="en"/>
+  <activityDataset>
+    <activityDescription>
+      <activity id="{process_uuid}" specialActivityType="0">
+        <activityName xml:lang="en">market for enriched product</activityName>
+        <generalComment>
+          <text xml:lang="en" index="1">Activity note</text>
+        </generalComment>
+      </activity>
+      <timePeriod>
+        <startDate>2024-01-01</startDate>
+        <endDate>2025-12-31</endDate>
+        <comment xml:lang="en">Temporal representativeness note</comment>
+      </timePeriod>
+      <geography>
+        <shortname xml:lang="en">CH</shortname>
+        <comment xml:lang="en">Swiss geography note</comment>
+      </geography>
+      <technology>
+        <comment xml:lang="en">Heat pump route</comment>
+      </technology>
+    </activityDescription>
+    <flowData>
+      <intermediateExchange id="{product_id}" amount="1" productionVolumeAmount="42.0" isCalculatedAmount="true" intermediateExchangeId="{product_id}">
+        <name xml:lang="en">enriched product</name>
+        <unitName xml:lang="en">kg</unitName>
+        <comment xml:lang="en">calculated reference product</comment>
+        <outputGroup>0</outputGroup>
+      </intermediateExchange>
+      <intermediateExchange id="33333333-3333-4333-8333-333333333333" amount="0.2" isCalculatedAmount="true" activityLinkId="aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa">
+        <name xml:lang="en">linked input</name>
+        <unitName xml:lang="en">kg</unitName>
+        <comment xml:lang="en">linked input comment</comment>
+        <uncertainty>
+          <lognormal meanValue="0.2" variance="0.12"/>
+        </uncertainty>
+        <inputGroup>5</inputGroup>
+      </intermediateExchange>
+    </flowData>
+  </activityDataset>
+</ecoSpold>
+""",
+        encoding="utf-8",
+    )
+
+    output_dir = tmp_path / "out"
+    status = main(
+        [
+            "--input",
+            str(source),
+            "--output-dir",
+            str(output_dir),
+            "--target",
+            "both",
+        ]
+    )
+
+    report = json.loads(
+        (output_dir / "conversion-report.json").read_text(encoding="utf-8")
+    )
+    process = _read_only_process(output_dir / "tidas")
+    process_info = process["processInformation"]
+    linked_input = _exchange_for_flow(process, "linked input")
+
+    assert status == 0
+    assert report["validation"]["tidas"]["ok"] is True
+    assert report["validation"]["ilcd"]["ok"] is True
+    assert process_info["time"]["common:referenceYear"] == 2024
+    assert process_info["time"]["common:dataSetValidUntil"] == 2025
+    assert (
+        process_info["time"]["common:timeRepresentativenessDescription"]["#text"]
+        == "2024-01-01 - 2025-12-31; Temporal representativeness note"
+    )
+    assert (
+        process_info["geography"]["locationOfOperationSupplyOrProduction"][
+            "descriptionOfRestrictions"
+        ]["#text"]
+        == "Swiss geography note"
+    )
+    assert (
+        process_info["technology"]["technologyDescriptionAndIncludedProcesses"]["#text"]
+        == "Heat pump route"
+    )
+    assert (
+        _trace_marker(process_info["dataSetInformation"]["common:other"])
+        == "TIDAS_IMPORT_TRACE_V1"
+    )
+    assert linked_input["dataDerivationTypeStatus"] == "Calculated"
+    assert linked_input["uncertaintyDistributionType"] == "log-normal"
+    assert "linked input comment" in linked_input["generalComment"]["#text"]
+    assert _trace_marker(linked_input["common:other"]) == "TIDAS_IMPORT_TRACE_V1"
+
+
 def test_ecospold2_import_uses_filename_uuid_and_merges_generated_flows(tmp_path):
     source_dir = tmp_path / "source"
     source_dir.mkdir()
@@ -318,6 +418,12 @@ def _read_process(tidas_dir, process_id):
     )["processDataSet"]
 
 
+def _read_only_process(tidas_dir):
+    process_paths = list((tidas_dir / "processes").glob("*.json"))
+    assert len(process_paths) == 1
+    return json.loads(process_paths[0].read_text(encoding="utf-8"))["processDataSet"]
+
+
 def _flow_ref_for_exchange(process, flow_name):
     refs = _flow_refs_for_exchanges(process, flow_name)
     if not refs:
@@ -332,6 +438,18 @@ def _flow_refs_for_exchanges(process, flow_name):
         if ref["common:shortDescription"]["#text"] == flow_name:
             refs.append(ref["@refObjectId"])
     return refs
+
+
+def _exchange_for_flow(process, flow_name):
+    for exchange in process["exchanges"]["exchange"]:
+        ref = exchange["referenceToFlowDataSet"]
+        if ref["common:shortDescription"]["#text"] == flow_name:
+            return exchange
+    raise AssertionError(f"Exchange not found: {flow_name}")
+
+
+def _trace_marker(common_other):
+    return common_other["tidasimport:sourceTrace"]["@marker"]
 
 
 def _find_flow(tidas_dir, expected_name):

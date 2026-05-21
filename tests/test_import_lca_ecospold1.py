@@ -50,6 +50,94 @@ def test_ecospold1_minimal_import_can_write_valid_tidas_and_ilcd(tmp_path):
     assert _has_flow_property(output_dir / "tidas", "Amount in kg")
 
 
+def test_ecospold1_import_maps_semantic_fields_and_source_trace(tmp_path):
+    process_uuid = "64e926e8-dd48-3704-b902-daaf546087c4"
+    source = tmp_path / f"process_{process_uuid}.xml"
+    source.write_text(
+        """<?xml version="1.0" encoding="UTF-8"?>
+<ecoSpold xmlns="http://www.EcoInvent.org/EcoSpold01">
+  <dataset>
+    <metaInformation>
+      <processInformation>
+        <referenceFunction name="market for enriched steel" generalComment="Reference function note" category="metals" subCategory="steel" localCategory="local metals" localSubCategory="local steel" />
+        <geography location="CH" text="Swiss market boundary" />
+        <technology text="Electric arc furnace route" />
+        <timePeriod startDate="2020-01-01" endDate="2023-12-31" dataValidForEntirePeriod="true">survey period</timePeriod>
+      </processInformation>
+      <modellingAndValidation>
+        <representativeness productionVolume="123 kg" samplingProcedure="supplier survey" uncertaintyAdjustments="pedigree adjusted" extrapolations="use only for Swiss market" />
+      </modellingAndValidation>
+      <sources>
+        <source sourceNumber="10" firstAuthor="A. Author" year="2021" title="Steel source" text="Primary source note" />
+      </sources>
+    </metaInformation>
+    <flowData>
+      <exchange number="1" name="enriched steel" unit="kg" amount="1" outputGroup="0" />
+      <exchange number="2" name="carbon dioxide" CASNumber="124-38-9" formula="CO2" unit="kg" amount="2.5" outputGroup="4" category="air" subCategory="unspecified" minValue="1.2" maxValue="3.4" uncertaintyType="1" standardDeviation95="12.3456" generalComment="measured stack emissions" localName="CO2 local" />
+    </flowData>
+  </dataset>
+</ecoSpold>
+""",
+        encoding="utf-8",
+    )
+
+    output_dir = tmp_path / "out"
+    status = main(
+        [
+            "--input",
+            str(source),
+            "--output-dir",
+            str(output_dir),
+            "--target",
+            "both",
+        ]
+    )
+
+    report = json.loads(
+        (output_dir / "conversion-report.json").read_text(encoding="utf-8")
+    )
+    process = _read_process(output_dir / "tidas", process_uuid)
+    process_info = process["processInformation"]
+    data_sources = process["modellingAndValidation"][
+        "dataSourcesTreatmentAndRepresentativeness"
+    ]
+    co2_exchange = _exchange_for_flow(process, "carbon dioxide")
+    co2_flow = _find_flow(output_dir / "tidas", "carbon dioxide")["flowDataSet"][
+        "flowInformation"
+    ]["dataSetInformation"]
+
+    assert status == 0
+    assert report["validation"]["tidas"]["ok"] is True
+    assert report["validation"]["ilcd"]["ok"] is True
+    assert process_info["time"]["common:referenceYear"] == 2020
+    assert process_info["time"]["common:dataSetValidUntil"] == 2023
+    assert (
+        process_info["geography"]["locationOfOperationSupplyOrProduction"]["@location"]
+        == "CH"
+    )
+    assert (
+        process_info["technology"]["technologyDescriptionAndIncludedProcesses"]["#text"]
+        == "Electric arc furnace route"
+    )
+    assert data_sources["annualSupplyOrProductionVolume"]["#text"] == "123 kg"
+    assert data_sources["samplingProcedure"]["#text"] == "supplier survey"
+    assert "source data set" == data_sources["referenceToDataSource"]["@type"]
+    assert (
+        _trace_marker(process_info["dataSetInformation"]["common:other"])
+        == "TIDAS_IMPORT_TRACE_V1"
+    )
+    assert co2_exchange["minimumAmount"] == "1.2"
+    assert co2_exchange["maximumAmount"] == "3.4"
+    assert co2_exchange["uncertaintyDistributionType"] == "log-normal"
+    assert co2_exchange["relativeStandardDeviation95In"] == "12.346"
+    assert "measured stack emissions" in co2_exchange["generalComment"]["#text"]
+    assert _trace_marker(co2_exchange["common:other"]) == "TIDAS_IMPORT_TRACE_V1"
+    assert co2_flow["CASNumber"] == "124-38-9"
+    assert co2_flow["sumFormula"] == "CO2"
+    assert co2_flow["common:synonyms"]["#text"] == "CO2 local"
+    assert _trace_marker(co2_flow["common:other"]) == "TIDAS_IMPORT_TRACE_V1"
+
+
 def test_ecospold1_import_uses_filename_uuid_and_local_exchange_ids(tmp_path):
     process_uuid = "64e926e8-dd48-3704-b902-daaf546087c4"
     source = tmp_path / f"process_{process_uuid}.xml"
@@ -216,6 +304,18 @@ def _flow_ref_for_exchange(process, flow_name):
         if ref["common:shortDescription"]["#text"] == flow_name:
             return ref["@refObjectId"]
     raise AssertionError(f"Exchange not found: {flow_name}")
+
+
+def _exchange_for_flow(process, flow_name):
+    for exchange in process["exchanges"]["exchange"]:
+        ref = exchange["referenceToFlowDataSet"]
+        if ref["common:shortDescription"]["#text"] == flow_name:
+            return exchange
+    raise AssertionError(f"Exchange not found: {flow_name}")
+
+
+def _trace_marker(common_other):
+    return common_other["tidasimport:sourceTrace"]["@marker"]
 
 
 def _has_flow_property(tidas_dir, expected_name):
