@@ -1,5 +1,6 @@
 import importlib.resources as pkg_resources
 import json
+from pathlib import Path
 
 import fastjsonschema
 import pytest
@@ -337,7 +338,7 @@ def test_validate_package_dir_supports_parallel_jobs(tmp_path):
 
     assert report["ok"] is False
     assert report["summary"]["issue_count"] == 2
-    assert {issue["file_path"].rsplit("/", 1)[-1] for issue in report["issues"]} == {
+    assert {Path(issue["file_path"]).name for issue in report["issues"]} == {
         "bad-1.json",
         "bad-2.json",
     }
