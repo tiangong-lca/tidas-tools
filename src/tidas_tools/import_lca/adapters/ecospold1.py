@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 from typing import Iterable
 import uuid
 import zipfile
@@ -13,6 +14,10 @@ from .base import SourceAdapter
 from ..model import CanonicalEntity
 from ..report import ConversionReport
 from ..store import MemoryCanonicalStore
+
+UUID_RE = re.compile(
+    r"(?P<uuid>[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})"
+)
 
 
 class EcoSpold1Adapter(SourceAdapter):
@@ -114,10 +119,14 @@ def _process_entity(dataset, label: str, index: int) -> CanonicalEntity:
         ],
     )
     name = name or f"EcoSpold 1 process {index}"
-    process_id = _stable_id(f"ecospold1/process/{label}/{index}/{name}")
+    filename_uuid = _uuid_from_label(label)
+    process_id = filename_uuid or _stable_id(
+        f"ecospold1/process/{label}/{index}/{name}"
+    )
     return CanonicalEntity(
         entity_type="processes",
         internal_id=process_id,
+        external_id=filename_uuid,
         name=name,
         raw={"description": f"Imported from EcoSpold 1 source {label}."},
     )
@@ -148,8 +157,10 @@ def _exchange(exchange, flow: CanonicalEntity, index: int) -> dict:
         or _attr(exchange, "meanAmount")
         or "0"
     )
+    source_number = _attr(exchange, "number")
     return {
-        "internalId": _attr(exchange, "number") or index,
+        "internalId": index,
+        "sourceExchangeNumber": source_number,
         "flow": {"@id": flow.internal_id, "name": flow.name},
         "flowRefId": flow.internal_id,
         "flowName": flow.name,
@@ -198,6 +209,11 @@ def _attr(element, name: str) -> str | None:
         return None
     value = value.strip()
     return value or None
+
+
+def _uuid_from_label(label: str) -> str | None:
+    match = UUID_RE.search(Path(label).name)
+    return match.group("uuid").lower() if match else None
 
 
 def _stable_id(seed: str) -> str:
