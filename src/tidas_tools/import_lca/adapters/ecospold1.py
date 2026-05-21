@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 from typing import Iterable
 import uuid
 import zipfile
@@ -13,6 +14,11 @@ from .base import SourceAdapter
 from ..model import CanonicalEntity
 from ..report import ConversionReport
 from ..store import MemoryCanonicalStore
+
+UUID_RE = re.compile(
+    r"(?P<uuid>[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})"
+)
+FlowKey = tuple[str, ...]
 
 
 class EcoSpold1Adapter(SourceAdapter):
@@ -27,6 +33,7 @@ class EcoSpold1Adapter(SourceAdapter):
         report: ConversionReport,
     ) -> None:
         count = 0
+        flow_cache: dict[FlowKey, CanonicalEntity] = {}
         for label, data in _iter_xml_payloads(Path(source)):
             root = _parse_xml(data)
             if root is None:
@@ -44,8 +51,11 @@ class EcoSpold1Adapter(SourceAdapter):
                 for exchange_index, exchange in enumerate(
                     _exchange_elements(dataset), 1
                 ):
-                    flow = _flow_entity(exchange, label, exchange_index)
-                    store.add(flow)
+                    flow, is_new_flow = _cached_flow_entity(
+                        exchange, exchange_index, flow_cache
+                    )
+                    if is_new_flow:
+                        store.add(flow)
                     exchanges.append(_exchange(exchange, flow, exchange_index))
                 process.raw["exchanges"] = exchanges
                 store.add(process)
@@ -114,30 +124,67 @@ def _process_entity(dataset, label: str, index: int) -> CanonicalEntity:
         ],
     )
     name = name or f"EcoSpold 1 process {index}"
-    process_id = _stable_id(f"ecospold1/process/{label}/{index}/{name}")
+    filename_uuid = _uuid_from_label(label)
+    process_id = filename_uuid or _stable_id(
+        f"ecospold1/process/{label}/{index}/{name}"
+    )
     return CanonicalEntity(
         entity_type="processes",
         internal_id=process_id,
+        external_id=filename_uuid,
         name=name,
         raw={"description": f"Imported from EcoSpold 1 source {label}."},
     )
 
 
-def _flow_entity(exchange, label: str, index: int) -> CanonicalEntity:
-    name = (
-        _attr(exchange, "name") or _attr(exchange, "casNumber") or f"Exchange {index}"
-    )
+def _cached_flow_entity(
+    exchange, index: int, flow_cache: dict[FlowKey, CanonicalEntity]
+) -> tuple[CanonicalEntity, bool]:
+    key = _flow_key(exchange, index)
+    flow = flow_cache.get(key)
+    if flow is None:
+        flow = _flow_entity(exchange, index, key)
+        flow_cache[key] = flow
+        return flow, True
+    return flow, False
+
+
+def _flow_entity(exchange, index: int, key: FlowKey) -> CanonicalEntity:
+    name = _flow_name(exchange, index)
     category = _attr(exchange, "category")
     subcategory = _attr(exchange, "subCategory")
-    flow_id = _stable_id(
-        f"ecospold1/flow/{label}/{name}/{category}/{subcategory}/{_attr(exchange, 'unit')}"
-    )
+    flow_id = _stable_id(_flow_key_seed(key))
     return CanonicalEntity(
         entity_type="flows",
         internal_id=flow_id,
         name=name,
         category_path=[part for part in (category, subcategory) if part],
         raw={"flowType": _flow_type(exchange), "unitName": _attr(exchange, "unit")},
+    )
+
+
+def _flow_key(exchange, index: int) -> FlowKey:
+    return (
+        _key_text(_flow_type(exchange)),
+        _key_text(_flow_name(exchange, index)),
+        _key_text(_attr(exchange, "CASNumber")),
+        _key_text(_attr(exchange, "formula")),
+        _key_text(_attr(exchange, "category")),
+        _key_text(_attr(exchange, "subCategory")),
+        _key_text(_attr(exchange, "unit")),
+    )
+
+
+def _flow_key_seed(key: FlowKey) -> str:
+    return "ecospold1/flow/" + "\x1f".join(key)
+
+
+def _flow_name(exchange, index: int) -> str:
+    return (
+        _attr(exchange, "name")
+        or _attr(exchange, "CASNumber")
+        or _attr(exchange, "number")
+        or f"Exchange {index}"
     )
 
 
@@ -148,8 +195,10 @@ def _exchange(exchange, flow: CanonicalEntity, index: int) -> dict:
         or _attr(exchange, "meanAmount")
         or "0"
     )
+    source_number = _attr(exchange, "number")
     return {
-        "internalId": _attr(exchange, "number") or index,
+        "internalId": index,
+        "sourceExchangeNumber": source_number,
         "flow": {"@id": flow.internal_id, "name": flow.name},
         "flowRefId": flow.internal_id,
         "flowName": flow.name,
@@ -198,6 +247,17 @@ def _attr(element, name: str) -> str | None:
         return None
     value = value.strip()
     return value or None
+
+
+def _key_text(value: str | None) -> str:
+    if value is None:
+        return ""
+    return " ".join(value.strip().split()).casefold()
+
+
+def _uuid_from_label(label: str) -> str | None:
+    match = UUID_RE.search(Path(label).name)
+    return match.group("uuid").lower() if match else None
 
 
 def _stable_id(seed: str) -> str:

@@ -24,6 +24,15 @@ DEFAULT_UNIT_GROUP_ID = str(
 DEFAULT_FLOW_PROPERTY_ID = str(
     uuid.uuid5(uuid.NAMESPACE_URL, "tidas-tools/import/default-flow-property")
 )
+PERMANENT_URI_BASE = "https://lcdn.tiangong.earth"
+PERMANENT_URI_PATHS = {
+    "contacts": "datasetdetail/contact.xhtml",
+    "flowproperties": "datasetdetail/flowproperty.xhtml",
+    "flows": "datasetdetail/productFlow.xhtml",
+    "lifecyclemodels": "datasetdetail/lifecyclemodel.xhtml",
+    "processes": "datasetdetail/process.xhtml",
+    "sources": "datasetdetail/source.xhtml",
+}
 
 
 def write_tidas_package(store: MemoryCanonicalStore, output_dir: str | Path) -> None:
@@ -152,7 +161,22 @@ def _owner_ref() -> dict[str, Any]:
     )
 
 
-def _admin_info(*, process: bool = False) -> dict[str, Any]:
+def _permanent_dataset_uri(
+    category: str, dataset_id: str, version: str = DEFAULT_VERSION
+) -> str:
+    if category == "unitgroups":
+        return f"{PERMANENT_URI_BASE}/unitgroups/{dataset_id}?version={version}"
+    path = PERMANENT_URI_PATHS[category]
+    return f"{PERMANENT_URI_BASE}/{path}?uuid={dataset_id}&version={version}"
+
+
+def _admin_info(
+    *,
+    category: str,
+    dataset_id: str,
+    version: str = DEFAULT_VERSION,
+    process: bool = False,
+) -> dict[str, Any]:
     data_entry = {
         "common:timeStamp": _now(),
         "common:referenceToDataSetFormat": _format_ref(),
@@ -160,11 +184,15 @@ def _admin_info(*, process: bool = False) -> dict[str, Any]:
     if process:
         data_entry["common:referenceToPersonOrEntityEnteringTheData"] = _owner_ref()
 
-    publication = {"common:dataSetVersion": DEFAULT_VERSION}
+    publication = {
+        "common:dataSetVersion": version,
+        "common:permanentDataSetURI": _permanent_dataset_uri(
+            category, dataset_id, version
+        ),
+    }
     if process:
         publication.update(
             {
-                "common:permanentDataSetURI": "https://tiangong.earth/tidas/import",
                 "common:referenceToOwnershipOfDataSet": _owner_ref(),
                 "common:copyright": "false",
                 "common:licenseType": "Free of charge for all users and uses",
@@ -265,7 +293,9 @@ def _contact_payload(
             "contactInformation": {
                 "dataSetInformation": dataset_info,
             },
-            "administrativeInformation": _admin_info(),
+            "administrativeInformation": _admin_info(
+                category="contacts", dataset_id=contact_id
+            ),
         }
     }
 
@@ -339,7 +369,9 @@ def _source_payload(
             "sourceInformation": {
                 "dataSetInformation": dataset_info,
             },
-            "administrativeInformation": _admin_info(),
+            "administrativeInformation": _admin_info(
+                category="sources", dataset_id=source_id
+            ),
         }
     }
 
@@ -394,7 +426,9 @@ def _unit_group_dataset(entity: CanonicalEntity) -> dict[str, Any]:
             "modellingAndValidation": {
                 "complianceDeclarations": _compliance_declarations()
             },
-            "administrativeInformation": _admin_info(),
+            "administrativeInformation": _admin_info(
+                category="unitgroups", dataset_id=entity.internal_id
+            ),
             "units": {"unit": unit_items},
         }
     }
@@ -440,7 +474,9 @@ def _flow_property_dataset(
             "modellingAndValidation": {
                 "complianceDeclarations": _compliance_declarations()
             },
-            "administrativeInformation": _admin_info(),
+            "administrativeInformation": _admin_info(
+                category="flowproperties", dataset_id=entity.internal_id
+            ),
         }
     }
 
@@ -493,7 +529,9 @@ def _flow_dataset(
                 "LCIMethod": {"typeOfDataSet": flow_type},
                 "complianceDeclarations": _compliance_declarations(),
             },
-            "administrativeInformation": _admin_info(),
+            "administrativeInformation": _admin_info(
+                category="flows", dataset_id=entity.internal_id
+            ),
             "flowProperties": {
                 "flowProperty": {
                     "@dataSetInternalID": "1",
@@ -597,7 +635,11 @@ def _process_dataset(entity: CanonicalEntity):
                     "common:referenceToCommissioner": _owner_ref(),
                     "common:intendedApplications": _ml("Converted external LCA data."),
                 },
-                **_admin_info(process=True),
+                **_admin_info(
+                    category="processes",
+                    dataset_id=entity.internal_id,
+                    process=True,
+                ),
             },
             "exchanges": {"exchange": exchange_items},
         }
@@ -612,8 +654,8 @@ def _exchange_item(exchange: dict[str, Any], idx: int) -> dict[str, Any]:
     flow_name = _extract_name(flow) or exchange.get("flowName") or "Flow"
     amount = _real(exchange.get("amount", 1))
     is_input = bool(exchange.get("isInput", False))
-    return {
-        "@dataSetInternalID": str(exchange.get("internalId") or idx),
+    item = {
+        "@dataSetInternalID": str(idx),
         "referenceToFlowDataSet": _ref(
             ref_type="flow data set",
             ref_id=flow_id,
@@ -625,6 +667,11 @@ def _exchange_item(exchange: dict[str, Any], idx: int) -> dict[str, Any]:
         "resultingAmount": amount,
         "dataDerivationTypeStatus": "Unknown derivation",
     }
+    if exchange.get("sourceExchangeNumber"):
+        item["generalComment"] = _ml(
+            f"Source EcoSpold1 exchange number: {exchange['sourceExchangeNumber']}."
+        )
+    return item
 
 
 def _reference_flow_id(exchange_items: list[dict[str, Any]]) -> str:
