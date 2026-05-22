@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from decimal import Decimal
 from functools import lru_cache
 import json
 from pathlib import Path
@@ -573,7 +574,7 @@ def _flow_dataset(
     generated_units: dict[str, tuple[CanonicalEntity, CanonicalEntity]] | None = None,
 ):
     flow_type = _flow_type(entity.raw.get("flowType"))
-    classification = _flow_classification(flow_type)
+    classification = _flow_classification(flow_type, entity.raw)
     dataset_info = {
         "common:UUID": entity.internal_id,
         "name": _name_parts(entity.name or "Flow"),
@@ -661,7 +662,7 @@ def _process_dataset(entity: CanonicalEntity):
     data_set_information = {
         "common:UUID": entity.internal_id,
         "name": _name_parts(entity.name or "Process"),
-        "classificationInformation": _default_process_classification(),
+        "classificationInformation": _default_process_classification(entity.raw),
         "common:generalComment": _ml(
             entity.raw.get("description") or PLACEHOLDER_CONVERTED_APPLICATION
         ),
@@ -683,6 +684,14 @@ def _process_dataset(entity: CanonicalEntity):
         location_item["descriptionOfRestrictions"] = _ml(
             str(entity.raw["locationDescription"]).strip()
         )
+    location_trace = _common_other_trace(
+        {
+            "sourceLocation": entity.raw.get("sourceLocation"),
+            "mappedLocation": location,
+        }
+    )
+    if location_trace:
+        location_item["common:other"] = location_trace
 
     process_information = {
         "dataSetInformation": data_set_information,
@@ -705,7 +714,7 @@ def _process_dataset(entity: CanonicalEntity):
         modelling_and_validation["dataSourcesTreatmentAndRepresentativeness"] = (
             data_sources
         )
-    modelling_and_validation["validation"] = {"review": {"@type": "Not reviewed"}}
+    modelling_and_validation["validation"] = {"review": _review_item(entity)}
     modelling_and_validation["complianceDeclarations"] = _compliance_declarations(
         process=True
     )
@@ -934,8 +943,10 @@ def _lifecycle_reference_instance(
     return "1"
 
 
-def _default_process_classification() -> dict[str, Any]:
-    return {
+def _default_process_classification(
+    raw: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    classification = {
         "common:classification": {
             "common:class": [
                 {
@@ -961,6 +972,10 @@ def _default_process_classification() -> dict[str, Any]:
             ]
         }
     }
+    trace = _classification_trace(raw)
+    if trace:
+        classification["common:classification"]["common:other"] = trace
+    return classification
 
 
 def _process_lci_method(entity: CanonicalEntity) -> dict[str, Any]:
@@ -1014,6 +1029,105 @@ def _process_commissioner_ref(entity: CanonicalEntity) -> dict[str, Any]:
         _contact_ref_from_raw(entity.raw.get("dataSetOwnerRef"))
         or _contact_ref_from_raw(entity.raw.get("dataGeneratorRef"))
         or _owner_ref()
+    )
+
+
+def _review_item(entity: CanonicalEntity) -> dict[str, Any]:
+    reviews = [
+        review
+        for review in entity.raw.get("sourceReviews") or []
+        if isinstance(review, dict)
+    ]
+    if not reviews:
+        return {"@type": "Not reviewed"}
+
+    primary = reviews[0]
+    review_type = _review_type(primary.get("reviewType"))
+    if review_type is None:
+        return {
+            "@type": "Not reviewed",
+            "common:other": _common_other_trace(
+                {
+                    "sourceReviews": reviews,
+                    "mappingNote": (
+                        "Source review records exist, but reviewType could not "
+                        "be mapped to a TIDAS review enum without inference."
+                    ),
+                }
+            ),
+        }
+
+    report_ref = (
+        _source_ref_from_raw(primary.get("reportRef"))
+        or _source_ref_from_raw(entity.raw.get("publicationRef"))
+        or _ref(
+            ref_type="source data set",
+            ref_id=FORMAT_SOURCE_ID,
+            short_description=PLACEHOLDER_DATA_SOURCE,
+            category="sources",
+        )
+    )
+    details = str(primary.get("details") or PLACEHOLDER_REVIEW_NOT_AVAILABLE).strip()
+    item = {
+        "@type": review_type,
+        "common:scope": {
+            "@name": "Documentation",
+            "common:method": {"@name": "Documentation"},
+        },
+        "common:reviewDetails": _ml(details),
+        "common:referenceToNameOfReviewerAndInstitution": _process_commissioner_ref(
+            entity
+        ),
+        "common:referenceToCompleteReviewReport": report_ref,
+    }
+    other = _common_other_trace(
+        {
+            "sourceReviews": reviews,
+            "mappingNote": (
+                "openLCA JSON-LD review records were mapped by rule. Review "
+                "scope/method defaults to Documentation because openLCA review "
+                "details do not use the ILCD scope/method controlled lists."
+            ),
+        }
+    )
+    if other:
+        item["common:other"] = other
+    return item
+
+
+def _review_type(value: Any) -> str | None:
+    text = str(value or "").strip()
+    allowed = {
+        "Dependent internal review",
+        "Independent internal review",
+        "Independent external review",
+        "Accredited third party review",
+        "Independent review panel",
+    }
+    if text in allowed:
+        return text
+    normalized = text.casefold()
+    if "accredited" in normalized and "third" in normalized:
+        return "Accredited third party review"
+    if "panel" in normalized:
+        return "Independent review panel"
+    if "external" in normalized:
+        return "Independent external review"
+    if "internal" in normalized and "independent" in normalized:
+        return "Independent internal review"
+    if "internal" in normalized and "dependent" in normalized:
+        return "Dependent internal review"
+    return None
+
+
+def _source_ref_from_raw(value: Any) -> dict[str, Any] | None:
+    if not isinstance(value, dict) or not _uuid_text(value.get("id")):
+        return None
+    return _ref(
+        ref_type="source data set",
+        ref_id=value["id"],
+        short_description=str(value.get("name") or PLACEHOLDER_DATA_SOURCE),
+        category="sources",
     )
 
 
@@ -1216,6 +1330,7 @@ def _exchange_trace_payload(exchange: dict[str, Any]) -> dict[str, Any] | None:
         "providerName": exchange.get("providerName"),
         "provider": exchange.get("provider"),
         "dqEntry": exchange.get("dqEntry"),
+        "sourceLocation": exchange.get("sourceLocation"),
     }
     if not source_trace and not any(value is not None for value in extra.values()):
         return None
@@ -1363,7 +1478,14 @@ def _cas_number(value: Any) -> str | None:
     if value is None:
         return None
     text = str(value).strip()
-    return text if re.fullmatch(r"[0-9]{2,7}-[0-9]{2}-[0-9]", text) else None
+    if not re.fullmatch(r"[0-9]{2,7}-[0-9]{2}-[0-9]", text):
+        return None
+    body, check_digit = text.rsplit("-", 1)
+    digits = body.replace("-", "")
+    checksum = sum(
+        int(digit) * weight for weight, digit in enumerate(reversed(digits), start=1)
+    )
+    return text if checksum % 10 == int(check_digit) else None
 
 
 def _location_code(value: Any) -> str:
@@ -1398,9 +1520,12 @@ def _location_codes() -> frozenset[str]:
     )
 
 
-def _flow_classification(flow_type: str) -> dict[str, Any]:
+def _flow_classification(
+    flow_type: str, raw: dict[str, Any] | None = None
+) -> dict[str, Any]:
+    trace = _classification_trace(raw)
     if flow_type == "Elementary flow":
-        return {
+        classification = {
             "common:elementaryFlowCategorization": {
                 "common:category": [
                     {"@level": "0", "@catId": "1", "#text": "Emissions"},
@@ -1413,7 +1538,12 @@ def _flow_classification(flow_type: str) -> dict[str, Any]:
                 ]
             }
         }
-    return {
+        if trace:
+            classification["common:elementaryFlowCategorization"][
+                "common:other"
+            ] = trace
+        return classification
+    classification = {
         "common:classification": {
             "common:class": [
                 {
@@ -1444,6 +1574,21 @@ def _flow_classification(flow_type: str) -> dict[str, Any]:
             ]
         }
     }
+    if trace:
+        classification["common:classification"]["common:other"] = trace
+    return classification
+
+
+def _classification_trace(raw: dict[str, Any] | None) -> dict[str, Any] | None:
+    if not raw:
+        return None
+    payload = {
+        "sourceCategoryPath": raw.get("sourceCategoryPath"),
+        "sourceCategory": raw.get("category"),
+        "sourceFlowType": raw.get("flowType"),
+        "sourceProcessType": raw.get("sourceProcessType"),
+    }
+    return _common_other_trace(payload)
 
 
 def _real(value: Any) -> str:
@@ -1511,20 +1656,22 @@ def _common_other_trace(payload: Any) -> dict[str, Any] | None:
 def _clean_trace_value(value: Any) -> Any:
     if value is None:
         return None
+    if isinstance(value, Decimal):
+        return {
+            "@type": "TIDAS_IMPORT_DECIMAL",
+            "#text": str(value),
+        }
     if isinstance(value, (str, int, float, bool)):
         return value
     if isinstance(value, list):
-        cleaned_items = [
-            cleaned
-            for item in value
-            if (cleaned := _clean_trace_value(item)) not in (None, {}, [])
-        ]
-        return cleaned_items
+        if not value:
+            return {"@marker": "TIDAS_IMPORT_EMPTY_ARRAY"}
+        return [_clean_trace_value(item) for item in value]
     if isinstance(value, dict):
         cleaned = {}
         for key, item in value.items():
             cleaned_item = _clean_trace_value(item)
-            if cleaned_item in (None, {}, []):
+            if cleaned_item is None:
                 continue
             cleaned[_safe_trace_key(str(key))] = cleaned_item
         return cleaned
