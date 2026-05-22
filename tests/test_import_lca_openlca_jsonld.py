@@ -11,6 +11,7 @@ ACTOR_ID = "55555555-5555-4555-8555-555555555555"
 SOURCE_ID = "66666666-6666-4666-8666-666666666666"
 PROVIDER_PROCESS_ID = "77777777-7777-4777-8777-777777777777"
 CONSUMER_PROCESS_ID = "88888888-8888-4888-8888-888888888888"
+LOCATION_ID = "99999999-9999-4999-8999-999999999999"
 
 
 def test_openlca_jsonld_minimal_import_writes_valid_tidas_package(tmp_path):
@@ -44,7 +45,7 @@ def test_openlca_jsonld_minimal_import_writes_valid_tidas_package(tmp_path):
     assert report["summary"]["contacts"] == 1
     assert report["summary"]["flows"] == 1
     assert report["summary"]["processes"] == 1
-    assert report["summary"]["sources"] == 1
+    assert report["summary"]["sources"] == 2
     assert report["validation"]["tidas"]["ok"] is True
     process_payload = json.loads(
         (output_dir / "tidas" / "processes" / f"{PROCESS_ID}.json").read_text(
@@ -57,6 +58,38 @@ def test_openlca_jsonld_minimal_import_writes_valid_tidas_package(tmp_path):
         ]
         == 9999
     )
+    process = process_payload["processDataSet"]
+    assert (
+        process["processInformation"]["geography"][
+            "locationOfOperationSupplyOrProduction"
+        ]["@location"]
+        == "US"
+    )
+    review = process["modellingAndValidation"]["validation"]["review"]
+    assert review["@type"] == "Independent external review"
+    assert review["common:referenceToCompleteReviewReport"]["@refObjectId"] == SOURCE_ID
+    classification_trace = process["processInformation"]["dataSetInformation"][
+        "classificationInformation"
+    ]["common:classification"]["common:other"]["tidasimport:sourceTrace"]
+    assert classification_trace["@marker"] == "TIDAS_IMPORT_TRACE_V1"
+    assert classification_trace["payload"]["sourceCategoryPath"] == [
+        "31-33: Manufacturing",
+        "3311: Iron and Steel Mills and Ferroalloy Manufacturing",
+    ]
+
+    flow_payload = json.loads(
+        (output_dir / "tidas" / "flows" / f"{FLOW_ID}.json").read_text(encoding="utf-8")
+    )
+    flow_info = flow_payload["flowDataSet"]["flowInformation"]["dataSetInformation"]
+    assert flow_info["CASNumber"] == "7439-89-6"
+    assert flow_info["classificationInformation"]["common:classification"][
+        "common:other"
+    ]["tidasimport:sourceTrace"]["payload"]["sourceCategoryPath"] == [
+        "Technosphere flows",
+        "Metals",
+    ]
+    exchange = process["exchanges"]["exchange"][0]
+    assert exchange["meanAmount"] == "0.123456789012345678"
 
 
 def test_openlca_jsonld_minimal_import_can_write_valid_ilcd(tmp_path):
@@ -195,12 +228,26 @@ def write_minimal_jsonld_fixture(tmp_path):
         ),
         encoding="utf-8",
     )
+    (source_dir / "location.json").write_text(
+        json.dumps(
+            {
+                "@type": "Location",
+                "@id": LOCATION_ID,
+                "name": "United States of America (the)",
+                "code": "US",
+                "category": "Country",
+            }
+        ),
+        encoding="utf-8",
+    )
     (source_dir / "flow.json").write_text(
         json.dumps(
             {
                 "@type": "Flow",
                 "@id": FLOW_ID,
                 "name": "Steel product",
+                "category": "Technosphere flows/Metals",
+                "cas": "7439-89-6",
                 "flowType": "PRODUCT_FLOW",
                 "flowProperties": [
                     {
@@ -212,24 +259,42 @@ def write_minimal_jsonld_fixture(tmp_path):
         ),
         encoding="utf-8",
     )
-    (source_dir / "process.json").write_text(
-        json.dumps(
+    process_payload = {
+        "@type": "Process",
+        "@id": PROCESS_ID,
+        "name": "Steel production",
+        "category": "31-33: Manufacturing/3311: Iron and Steel Mills and Ferroalloy Manufacturing",
+        "description": "Minimal process fixture",
+        "location": {
+            "@type": "Location",
+            "@id": LOCATION_ID,
+            "name": "United States of America (the)",
+        },
+        "processDocumentation": {
+            "reviews": [
+                {
+                    "reviewType": "Independent external review",
+                    "details": "Fixture review details",
+                    "report": {
+                        "@type": "Source",
+                        "@id": SOURCE_ID,
+                        "name": "Example source",
+                    },
+                }
+            ]
+        },
+        "exchanges": [
             {
-                "@type": "Process",
-                "@id": PROCESS_ID,
-                "name": "Steel production",
-                "description": "Minimal process fixture",
-                "exchanges": [
-                    {
-                        "internalId": 1,
-                        "flow": {"@id": FLOW_ID, "name": "Steel product"},
-                        "amount": 1.0,
-                        "isInput": False,
-                        "isQuantitativeReference": True,
-                    }
-                ],
+                "internalId": 1,
+                "flow": {"@id": FLOW_ID, "name": "Steel product"},
+                "amount": "__AMOUNT__",
+                "isInput": False,
+                "isQuantitativeReference": True,
             }
-        ),
+        ],
+    }
+    (source_dir / "process.json").write_text(
+        json.dumps(process_payload).replace('"__AMOUNT__"', "0.123456789012345678"),
         encoding="utf-8",
     )
     return source_dir

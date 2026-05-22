@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from decimal import Decimal
 from pathlib import Path
 import re
 from typing import Any, Iterable
@@ -27,17 +28,21 @@ class OpenLcaJsonLdAdapter(SourceAdapter):
         report: ConversionReport,
     ) -> None:
         count = 0
+        entries = [
+            (label, item)
+            for label, payload in _iter_json_payloads(Path(source))
+            for item in _iter_items(payload)
+            if isinstance(item, dict)
+        ]
+        location_index = _location_index(entries)
         unsupported_items = []
-        for label, payload in _iter_json_payloads(Path(source)):
-            for item in _iter_items(payload):
-                if not isinstance(item, dict):
-                    continue
-                entity = _to_entity(item, label)
-                if entity is None:
-                    unsupported_items.append(_unsupported_item(label, item))
-                    continue
-                store.add(entity)
-                count += 1
+        for label, item in entries:
+            entity = _to_entity(item, label, location_index)
+            if entity is None:
+                unsupported_items.append(_unsupported_item(label, item))
+                continue
+            store.add(entity)
+            count += 1
 
         if unsupported_items:
             store.add(_auxiliary_source_entity(unsupported_items))
@@ -95,7 +100,7 @@ def _iter_json_payloads(source: Path) -> Iterable[tuple[str, Any]]:
 
 
 def _read_json_bytes(data: bytes) -> Any:
-    return json.loads(data.decode("utf-8-sig"))
+    return json.loads(data.decode("utf-8-sig"), parse_float=Decimal)
 
 
 def _iter_items(payload: Any) -> Iterable[dict[str, Any]]:
@@ -108,7 +113,9 @@ def _iter_items(payload: Any) -> Iterable[dict[str, Any]]:
             yield payload
 
 
-def _to_entity(item: dict[str, Any], label: str) -> CanonicalEntity | None:
+def _to_entity(
+    item: dict[str, Any], label: str, location_index: dict[str, dict[str, Any]]
+) -> CanonicalEntity | None:
     type_name = _type_name(item.get("@type"))
     entity_type = {
         "actor": "contacts",
@@ -130,8 +137,8 @@ def _to_entity(item: dict[str, Any], label: str) -> CanonicalEntity | None:
         raw.update(_flow_refs(item))
         raw.update(_flow_metadata(item))
     elif entity_type == "processes":
-        raw.update(_process_metadata(item))
-        raw["exchanges"] = _process_exchanges(item, label)
+        raw.update(_process_metadata(item, location_index))
+        raw["exchanges"] = _process_exchanges(item, label, location_index)
 
     return CanonicalEntity(
         entity_type=entity_type,
@@ -178,29 +185,41 @@ def _flow_refs(item: dict[str, Any]) -> dict[str, Any]:
 
 def _flow_metadata(item: dict[str, Any]) -> dict[str, Any]:
     metadata: dict[str, Any] = {}
+    category_path = _category_path(item)
+    if category_path:
+        metadata["sourceCategoryPath"] = category_path
     if _text(item.get("refUnit")):
         metadata["unitName"] = str(item["refUnit"]).strip()
+    cas_number = item.get("CASNumber") or item.get("cas")
+    if _text(cas_number):
+        metadata["CASNumber"] = str(cas_number).strip()
     formula = item.get("formula")
     if _looks_like_chemical_formula(formula):
         metadata["sumFormula"] = str(formula).strip()
     return metadata
 
 
-def _process_metadata(item: dict[str, Any]) -> dict[str, Any]:
+def _process_metadata(
+    item: dict[str, Any], location_index: dict[str, dict[str, Any]]
+) -> dict[str, Any]:
     documentation = item.get("processDocumentation")
     if not isinstance(documentation, dict):
         documentation = {}
 
+    location = _location_metadata(item.get("location"), location_index)
+    category_path = _category_path(item)
     metadata: dict[str, Any] = {
         "sourceFormat": "openlca-jsonld",
         "sourceProcessType": item.get("processType"),
         "sourceDefaultAllocationMethod": item.get("defaultAllocationMethod"),
+        "sourceCategoryPath": category_path,
         "version": item.get("version"),
         "lastChange": item.get("lastChange"),
         "referenceYear": _year_from(documentation.get("validFrom")),
         "dataSetValidUntil": _year_from(documentation.get("validUntil")),
         "timeDescription": documentation.get("timeDescription"),
-        "location": _location_code(item.get("location")),
+        "location": location.get("code"),
+        "sourceLocation": location,
         "locationDescription": documentation.get("geographyDescription"),
         "technologyDescription": documentation.get("technologyDescription"),
         "samplingProcedure": documentation.get("samplingDescription"),
@@ -230,11 +249,14 @@ def _process_metadata(item: dict[str, Any]) -> dict[str, Any]:
         "dataSetOwnerRef": _reference_payload(documentation.get("dataSetOwner")),
         "publicationRef": _reference_payload(documentation.get("publication")),
         "sourceRefs": _reference_list(documentation.get("sources")),
+        "sourceReviews": _review_list(documentation.get("reviews")),
     }
     return {key: value for key, value in metadata.items() if value not in (None, [])}
 
 
-def _process_exchanges(item: dict[str, Any], label: str) -> list[dict[str, Any]]:
+def _process_exchanges(
+    item: dict[str, Any], label: str, location_index: dict[str, dict[str, Any]]
+) -> list[dict[str, Any]]:
     exchanges = item.get("exchanges")
     if not isinstance(exchanges, list):
         return []
@@ -247,6 +269,7 @@ def _process_exchanges(item: dict[str, Any], label: str) -> list[dict[str, Any]]
         flow_property = exchange.get("flowProperty")
         provider = exchange.get("defaultProvider")
         uncertainty = exchange.get("uncertainty")
+        location = _location_metadata(exchange.get("location"), location_index)
         exchange_metadata = {
             "internalId": exchange.get("internalId"),
             "flow": flow if isinstance(flow, dict) else {},
@@ -270,7 +293,8 @@ def _process_exchanges(item: dict[str, Any], label: str) -> list[dict[str, Any]]
             "providerRefId": _ref_id(provider) if isinstance(provider, dict) else None,
             "providerName": _name(provider) if isinstance(provider, dict) else None,
             "provider": provider if isinstance(provider, dict) else None,
-            "location": _location_code(exchange.get("location")),
+            "location": location.get("code"),
+            "sourceLocation": location,
             "dqEntry": exchange.get("dqEntry"),
             "uncertaintyDistributionType": _uncertainty_distribution_type(uncertainty),
             "minimumAmount": _uncertainty_bound(uncertainty, "minimum"),
@@ -344,8 +368,8 @@ def _provider_graph_lifecycle_model(
         name="openLCA JSON-LD provider graph",
         raw={
             "description": (
-                "Derived lifecycle model from openLCA JSON-LD exchange "
-                "defaultProvider links."
+                "Candidate lifecycle model derived from openLCA JSON-LD "
+                "exchange defaultProvider hints."
             ),
             "referenceProcessId": reference_process.internal_id,
             "processRefs": [
@@ -360,12 +384,115 @@ def _provider_graph_lifecycle_model(
             "sourceTrace": {
                 "format": "openlca-jsonld",
                 "sourceObject": str(source),
-                "derivedEntity": "provider-graph-lifecyclemodel",
+                "derivedEntity": "default-provider-candidate-lifecyclemodel",
+                "linkingSemantics": {
+                    "sourceField": "Exchange.defaultProvider",
+                    "rule": "Only link resolvable default providers on input exchanges.",
+                    "caveat": (
+                        "openLCA defaultProvider is an exchange-level default "
+                        "hint. It is not the same as ProductSystem.processLinks "
+                        "unless a product system was explicitly built with the "
+                        "same linking rule."
+                    ),
+                },
                 "providerConnectionCount": len(connections),
                 "skippedProviderLinks": skipped,
             },
         },
     )
+
+
+def _location_index(
+    entries: list[tuple[str, dict[str, Any]]],
+) -> dict[str, dict[str, Any]]:
+    by_id: dict[str, dict[str, Any]] = {}
+    by_name: dict[str, dict[str, Any]] = {}
+    for label, item in entries:
+        if _type_name(item.get("@type")) != "location":
+            continue
+        payload = _location_payload(item, label)
+        loc_id = payload.get("id")
+        name = payload.get("name")
+        if loc_id:
+            by_id[str(loc_id)] = payload
+        if name:
+            by_name[_norm_location_name(str(name))] = payload
+    return {"by_id": by_id, "by_name": by_name}
+
+
+def _location_payload(item: dict[str, Any], label: str | None = None) -> dict[str, Any]:
+    payload = {
+        "id": _external_id(item),
+        "name": _name(item),
+        "code": item.get("code"),
+        "category": item.get("category"),
+        "latitude": item.get("latitude"),
+        "longitude": item.get("longitude"),
+    }
+    if label:
+        payload["sourceObject"] = label
+    return {key: value for key, value in payload.items() if value not in (None, "")}
+
+
+def _location_metadata(
+    value: Any, location_index: dict[str, dict[str, Any]]
+) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        if not _text(value):
+            return {}
+        name = str(value).strip()
+        return {
+            key: val
+            for key, val in {
+                "name": name,
+                "code": _location_code_from_name(name),
+                "sourceValue": name,
+            }.items()
+            if val
+        }
+
+    ref_id = _external_id(value)
+    name = _name(value)
+    resolved = None
+    if ref_id:
+        resolved = location_index.get("by_id", {}).get(str(ref_id))
+    if resolved is None and name:
+        resolved = location_index.get("by_name", {}).get(_norm_location_name(name))
+    code = (
+        value.get("code")
+        or (resolved or {}).get("code")
+        or (_location_code_from_name(name) if name else None)
+    )
+    payload = {
+        "id": ref_id,
+        "name": name,
+        "code": code,
+        "category": value.get("category") or (resolved or {}).get("category"),
+        "resolvedLocation": resolved,
+        "sourceRef": value,
+    }
+    return {key: val for key, val in payload.items() if val not in (None, {}, "")}
+
+
+def _location_code_from_name(value: str) -> str | None:
+    aliases = {
+        "global": "GLO",
+        "row": "GLO",
+        "rest of world": "GLO",
+        "northern america": "RNA",
+        "north america": "RNA",
+        "europe": "RER",
+        "united states": "US",
+        "united states of america": "US",
+        "united states of america (the)": "US",
+        "china": "CN",
+        "canada": "CA",
+    }
+    return aliases.get(_norm_location_name(value))
+
+
+def _norm_location_name(value: str) -> str:
+    return " ".join(value.casefold().strip().split())
 
 
 def _type_name(value: Any) -> str:
@@ -378,7 +505,10 @@ def _entity_id(item: dict[str, Any], entity_type: str) -> str:
     candidate = _external_id(item)
     if _is_uuid(candidate):
         return candidate
-    seed = f"openlca-jsonld/{entity_type}/{candidate or _name(item) or json.dumps(item, sort_keys=True)}"
+    seed = (
+        f"openlca-jsonld/{entity_type}/"
+        f"{candidate or _name(item) or json.dumps(item, sort_keys=True, default=str)}"
+    )
     return str(uuid.uuid5(uuid.NAMESPACE_URL, seed))
 
 
@@ -519,6 +649,29 @@ def _reference_list(value: Any) -> list[dict[str, str]]:
         if ref:
             refs.append(ref)
     return refs
+
+
+def _review_list(value: Any) -> list[dict[str, Any]]:
+    if not isinstance(value, list):
+        return []
+    reviews = []
+    for item in value:
+        if not isinstance(item, dict):
+            continue
+        report = _reference_payload(item.get("report"))
+        reviews.append(
+            {
+                key: entry
+                for key, entry in {
+                    "reviewType": item.get("reviewType"),
+                    "details": item.get("details"),
+                    "reportRef": report,
+                    "sourceReview": item,
+                }.items()
+                if entry not in (None, {})
+            }
+        )
+    return reviews
 
 
 def _category_path(item: dict[str, Any]) -> list[str]:
