@@ -41,6 +41,8 @@ class ConversionReport:
     target: str = "tidas"
     tidas_dir: str | None = None
     ilcd_dir: str | None = None
+    mapping_csv: str | None = None
+    mapping_csv_rows: int | None = None
     detection_evidence: list[str] = field(default_factory=list)
     object_counts: dict[str, int] = field(default_factory=dict)
     issues: list[ConversionIssue] = field(default_factory=list)
@@ -101,6 +103,8 @@ class ConversionReport:
                 "requested": self.target,
                 "tidas_dir": self.tidas_dir,
                 "ilcd_dir": self.ilcd_dir,
+                "mapping_csv": self.mapping_csv,
+                "mapping_csv_rows": self.mapping_csv_rows,
             },
             "summary": {
                 **counts,
