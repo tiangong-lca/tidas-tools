@@ -20,6 +20,7 @@ if __package__:
         detect_format,
     )
     from .errors import AmbiguousFormatError
+    from .mapping_csv import write_mapping_csv
     from .report import ConversionReport
     from .store import MemoryCanonicalStore
     from .writers import write_ilcd_from_tidas, write_tidas_package
@@ -40,6 +41,7 @@ else:
         detect_format,
     )
     from tidas_tools.import_lca.errors import AmbiguousFormatError
+    from tidas_tools.import_lca.mapping_csv import write_mapping_csv
     from tidas_tools.import_lca.report import ConversionReport
     from tidas_tools.import_lca.store import MemoryCanonicalStore
     from tidas_tools.import_lca.writers import (
@@ -269,6 +271,14 @@ def run_import(args: argparse.Namespace) -> int:
             logging.error("Generated ILCD/eILCD package failed validation")
             return 2
 
+    mapping_csv_path = output_dir / "mapping.csv"
+    report.mapping_csv_rows = write_mapping_csv(
+        store,
+        tidas_dir,
+        mapping_csv_path,
+        source_format=detected.format_id,
+    )
+    report.mapping_csv = str(mapping_csv_path)
     report.write_json(report_path)
     logging.info("Import report written to %s", report_path)
     return _status_for_report(report, args.fail_on_warning)
