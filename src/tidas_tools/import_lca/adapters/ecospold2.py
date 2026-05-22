@@ -36,6 +36,7 @@ class EcoSpold2Adapter(SourceAdapter):
     ) -> None:
         count = 0
         flow_cache: dict[str, CanonicalEntity] = {}
+        used_process_ids: set[str] = set()
         for label, data in _iter_xml_payloads(Path(source)):
             root = _parse_xml(data)
             if root is None:
@@ -47,7 +48,8 @@ class EcoSpold2Adapter(SourceAdapter):
                 )
                 continue
             for index, dataset in enumerate(_datasets(root), start=1):
-                process = _process_entity(dataset, label, index, root)
+                process = _process_entity(dataset, label, index, root, used_process_ids)
+                used_process_ids.add(process.internal_id)
                 exchanges = []
                 for exchange_index, element in enumerate(
                     _exchange_elements(dataset), 1
@@ -122,7 +124,9 @@ def _exchange_elements(dataset) -> list:
     )
 
 
-def _process_entity(dataset, label: str, index: int, root) -> CanonicalEntity:
+def _process_entity(
+    dataset, label: str, index: int, root, used_process_ids: set[str]
+) -> CanonicalEntity:
     activity = _first_element(dataset, ".//*[local-name()='activity']")
     name = _first_text(
         dataset,
@@ -136,12 +140,13 @@ def _process_entity(dataset, label: str, index: int, root) -> CanonicalEntity:
     activity_id = _attr(activity, "id") if activity is not None else None
     activity_uuid = _uuid_value(activity_id)
     filename_uuids = _uuids_from_label(label)
-    process_id = _process_id(
+    process_id, process_id_candidates, process_id_source = _process_id(
         label=label,
         index=index,
         name=name,
         activity_uuid=activity_uuid,
         filename_uuids=filename_uuids,
+        used_process_ids=used_process_ids,
     )
     description = _first_text(
         dataset,
@@ -166,6 +171,15 @@ def _process_entity(dataset, label: str, index: int, root) -> CanonicalEntity:
     if technology is None:
         technology = _first_element(dataset, ".//*[local-name()='technology']")
     file_attributes = _first_element(root, ".//*[local-name()='fileAttributes']")
+    source_identifiers = {
+        "activityId": activity_id,
+        "activityUUID": activity_uuid,
+        "filenameUUIDs": filename_uuids,
+        "processIdCandidates": process_id_candidates,
+        "selectedProcessId": process_id,
+        "selectedProcessIdSource": process_id_source,
+    }
+    source_classification = _process_classification(dataset)
     return CanonicalEntity(
         entity_type="processes",
         internal_id=process_id,
@@ -196,11 +210,15 @@ def _process_entity(dataset, label: str, index: int, root) -> CanonicalEntity:
             "technologicalApplicability": description,
             "sourceActivityId": activity_id,
             "sourceFileUUIDs": filename_uuids,
+            "sourceUUIDs": source_identifiers,
+            "sourceClassification": source_classification,
             "sourceFormat": "ecospold2",
             "sourceLabel": label,
             "sourceTrace": {
                 "format": "ecospold2",
                 "sourceObject": label,
+                "sourceIdentifiers": source_identifiers,
+                "sourceClassification": source_classification,
                 "rootAttributes": element_trace(
                     root,
                     exclude_child_names={"activityDataset", "childActivityDataset"},
@@ -229,13 +247,19 @@ def _cached_flow_entity(
 
 
 def _flow_entity(element, index: int, flow_id: str) -> CanonicalEntity:
+    source_identifiers = _exchange_identifiers(element)
+    source_classification = _exchange_classification(element)
     raw = {
         "flowType": _flow_type(element),
         "unitName": _unit_name(element),
         "unitId": _attr(element, "unitId"),
+        "sourceIdentifiers": source_identifiers,
+        "sourceClassification": source_classification,
         "sourceTrace": {
             "format": "ecospold2",
             "sourceObject": "exchange",
+            "sourceIdentifiers": source_identifiers,
+            "sourceClassification": source_classification,
             "exchange": element_trace(element),
         },
     }
@@ -308,16 +332,24 @@ def _process_id(
     name: str,
     activity_uuid: str | None,
     filename_uuids: list[str],
-) -> str:
-    if len(filename_uuids) == 1:
-        return filename_uuids[0]
-    if len(filename_uuids) > 1:
-        return _stable_id(f"ecospold2/process/file/{Path(label).stem}")
-    return activity_uuid or _stable_id(f"ecospold2/process/{label}/{index}/{name}")
+    used_process_ids: set[str],
+) -> tuple[str, list[str], str]:
+    candidates = _unique_uuid_candidates([activity_uuid, *filename_uuids])
+    for candidate in candidates:
+        if candidate not in used_process_ids:
+            return candidate, candidates, "source-uuid"
+    fallback = _stable_id(f"ecospold2/process/{label}/{index}/{name}")
+    suffix = 1
+    while fallback in used_process_ids:
+        suffix += 1
+        fallback = _stable_id(f"ecospold2/process/{label}/{index}/{name}/{suffix}")
+    return fallback, candidates, "generated-from-source-context"
 
 
 def _exchange(element, flow: CanonicalEntity, index: int) -> dict[str, Any]:
     amount = _attr(element, "amount") or "0"
+    source_identifiers = _exchange_identifiers(element)
+    source_classification = _exchange_classification(element)
     return {
         "internalId": index,
         "sourceExchangeId": _source_exchange_id(element),
@@ -331,6 +363,10 @@ def _exchange(element, flow: CanonicalEntity, index: int) -> dict[str, Any]:
         "isCalculatedAmount": _attr(element, "isCalculatedAmount"),
         "dataDerivationTypeStatus": _data_derivation_type(element),
         "uncertaintyDistributionType": _uncertainty_distribution_type(element),
+        "unitId": _attr(element, "unitId"),
+        "unitName": _unit_name(element),
+        "sourceIdentifiers": source_identifiers,
+        "sourceClassification": source_classification,
         "generalComment": _first_text(
             element,
             [
@@ -341,6 +377,8 @@ def _exchange(element, flow: CanonicalEntity, index: int) -> dict[str, Any]:
         "sourceTrace": {
             "format": "ecospold2",
             "sourceObject": "exchange",
+            "sourceIdentifiers": source_identifiers,
+            "sourceClassification": source_classification,
             "exchange": element_trace(element),
         },
     }
@@ -589,6 +627,81 @@ def _all_texts(element, expressions: list[str]) -> list[str]:
     return texts
 
 
+def _process_classification(dataset) -> list[dict[str, Any]]:
+    return [
+        _classification_payload(classification)
+        for classification in dataset.xpath(
+            ".//*[local-name()='activityDescription']//*[local-name()='classification']"
+        )
+    ]
+
+
+def _exchange_classification(element) -> dict[str, Any]:
+    payload: dict[str, Any] = {}
+    classifications = [
+        _classification_payload(classification)
+        for classification in element.xpath("./*[local-name()='classification']")
+    ]
+    if classifications:
+        payload["classifications"] = classifications
+    compartment = _first_text(
+        element,
+        [
+            "./*[local-name()='compartment']/*[local-name()='compartment']/text()",
+            "./*[local-name()='compartment']/@compartment",
+        ],
+    )
+    subcompartment = _first_text(
+        element,
+        [
+            "./*[local-name()='compartment']/*[local-name()='subcompartment']/text()",
+            "./*[local-name()='compartment']/@subcompartment",
+        ],
+    )
+    if compartment:
+        payload["compartment"] = compartment
+    if subcompartment:
+        payload["subcompartment"] = subcompartment
+    input_group = _first_text(element, ["./*[local-name()='inputGroup']/text()"])
+    output_group = _first_text(element, ["./*[local-name()='outputGroup']/text()"])
+    if input_group:
+        payload["inputGroup"] = input_group
+    if output_group:
+        payload["outputGroup"] = output_group
+    return payload
+
+
+def _classification_payload(element) -> dict[str, Any]:
+    return {
+        key: value
+        for key, value in {
+            "classificationId": _attr(element, "classificationId"),
+            "classificationContextId": _attr(element, "classificationContextId"),
+            "classificationSystem": _all_texts(
+                element, ["./*[local-name()='classificationSystem']/text()"]
+            ),
+            "classificationValue": _all_texts(
+                element, ["./*[local-name()='classificationValue']/text()"]
+            ),
+        }.items()
+        if value
+    }
+
+
+def _exchange_identifiers(element) -> dict[str, str]:
+    return {
+        key: value
+        for key, value in {
+            "id": _attr(element, "id"),
+            "intermediateExchangeId": _attr(element, "intermediateExchangeId"),
+            "elementaryExchangeId": _attr(element, "elementaryExchangeId"),
+            "activityLinkId": _attr(element, "activityLinkId"),
+            "unitId": _attr(element, "unitId"),
+        }.items()
+        if value
+    }
+
+
 def _attr(element, name: str) -> str | None:
     if element is None:
         return None
@@ -616,6 +729,17 @@ def _uuid_value(value: str | None) -> str | None:
         return str(uuid.UUID(str(value)))
     except ValueError:
         return None
+
+
+def _unique_uuid_candidates(values: list[str | None]) -> list[str]:
+    candidates = []
+    seen = set()
+    for value in values:
+        candidate = _uuid_value(value)
+        if candidate and candidate not in seen:
+            candidates.append(candidate)
+            seen.add(candidate)
+    return candidates
 
 
 def _stable_id(seed: str) -> str:

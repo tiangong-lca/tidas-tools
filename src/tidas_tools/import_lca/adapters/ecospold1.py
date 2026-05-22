@@ -153,6 +153,7 @@ def _process_entity(dataset, label: str, index: int) -> CanonicalEntity:
     technology_text = _attr(technology, "text") or _attr(
         reference_function, "includedProcesses"
     )
+    source_classification = _process_classification(reference_function)
     time_description = _text_or_attrs(
         time_period,
         [
@@ -183,8 +184,10 @@ def _process_entity(dataset, label: str, index: int) -> CanonicalEntity:
             "sourceTrace": {
                 "format": "ecospold1",
                 "sourceObject": label,
+                "sourceClassification": source_classification,
                 "dataset": element_trace(dataset, exclude_child_names={"flowData"}),
             },
+            "sourceClassification": source_classification,
             "location": _attr(geography, "location"),
             "locationDescription": _attr(geography, "text"),
             "referenceYear": _year_from(
@@ -262,15 +265,18 @@ def _flow_entity(exchange, index: int, key: FlowKey) -> CanonicalEntity:
     category = _attr(exchange, "category")
     subcategory = _attr(exchange, "subCategory")
     flow_id = _stable_id(_flow_key_seed(key))
+    source_classification = _exchange_classification(exchange)
     raw = {
         "flowType": _flow_type(exchange),
         "unitName": _attr(exchange, "unit"),
         "CASNumber": _attr(exchange, "CASNumber"),
         "sumFormula": _attr(exchange, "formula"),
         "synonyms": _attr(exchange, "localName"),
+        "sourceClassification": source_classification,
         "sourceTrace": {
             "format": "ecospold1",
             "sourceObject": "exchange",
+            "sourceClassification": source_classification,
             "exchange": element_trace(exchange),
         },
     }
@@ -316,6 +322,7 @@ def _exchange(exchange, flow: CanonicalEntity, index: int) -> dict:
         or "0"
     )
     source_number = _attr(exchange, "number")
+    source_classification = _exchange_classification(exchange)
     return {
         "internalId": index,
         "sourceExchangeNumber": source_number,
@@ -334,6 +341,7 @@ def _exchange(exchange, flow: CanonicalEntity, index: int) -> dict:
         "sourceTrace": {
             "format": "ecospold1",
             "sourceObject": "exchange",
+            "sourceClassification": source_classification,
             "exchange": element_trace(exchange),
         },
     }
@@ -449,6 +457,34 @@ def _uncertainty_type(value: str | None) -> str | None:
         "uniform": "uniform",
     }
     return mapping.get(text)
+
+
+def _process_classification(reference_function) -> dict[str, str]:
+    return {
+        key: value
+        for key, value in {
+            "category": _attr(reference_function, "category"),
+            "subCategory": _attr(reference_function, "subCategory"),
+            "localCategory": _attr(reference_function, "localCategory"),
+            "localSubCategory": _attr(reference_function, "localSubCategory"),
+        }.items()
+        if value
+    }
+
+
+def _exchange_classification(exchange) -> dict[str, str]:
+    return {
+        key: value
+        for key, value in {
+            "category": _attr(exchange, "category"),
+            "subCategory": _attr(exchange, "subCategory"),
+            "localCategory": _attr(exchange, "localCategory"),
+            "localSubCategory": _attr(exchange, "localSubCategory"),
+            "inputGroup": _attr(exchange, "inputGroup"),
+            "outputGroup": _attr(exchange, "outputGroup"),
+        }.items()
+        if value
+    }
 
 
 def _stable_id(seed: str) -> str:

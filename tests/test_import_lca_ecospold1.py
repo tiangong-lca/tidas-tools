@@ -73,7 +73,7 @@ def test_ecospold1_import_maps_semantic_fields_and_source_trace(tmp_path):
     </metaInformation>
     <flowData>
       <exchange number="1" name="enriched steel" unit="kg" amount="1" outputGroup="0" />
-      <exchange number="2" name="carbon dioxide" CASNumber="124-38-9" formula="CO2" unit="kg" amount="2.5" outputGroup="4" category="air" subCategory="unspecified" minValue="1.2" maxValue="3.4" uncertaintyType="1" standardDeviation95="12.3456" generalComment="measured stack emissions" localName="CO2 local" />
+      <exchange number="2" name="carbon dioxide" CASNumber="124-38-9" formula="CO2" unit="kg" amount="2.5000000000000001" outputGroup="4" category="air" subCategory="unspecified" localCategory="local air" localSubCategory="local stack" minValue="1.2" maxValue="3.4" uncertaintyType="1" standardDeviation95="12.3456" generalComment="measured stack emissions" localName="CO2 local" />
     </flowData>
   </dataset>
 </ecoSpold>
@@ -126,16 +126,27 @@ def test_ecospold1_import_maps_semantic_fields_and_source_trace(tmp_path):
         _trace_marker(process_info["dataSetInformation"]["common:other"])
         == "TIDAS_IMPORT_TRACE_V1"
     )
+    process_trace = _trace_payload(process_info["dataSetInformation"]["common:other"])
+    assert process_trace["sourceClassification"]["category"] == "metals"
+    assert process_trace["sourceClassification"]["localCategory"] == "local metals"
+    assert co2_exchange["meanAmount"] == "2.5000000000000001"
     assert co2_exchange["minimumAmount"] == "1.2"
     assert co2_exchange["maximumAmount"] == "3.4"
     assert co2_exchange["uncertaintyDistributionType"] == "log-normal"
-    assert co2_exchange["relativeStandardDeviation95In"] == "12.346"
+    assert "relativeStandardDeviation95In" not in co2_exchange
     assert "measured stack emissions" in co2_exchange["generalComment"]["#text"]
     assert _trace_marker(co2_exchange["common:other"]) == "TIDAS_IMPORT_TRACE_V1"
+    exchange_trace = _trace_payload(co2_exchange["common:other"])["sourceTrace"]
+    assert exchange_trace["sourceClassification"]["localCategory"] == "local air"
+    assert (
+        _trace_attribute(exchange_trace["exchange"], "standardDeviation95") == "12.3456"
+    )
     assert co2_flow["CASNumber"] == "124-38-9"
     assert co2_flow["sumFormula"] == "CO2"
     assert co2_flow["common:synonyms"]["#text"] == "CO2 local"
     assert _trace_marker(co2_flow["common:other"]) == "TIDAS_IMPORT_TRACE_V1"
+    flow_trace = _trace_payload(co2_flow["common:other"])
+    assert flow_trace["sourceClassification"]["subCategory"] == "unspecified"
 
 
 def test_ecospold1_import_uses_filename_uuid_and_local_exchange_ids(tmp_path):
@@ -316,6 +327,17 @@ def _exchange_for_flow(process, flow_name):
 
 def _trace_marker(common_other):
     return common_other["tidasimport:sourceTrace"]["@marker"]
+
+
+def _trace_payload(common_other):
+    return common_other["tidasimport:sourceTrace"]["payload"]
+
+
+def _trace_attribute(trace, name):
+    for attribute in trace.get("attributes", []):
+        if attribute["name"] == name:
+            return attribute["value"]
+    raise AssertionError(f"Trace attribute not found: {name}")
 
 
 def _has_flow_property(tidas_dir, expected_name):
