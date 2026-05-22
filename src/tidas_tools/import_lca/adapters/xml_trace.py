@@ -59,5 +59,5 @@ def _attributes(element) -> list[dict[str, str]]:
 def _clean_text(value: str | None) -> str | None:
     if value is None:
         return None
-    text = " ".join(value.split())
+    text = value.strip()
     return text or None

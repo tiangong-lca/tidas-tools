@@ -110,6 +110,10 @@ def test_ecospold2_import_maps_semantic_fields_and_source_trace(tmp_path):
           <text xml:lang="en" index="1">Activity note</text>
         </generalComment>
       </activity>
+      <classification classificationId="activity-class">
+        <classificationSystem xml:lang="en">EcoSpold activity classes</classificationSystem>
+        <classificationValue xml:lang="en">energy systems</classificationValue>
+      </classification>
       <timePeriod>
         <startDate>2024-01-01</startDate>
         <endDate>2025-12-31</endDate>
@@ -127,12 +131,20 @@ def test_ecospold2_import_maps_semantic_fields_and_source_trace(tmp_path):
       <intermediateExchange id="{product_id}" amount="1" productionVolumeAmount="42.0" isCalculatedAmount="true" intermediateExchangeId="{product_id}">
         <name xml:lang="en">enriched product</name>
         <unitName xml:lang="en">kg</unitName>
+        <classification classificationId="product-class">
+          <classificationSystem xml:lang="en">EcoSpold product classes</classificationSystem>
+          <classificationValue xml:lang="en">reference product class</classificationValue>
+        </classification>
         <comment xml:lang="en">calculated reference product</comment>
         <outputGroup>0</outputGroup>
       </intermediateExchange>
-      <intermediateExchange id="33333333-3333-4333-8333-333333333333" amount="0.2" isCalculatedAmount="true" activityLinkId="aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa">
+      <intermediateExchange id="33333333-3333-4333-8333-333333333333" amount="0.20000000000000001" isCalculatedAmount="true" activityLinkId="aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa">
         <name xml:lang="en">linked input</name>
         <unitName xml:lang="en">kg</unitName>
+        <classification classificationId="input-class">
+          <classificationSystem xml:lang="en">EcoSpold input classes</classificationSystem>
+          <classificationValue xml:lang="en">linked input class</classificationValue>
+        </classification>
         <comment xml:lang="en">linked input comment</comment>
         <uncertainty>
           <lognormal meanValue="0.2" variance="0.12"/>
@@ -164,10 +176,14 @@ def test_ecospold2_import_maps_semantic_fields_and_source_trace(tmp_path):
     process = _read_only_process(output_dir / "tidas")
     process_info = process["processInformation"]
     linked_input = _exchange_for_flow(process, "linked input")
+    linked_input_flow = _find_flow(output_dir / "tidas", "linked input")["flowDataSet"][
+        "flowInformation"
+    ]["dataSetInformation"]
 
     assert status == 0
     assert report["validation"]["tidas"]["ok"] is True
     assert report["validation"]["ilcd"]["ok"] is True
+    assert process_info["dataSetInformation"]["common:UUID"] == process_uuid
     assert process_info["time"]["common:referenceYear"] == 2024
     assert process_info["time"]["common:dataSetValidUntil"] == 2025
     assert (
@@ -188,10 +204,32 @@ def test_ecospold2_import_maps_semantic_fields_and_source_trace(tmp_path):
         _trace_marker(process_info["dataSetInformation"]["common:other"])
         == "TIDAS_IMPORT_TRACE_V1"
     )
+    process_trace = _trace_payload(process_info["dataSetInformation"]["common:other"])
+    assert process_trace["sourceIdentifiers"]["activityUUID"] == process_uuid
+    assert process_trace["sourceIdentifiers"]["selectedProcessId"] == process_uuid
+    assert process_trace["sourceClassification"][0]["classificationValue"] == [
+        "energy systems"
+    ]
+    assert linked_input["meanAmount"] == "0.20000000000000001"
     assert linked_input["dataDerivationTypeStatus"] == "Calculated"
     assert linked_input["uncertaintyDistributionType"] == "log-normal"
     assert "linked input comment" in linked_input["generalComment"]["#text"]
     assert _trace_marker(linked_input["common:other"]) == "TIDAS_IMPORT_TRACE_V1"
+    exchange_trace = _trace_payload(linked_input["common:other"])["sourceTrace"]
+    assert (
+        exchange_trace["sourceIdentifiers"]["activityLinkId"]
+        == "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+    )
+    assert exchange_trace["sourceClassification"]["classifications"][0][
+        "classificationValue"
+    ] == ["linked input class"]
+    linked_flow_trace = _trace_payload(linked_input_flow["common:other"])
+    assert (
+        linked_flow_trace["sourceClassification"]["classifications"][0][
+            "classificationId"
+        ]
+        == "input-class"
+    )
 
 
 def test_ecospold2_import_uses_filename_uuid_and_merges_generated_flows(tmp_path):
@@ -450,6 +488,10 @@ def _exchange_for_flow(process, flow_name):
 
 def _trace_marker(common_other):
     return common_other["tidasimport:sourceTrace"]["@marker"]
+
+
+def _trace_payload(common_other):
+    return common_other["tidasimport:sourceTrace"]["payload"]
 
 
 def _find_flow(tidas_dir, expected_name):

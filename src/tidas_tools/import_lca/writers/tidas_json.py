@@ -52,6 +52,8 @@ PERMANENT_URI_PATHS = {
     "processes": "datasetdetail/process.xhtml",
     "sources": "datasetdetail/source.xhtml",
 }
+REAL_PATTERN = re.compile(r"[+-]?(\d+(\.\d*)?|\.\d+)([Ee][+-]?\d+)?$")
+PERCENT_PATTERN = re.compile(r"100(\.0{1,3})?|([0-9]|[1-9][0-9])(\.\d{1,3})?")
 
 
 def write_tidas_package(store: MemoryCanonicalStore, output_dir: str | Path) -> None:
@@ -1445,32 +1447,26 @@ def _flow_classification(flow_type: str) -> dict[str, Any]:
 
 
 def _real(value: Any) -> str:
-    try:
-        return f"{float(value):g}"
-    except (TypeError, ValueError):
-        return "0"
+    text = _real_text(value)
+    return text if text is not None else "0"
 
 
 def _optional_real(value: Any) -> str | None:
+    return _real_text(value)
+
+
+def _real_text(value: Any) -> str | None:
     if value is None:
         return None
-    try:
-        return f"{float(value):g}"
-    except (TypeError, ValueError):
-        return None
+    text = str(value).strip()
+    return text if REAL_PATTERN.fullmatch(text) else None
 
 
 def _percentage(value: Any) -> str | None:
     if value is None:
         return None
-    try:
-        numeric = float(value)
-    except (TypeError, ValueError):
-        return None
-    if numeric < 0 or numeric > 100:
-        return None
-    rounded = round(numeric, 3)
-    return f"{rounded:.3f}".rstrip("0").rstrip(".")
+    text = str(value).strip()
+    return text if PERCENT_PATTERN.fullmatch(text) else None
 
 
 def _annual_supply_or_production_volume(value: Any) -> dict[str, str]:
