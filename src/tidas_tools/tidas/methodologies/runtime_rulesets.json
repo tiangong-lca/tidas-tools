@@ -1,0 +1,378 @@
+{
+  "$schema": "runtime_rulesets.schema.json",
+  "schema_version": 1,
+  "ruleset_version": "2026.05.23",
+  "purpose": "Runtime-friendly metadata for CLI and Foundry gates. This file assigns stable rule ids, severity, phases, blocker defaults, and source references to packaged TIDAS methodology assets.",
+  "source_assets": [
+    {
+      "asset": "tidas_processes.yaml",
+      "kind": "process methodology"
+    },
+    {
+      "asset": "tidas_flows.yaml",
+      "kind": "flow methodology"
+    }
+  ],
+  "rulesets": [
+    {
+      "id": "process-authoring/strict",
+      "version": "1",
+      "dataset_type": "process",
+      "phase": "authoring",
+      "rule_ids": [
+        "tidas.process.name.base-name.align-reference-flow",
+        "tidas.process.name.qualifiers.structured",
+        "tidas.process.quantitative-reference.required",
+        "tidas.process.exchange.amount.required",
+        "tidas.process.evidence.field-bindings.required"
+      ]
+    },
+    {
+      "id": "process-authoring/repair",
+      "version": "1",
+      "dataset_type": "process",
+      "phase": "repair",
+      "rule_ids": [
+        "tidas.process.quantitative-reference.required",
+        "tidas.process.exchange.amount.required",
+        "tidas.process.evidence.field-bindings.required",
+        "tidas.process.version.format"
+      ]
+    },
+    {
+      "id": "process-publish/default",
+      "version": "1",
+      "dataset_type": "process",
+      "phase": "publish",
+      "rule_ids": [
+        "tidas.process.name.base-name.align-reference-flow",
+        "tidas.process.quantitative-reference.required",
+        "tidas.process.exchange.amount.required",
+        "tidas.process.evidence.field-bindings.required",
+        "tidas.process.version.format"
+      ]
+    },
+    {
+      "id": "process-dedup/default",
+      "version": "1",
+      "dataset_type": "process",
+      "phase": "identity",
+      "rule_ids": [
+        "tidas.process.identity.duplicate-fingerprint.block"
+      ]
+    },
+    {
+      "id": "flow-authoring/strict",
+      "version": "1",
+      "dataset_type": "flow",
+      "phase": "authoring",
+      "rule_ids": [
+        "tidas.flow.name.base-name.technical",
+        "tidas.flow.type.required",
+        "tidas.flow.reference-property-unit.required",
+        "tidas.flow.flow-property.mean-value.positive",
+        "tidas.flow.evidence.field-bindings.required"
+      ]
+    },
+    {
+      "id": "flow-publish/default",
+      "version": "1",
+      "dataset_type": "flow",
+      "phase": "publish",
+      "rule_ids": [
+        "tidas.flow.name.base-name.technical",
+        "tidas.flow.type.required",
+        "tidas.flow.reference-property-unit.required",
+        "tidas.flow.classification.elementary.valid",
+        "tidas.flow.flow-property.mean-value.positive",
+        "tidas.flow.evidence.field-bindings.required"
+      ]
+    },
+    {
+      "id": "flow-dedup/default",
+      "version": "1",
+      "dataset_type": "flow",
+      "phase": "identity",
+      "rule_ids": [
+        "tidas.flow.identity.alias-equivalence.review"
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "id": "tidas.process.name.base-name.align-reference-flow",
+      "dataset_type": "process",
+      "summary": "Process baseName should align with the reference flow naming structure and avoid geography or time qualifiers.",
+      "severity": "blocker",
+      "phases": ["build-plan", "materialize", "publish-build", "save-draft", "publish-run"],
+      "default_blocker": true,
+      "field_paths": [
+        "processDataSet.processInformation.dataSetInformation.name.baseName"
+      ],
+      "source_rule_refs": [
+        {
+          "asset": "tidas_processes.yaml",
+          "path": "processDataSet.processInformation.dataSetInformation.name.baseName.<rules>"
+        }
+      ]
+    },
+    {
+      "id": "tidas.process.name.qualifiers.structured",
+      "dataset_type": "process",
+      "summary": "Process name qualifiers should separate treatment, standards, mix/location, and quantitative properties into the dedicated name segments.",
+      "severity": "warning",
+      "phases": ["build-plan", "materialize", "publish-build"],
+      "default_blocker": false,
+      "field_paths": [
+        "processDataSet.processInformation.dataSetInformation.name.treatmentStandardsRoutes",
+        "processDataSet.processInformation.dataSetInformation.name.mixAndLocationTypes",
+        "processDataSet.processInformation.dataSetInformation.name.functionalUnitFlowProperties"
+      ],
+      "source_rule_refs": [
+        {
+          "asset": "tidas_processes.yaml",
+          "path": "processDataSet.processInformation.dataSetInformation.name.treatmentStandardsRoutes.<rules>"
+        },
+        {
+          "asset": "tidas_processes.yaml",
+          "path": "processDataSet.processInformation.dataSetInformation.name.mixAndLocationTypes.<rules>"
+        },
+        {
+          "asset": "tidas_processes.yaml",
+          "path": "processDataSet.processInformation.dataSetInformation.name.functionalUnitFlowProperties.<rules>"
+        }
+      ]
+    },
+    {
+      "id": "tidas.process.quantitative-reference.required",
+      "dataset_type": "process",
+      "summary": "A process must identify a quantitative reference exchange or reference flow before authoring or publishing.",
+      "severity": "blocker",
+      "phases": ["build-plan", "materialize", "publish-build", "save-draft", "publish-run"],
+      "default_blocker": true,
+      "field_paths": [
+        "processDataSet.exchanges.exchange[*].@dataSetInternalID",
+        "processDataSet.exchanges.exchange[*].referenceToFlowDataSet"
+      ],
+      "source_rule_refs": [
+        {
+          "asset": "tidas_processes.yaml",
+          "path": "processDataSet.exchanges.exchange.referenceToFlowDataSet.<rules>"
+        }
+      ]
+    },
+    {
+      "id": "tidas.process.exchange.amount.required",
+      "dataset_type": "process",
+      "summary": "Each exchange needs meanAmount or resultingAmount evidence before it can be treated as publish-ready.",
+      "severity": "blocker",
+      "phases": ["build-plan", "materialize", "publish-build", "save-draft", "publish-run"],
+      "default_blocker": true,
+      "field_paths": [
+        "processDataSet.exchanges.exchange[*].meanAmount",
+        "processDataSet.exchanges.exchange[*].resultingAmount"
+      ],
+      "source_rule_refs": [
+        {
+          "asset": "tidas_processes.yaml",
+          "path": "processDataSet.exchanges.exchange.meanAmount.<rules>"
+        }
+      ]
+    },
+    {
+      "id": "tidas.process.evidence.field-bindings.required",
+      "dataset_type": "process",
+      "summary": "Process authoring and publish gates require evidence bindings for identity, names, quantitative reference, exchanges, source, geography, time, and technology.",
+      "severity": "blocker",
+      "phases": ["build-plan", "materialize", "publish-build", "publish-run"],
+      "default_blocker": true,
+      "field_paths": [
+        "EvidenceManifest.sources",
+        "EvidenceManifest.field_bindings"
+      ],
+      "source_rule_refs": [
+        {
+          "asset": "tidas_processes.yaml",
+          "path": "processDataSet.processInformation.technology.technologyDescriptionAndIncludedProcesses.<rules>"
+        },
+        {
+          "asset": "tidas_processes.yaml",
+          "path": "processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness.dataCollectionPeriod.<rules>"
+        }
+      ]
+    },
+    {
+      "id": "tidas.process.version.format",
+      "dataset_type": "process",
+      "summary": "Process dataset versions must use fixed-width ILCD three-tier numbering and increase when content changes.",
+      "severity": "blocker",
+      "phases": ["save-draft", "publish-build", "publish-run"],
+      "default_blocker": true,
+      "field_paths": [
+        "processDataSet.administrativeInformation.publicationAndOwnership.common:dataSetVersion"
+      ],
+      "source_rule_refs": [
+        {
+          "asset": "tidas_processes.yaml",
+          "path": "processDataSet.administrativeInformation.publicationAndOwnership.common:dataSetVersion.<rules>"
+        }
+      ]
+    },
+    {
+      "id": "tidas.process.identity.duplicate-fingerprint.block",
+      "dataset_type": "process",
+      "summary": "A new process is blocked when reference flow, route, geography, system boundary, and exchange fingerprint are equivalent to an existing candidate.",
+      "severity": "blocker",
+      "phases": ["identity-preflight", "dedup-review"],
+      "default_blocker": true,
+      "field_paths": [
+        "IdentityDecision.decision",
+        "ProcessIdentity.reference_flow",
+        "ProcessIdentity.exchange_fingerprint"
+      ],
+      "source_rule_refs": [
+        {
+          "asset": "tidas_processes.yaml",
+          "path": "processDataSet.exchanges.exchange.referenceToFlowDataSet.<rules>"
+        },
+        {
+          "asset": "tidas_processes.yaml",
+          "path": "processDataSet.processInformation.dataSetInformation.name.<rules>"
+        }
+      ]
+    },
+    {
+      "id": "tidas.flow.name.base-name.technical",
+      "dataset_type": "flow",
+      "summary": "Flow baseName must use technical terminology and avoid geography, time, or quantitative qualifiers that belong in dedicated fields.",
+      "severity": "blocker",
+      "phases": ["build-plan", "materialize", "publish-build", "save-draft", "publish-run"],
+      "default_blocker": true,
+      "field_paths": [
+        "flowDataSet.flowInformation.dataSetInformation.name.baseName"
+      ],
+      "source_rule_refs": [
+        {
+          "asset": "tidas_flows.yaml",
+          "path": "flowDataSet.flowInformation.dataSetInformation.name.baseName.<rules>"
+        }
+      ]
+    },
+    {
+      "id": "tidas.flow.type.required",
+      "dataset_type": "flow",
+      "summary": "Flow datasets must declare Elementary flow, Product flow, or Waste flow consistently with classification and reference property.",
+      "severity": "blocker",
+      "phases": ["build-plan", "materialize", "publish-build", "save-draft", "publish-run"],
+      "default_blocker": true,
+      "field_paths": [
+        "flowDataSet.modellingAndValidation.LCIMethod.typeOfDataSet"
+      ],
+      "source_rule_refs": [
+        {
+          "asset": "tidas_flows.yaml",
+          "path": "flowDataSet.modellingAndValidation.LCIMethod.typeOfDataSet.<rules>"
+        }
+      ]
+    },
+    {
+      "id": "tidas.flow.reference-property-unit.required",
+      "dataset_type": "flow",
+      "summary": "Flow authoring must provide a reference flow property and reference unit before schema or publish gates can pass.",
+      "severity": "blocker",
+      "phases": ["build-plan", "materialize", "publish-build", "save-draft", "publish-run"],
+      "default_blocker": true,
+      "field_paths": [
+        "flowDataSet.flowProperties.flowProperty[*].referenceToFlowPropertyDataSet",
+        "flowDataSet.flowProperties.flowProperty[*].referenceUnit"
+      ],
+      "source_rule_refs": [
+        {
+          "asset": "tidas_flows.yaml",
+          "path": "flowDataSet.flowInformation.dataSetInformation.name.flowProperties.<rules>"
+        }
+      ]
+    },
+    {
+      "id": "tidas.flow.flow-property.mean-value.positive",
+      "dataset_type": "flow",
+      "summary": "Flow property mean values must be positive real numbers and the quantitative reference property should use 1.0.",
+      "severity": "blocker",
+      "phases": ["materialize", "publish-build", "save-draft", "publish-run"],
+      "default_blocker": true,
+      "field_paths": [
+        "flowDataSet.flowProperties.flowProperty[*].meanValue"
+      ],
+      "source_rule_refs": [
+        {
+          "asset": "tidas_flows.yaml",
+          "path": "flowDataSet.flowProperties.flowProperty.meanValue.<rules>"
+        }
+      ]
+    },
+    {
+      "id": "tidas.flow.classification.elementary.valid",
+      "dataset_type": "flow",
+      "summary": "Elementary flow classification must use the controlled category hierarchy with continuous levels and valid category ids.",
+      "severity": "blocker",
+      "phases": ["materialize", "publish-build", "save-draft", "publish-run"],
+      "default_blocker": true,
+      "field_paths": [
+        "flowDataSet.flowInformation.dataSetInformation.classificationInformation.common:elementaryFlowCategorization"
+      ],
+      "source_rule_refs": [
+        {
+          "asset": "tidas_flows.yaml",
+          "path": "flowDataSet.flowInformation.dataSetInformation.classificationInformation.common:elementaryFlowCategorization.<rules>"
+        }
+      ]
+    },
+    {
+      "id": "tidas.flow.evidence.field-bindings.required",
+      "dataset_type": "flow",
+      "summary": "Flow authoring and publish gates require evidence bindings for identity, flow type, name, property, unit, classification, and source.",
+      "severity": "blocker",
+      "phases": ["build-plan", "materialize", "publish-build", "publish-run"],
+      "default_blocker": true,
+      "field_paths": [
+        "EvidenceManifest.sources",
+        "EvidenceManifest.field_bindings"
+      ],
+      "source_rule_refs": [
+        {
+          "asset": "tidas_flows.yaml",
+          "path": "flowDataSet.flowInformation.dataSetInformation.name.<rules>"
+        },
+        {
+          "asset": "tidas_flows.yaml",
+          "path": "flowDataSet.flowProperties.flowProperty.<rules>"
+        }
+      ]
+    },
+    {
+      "id": "tidas.flow.identity.alias-equivalence.review",
+      "dataset_type": "flow",
+      "summary": "Flow identity preflight should reuse or review flows with equivalent type, property, unit, CAS/category, synonyms, and aliases.",
+      "severity": "warning",
+      "phases": ["identity-preflight", "dedup-review"],
+      "default_blocker": false,
+      "field_paths": [
+        "IdentityDecision.decision",
+        "FlowIdentity.flow_type",
+        "FlowIdentity.reference_property",
+        "FlowIdentity.reference_unit",
+        "FlowIdentity.aliases"
+      ],
+      "source_rule_refs": [
+        {
+          "asset": "tidas_flows.yaml",
+          "path": "flowDataSet.flowInformation.dataSetInformation.name.common:synonyms.<rules>"
+        },
+        {
+          "asset": "tidas_flows.yaml",
+          "path": "flowDataSet.flowProperties.flowProperty.<rules>"
+        }
+      ]
+    }
+  ]
+}
