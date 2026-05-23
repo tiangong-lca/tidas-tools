@@ -348,13 +348,14 @@ def _exchange(exchange, flow: CanonicalEntity, index: int) -> dict:
 
 
 def _direction(exchange) -> str:
-    if _attr(exchange, "inputGroup"):
+    if _exchange_group(exchange, "inputGroup"):
         return "Input"
     return "Output"
 
 
 def _flow_type(exchange) -> str:
-    output_group = _attr(exchange, "outputGroup")
+    input_group = _exchange_group(exchange, "inputGroup")
+    output_group = _exchange_group(exchange, "outputGroup")
     if output_group == "0":
         return "PRODUCT_FLOW"
     category = " ".join(
@@ -364,7 +365,7 @@ def _flow_type(exchange) -> str:
     )
     if any(token in category for token in ("air", "water", "soil", "resource")):
         return "ELEMENTARY_FLOW"
-    if _attr(exchange, "inputGroup") in {"4", "5"} or output_group in {"4", "5"}:
+    if input_group == "4" or output_group in {"4", "5"}:
         return "ELEMENTARY_FLOW"
     return "PRODUCT_FLOW"
 
@@ -394,6 +395,13 @@ def _attr(element, name: str) -> str | None:
         return None
     value = value.strip()
     return value or None
+
+
+def _exchange_group(exchange, name: str) -> str | None:
+    return _attr(exchange, name) or _first_text(
+        exchange,
+        [f"./*[local-name()='{name}']/text()"],
+    )
 
 
 def _key_text(value: str | None) -> str:
@@ -480,8 +488,8 @@ def _exchange_classification(exchange) -> dict[str, str]:
             "subCategory": _attr(exchange, "subCategory"),
             "localCategory": _attr(exchange, "localCategory"),
             "localSubCategory": _attr(exchange, "localSubCategory"),
-            "inputGroup": _attr(exchange, "inputGroup"),
-            "outputGroup": _attr(exchange, "outputGroup"),
+            "inputGroup": _exchange_group(exchange, "inputGroup"),
+            "outputGroup": _exchange_group(exchange, "outputGroup"),
         }.items()
         if value
     }
