@@ -50,6 +50,75 @@ def test_ecospold1_minimal_import_can_write_valid_tidas_and_ilcd(tmp_path):
     assert _has_flow_property(output_dir / "tidas", "Amount in kg")
 
 
+def test_ecospold1_import_reads_exchange_group_child_elements(tmp_path):
+    process_uuid = "64e926e8-dd48-3704-b902-daaf546087c4"
+    source = tmp_path / f"process_{process_uuid}.xml"
+    source.write_text(
+        """<?xml version="1.0" encoding="UTF-8"?>
+<ecoSpold xmlns="http://www.EcoInvent.org/EcoSpold01">
+  <dataset>
+    <metaInformation>
+      <processInformation>
+        <referenceFunction name="BAFU-style child group fixture" />
+      </processInformation>
+    </metaInformation>
+    <flowData>
+      <exchange number="1" name="reference product" unit="kg" amount="1">
+        <outputGroup>0</outputGroup>
+      </exchange>
+      <exchange number="2" name="electricity input" unit="kWh" meanValue="2" category="electricity" subCategory="supply mix">
+        <inputGroup>5</inputGroup>
+      </exchange>
+      <exchange number="3" name="ore resource" unit="kg" meanValue="3" category="resources" subCategory="in ground">
+        <inputGroup>4</inputGroup>
+      </exchange>
+      <exchange number="4" name="stack emission" unit="kg" meanValue="4" category="emissions to air" subCategory="unspecified">
+        <outputGroup>4</outputGroup>
+      </exchange>
+    </flowData>
+  </dataset>
+</ecoSpold>
+""",
+        encoding="utf-8",
+    )
+
+    output_dir = tmp_path / "out"
+    status = main(
+        [
+            "--input",
+            str(source),
+            "--output-dir",
+            str(output_dir),
+            "--target",
+            "both",
+        ]
+    )
+
+    report = json.loads(
+        (output_dir / "conversion-report.json").read_text(encoding="utf-8")
+    )
+    process = _read_process(output_dir / "tidas", process_uuid)
+    electricity_exchange = _exchange_for_flow(process, "electricity input")
+    resource_exchange = _exchange_for_flow(process, "ore resource")
+    emission_exchange = _exchange_for_flow(process, "stack emission")
+
+    assert status == 0
+    assert report["validation"]["tidas"]["ok"] is True
+    assert report["validation"]["ilcd"]["ok"] is True
+    assert (
+        _exchange_for_flow(process, "reference product")["exchangeDirection"]
+        == "Output"
+    )
+    assert electricity_exchange["exchangeDirection"] == "Input"
+    assert resource_exchange["exchangeDirection"] == "Input"
+    assert emission_exchange["exchangeDirection"] == "Output"
+    assert _flow_type(output_dir / "tidas", "electricity input") == "Product flow"
+    assert _flow_type(output_dir / "tidas", "ore resource") == "Elementary flow"
+    assert _flow_type(output_dir / "tidas", "stack emission") == "Elementary flow"
+    exchange_trace = _trace_payload(electricity_exchange["common:other"])["sourceTrace"]
+    assert exchange_trace["sourceClassification"]["inputGroup"] == "5"
+
+
 def test_ecospold1_import_maps_semantic_fields_and_source_trace(tmp_path):
     process_uuid = "64e926e8-dd48-3704-b902-daaf546087c4"
     source = tmp_path / f"process_{process_uuid}.xml"
@@ -360,3 +429,9 @@ def _find_flow(tidas_dir, expected_name):
         if name == expected_name:
             return data
     raise AssertionError(f"Flow not found: {expected_name}")
+
+
+def _flow_type(tidas_dir, expected_name):
+    return _find_flow(tidas_dir, expected_name)["flowDataSet"][
+        "modellingAndValidation"
+    ]["LCIMethod"]["typeOfDataSet"]
