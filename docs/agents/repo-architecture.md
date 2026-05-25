@@ -25,7 +25,7 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-05-23
-lastReviewedCommit: 52952f37714e2e4b6a05eee972f403d480663868
+lastReviewedCommit: 0ab2d6ac9b1ad10332d051c05fd06e312528348b
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -47,6 +47,7 @@ This repo packages standalone tooling plus the schema, methodology, and styleshe
 | `src/tidas_tools/validation_report.py` | structured validation-report rendering |
 | `src/tidas_tools/export.py` | standalone export CLI |
 | `src/tidas_tools/package_versions.py` | version normalization and export package metadata logic |
+| `src/tidas_tools/runtime_rulesets.py` | loader and validator for packaged runtime ruleset metadata |
 | `src/tidas_tools/tidas/**` | packaged TIDAS schemas and methodologies |
 | `src/tidas_tools/eilcd/**` | packaged eILCD schemas and stylesheets |
 | `tests/**` | automated repo tests |
@@ -80,6 +81,11 @@ Important consequences:
 - `tidas-sdk` runtime assets and generated models depend on the packaged assets here
 - schema or methodology changes here usually imply downstream SDK follow-up
 - `tidas` remains the public docs surface, but it is not the executable upstream for tooling behavior
+
+`src/tidas_tools/tidas/methodologies/runtime_rulesets.json` is the packaged
+runtime metadata layer over the methodology YAML assets. It assigns stable rule
+ids, severity, phases, blocker defaults, and source-rule references for CLI and
+Foundry gates without moving gate execution logic into this repository.
 
 ## Release And Dispatch Architecture
 
