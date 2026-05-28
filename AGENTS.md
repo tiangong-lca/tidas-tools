@@ -68,7 +68,7 @@ Read in this order:
 - path-level ownership, routing intents, governed-doc inventory, and lint rules live in `.docpact/config.yaml`
 - minimum proof and manual CLI probe guidance live in `docs/agents/repo-validation.md`
 - stable path groups, upstream asset handoffs, and release / dispatch topology live in `docs/agents/repo-architecture.md`
-- repo-local documentation maintenance is enforced by `.github/workflows/ai-doc-lint.yml` with `docpact lint`
+- repo-local documentation maintenance is enforced locally by the pre-push docpact gate; `.github/workflows/ai-doc-lint.yml` is manual-dispatch fallback
 - the main routing intents are `tool-runtime`, `conversion`, `validation`, `export`, `packaged-assets`, `sdk-dispatch`, `release`, `proof`, `repo-docs`, and `root-integration`
 
 ## Minimal Execution Facts
