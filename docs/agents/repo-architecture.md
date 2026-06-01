@@ -52,7 +52,7 @@ This repo packages standalone tooling plus the schema, methodology, and styleshe
 | `src/tidas_tools/eilcd/**` | packaged eILCD schemas and stylesheets |
 | `tests/**` | automated repo tests |
 | `.github/workflows/dispatch-tidas-sdk-sync.yml` | downstream SDK refresh dispatch contract |
-| `.github/workflows/python-package-deploy.yml` | tag-driven PyPI publish workflow with a release test gate |
+| `.github/workflows/python-package-deploy.yml` | `main` version-bump and tag-driven PyPI publish workflow with a release test gate |
 | `.github/workflows/ci.yml` | manual-dispatch remote reproduction of local tests |
 
 ## Current Tool Families
@@ -90,7 +90,8 @@ Foundry gates without moving gate execution logic into this repository.
 
 ## Release And Dispatch Architecture
 
-- tag `v<version>` publishes `tidas-tools`
+- `main` pushes whose `pyproject.toml` project version changes create the matching `v<version>` tag and publish `tidas-tools`
+- manual `v<version>` tag pushes and workflow-dispatch runs for existing release tags remain recovery/backfill paths
 - changes under packaged schema and methodology paths can dispatch downstream SDK refresh workflows
 
 This dispatch path is part of the repo architecture, not just a convenience automation.
