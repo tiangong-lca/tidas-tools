@@ -82,11 +82,19 @@ Source units from EcoSpold, SimaPro CSV, and process XLSX inputs are propagated
 into generated unit groups and flow properties when no explicit reference data
 is available.
 
+Use `--process-bundles` when downstream AI/import workers need to handle each
+TIDAS process independently. The normal `<output_directory>/tidas` package is
+still written unchanged; the importer also writes
+`<output_directory>/process-bundles/<process_uuid>/` folders containing the
+process JSON plus referenced flow, flow property, unit group, contact, and
+source JSON files. `--process-bundles-dir <dir>` overrides the bundle location.
+
 ### (2) Usage Example
 
 ```bash
 tidas-import --input <source_file_or_dir> --output-dir <output_directory> --detect-only
 tidas-import --input <source_file_or_dir> --output-dir <output_directory> --target both --validation-jobs 0
+tidas-import --input <source_file_or_dir> --output-dir <output_directory> --process-bundles
 ```
 
 ---

@@ -41,6 +41,8 @@ class ConversionReport:
     target: str = "tidas"
     tidas_dir: str | None = None
     ilcd_dir: str | None = None
+    process_bundles_dir: str | None = None
+    process_bundle_count: int | None = None
     mapping_csv: str | None = None
     mapping_csv_rows: int | None = None
     detection_evidence: list[str] = field(default_factory=list)
@@ -103,11 +105,14 @@ class ConversionReport:
                 "requested": self.target,
                 "tidas_dir": self.tidas_dir,
                 "ilcd_dir": self.ilcd_dir,
+                "process_bundles_dir": self.process_bundles_dir,
+                "process_bundle_count": self.process_bundle_count,
                 "mapping_csv": self.mapping_csv,
                 "mapping_csv_rows": self.mapping_csv_rows,
             },
             "summary": {
                 **counts,
+                "process_bundles": self.process_bundle_count or 0,
                 "warnings": self.warning_count,
                 "errors": self.error_count,
             },

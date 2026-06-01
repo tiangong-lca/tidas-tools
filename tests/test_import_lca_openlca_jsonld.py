@@ -92,6 +92,60 @@ def test_openlca_jsonld_minimal_import_writes_valid_tidas_package(tmp_path):
     assert exchange["meanAmount"] == "0.123456789012345678"
 
 
+def test_openlca_jsonld_minimal_import_can_write_process_bundles(tmp_path):
+    source_dir = write_minimal_jsonld_fixture(tmp_path)
+    output_dir = tmp_path / "out"
+
+    status = main(
+        [
+            "--input",
+            str(source_dir),
+            "--output-dir",
+            str(output_dir),
+            "--from-format",
+            "openlca-jsonld",
+            "--process-bundles",
+        ]
+    )
+
+    bundle_dir = output_dir / "process-bundles" / PROCESS_ID
+    manifest = json.loads((bundle_dir / "manifest.json").read_text(encoding="utf-8"))
+    index = json.loads(
+        (output_dir / "process-bundles" / "index.json").read_text(encoding="utf-8")
+    )
+    report = json.loads(
+        (output_dir / "conversion-report.json").read_text(encoding="utf-8")
+    )
+
+    assert status == 0
+    assert index["process_count"] == 1
+    assert index["bundles"][0]["process_id"] == PROCESS_ID
+    assert manifest["process_id"] == PROCESS_ID
+    assert manifest["unresolved_references"] == []
+    assert f"tidas/processes/{PROCESS_ID}.json" in manifest["files"]["processes"]
+    assert f"tidas/flows/{FLOW_ID}.json" in manifest["files"]["flows"]
+    assert (
+        f"tidas/flowproperties/{FLOW_PROPERTY_ID}.json"
+        in manifest["files"]["flowproperties"]
+    )
+    assert f"tidas/unitgroups/{UNIT_GROUP_ID}.json" in manifest["files"]["unitgroups"]
+    assert f"tidas/sources/{SOURCE_ID}.json" in manifest["files"]["sources"]
+    assert (bundle_dir / "tidas" / "processes" / f"{PROCESS_ID}.json").is_file()
+    assert (bundle_dir / "tidas" / "flows" / f"{FLOW_ID}.json").is_file()
+    assert (
+        bundle_dir / "tidas" / "flowproperties" / f"{FLOW_PROPERTY_ID}.json"
+    ).is_file()
+    assert (bundle_dir / "tidas" / "unitgroups" / f"{UNIT_GROUP_ID}.json").is_file()
+    assert report["target"]["process_bundles_dir"] == str(
+        output_dir / "process-bundles"
+    )
+    assert report["target"]["process_bundle_count"] == 1
+    assert report["summary"]["process_bundles"] == 1
+
+    validation = validate_package_dir(str(bundle_dir / "tidas"))
+    assert validation["ok"] is True
+
+
 def test_openlca_jsonld_minimal_import_can_write_valid_ilcd(tmp_path):
     source_dir = write_minimal_jsonld_fixture(tmp_path)
     output_dir = tmp_path / "out"

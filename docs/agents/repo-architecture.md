@@ -24,8 +24,8 @@ checkPaths:
   - scripts/docpact
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-05-28
-lastReviewedCommit: e3b9aa33fe4d99afb2a9fb74baa17ec8f97655fc
+lastReviewedAt: 2026-06-01
+lastReviewedCommit: 754954252a46f8a43b7f815be23a94a664626ef8
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -61,7 +61,7 @@ This repo packages standalone tooling plus the schema, methodology, and styleshe
 
 `convert.py` owns standalone TIDAS and eILCD conversion behavior.
 
-`import_lca/` owns staged external LCA source import behavior for `tidas-import`. The current foundation covers CLI dispatch, format detection, `.zolca` rejection, canonical store scaffolding, TIDAS package layout helpers, ILCD bridging, and conversion reports. Validated adapters currently exist for openLCA JSON-LD, EcoSpold 1, SimaPro CSV, EcoSpold 2, and openLCA process XLSX, with canonical contact/source writing and generated unit group / flow property support for source units.
+`import_lca/` owns staged external LCA source import behavior for `tidas-import`. The current foundation covers CLI dispatch, format detection, `.zolca` rejection, canonical store scaffolding, TIDAS package layout helpers, optional per-process TIDAS dependency bundle output for parallel AI import workers, ILCD bridging, and conversion reports. Validated adapters currently exist for openLCA JSON-LD, EcoSpold 1, SimaPro CSV, EcoSpold 2, and openLCA process XLSX, with canonical contact/source writing and generated unit group / flow property support for source units.
 
 ### Validation
 
