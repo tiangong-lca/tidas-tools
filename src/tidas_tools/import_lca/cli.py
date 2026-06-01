@@ -21,6 +21,7 @@ if __package__:
     )
     from .errors import AmbiguousFormatError
     from .mapping_csv import write_mapping_csv
+    from .process_bundles import write_process_bundles
     from .report import ConversionReport
     from .store import MemoryCanonicalStore
     from .writers import write_ilcd_from_tidas, write_tidas_package
@@ -42,6 +43,7 @@ else:
     )
     from tidas_tools.import_lca.errors import AmbiguousFormatError
     from tidas_tools.import_lca.mapping_csv import write_mapping_csv
+    from tidas_tools.import_lca.process_bundles import write_process_bundles
     from tidas_tools.import_lca.report import ConversionReport
     from tidas_tools.import_lca.store import MemoryCanonicalStore
     from tidas_tools.import_lca.writers import (
@@ -108,6 +110,21 @@ def build_parser() -> argparse.ArgumentParser:
         help=(
             "Number of parallel validation worker processes. "
             "Use 0 to use all CPU cores. Defaults to 1."
+        ),
+    )
+    parser.add_argument(
+        "--process-bundles",
+        action="store_true",
+        help=(
+            "Also write per-process TIDAS dependency bundles under "
+            "<output-dir>/process-bundles."
+        ),
+    )
+    parser.add_argument(
+        "--process-bundles-dir",
+        help=(
+            "Custom directory for per-process TIDAS dependency bundles. "
+            "Implies --process-bundles."
         ),
     )
     parser.add_argument(
@@ -252,6 +269,27 @@ def run_import(args: argparse.Namespace) -> int:
         report.write_json(report_path)
         logging.error("Generated TIDAS package failed validation")
         return 2
+
+    if args.process_bundles or args.process_bundles_dir:
+        process_bundles_dir = (
+            Path(args.process_bundles_dir)
+            if args.process_bundles_dir
+            else output_dir / "process-bundles"
+        )
+        bundle_summary = write_process_bundles(tidas_dir, process_bundles_dir)
+        report.process_bundles_dir = str(process_bundles_dir)
+        report.process_bundle_count = int(bundle_summary["process_count"])
+        unresolved = bundle_summary.get("unresolved_references") or []
+        if unresolved:
+            report.add_issue(
+                severity="warning",
+                code="process_bundle_unresolved_reference",
+                message="Some process bundle references could not be resolved.",
+                context={
+                    "count": len(unresolved),
+                    "examples": unresolved[:10],
+                },
+            )
 
     if args.target in {"ilcd", "both"}:
         ilcd_dir = Path(report.ilcd_dir)
