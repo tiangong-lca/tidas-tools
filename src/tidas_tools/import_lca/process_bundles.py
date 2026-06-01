@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from shutil import copy2
 from typing import Any
 
@@ -186,7 +186,7 @@ def _copy_dependencies(
             destination = bundle_tidas_dir / category / source.name
             destination.parent.mkdir(parents=True, exist_ok=True)
             copy2(source, destination)
-            files[category].append(str(Path("tidas") / category / source.name))
+            files[category].append(str(PurePosixPath("tidas") / category / source.name))
     return files
 
 
