@@ -46,7 +46,7 @@ uv run pytest
 
 Use narrower manual probes only when the task touches one CLI surface and full tests would add no extra signal.
 
-The local `pre-push` hook runs docpact first and then `uv run pytest`. The GitHub `CI` workflow is manual-dispatch only, so ordinary branch pushes do not run standalone remote tests. Tag-driven PyPI publish still runs pytest before publishing.
+The local `pre-push` hook runs docpact first and then `uv run pytest`. The GitHub `CI` workflow is manual-dispatch only, so ordinary branch pushes do not run standalone remote tests. The PyPI publish workflow runs from `main` version bumps or explicit release tags and still runs pytest before publishing.
 
 ## Validation Matrix
 
