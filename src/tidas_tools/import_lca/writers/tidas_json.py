@@ -19,16 +19,12 @@ DEFAULT_VERSION = "00.00.001"
 IMPORT_ID_NAMESPACE = "tidas-tools/import"
 IMPORT_TRACE_NAMESPACE = "https://tiangong.earth/tidas/import-trace/1.0"
 IMPORT_TRACE_MARKER = "TIDAS_IMPORT_TRACE_V1"
-PLACEHOLDER_PREFIX = "TIDAS_IMPORT_PLACEHOLDER"
-PLACEHOLDER_UNSPECIFIED_TEXT = f"{PLACEHOLDER_PREFIX}:UNSPECIFIED_TEXT"
-PLACEHOLDER_IMPORT_ACTOR = f"{PLACEHOLDER_PREFIX}:IMPORT_ACTOR"
-PLACEHOLDER_COMPLIANCE_NOT_DEFINED = f"{PLACEHOLDER_PREFIX}:COMPLIANCE_NOT_DEFINED"
-PLACEHOLDER_DATA_CUTOFF = f"{PLACEHOLDER_PREFIX}:DATA_CUTOFF_NOT_AVAILABLE"
-PLACEHOLDER_DATA_SOURCE = f"{PLACEHOLDER_PREFIX}:DATA_SOURCE_NOT_AVAILABLE"
-PLACEHOLDER_ANNUAL_VOLUME = f"0 {PLACEHOLDER_PREFIX}:ANNUAL_VOLUME_NOT_AVAILABLE"
-PLACEHOLDER_CONVERTED_APPLICATION = f"{PLACEHOLDER_PREFIX}:CONVERTED_EXTERNAL_LCA_DATA"
-PLACEHOLDER_YEAR = 9999
-PLACEHOLDER_REVIEW_NOT_AVAILABLE = f"{PLACEHOLDER_PREFIX}:REVIEW_NOT_AVAILABLE"
+IMPORT_TOOL_CONTACT_NAME = "TianGong LCA import tooling"
+COMPLIANCE_NOT_DECLARED = "Compliance system not declared in source package"
+DATA_SOURCE_NOT_DECLARED = "Source package metadata not declared"
+SOURCE_VALUE_NOT_DECLARED = "Not declared in source package"
+CONVERTED_EXTERNAL_LCA_DATA = "Converted from external LCA package"
+REVIEW_NOT_DECLARED = "Review details not declared in source package"
 IMPORT_CONTACT_ID = str(
     uuid.uuid5(uuid.NAMESPACE_URL, f"{IMPORT_ID_NAMESPACE}/contact")
 )
@@ -138,11 +134,12 @@ def _write_json(path: Path, payload: dict[str, Any]) -> None:
 
 
 def _ml(text: str, lang: str = "en") -> dict[str, str]:
-    return {"@xml:lang": lang, "#text": text or PLACEHOLDER_UNSPECIFIED_TEXT}
+    value = str(text or "").strip() or SOURCE_VALUE_NOT_DECLARED
+    return {"@xml:lang": lang, "#text": value}
 
 
 def _ml_500(text: Any, lang: str = "en") -> dict[str, str]:
-    value = str(text or PLACEHOLDER_UNSPECIFIED_TEXT)
+    value = str(text or "").strip() or SOURCE_VALUE_NOT_DECLARED
     return _ml(_truncate(value, 500), lang=lang)
 
 
@@ -188,7 +185,7 @@ def _compliance_ref() -> dict[str, Any]:
     return _ref(
         ref_type="source data set",
         ref_id=COMPLIANCE_SOURCE_ID,
-        short_description=PLACEHOLDER_COMPLIANCE_NOT_DEFINED,
+        short_description=COMPLIANCE_NOT_DECLARED,
         category="sources",
     )
 
@@ -197,7 +194,7 @@ def _owner_ref() -> dict[str, Any]:
     return _ref(
         ref_type="contact data set",
         ref_id=IMPORT_CONTACT_ID,
-        short_description=PLACEHOLDER_IMPORT_ACTOR,
+        short_description=IMPORT_TOOL_CONTACT_NAME,
         category="contacts",
     )
 
@@ -294,8 +291,8 @@ def _compliance_declarations(process: bool = False) -> dict[str, Any]:
 def _default_contact() -> dict[str, Any]:
     return _contact_payload(
         contact_id=IMPORT_CONTACT_ID,
-        name=PLACEHOLDER_IMPORT_ACTOR,
-        short_name=PLACEHOLDER_IMPORT_ACTOR,
+        name=IMPORT_TOOL_CONTACT_NAME,
+        short_name=IMPORT_TOOL_CONTACT_NAME,
     )
 
 
@@ -459,7 +456,7 @@ def _format_source() -> dict[str, Any]:
 def _compliance_source() -> dict[str, Any]:
     return _source_dataset(
         COMPLIANCE_SOURCE_ID,
-        PLACEHOLDER_COMPLIANCE_NOT_DEFINED,
+        COMPLIANCE_NOT_DECLARED,
         "3",
         "Compliance systems",
     )
@@ -664,14 +661,16 @@ def _process_dataset(entity: CanonicalEntity):
         "name": _name_parts(entity.name or "Process"),
         "classificationInformation": _default_process_classification(entity.raw),
         "common:generalComment": _ml(
-            entity.raw.get("description") or PLACEHOLDER_CONVERTED_APPLICATION
+            entity.raw.get("description") or CONVERTED_EXTERNAL_LCA_DATA
         ),
     }
     common_other = _common_other_trace(entity.raw.get("sourceTrace"))
     if common_other:
         data_set_information["common:other"] = common_other
 
-    time = {"common:referenceYear": reference_year}
+    time = {}
+    if reference_year is not None:
+        time["common:referenceYear"] = reference_year
     if valid_until is not None:
         time["common:dataSetValidUntil"] = valid_until
     if _text(entity.raw.get("timeDescription")):
@@ -684,15 +683,6 @@ def _process_dataset(entity: CanonicalEntity):
         location_item["descriptionOfRestrictions"] = _ml(
             str(entity.raw["locationDescription"]).strip()
         )
-    location_trace = _common_other_trace(
-        {
-            "sourceLocation": entity.raw.get("sourceLocation"),
-            "mappedLocation": location,
-        }
-    )
-    if location_trace:
-        location_item["common:other"] = location_trace
-
     process_information = {
         "dataSetInformation": data_set_information,
         "quantitativeReference": {
@@ -718,31 +708,10 @@ def _process_dataset(entity: CanonicalEntity):
     modelling_and_validation["complianceDeclarations"] = _compliance_declarations(
         process=True
     )
-    if not exchange_items:
-        exchange_items = [
-            {
-                "@dataSetInternalID": "1",
-                "referenceToFlowDataSet": _ref(
-                    ref_type="flow data set",
-                    ref_id=DEFAULT_FLOW_PROPERTY_ID,
-                    short_description="Unspecified flow",
-                    category="flows",
-                ),
-                "exchangeDirection": "Output",
-                "meanAmount": "1",
-                "resultingAmount": "1",
-                "dataDerivationTypeStatus": "Unknown derivation",
-            }
-        ]
-        reference_flow = "1"
-
     commissioner_and_goal = {
         "common:referenceToCommissioner": _process_commissioner_ref(entity),
         "common:intendedApplications": _ml(
-            str(
-                entity.raw.get("intendedApplications")
-                or PLACEHOLDER_CONVERTED_APPLICATION
-            )
+            str(entity.raw.get("intendedApplications") or CONVERTED_EXTERNAL_LCA_DATA)
         ),
     }
     if _text(entity.raw.get("project")):
@@ -794,7 +763,7 @@ def _lifecycle_model_dataset(entity: CanonicalEntity) -> dict[str, Any]:
         "name": _name_parts(entity.name or "Life cycle model"),
         "classificationInformation": _default_process_classification(),
         "common:generalComment": _ml(
-            raw.get("description") or PLACEHOLDER_CONVERTED_APPLICATION
+            raw.get("description") or CONVERTED_EXTERNAL_LCA_DATA
         ),
     }
     common_other = _common_other_trace(raw.get("sourceTrace"))
@@ -823,9 +792,7 @@ def _lifecycle_model_dataset(entity: CanonicalEntity) -> dict[str, Any]:
                 "validation": {
                     "review": {
                         "common:referenceToNameOfReviewerAndInstitution": _owner_ref(),
-                        "common:otherReviewDetails": _ml(
-                            PLACEHOLDER_REVIEW_NOT_AVAILABLE
-                        ),
+                        "common:otherReviewDetails": _ml(REVIEW_NOT_DECLARED),
                     }
                 },
                 "complianceDeclarations": _compliance_declarations(process=True),
@@ -833,9 +800,7 @@ def _lifecycle_model_dataset(entity: CanonicalEntity) -> dict[str, Any]:
             "administrativeInformation": {
                 "common:commissionerAndGoal": {
                     "common:referenceToCommissioner": _owner_ref(),
-                    "common:intendedApplications": _ml(
-                        PLACEHOLDER_CONVERTED_APPLICATION
-                    ),
+                    "common:intendedApplications": _ml(CONVERTED_EXTERNAL_LCA_DATA),
                 },
                 **_admin_info(
                     category="lifecyclemodels",
@@ -1063,11 +1028,11 @@ def _review_item(entity: CanonicalEntity) -> dict[str, Any]:
         or _ref(
             ref_type="source data set",
             ref_id=FORMAT_SOURCE_ID,
-            short_description=PLACEHOLDER_DATA_SOURCE,
+            short_description=DATA_SOURCE_NOT_DECLARED,
             category="sources",
         )
     )
-    details = str(primary.get("details") or PLACEHOLDER_REVIEW_NOT_AVAILABLE).strip()
+    details = str(primary.get("details") or REVIEW_NOT_DECLARED).strip()
     item = {
         "@type": review_type,
         "common:scope": {
@@ -1126,7 +1091,7 @@ def _source_ref_from_raw(value: Any) -> dict[str, Any] | None:
     return _ref(
         ref_type="source data set",
         ref_id=value["id"],
-        short_description=str(value.get("name") or PLACEHOLDER_DATA_SOURCE),
+        short_description=str(value.get("name") or DATA_SOURCE_NOT_DECLARED),
         category="sources",
     )
 
@@ -1140,7 +1105,7 @@ def _technology_section(entity: CanonicalEntity) -> dict[str, Any] | None:
         "technologyDescriptionAndIncludedProcesses": _ml(
             str(description).strip()
             if _text(description)
-            else PLACEHOLDER_UNSPECIFIED_TEXT
+            else SOURCE_VALUE_NOT_DECLARED
         )
     }
     if _text(applicability):
@@ -1173,7 +1138,7 @@ def _data_sources_treatment_and_representativeness(
             short_description=str(
                 source_ref.get("name")
                 or raw.get("sourceLabel")
-                or PLACEHOLDER_DATA_SOURCE
+                or DATA_SOURCE_NOT_DECLARED
             ),
             category="sources",
         )
@@ -1185,23 +1150,28 @@ def _data_sources_treatment_and_representativeness(
             _ref(
                 ref_type="source data set",
                 ref_id=FORMAT_SOURCE_ID,
-                short_description=PLACEHOLDER_DATA_SOURCE,
+                short_description=DATA_SOURCE_NOT_DECLARED,
                 category="sources",
             )
         ]
     section: dict[str, Any] = {
         "dataCutOffAndCompletenessPrinciples": _ml(
-            raw.get("dataCutOffAndCompletenessPrinciples") or PLACEHOLDER_DATA_CUTOFF
-        ),
-        "referenceToDataSource": (
+            str(
+                raw.get("dataCutOffAndCompletenessPrinciples")
+                or SOURCE_VALUE_NOT_DECLARED
+            )
+        )
+    }
+    if source_refs_payload:
+        section["referenceToDataSource"] = (
             source_refs_payload[0]
             if len(source_refs_payload) == 1
             else source_refs_payload
-        ),
-        "annualSupplyOrProductionVolume": _annual_supply_or_production_volume(
-            raw.get("productionVolume")
-        ),
-    }
+        )
+    annual_supply = _annual_supply_or_production_volume(raw.get("productionVolume"))
+    section["annualSupplyOrProductionVolume"] = annual_supply or _ml(
+        f"0 {SOURCE_VALUE_NOT_DECLARED}"
+    )
     if _text(raw.get("dataSelectionAndCombinationPrinciples")):
         section["dataSelectionAndCombinationPrinciples"] = _ml(
             str(raw["dataSelectionAndCombinationPrinciples"]).strip()
@@ -1223,18 +1193,6 @@ def _data_sources_treatment_and_representativeness(
     if _text(raw.get("useAdviceForDataSet")):
         section["useAdviceForDataSet"] = _ml(str(raw["useAdviceForDataSet"]).strip())
 
-    common_other = _common_other_trace(
-        {
-            "format": raw.get("sourceFormat"),
-            "sourceObject": raw.get("sourceLabel"),
-            "sourceCategory": raw.get("sourceCategory"),
-            "sourceSubCategory": raw.get("sourceSubCategory"),
-            "sourceLocalCategory": raw.get("sourceLocalCategory"),
-            "sourceLocalSubCategory": raw.get("sourceLocalSubCategory"),
-        }
-    )
-    if common_other:
-        section["common:other"] = common_other
     return section
 
 
@@ -1345,8 +1303,8 @@ def _exchange_trace_payload(exchange: dict[str, Any]) -> dict[str, Any] | None:
 def _name_parts(name: str) -> dict[str, Any]:
     return {
         "baseName": _ml_500(name),
-        "treatmentStandardsRoutes": _ml_500(""),
-        "mixAndLocationTypes": _ml_500(""),
+        "treatmentStandardsRoutes": _ml_500(SOURCE_VALUE_NOT_DECLARED),
+        "mixAndLocationTypes": _ml_500(SOURCE_VALUE_NOT_DECLARED),
     }
 
 
@@ -1416,13 +1374,13 @@ def _generated_flow_property_for(
     return generated[1] if generated else None
 
 
-def _reference_year(value: Any) -> int:
+def _reference_year(value: Any) -> int | None:
     if value is None:
-        return PLACEHOLDER_YEAR
+        return 9999
     text = str(value).strip()
     match = re.search(r"\b(\d{4})\b", text)
     if not match:
-        return PLACEHOLDER_YEAR
+        return 9999
     return int(match.group(1))
 
 
@@ -1614,10 +1572,10 @@ def _percentage(value: Any) -> str | None:
     return text if PERCENT_PATTERN.fullmatch(text) else None
 
 
-def _annual_supply_or_production_volume(value: Any) -> dict[str, str]:
+def _annual_supply_or_production_volume(value: Any) -> dict[str, str] | None:
     text = str(value).strip() if value is not None else ""
     if not re.fullmatch(r"[+-]?(\d+(\.\d*)?|\.\d+)([Ee][+-]?\d+)?\s+\S.*", text):
-        text = PLACEHOLDER_ANNUAL_VOLUME
+        return None
     return _ml(text[:500])
 
 

@@ -13,6 +13,11 @@ from .model import CanonicalEntity
 from .store import MemoryCanonicalStore
 
 PLACEHOLDER_PREFIX = "TIDAS_IMPORT_PLACEHOLDER:"
+SOURCE_GAP_MARKERS = {
+    "not declared in source package": "SOURCE_VALUE_NOT_DECLARED",
+    "source package metadata not declared": "SOURCE_METADATA_NOT_DECLARED",
+    "compliance system not declared in source package": "COMPLIANCE_NOT_DECLARED",
+}
 TRACE_MARKER = "TIDAS_IMPORT_TRACE_V1"
 
 MAPPING_CSV_COLUMNS = [
@@ -363,6 +368,10 @@ def _needs_review(status: str, placeholder_kind: str) -> str:
 
 def _placeholder_kind(value: str) -> str:
     if PLACEHOLDER_PREFIX not in value:
+        normalized = value.casefold()
+        for marker, kind in SOURCE_GAP_MARKERS.items():
+            if marker in normalized:
+                return kind
         return ""
     return value.split(PLACEHOLDER_PREFIX, 1)[1].split()[0].strip(".,;:)")
 
