@@ -97,16 +97,16 @@ class EcoSpold1Adapter(SourceAdapter):
 def _iter_xml_payloads(source: Path) -> Iterable[tuple[str, bytes]]:
     if source.is_dir():
         for path in sorted(source.rglob("*.xml")):
-            yield str(path), path.read_bytes()
+            yield path.relative_to(source).as_posix(), path.read_bytes()
         return
     if source.suffix.lower() == ".zip":
         with zipfile.ZipFile(source) as archive:
             for name in sorted(archive.namelist()):
                 if name.lower().endswith(".xml"):
                     with archive.open(name) as stream:
-                        yield f"{source}:{name}", stream.read()
+                        yield name, stream.read()
         return
-    yield str(source), source.read_bytes()
+    yield source.name, source.read_bytes()
 
 
 def _parse_xml(data: bytes):
@@ -150,7 +150,7 @@ def _process_entity(dataset, label: str, index: int) -> CanonicalEntity:
     process_id = filename_uuid or _stable_id(
         f"ecospold1/process/{label}/{index}/{name}"
     )
-    technology_text = _attr(technology, "text") or _attr(
+    technology_text = _declared_attr(technology, "text") or _declared_attr(
         reference_function, "includedProcesses"
     )
     source_classification = _process_classification(reference_function)
@@ -162,6 +162,7 @@ def _process_entity(dataset, label: str, index: int) -> CanonicalEntity:
             "startYear",
             "endYear",
             "dataValidForEntirePeriod",
+            "text",
         ],
     )
     description = _first_text(
@@ -189,22 +190,27 @@ def _process_entity(dataset, label: str, index: int) -> CanonicalEntity:
             },
             "sourceClassification": source_classification,
             "location": _attr(geography, "location"),
-            "locationDescription": _attr(geography, "text"),
+            "locationDescription": _declared_attr(geography, "text"),
             "referenceYear": _year_from(
-                _attr(time_period, "startDate") or _attr(time_period, "startYear")
+                _value(time_period, "startDate") or _value(time_period, "startYear")
             ),
             "dataSetValidUntil": _year_from(
-                _attr(time_period, "endDate") or _attr(time_period, "endYear")
+                _value(time_period, "endDate") or _value(time_period, "endYear")
             ),
             "timeDescription": time_description,
             "technologyDescription": technology_text,
             "dataCollectionPeriod": _period_text(time_period),
-            "productionVolume": _attr(representativeness, "productionVolume"),
-            "samplingProcedure": _attr(representativeness, "samplingProcedure"),
-            "uncertaintyAdjustments": _attr(
+            "productionVolume": _declared_attr(representativeness, "productionVolume"),
+            "samplingProcedure": _declared_attr(
+                representativeness, "samplingProcedure"
+            ),
+            "dataCutOffAndCompletenessPrinciples": _declared_attr(
+                reference_function, "includedProcesses"
+            ),
+            "uncertaintyAdjustments": _declared_attr(
                 representativeness, "uncertaintyAdjustments"
             ),
-            "useAdviceForDataSet": _attr(representativeness, "extrapolations"),
+            "useAdviceForDataSet": _declared_attr(representativeness, "extrapolations"),
             "sourceCategory": _attr(reference_function, "category"),
             "sourceSubCategory": _attr(reference_function, "subCategory"),
             "sourceLocalCategory": _attr(reference_function, "localCategory"),
@@ -329,6 +335,7 @@ def _exchange(exchange, flow: CanonicalEntity, index: int) -> dict:
         "flow": {"@id": flow.internal_id, "name": flow.name},
         "flowRefId": flow.internal_id,
         "flowName": flow.name,
+        "unitName": _attr(exchange, "unit"),
         "isInput": _direction(exchange) == "Input",
         "amount": amount,
         "minimumAmount": _attr(exchange, "minValue") or _attr(exchange, "minAmount"),
@@ -397,11 +404,26 @@ def _attr(element, name: str) -> str | None:
     return value or None
 
 
-def _exchange_group(exchange, name: str) -> str | None:
-    return _attr(exchange, name) or _first_text(
-        exchange,
+def _value(element, name: str) -> str | None:
+    if element is None:
+        return None
+    return _attr(element, name) or _first_text(
+        element,
         [f"./*[local-name()='{name}']/text()"],
     )
+
+
+def _declared_attr(element, name: str) -> str | None:
+    value = _attr(element, name)
+    if value is None:
+        return None
+    if value.strip().casefold() in {"<null>", "null", "na", "n/a"}:
+        return None
+    return value
+
+
+def _exchange_group(exchange, name: str) -> str | None:
+    return _value(exchange, name)
 
 
 def _key_text(value: str | None) -> str:
@@ -425,8 +447,8 @@ def _year_from(value: str | None) -> int | None:
 def _period_text(element) -> str | None:
     if element is None:
         return None
-    start = _attr(element, "startDate") or _attr(element, "startYear")
-    end = _attr(element, "endDate") or _attr(element, "endYear")
+    start = _value(element, "startDate") or _value(element, "startYear")
+    end = _value(element, "endDate") or _value(element, "endYear")
     parts = [part for part in (start, end) if part]
     if parts:
         return " - ".join(parts)
@@ -441,7 +463,7 @@ def _text_or_attrs(element, attr_names: list[str]) -> str | None:
         return text
     parts = []
     for name in attr_names:
-        value = _attr(element, name)
+        value = _value(element, name)
         if value:
             parts.append(f"{name}={value}")
     return "; ".join(parts) if parts else None

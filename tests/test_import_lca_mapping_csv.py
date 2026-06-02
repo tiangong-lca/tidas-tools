@@ -90,7 +90,7 @@ def test_openlca_jsonld_import_writes_expert_mapping_csv(tmp_path):
         mapping_category="classification",
         trace_marker="TIDAS_IMPORT_TRACE_V1",
     )
-    assert _has_row(rows, mapping_status="placeholder", needs_review="TRUE")
+    assert _has_row(rows, mapping_status="generated", needs_review="TRUE")
 
 
 def test_ecospold1_import_writes_same_expert_mapping_csv_schema(tmp_path):
@@ -206,7 +206,12 @@ def test_ecospold2_import_writes_same_expert_mapping_csv_schema(tmp_path):
         mapping_status="trace_only",
         mapping_category="classification",
     )
-    assert _has_row(rows, source_format="ecospold2", mapping_status="placeholder")
+    assert _has_row(
+        rows,
+        source_format="ecospold2",
+        mapping_status="generated",
+        needs_review="TRUE",
+    )
 
 
 def _mapping_rows(output_dir):
