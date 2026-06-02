@@ -17,6 +17,7 @@ SOURCE_GAP_MARKERS = {
     "not declared in source package": "SOURCE_VALUE_NOT_DECLARED",
     "source package metadata not declared": "SOURCE_METADATA_NOT_DECLARED",
     "compliance system not declared in source package": "COMPLIANCE_NOT_DECLARED",
+    "source production volume unavailable": "SOURCE_PRODUCTION_VOLUME_UNAVAILABLE",
 }
 TRACE_MARKER = "TIDAS_IMPORT_TRACE_V1"
 

@@ -40,6 +40,10 @@ def test_ecospold1_minimal_import_can_write_valid_tidas_and_ilcd(tmp_path):
     report = json.loads(
         (output_dir / "conversion-report.json").read_text(encoding="utf-8")
     )
+    process = next((output_dir / "tidas" / "processes").glob("*.json"))
+    quantitative_reference = json.loads(process.read_text(encoding="utf-8"))[
+        "processDataSet"
+    ]["processInformation"]["quantitativeReference"]
 
     assert status == 0
     assert report["source"]["detected_format"] == "ecospold1"
@@ -48,6 +52,9 @@ def test_ecospold1_minimal_import_can_write_valid_tidas_and_ilcd(tmp_path):
     assert report["validation"]["tidas"]["ok"] is True
     assert report["validation"]["ilcd"]["ok"] is True
     assert _has_flow_property(output_dir / "tidas", "Amount in kg")
+    assert (
+        quantitative_reference["functionalUnitOrOther"]["#text"] == "1 kg steel product"
+    )
 
 
 def test_ecospold1_import_reads_exchange_group_child_elements(tmp_path):
@@ -108,6 +115,12 @@ def test_ecospold1_import_reads_exchange_group_child_elements(tmp_path):
     assert (
         _exchange_for_flow(process, "reference product")["exchangeDirection"]
         == "Output"
+    )
+    assert (
+        process["processInformation"]["quantitativeReference"]["functionalUnitOrOther"][
+            "#text"
+        ]
+        == "1 kg reference product"
     )
     assert electricity_exchange["exchangeDirection"] == "Input"
     assert resource_exchange["exchangeDirection"] == "Input"
@@ -188,7 +201,7 @@ def test_ecospold1_import_maps_semantic_fields_and_source_trace(tmp_path):
         process_info["technology"]["technologyDescriptionAndIncludedProcesses"]["#text"]
         == "Electric arc furnace route"
     )
-    assert data_sources["annualSupplyOrProductionVolume"]["#text"] == "123 kg"
+    assert data_sources["annualSupplyOrProductionVolume"]["#text"] == "123 kg/year"
     assert data_sources["samplingProcedure"]["#text"] == "supplier survey"
     assert "source data set" == data_sources["referenceToDataSource"]["@type"]
     assert (
@@ -304,6 +317,85 @@ def test_ecospold1_import_uses_filename_uuid_and_local_exchange_ids(tmp_path):
         ]
         == f"https://lcdn.tiangong.earth/unitgroups/{unitgroup_id}?version=00.00.001"
     )
+
+
+def test_ecospold1_import_maps_bafu_child_time_and_unavailable_volume(tmp_path):
+    process_uuid = "fffdb676-3d66-307f-a788-339fb4878087"
+    source = tmp_path / f"process_{process_uuid}.xml"
+    source.write_text(
+        """<?xml version="1.0" encoding="UTF-8"?>
+<ecoSpold xmlns="http://www.EcoInvent.org/EcoSpold01">
+  <dataset>
+    <metaInformation>
+      <processInformation>
+        <referenceFunction name="xx Esterquat, coconut oil and palm kernel oil, at plant {RER}" amount="1.0" unit="kg" category="material, obsolete" productionVolume="na" includedProcesses="This module contains material and energy input, production of waste and emissions. No water consumption and no process emissions are included." />
+        <geography location="RER" text="Data based on the European esterquat production" />
+        <technology text="Average technology for the production of esterquat out of palm kernel oil and coconut oil." />
+        <timePeriod dataValidForEntirePeriod="true" text="data of published literature">
+          <startDate>2000-01</startDate>
+          <endDate>2000-12</endDate>
+        </timePeriod>
+      </processInformation>
+      <modellingAndValidation>
+        <representativeness productionVolume="na" samplingProcedure="Common translation rules used." uncertaintyAdjustments="&lt;null&gt;" extrapolations="&lt;null&gt;" />
+      </modellingAndValidation>
+      <sources>
+        <source sourceNumber="172576" firstAuthor="Zah R." year="2007" title="2007 - LCI detergents - Zah" text="Life Cycle Inventories of Detergents." />
+      </sources>
+    </metaInformation>
+    <flowData>
+      <exchange number="1" name="xx Esterquat, coconut oil and palm kernel oil, at plant {RER}" unit="kg" amount="1" outputGroup="0" />
+      <exchange number="2" name="Palm kernel oil, at oil mill {MY}" unit="kg" amount="0.3" inputGroup="4" />
+    </flowData>
+  </dataset>
+</ecoSpold>
+""",
+        encoding="utf-8",
+    )
+
+    output_dir = tmp_path / "out"
+    status = main(
+        [
+            "--input",
+            str(source),
+            "--output-dir",
+            str(output_dir),
+            "--target",
+            "both",
+        ]
+    )
+
+    report = json.loads(
+        (output_dir / "conversion-report.json").read_text(encoding="utf-8")
+    )
+    process = _read_process(output_dir / "tidas", process_uuid)
+    process_info = process["processInformation"]
+    data_sources = process["modellingAndValidation"][
+        "dataSourcesTreatmentAndRepresentativeness"
+    ]
+    name = process_info["dataSetInformation"]["name"]
+
+    assert status == 0
+    assert report["validation"]["tidas"]["ok"] is True
+    assert report["validation"]["ilcd"]["ok"] is True
+    assert process_info["time"]["common:referenceYear"] == 2000
+    assert process_info["time"]["common:dataSetValidUntil"] == 2000
+    assert (
+        process_info["quantitativeReference"]["functionalUnitOrOther"]["#text"]
+        == "1 kg xx Esterquat, coconut oil and palm kernel oil, at plant {RER}"
+    )
+    assert name["treatmentStandardsRoutes"]["#text"] == "at plant"
+    assert name["mixAndLocationTypes"]["#text"] == "RER"
+    assert (
+        data_sources["annualSupplyOrProductionVolume"]["#text"]
+        == "0 kg/year; source production volume unavailable"
+    )
+    assert (
+        data_sources["dataCutOffAndCompletenessPrinciples"]["#text"]
+        == "This module contains material and energy input, production of waste and emissions. No water consumption and no process emissions are included."
+    )
+    assert "uncertaintyAdjustments" not in data_sources
+    assert "useAdviceForDataSet" not in data_sources
 
 
 def test_ecospold1_import_merges_duplicate_flows_across_processes(tmp_path):

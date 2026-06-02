@@ -20,11 +20,12 @@ IMPORT_ID_NAMESPACE = "tidas-tools/import"
 IMPORT_TRACE_NAMESPACE = "https://tiangong.earth/tidas/import-trace/1.0"
 IMPORT_TRACE_MARKER = "TIDAS_IMPORT_TRACE_V1"
 IMPORT_TOOL_CONTACT_NAME = "TianGong LCA import tooling"
-COMPLIANCE_NOT_DECLARED = "Compliance system not declared in source package"
-DATA_SOURCE_NOT_DECLARED = "Source package metadata not declared"
+COMPLIANCE_NOT_DECLARED = "External LCA source compliance context"
+DATA_SOURCE_NOT_DECLARED = "External LCA source metadata"
 SOURCE_VALUE_NOT_DECLARED = "Not declared in source package"
 CONVERTED_EXTERNAL_LCA_DATA = "Converted from external LCA package"
-REVIEW_NOT_DECLARED = "Review details not declared in source package"
+REVIEW_NOT_DECLARED = "No source review record provided"
+ANNUAL_VOLUME_UNAVAILABLE = "source production volume unavailable"
 IMPORT_CONTACT_ID = str(
     uuid.uuid5(uuid.NAMESPACE_URL, f"{IMPORT_ID_NAMESPACE}/contact")
 )
@@ -152,7 +153,12 @@ def _truncate(text: str, max_length: int) -> str:
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    return (
+        datetime.now(timezone.utc)
+        .replace(microsecond=0)
+        .isoformat()
+        .replace("+00:00", "Z")
+    )
 
 
 def _ref(
@@ -653,12 +659,19 @@ def _process_dataset(entity: CanonicalEntity):
             reference_flow = str(idx)
     if reference_flow is None:
         reference_flow = _reference_flow_id(exchange_items)
+    functional_unit = _functional_unit_or_other(
+        exchanges, exchange_items, reference_flow
+    )
     reference_year = _reference_year(entity.raw.get("referenceYear"))
     valid_until = _optional_year(entity.raw.get("dataSetValidUntil"))
     location = _location_code(entity.raw.get("location"))
     data_set_information = {
         "common:UUID": entity.internal_id,
-        "name": _name_parts(entity.name or "Process"),
+        "name": _name_parts(
+            entity.name or "Process",
+            location=location,
+            source_classification=entity.raw.get("sourceClassification"),
+        ),
         "classificationInformation": _default_process_classification(entity.raw),
         "common:generalComment": _ml(
             entity.raw.get("description") or CONVERTED_EXTERNAL_LCA_DATA
@@ -688,6 +701,7 @@ def _process_dataset(entity: CanonicalEntity):
         "quantitativeReference": {
             "@type": "Reference flow(s)",
             "referenceToReferenceFlow": reference_flow,
+            "functionalUnitOrOther": _ml_500(functional_unit),
         },
         "time": time,
         "geography": {
@@ -1158,8 +1172,9 @@ def _data_sources_treatment_and_representativeness(
         "dataCutOffAndCompletenessPrinciples": _ml(
             str(
                 raw.get("dataCutOffAndCompletenessPrinciples")
-                or SOURCE_VALUE_NOT_DECLARED
-            )
+                or raw.get("technologyDescription")
+                or CONVERTED_EXTERNAL_LCA_DATA
+            ).strip()
         )
     }
     if source_refs_payload:
@@ -1168,10 +1183,12 @@ def _data_sources_treatment_and_representativeness(
             if len(source_refs_payload) == 1
             else source_refs_payload
         )
-    annual_supply = _annual_supply_or_production_volume(raw.get("productionVolume"))
-    section["annualSupplyOrProductionVolume"] = annual_supply or _ml(
-        f"0 {SOURCE_VALUE_NOT_DECLARED}"
+    annual_supply = _annual_supply_or_production_volume(
+        raw.get("productionVolume"),
+        fallback_unit=_reference_flow_unit(raw.get("exchanges") or []),
     )
+    if annual_supply:
+        section["annualSupplyOrProductionVolume"] = annual_supply
     if _text(raw.get("dataSelectionAndCombinationPrinciples")):
         section["dataSelectionAndCombinationPrinciples"] = _ml(
             str(raw["dataSelectionAndCombinationPrinciples"]).strip()
@@ -1271,6 +1288,39 @@ def _reference_flow_id(exchange_items: list[dict[str, Any]]) -> str:
     return "1"
 
 
+def _functional_unit_or_other(
+    exchanges: list[dict[str, Any]],
+    exchange_items: list[dict[str, Any]],
+    reference_flow: str,
+) -> str:
+    for index, item in enumerate(exchange_items):
+        if str(item.get("@dataSetInternalID") or "") != str(reference_flow):
+            continue
+        source = exchanges[index] if index < len(exchanges) else {}
+        amount = (
+            item.get("meanAmount")
+            or item.get("resultingAmount")
+            or source.get("amount")
+            or "1"
+        )
+        unit = str(source.get("unitName") or source.get("unit") or "").strip()
+        ref = item.get("referenceToFlowDataSet")
+        name = ""
+        if isinstance(ref, dict):
+            description = ref.get("common:shortDescription")
+            if isinstance(description, dict):
+                name = str(description.get("#text") or "").strip()
+            elif description is not None:
+                name = str(description).strip()
+        parts = [str(amount).strip()]
+        if unit:
+            parts.append(unit)
+        if name:
+            parts.append(name)
+        return " ".join(part for part in parts if part) or "1 reference flow"
+    return "1 reference flow"
+
+
 def _exchange_trace_payload(exchange: dict[str, Any]) -> dict[str, Any] | None:
     source_trace = exchange.get("sourceTrace")
     extra = {
@@ -1300,12 +1350,49 @@ def _exchange_trace_payload(exchange: dict[str, Any]) -> dict[str, Any] | None:
     }
 
 
-def _name_parts(name: str) -> dict[str, Any]:
+def _name_parts(
+    name: str,
+    *,
+    location: str | None = None,
+    source_classification: Any = None,
+) -> dict[str, Any]:
+    route = _route_name_part(name)
+    mix = _mix_location_name_part(name, location, source_classification)
     return {
         "baseName": _ml_500(name),
-        "treatmentStandardsRoutes": _ml_500(SOURCE_VALUE_NOT_DECLARED),
-        "mixAndLocationTypes": _ml_500(SOURCE_VALUE_NOT_DECLARED),
+        "treatmentStandardsRoutes": _ml_500(route),
+        "mixAndLocationTypes": _ml_500(mix),
     }
+
+
+def _route_name_part(name: str) -> str:
+    text = str(name or "").strip()
+    lowered = text.casefold()
+    if " at plant" in lowered:
+        return "at plant"
+    if lowered.startswith("market for ") or " market " in lowered:
+        return "market"
+    if " production" in lowered or "production of " in lowered:
+        return "production"
+    return "source-described route"
+
+
+def _mix_location_name_part(
+    name: str,
+    location: str | None,
+    source_classification: Any,
+) -> str:
+    text = str(name or "")
+    match = re.search(r"\{([^{}]+)\}", text)
+    if match and match.group(1).strip():
+        return match.group(1).strip()
+    if _text(location):
+        return str(location).strip()
+    if isinstance(source_classification, dict):
+        category = source_classification.get("category")
+        if _text(category):
+            return str(category).strip()
+    return "source-described geography"
 
 
 def _flow_type(value: Any) -> str:
@@ -1410,7 +1497,7 @@ def _date_time(value: Any) -> str | None:
     if text.endswith("Z"):
         return text
     if re.search(r"[+-]\d{2}:\d{2}$", text):
-        return text
+        return text.replace("+00:00", "Z")
     return None
 
 
@@ -1572,11 +1659,42 @@ def _percentage(value: Any) -> str | None:
     return text if PERCENT_PATTERN.fullmatch(text) else None
 
 
-def _annual_supply_or_production_volume(value: Any) -> dict[str, str] | None:
+def _annual_supply_or_production_volume(
+    value: Any,
+    *,
+    fallback_unit: str | None = None,
+) -> dict[str, str] | None:
     text = str(value).strip() if value is not None else ""
+    fallback = _unavailable_annual_supply(fallback_unit)
+    if text.casefold() in {"", "<null>", "null", "na", "n/a"}:
+        return fallback
     if not re.fullmatch(r"[+-]?(\d+(\.\d*)?|\.\d+)([Ee][+-]?\d+)?\s+\S.*", text):
-        return None
+        return fallback
+    if not re.search(
+        r"(?:/\s*(?:year|yr|a)\b|\bper\s+(?:year|annum)\b|/\s*年|每年|年度|年供应|年产)",
+        text,
+        flags=re.IGNORECASE,
+    ):
+        text = f"{text}/year"
     return _ml(text[:500])
+
+
+def _unavailable_annual_supply(fallback_unit: str | None = None) -> dict[str, str]:
+    unit = str(fallback_unit or "unit").strip() or "unit"
+    return _ml(f"0 {unit}/year; {ANNUAL_VOLUME_UNAVAILABLE}")
+
+
+def _reference_flow_unit(exchanges: list[dict[str, Any]]) -> str | None:
+    for exchange in exchanges:
+        if not exchange.get("isInput"):
+            unit = exchange.get("unitName") or exchange.get("unit")
+            if _text(unit):
+                return str(unit).strip()
+    for exchange in exchanges:
+        unit = exchange.get("unitName") or exchange.get("unit")
+        if _text(unit):
+            return str(unit).strip()
+    return None
 
 
 def _data_derivation_type(value: Any) -> str | None:
