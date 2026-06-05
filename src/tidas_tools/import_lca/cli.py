@@ -94,6 +94,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional custom mapping/reference data directory.",
     )
     parser.add_argument(
+        "--write-mapping-csv",
+        action="store_true",
+        help=(
+            "Write gzip-compressed expert mapping CSV to "
+            "<output-dir>/mapping.csv.gz. Disabled by default."
+        ),
+    )
+    parser.add_argument(
         "--language",
         default="en",
         help="Default language for generated multilingual text. Defaults to en.",
@@ -112,19 +120,18 @@ def build_parser() -> argparse.ArgumentParser:
             "Use 0 to use all CPU cores. Defaults to 1."
         ),
     )
+    parser.set_defaults(process_bundles=True)
     parser.add_argument(
-        "--process-bundles",
-        action="store_true",
-        help=(
-            "Also write per-process TIDAS dependency bundles under "
-            "<output-dir>/process-bundles."
-        ),
+        "--no-process-bundles",
+        dest="process_bundles",
+        action="store_false",
+        help="Do not write per-process TIDAS dependency bundles.",
     )
     parser.add_argument(
         "--process-bundles-dir",
         help=(
             "Custom directory for per-process TIDAS dependency bundles. "
-            "Implies --process-bundles."
+            "Bundles are enabled by default."
         ),
     )
     parser.add_argument(
@@ -309,14 +316,15 @@ def run_import(args: argparse.Namespace) -> int:
             logging.error("Generated ILCD/eILCD package failed validation")
             return 2
 
-    mapping_csv_path = output_dir / "mapping.csv"
-    report.mapping_csv_rows = write_mapping_csv(
-        store,
-        tidas_dir,
-        mapping_csv_path,
-        source_format=detected.format_id,
-    )
-    report.mapping_csv = str(mapping_csv_path)
+    if args.write_mapping_csv:
+        mapping_csv_path = output_dir / "mapping.csv.gz"
+        report.mapping_csv_rows = write_mapping_csv(
+            store,
+            tidas_dir,
+            mapping_csv_path,
+            source_format=detected.format_id,
+        )
+        report.mapping_csv = str(mapping_csv_path)
     report.write_json(report_path)
     logging.info("Import report written to %s", report_path)
     return _status_for_report(report, args.fail_on_warning)

@@ -47,6 +47,10 @@ def test_openlca_jsonld_minimal_import_writes_valid_tidas_package(tmp_path):
     assert report["summary"]["processes"] == 1
     assert report["summary"]["sources"] == 2
     assert report["validation"]["tidas"]["ok"] is True
+    assert report["target"]["mapping_csv"] is None
+    assert report["target"]["mapping_csv_rows"] is None
+    assert not (output_dir / "mapping.csv").exists()
+    assert not (output_dir / "mapping.csv.gz").exists()
     process_payload = json.loads(
         (output_dir / "tidas" / "processes" / f"{PROCESS_ID}.json").read_text(
             encoding="utf-8"
@@ -92,7 +96,7 @@ def test_openlca_jsonld_minimal_import_writes_valid_tidas_package(tmp_path):
     assert exchange["meanAmount"] == "0.123456789012345678"
 
 
-def test_openlca_jsonld_minimal_import_can_write_process_bundles(tmp_path):
+def test_openlca_jsonld_minimal_import_writes_process_bundles_by_default(tmp_path):
     source_dir = write_minimal_jsonld_fixture(tmp_path)
     output_dir = tmp_path / "out"
 
@@ -104,7 +108,6 @@ def test_openlca_jsonld_minimal_import_can_write_process_bundles(tmp_path):
             str(output_dir),
             "--from-format",
             "openlca-jsonld",
-            "--process-bundles",
         ]
     )
 
@@ -144,6 +147,33 @@ def test_openlca_jsonld_minimal_import_can_write_process_bundles(tmp_path):
 
     validation = validate_package_dir(str(bundle_dir / "tidas"))
     assert validation["ok"] is True
+
+
+def test_openlca_jsonld_minimal_import_can_disable_process_bundles(tmp_path):
+    source_dir = write_minimal_jsonld_fixture(tmp_path)
+    output_dir = tmp_path / "out"
+
+    status = main(
+        [
+            "--input",
+            str(source_dir),
+            "--output-dir",
+            str(output_dir),
+            "--from-format",
+            "openlca-jsonld",
+            "--no-process-bundles",
+        ]
+    )
+
+    report = json.loads(
+        (output_dir / "conversion-report.json").read_text(encoding="utf-8")
+    )
+
+    assert status == 0
+    assert not (output_dir / "process-bundles").exists()
+    assert report["target"]["process_bundles_dir"] is None
+    assert report["target"]["process_bundle_count"] is None
+    assert report["summary"]["process_bundles"] == 0
 
 
 def test_openlca_jsonld_minimal_import_can_write_valid_ilcd(tmp_path):

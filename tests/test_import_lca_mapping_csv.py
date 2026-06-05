@@ -1,4 +1,5 @@
 import csv
+import gzip
 import json
 
 from tidas_tools.import_lca.cli import main
@@ -8,7 +9,7 @@ FLOW_ID = "11111111-1111-4111-8111-111111111111"
 PROCESS_ID = "22222222-2222-4222-8222-222222222222"
 
 
-def test_openlca_jsonld_import_writes_expert_mapping_csv(tmp_path):
+def test_openlca_jsonld_import_writes_expert_mapping_csv_gz(tmp_path):
     source_dir = tmp_path / "jsonld"
     source_dir.mkdir()
     (source_dir / "flow.json").write_text(
@@ -56,6 +57,7 @@ def test_openlca_jsonld_import_writes_expert_mapping_csv(tmp_path):
             str(output_dir),
             "--from-format",
             "openlca-jsonld",
+            "--write-mapping-csv",
         ]
     )
 
@@ -66,7 +68,7 @@ def test_openlca_jsonld_import_writes_expert_mapping_csv(tmp_path):
 
     assert status == 0
     assert rows
-    assert report["target"]["mapping_csv"] == str(output_dir / "mapping.csv")
+    assert report["target"]["mapping_csv"] == str(output_dir / "mapping.csv.gz")
     assert report["target"]["mapping_csv_rows"] == len(rows)
     assert rows[0].keys() == dict.fromkeys(MAPPING_CSV_COLUMNS).keys()
     assert _has_row(
@@ -93,7 +95,7 @@ def test_openlca_jsonld_import_writes_expert_mapping_csv(tmp_path):
     assert _has_row(rows, mapping_status="generated", needs_review="TRUE")
 
 
-def test_ecospold1_import_writes_same_expert_mapping_csv_schema(tmp_path):
+def test_ecospold1_import_writes_same_expert_mapping_csv_gz_schema(tmp_path):
     source = tmp_path / "dataset.xml"
     source.write_text(
         """<?xml version="1.0" encoding="UTF-8"?>
@@ -117,7 +119,15 @@ def test_ecospold1_import_writes_same_expert_mapping_csv_schema(tmp_path):
     )
     output_dir = tmp_path / "out"
 
-    status = main(["--input", str(source), "--output-dir", str(output_dir)])
+    status = main(
+        [
+            "--input",
+            str(source),
+            "--output-dir",
+            str(output_dir),
+            "--write-mapping-csv",
+        ]
+    )
 
     rows = _mapping_rows(output_dir)
 
@@ -141,7 +151,7 @@ def test_ecospold1_import_writes_same_expert_mapping_csv_schema(tmp_path):
     assert _has_row(rows, source_format="ecospold1", mapping_status="placeholder")
 
 
-def test_ecospold2_import_writes_same_expert_mapping_csv_schema(tmp_path):
+def test_ecospold2_import_writes_same_expert_mapping_csv_gz_schema(tmp_path):
     source = tmp_path / "activity.spold"
     source.write_text(
         f"""<?xml version="1.0" encoding="UTF-8"?>
@@ -186,7 +196,15 @@ def test_ecospold2_import_writes_same_expert_mapping_csv_schema(tmp_path):
     )
     output_dir = tmp_path / "out"
 
-    status = main(["--input", str(source), "--output-dir", str(output_dir)])
+    status = main(
+        [
+            "--input",
+            str(source),
+            "--output-dir",
+            str(output_dir),
+            "--write-mapping-csv",
+        ]
+    )
 
     rows = _mapping_rows(output_dir)
 
@@ -215,9 +233,10 @@ def test_ecospold2_import_writes_same_expert_mapping_csv_schema(tmp_path):
 
 
 def _mapping_rows(output_dir):
-    path = output_dir / "mapping.csv"
+    path = output_dir / "mapping.csv.gz"
     assert path.is_file()
-    with path.open(newline="", encoding="utf-8") as stream:
+    assert not (output_dir / "mapping.csv").exists()
+    with gzip.open(path, "rt", newline="", encoding="utf-8") as stream:
         return list(csv.DictReader(stream))
 
 

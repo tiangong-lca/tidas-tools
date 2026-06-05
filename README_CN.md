@@ -109,18 +109,24 @@ tidas-convert --input-dir <eILCD数据目录> --output-dir <TIDAS数据输出目
 
 导入的 JSON-LD Actor 和 Source 会写出为 TIDAS contact 与 source。EcoSpold、SimaPro CSV 和 process XLSX 源数据中的单位会在缺少显式 reference data 时生成对应 unit group 与 flow property，减少全部 flow 落到默认 `Mass`/`kg` 的情况。
 
-当下游 AI/导入 worker 需要按 process 并行处理时，可以使用
-`--process-bundles`。标准 `<输出目录>/tidas` 包会保持原样写出；导入器会额外写出
+当下游 AI/导入 worker 需要按 process 并行处理时，导入器默认写出
+process bundle。标准 `<输出目录>/tidas` 包会保持原样写出；导入器会额外写出
 `<输出目录>/process-bundles/<process_uuid>/` 子目录，其中包含该 process JSON 以及它引用的
 flow、flow property、unit group、contact 和 source JSON 文件。可用
-`--process-bundles-dir <目录>` 覆盖默认 bundle 位置。
+`--process-bundles-dir <目录>` 覆盖默认 bundle 位置，也可用
+`--no-process-bundles` 关闭 bundle 输出。
+
+专家审查用 mapping CSV 默认关闭，因为大型导入会生成很大的逐字段映射文件。
+需要时可用 `--write-mapping-csv` 写出
+`<输出目录>/mapping.csv.gz`。
 
 ### （二）使用示例
 
 ```bash
 tidas-import --input <源文件或目录> --output-dir <输出目录> --detect-only
 tidas-import --input <源文件或目录> --output-dir <输出目录> --target both --validation-jobs 0
-tidas-import --input <源文件或目录> --output-dir <输出目录> --process-bundles
+tidas-import --input <源文件或目录> --output-dir <输出目录> --no-process-bundles
+tidas-import --input <源文件或目录> --output-dir <输出目录> --write-mapping-csv
 ```
 
 ---
