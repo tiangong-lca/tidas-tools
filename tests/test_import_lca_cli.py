@@ -1,5 +1,7 @@
 import json
 
+import pytest
+
 from tidas_tools.import_lca import cli
 from tidas_tools.import_lca.cli import main
 
@@ -26,6 +28,75 @@ def test_cli_detect_only_writes_report(tmp_path):
     assert status == 0
     assert report["source"]["detected_format"] == "simapro-csv"
     assert report["summary"]["errors"] == 0
+
+
+def test_cli_process_bundles_are_enabled_by_default():
+    args = cli.build_parser().parse_args(
+        [
+            "--input",
+            "source.jsonld",
+            "--output-dir",
+            "out",
+        ]
+    )
+
+    assert args.process_bundles is True
+
+
+def test_cli_can_disable_process_bundles():
+    args = cli.build_parser().parse_args(
+        [
+            "--input",
+            "source.jsonld",
+            "--output-dir",
+            "out",
+            "--no-process-bundles",
+        ]
+    )
+
+    assert args.process_bundles is False
+
+
+def test_cli_mapping_csv_is_disabled_by_default():
+    args = cli.build_parser().parse_args(
+        [
+            "--input",
+            "source.jsonld",
+            "--output-dir",
+            "out",
+        ]
+    )
+
+    assert args.write_mapping_csv is False
+
+
+def test_cli_can_enable_mapping_csv():
+    args = cli.build_parser().parse_args(
+        [
+            "--input",
+            "source.jsonld",
+            "--output-dir",
+            "out",
+            "--write-mapping-csv",
+        ]
+    )
+
+    assert args.write_mapping_csv is True
+
+
+def test_cli_rejects_legacy_process_bundles_flag():
+    with pytest.raises(SystemExit) as exc:
+        cli.build_parser().parse_args(
+            [
+                "--input",
+                "source.jsonld",
+                "--output-dir",
+                "out",
+                "--process-bundles",
+            ]
+        )
+
+    assert exc.value.code == 2
 
 
 def test_cli_rejects_zolca_with_report(tmp_path):

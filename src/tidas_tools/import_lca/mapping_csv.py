@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 from dataclasses import dataclass
 from decimal import Decimal
+import gzip
 import json
 from pathlib import Path
 from typing import Any, Iterable
@@ -80,7 +81,7 @@ def write_mapping_csv(
     entities = _entities_by_id(store)
 
     row_count = 0
-    with path.open("w", newline="", encoding="utf-8") as stream:
+    with _open_output(path) as stream:
         writer = csv.DictWriter(stream, fieldnames=MAPPING_CSV_COLUMNS)
         writer.writeheader()
         for index, row in enumerate(
@@ -96,6 +97,12 @@ def write_mapping_csv(
                 | {"row_id": str(index)}
             )
     return row_count
+
+
+def _open_output(path: Path):
+    if path.suffix == ".gz":
+        return gzip.open(path, "wt", newline="", encoding="utf-8")
+    return path.open("w", newline="", encoding="utf-8")
 
 
 def _mapping_rows(
