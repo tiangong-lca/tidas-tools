@@ -50,6 +50,17 @@ SUPPORTED_CATEGORIES = [
     "sources",
     "unitgroups",
 ]
+
+
+@lru_cache
+def ilcd_language_codes() -> frozenset[str]:
+    schema_file_path = pkg_resources.files(schemas) / "tidas_data_types.json"
+    with schema_file_path.open() as schema_file:
+        root_schema = json.load(schema_file)
+    values = root_schema["$defs"]["Languages"]["enum"]
+    return frozenset(str(value) for value in values)
+
+
 ILCD_SCHEMA_BY_ROOT = {
     ("http://lca.jrc.it/ILCD/Wrapper", "ILCD"): ("wrapper", "ILCD_ILCD.xsd"),
     ("http://lca.jrc.it/ILCD/Contact", "contactDataSet"): (
@@ -304,16 +315,21 @@ def validate_localized_text_language_constraints(node, path=""):
         text = node.get("#text")
         location = path or "<root>"
 
+        if isinstance(language, str):
+            if language not in ilcd_language_codes():
+                errors.append(
+                    f"Localized text error at {location}: @xml:lang '{language}' is not an ILCD Languages enumeration value"
+                )
+
         if isinstance(language, str) and isinstance(text, str):
-            normalized_language = language.lower()
             has_chinese = bool(CHINESE_CHARACTER_RE.search(text))
 
-            if normalized_language == "zh" or normalized_language.startswith("zh-"):
+            if language == "zh":
                 if not has_chinese:
                     errors.append(
                         f"Localized text error at {location}: @xml:lang '{language}' must include at least one Chinese character"
                     )
-            elif normalized_language == "en" or normalized_language.startswith("en-"):
+            elif language == "en":
                 if has_chinese:
                     errors.append(
                         f"Localized text error at {location}: @xml:lang '{language}' must not contain Chinese characters"
@@ -333,6 +349,12 @@ def validate_localized_text_language_constraints(node, path=""):
             )
 
     return errors
+
+
+def _localized_text_issue_code(message: str) -> str:
+    if "is not an ILCD Languages enumeration value" in message:
+        return "localized_text_language_not_in_ilcd_enum"
+    return "localized_text_language_error"
 
 
 def _make_issue(
@@ -525,7 +547,7 @@ def _collect_item_issues(
             location = message.split("Localized text error at ", 1)[1].split(":", 1)[0]
         issues.append(
             _make_issue(
-                issue_code="localized_text_language_error",
+                issue_code=_localized_text_issue_code(message),
                 category=category,
                 file_path=file_path,
                 location=location,

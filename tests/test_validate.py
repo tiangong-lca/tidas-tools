@@ -19,6 +19,7 @@ from tidas_tools.validate import (
     _collect_schema_issues,
     _collect_strict_schema_issues,
     category_validate,
+    ilcd_language_codes,
     is_valid_cas_number,
     retrieve_schema,
     validate_ilcd_package_dir,
@@ -248,7 +249,7 @@ def test_annual_supply_volume_multilang_accepts_numeric_text_with_suffix():
             validator.iter_errors(
                 [
                     {"@xml:lang": "en", "#text": "1.23E+4 kg/year"},
-                    {"@xml:lang": "zh-CN", "#text": "123 千克/年"},
+                    {"@xml:lang": "zh", "#text": "123 千克/年"},
                 ]
             )
         )
@@ -296,6 +297,7 @@ def test_category_validate_returns_structured_issues(tmp_path):
         "schema_error",
         "validation_error",
         "localized_text_language_error",
+        "localized_text_language_not_in_ilcd_enum",
         "classification_hierarchy_error",
     }
     assert first_issue["severity"] == "error"
@@ -415,9 +417,7 @@ def test_validate_ilcd_package_dir_skips_packaged_stylesheet_helpers(tmp_path):
 def test_string_multilang_schema_requires_chinese_for_zh():
     validator = build_data_type_validator("StringMultiLang")
 
-    errors = list(
-        validator.iter_errors({"@xml:lang": "zh-CN", "#text": "english only"})
-    )
+    errors = list(validator.iter_errors({"@xml:lang": "zh", "#text": "english only"}))
 
     assert errors
 
@@ -437,13 +437,26 @@ def test_string_multilang_schema_accepts_valid_localized_text():
         validator.iter_errors(
             [
                 {"@xml:lang": "zh", "#text": "中文名称"},
-                {"@xml:lang": "en-US", "#text": "English title"},
+                {"@xml:lang": "en", "#text": "English title"},
+                {"@xml:lang": "de", "#text": "Deutscher Titel"},
                 {"@xml:lang": "fr", "#text": "Bonjour 中文"},
             ]
         )
     )
 
     assert errors == []
+
+
+def test_string_multilang_schema_rejects_non_ilcd_language_code():
+    validator = build_data_type_validator("StringMultiLang")
+
+    errors = list(
+        validator.iter_errors({"@xml:lang": "en-US", "#text": "English title"})
+    )
+
+    assert errors
+    assert "en" in ilcd_language_codes()
+    assert "en-US" not in ilcd_language_codes()
 
 
 def test_common_other_schema_accepts_non_common_extension_elements():
@@ -545,6 +558,6 @@ def test_validate_localized_text_language_constraints_reports_nested_paths():
     errors = validate_localized_text_language_constraints(payload)
 
     assert errors == [
-        "Localized text error at processDataSet/processInformation/dataSetInformation/name/baseName/0: @xml:lang 'zh-CN' must include at least one Chinese character",
+        "Localized text error at processDataSet/processInformation/dataSetInformation/name/baseName/0: @xml:lang 'zh-CN' is not an ILCD Languages enumeration value",
         "Localized text error at processDataSet/processInformation/dataSetInformation/name/baseName/1: @xml:lang 'en' must not contain Chinese characters",
     ]
