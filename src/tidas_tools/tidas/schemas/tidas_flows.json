@@ -499,7 +499,8 @@
                   "enum": [
                     "Elementary flow",
                     "Product flow",
-                    "Waste flow"
+                    "Waste flow",
+                    "Other flow"
                   ]
                 },
                 "common:other": {

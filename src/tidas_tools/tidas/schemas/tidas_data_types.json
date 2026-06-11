@@ -12,7 +12,7 @@
       "description": "Free text with an unlimited length."
     },
     "Languages": {
-      "description": "ILCD 1.1 common Languages enumeration.",
+      "description": "TIDAS Languages enumeration.",
       "type": "string",
       "enum": [
         "aa", "ab", "ae", "af", "ak", "am", "an", "ar", "as", "av",

@@ -19,7 +19,7 @@ from tidas_tools.validate import (
     _collect_schema_issues,
     _collect_strict_schema_issues,
     category_validate,
-    ilcd_language_codes,
+    tidas_language_codes,
     is_valid_cas_number,
     retrieve_schema,
     validate_ilcd_package_dir,
@@ -190,6 +190,56 @@ def test_fastjsonschema_compiles_all_packaged_tidas_category_schemas():
         assert _build_tidas_validator(category).fast_validator is not None
 
 
+def test_tidas_lciamethod_and_flow_enums_match_tidas_contract():
+    lciamethods = load_tidas_schema("tidas_lciamethods.json")
+    flows = load_tidas_schema("tidas_flows.json")
+
+    lcia_dataset = lciamethods["properties"]["LCIAMethodDataSet"]["properties"]
+    data_set_info = lcia_dataset["LCIAMethodInformation"]["properties"][
+        "dataSetInformation"
+    ]["properties"]
+    assert "Man-made environment" in data_set_info["areaOfProtection"]["enum"]
+
+    flow_type_enum = flows["properties"]["flowDataSet"]["properties"][
+        "modellingAndValidation"
+    ]["properties"]["LCIMethod"]["properties"]["typeOfDataSet"]["enum"]
+    assert "Other flow" in flow_type_enum
+
+    factor_schema = lcia_dataset["characterisationFactors"]["properties"]["factor"]
+    uncertainty_enums = [
+        factor_schema["anyOf"][0]["properties"]["uncertaintyDistributionType"]["enum"],
+        factor_schema["anyOf"][1]["items"]["properties"]["uncertaintyType"]["enum"],
+    ]
+    for uncertainty_enum in uncertainty_enums:
+        assert "normal" in uncertainty_enum
+        assert "normalisation" not in uncertainty_enum
+
+    review_schema = lcia_dataset["modellingAndValidation"]["properties"]["validation"][
+        "properties"
+    ]["review"]["properties"]
+    scope_options = review_schema["common:scope"]["anyOf"]
+    method_enums = [
+        scope_options[0]["properties"]["common:method"]["anyOf"][0]["properties"][
+            "@name"
+        ]["enum"],
+        scope_options[0]["properties"]["common:method"]["anyOf"][1]["items"][
+            "properties"
+        ]["@name"]["enum"],
+        scope_options[1]["items"]["properties"]["common:method"]["anyOf"][0][
+            "properties"
+        ]["@name"]["enum"],
+        scope_options[1]["items"]["properties"]["common:method"]["anyOf"][1]["items"][
+            "properties"
+        ]["@name"]["enum"],
+    ]
+    for method_enum in method_enums:
+        assert "Compliance with legal limits" in method_enum
+        assert all(
+            not value.startswith("Compliance with legal limitsRegulated")
+            for value in method_enum
+        )
+
+
 def test_fastjsonschema_schema_failure_falls_back_to_strict_error_collection():
     validator = _build_tidas_validator("sources")
     payload = {}
@@ -297,7 +347,7 @@ def test_category_validate_returns_structured_issues(tmp_path):
         "schema_error",
         "validation_error",
         "localized_text_language_error",
-        "localized_text_language_not_in_ilcd_enum",
+        "localized_text_language_not_in_tidas_enum",
         "classification_hierarchy_error",
     }
     assert first_issue["severity"] == "error"
@@ -447,7 +497,7 @@ def test_string_multilang_schema_accepts_valid_localized_text():
     assert errors == []
 
 
-def test_string_multilang_schema_rejects_non_ilcd_language_code():
+def test_string_multilang_schema_rejects_non_tidas_language_code():
     validator = build_data_type_validator("StringMultiLang")
 
     errors = list(
@@ -455,8 +505,8 @@ def test_string_multilang_schema_rejects_non_ilcd_language_code():
     )
 
     assert errors
-    assert "en" in ilcd_language_codes()
-    assert "en-US" not in ilcd_language_codes()
+    assert "en" in tidas_language_codes()
+    assert "en-US" not in tidas_language_codes()
 
 
 def test_common_other_schema_accepts_non_common_extension_elements():
@@ -558,6 +608,6 @@ def test_validate_localized_text_language_constraints_reports_nested_paths():
     errors = validate_localized_text_language_constraints(payload)
 
     assert errors == [
-        "Localized text error at processDataSet/processInformation/dataSetInformation/name/baseName/0: @xml:lang 'zh-CN' is not an ILCD Languages enumeration value",
+        "Localized text error at processDataSet/processInformation/dataSetInformation/name/baseName/0: @xml:lang 'zh-CN' is not a TIDAS Languages enumeration value",
         "Localized text error at processDataSet/processInformation/dataSetInformation/name/baseName/1: @xml:lang 'en' must not contain Chinese characters",
     ]

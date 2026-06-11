@@ -53,7 +53,7 @@ SUPPORTED_CATEGORIES = [
 
 
 @lru_cache
-def ilcd_language_codes() -> frozenset[str]:
+def tidas_language_codes() -> frozenset[str]:
     schema_file_path = pkg_resources.files(schemas) / "tidas_data_types.json"
     with schema_file_path.open() as schema_file:
         root_schema = json.load(schema_file)
@@ -316,9 +316,9 @@ def validate_localized_text_language_constraints(node, path=""):
         location = path or "<root>"
 
         if isinstance(language, str):
-            if language not in ilcd_language_codes():
+            if language not in tidas_language_codes():
                 errors.append(
-                    f"Localized text error at {location}: @xml:lang '{language}' is not an ILCD Languages enumeration value"
+                    f"Localized text error at {location}: @xml:lang '{language}' is not a TIDAS Languages enumeration value"
                 )
 
         if isinstance(language, str) and isinstance(text, str):
@@ -352,8 +352,8 @@ def validate_localized_text_language_constraints(node, path=""):
 
 
 def _localized_text_issue_code(message: str) -> str:
-    if "is not an ILCD Languages enumeration value" in message:
-        return "localized_text_language_not_in_ilcd_enum"
+    if "is not a TIDAS Languages enumeration value" in message:
+        return "localized_text_language_not_in_tidas_enum"
     return "localized_text_language_error"
 
 
