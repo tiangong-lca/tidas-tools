@@ -1,6 +1,10 @@
+from decimal import Decimal
 import json
 
+from tidas_tools.import_lca.adapters.openlca_jsonld import OpenLcaJsonLdAdapter
 from tidas_tools.import_lca.cli import main
+from tidas_tools.import_lca.report import ConversionReport
+from tidas_tools.import_lca.store import MemoryCanonicalStore
 from tidas_tools.validate import validate_package_dir
 
 FLOW_ID = "11111111-1111-4111-8111-111111111111"
@@ -12,6 +16,15 @@ SOURCE_ID = "66666666-6666-4666-8666-666666666666"
 PROVIDER_PROCESS_ID = "77777777-7777-4777-8777-777777777777"
 CONSUMER_PROCESS_ID = "88888888-8888-4888-8888-888888888888"
 LOCATION_ID = "99999999-9999-4999-8999-999999999999"
+MASS_UNIT_GROUP_ID = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+ENERGY_UNIT_GROUP_ID = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"
+MASS_FLOW_PROPERTY_ID = "cccccccc-cccc-4ccc-8ccc-cccccccccccc"
+ENERGY_FLOW_PROPERTY_ID = "dddddddd-dddd-4ddd-8ddd-dddddddddddd"
+KG_UNIT_ID = "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee"
+G_UNIT_ID = "ffffffff-ffff-4fff-8fff-ffffffffffff"
+MJ_UNIT_ID = "abababab-abab-4bab-8bab-abababababab"
+FUEL_FLOW_ID = "12121212-1212-4121-8121-121212121212"
+UNKNOWN_UNIT_ID = "34343434-3434-4343-8343-343434343434"
 
 
 def test_openlca_jsonld_minimal_import_writes_valid_tidas_package(tmp_path):
@@ -260,6 +273,440 @@ def test_openlca_jsonld_provider_links_create_valid_lifecycle_model(tmp_path):
     trace = exchange["common:other"]["tidasimport:sourceTrace"]
     assert trace["@marker"] == "TIDAS_IMPORT_TRACE_V1"
     assert trace["payload"]["exchangeMetadata"]["providerRefId"] == PROVIDER_PROCESS_ID
+
+
+def test_openlca_jsonld_normalizes_same_property_exchange_units(tmp_path):
+    source_dir = write_unit_normalization_jsonld_fixture(tmp_path)
+    output_dir = tmp_path / "out"
+
+    status = main(
+        [
+            "--input",
+            str(source_dir),
+            "--output-dir",
+            str(output_dir),
+            "--from-format",
+            "openlca-jsonld",
+        ]
+    )
+
+    assert status == 0
+    process_payload = json.loads(
+        (output_dir / "tidas" / "processes" / f"{PROCESS_ID}.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    exchanges = process_payload["processDataSet"]["exchanges"]["exchange"]
+    gram_exchange = exchanges[1]
+    assert Decimal(gram_exchange["meanAmount"]) == Decimal("0.5")
+    assert Decimal(gram_exchange["resultingAmount"]) == Decimal("0.5")
+    metadata = gram_exchange["common:other"]["tidasimport:sourceTrace"]["payload"][
+        "exchangeMetadata"
+    ]
+    assert metadata["unitId"] == KG_UNIT_ID
+    assert metadata["unitName"] == "kg"
+
+    report = json.loads(
+        (output_dir / "conversion-report.json").read_text(encoding="utf-8")
+    )
+    issue = next(
+        issue
+        for issue in report["issues"]
+        if issue["code"] == "exchange_amounts_normalized_to_reference_units"
+    )
+    assert issue["severity"] == "warning"
+    assert issue["context"]["normalized_same_property"] == 1
+    assert issue["context"]["already_reference"] == 1
+
+    store, _ = read_canonical_store(source_dir)
+    exchange = store.get("processes", PROCESS_ID).raw["exchanges"][1]
+    assert exchange["amount"] == Decimal("0.5")
+    assert exchange["sourceAmount"] == 500
+    assert exchange["sourceUnitId"] == G_UNIT_ID
+    assert exchange["sourceUnitName"] == "g"
+    assert exchange["unitId"] == KG_UNIT_ID
+    assert exchange["unitName"] == "kg"
+    normalization = exchange["amountNormalization"]
+    assert Decimal(normalization["factor"]) == Decimal("0.001")
+    assert normalization["sourceUnit"] == "g"
+    assert normalization["targetUnit"] == "kg"
+    assert normalization["crossProperty"] is False
+
+
+def test_openlca_jsonld_normalizes_cross_property_exchange_to_reference_property(
+    tmp_path,
+):
+    source_dir = write_unit_normalization_jsonld_fixture(tmp_path)
+
+    store, report = read_canonical_store(source_dir)
+
+    exchange = store.get("processes", PROCESS_ID).raw["exchanges"][2]
+    assert exchange["amount"] == Decimal("2")
+    assert exchange["sourceAmount"] == 100
+    assert exchange["unitId"] == KG_UNIT_ID
+    assert exchange["unitName"] == "kg"
+    assert exchange["sourceUnitId"] == MJ_UNIT_ID
+    assert exchange["sourceUnitName"] == "MJ"
+    assert exchange["flowPropertyRefId"] == MASS_FLOW_PROPERTY_ID
+    assert exchange["flowPropertyName"] == "Mass"
+    assert exchange["sourceFlowPropertyRefId"] == ENERGY_FLOW_PROPERTY_ID
+    assert exchange["sourceFlowPropertyName"] == "Energy"
+    normalization = exchange["amountNormalization"]
+    assert normalization["crossProperty"] is True
+    assert Decimal(normalization["factor"]) == Decimal("0.02")
+    assert normalization["sourceUnit"] == "MJ"
+    assert normalization["targetUnit"] == "kg"
+
+    issue = next(
+        issue
+        for issue in report.issues
+        if issue.code == "exchange_amounts_normalized_to_reference_units"
+    )
+    assert issue.context["normalized_cross_property"] == 1
+
+
+def test_openlca_jsonld_leaves_unknown_unit_exchange_unresolved(tmp_path):
+    source_dir = write_unit_normalization_jsonld_fixture(tmp_path)
+
+    store, report = read_canonical_store(source_dir)
+
+    exchange = store.get("processes", PROCESS_ID).raw["exchanges"][3]
+    assert exchange["amount"] == 7
+    assert "amountNormalization" not in exchange
+    assert "sourceAmount" not in exchange
+    assert exchange["unitId"] == UNKNOWN_UNIT_ID
+
+    issue = next(
+        issue
+        for issue in report.issues
+        if issue.code == "exchange_amounts_normalized_to_reference_units"
+    )
+    assert issue.context["unresolved"] == {"unknown_unit": 1}
+    sample = issue.context["unresolved_samples"][0]
+    assert sample["process_id"] == PROCESS_ID
+    assert sample["internalId"] == 4
+    assert sample["unitId"] == UNKNOWN_UNIT_ID
+    assert sample["reason"] == "unknown_unit"
+
+    unresolved_issue = next(
+        issue
+        for issue in report.issues
+        if issue.code == "exchange_unit_normalization_unresolved"
+    )
+    assert unresolved_issue.severity == "warning"
+    assert unresolved_issue.context["unresolved_total"] == 1
+    assert unresolved_issue.context["unresolved"] == {"unknown_unit": 1}
+
+
+def test_openlca_jsonld_scales_uncertainty_bounds_with_unit_normalization(tmp_path):
+    source_dir = write_unit_normalization_jsonld_fixture(tmp_path)
+
+    store, _ = read_canonical_store(source_dir)
+
+    exchange = store.get("processes", PROCESS_ID).raw["exchanges"][1]
+    assert exchange["minimumAmount"] == Decimal("0.4")
+    assert exchange["maximumAmount"] == Decimal("0.6")
+    assert exchange["uncertaintyDistributionType"] == "triangular"
+
+
+def test_openlca_jsonld_lifecycle_model_uses_normalized_exchange_amounts(tmp_path):
+    source_dir = write_unit_normalization_provider_jsonld_fixture(tmp_path)
+
+    store, _ = read_canonical_store(source_dir)
+
+    models = list(store.iter_type("lifecyclemodels"))
+    assert len(models) == 1
+    connections = models[0].raw["connections"]
+    assert len(connections) == 1
+    connection = connections[0]
+    assert connection["providerProcessId"] == PROVIDER_PROCESS_ID
+    assert connection["consumerProcessId"] == CONSUMER_PROCESS_ID
+    assert connection["amount"] == Decimal("0.5")
+
+
+def read_canonical_store(source_dir):
+    store = MemoryCanonicalStore()
+    report = ConversionReport(source_path=str(source_dir))
+    OpenLcaJsonLdAdapter().read(source_dir, store, report)
+    return store, report
+
+
+def write_unit_normalization_jsonld_fixture(tmp_path):
+    source_dir = tmp_path / "jsonld"
+    source_dir.mkdir()
+    (source_dir / "context.jsonld").write_text("{}", encoding="utf-8")
+    (source_dir / "unit_group_mass.json").write_text(
+        json.dumps(
+            {
+                "@type": "UnitGroup",
+                "@id": MASS_UNIT_GROUP_ID,
+                "name": "Units of mass",
+                "units": [
+                    {
+                        "@id": KG_UNIT_ID,
+                        "name": "kg",
+                        "conversionFactor": 1.0,
+                        "referenceUnit": True,
+                    },
+                    {"@id": G_UNIT_ID, "name": "g", "conversionFactor": 0.001},
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (source_dir / "unit_group_energy.json").write_text(
+        json.dumps(
+            {
+                "@type": "UnitGroup",
+                "@id": ENERGY_UNIT_GROUP_ID,
+                "name": "Units of energy",
+                "units": [
+                    {
+                        "@id": MJ_UNIT_ID,
+                        "name": "MJ",
+                        "conversionFactor": 1.0,
+                        "referenceUnit": True,
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (source_dir / "flow_property_mass.json").write_text(
+        json.dumps(
+            {
+                "@type": "FlowProperty",
+                "@id": MASS_FLOW_PROPERTY_ID,
+                "name": "Mass",
+                "unitGroup": {"@id": MASS_UNIT_GROUP_ID, "name": "Units of mass"},
+            }
+        ),
+        encoding="utf-8",
+    )
+    (source_dir / "flow_property_energy.json").write_text(
+        json.dumps(
+            {
+                "@type": "FlowProperty",
+                "@id": ENERGY_FLOW_PROPERTY_ID,
+                "name": "Energy",
+                "unitGroup": {"@id": ENERGY_UNIT_GROUP_ID, "name": "Units of energy"},
+            }
+        ),
+        encoding="utf-8",
+    )
+    (source_dir / "flow_steel.json").write_text(
+        json.dumps(
+            {
+                "@type": "Flow",
+                "@id": FLOW_ID,
+                "name": "Steel product",
+                "flowType": "PRODUCT_FLOW",
+                "flowProperties": [
+                    {
+                        "flowProperty": {
+                            "@id": MASS_FLOW_PROPERTY_ID,
+                            "name": "Mass",
+                        },
+                        "conversionFactor": 1.0,
+                        "isRefFlowProperty": True,
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (source_dir / "flow_fuel.json").write_text(
+        json.dumps(
+            {
+                "@type": "Flow",
+                "@id": FUEL_FLOW_ID,
+                "name": "Fuel",
+                "flowType": "PRODUCT_FLOW",
+                "flowProperties": [
+                    {
+                        "flowProperty": {
+                            "@id": MASS_FLOW_PROPERTY_ID,
+                            "name": "Mass",
+                        },
+                        "conversionFactor": 1.0,
+                        "isRefFlowProperty": True,
+                    },
+                    {
+                        "flowProperty": {
+                            "@id": ENERGY_FLOW_PROPERTY_ID,
+                            "name": "Energy",
+                        },
+                        "conversionFactor": 50.0,
+                    },
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (source_dir / "process.json").write_text(
+        json.dumps(
+            {
+                "@type": "Process",
+                "@id": PROCESS_ID,
+                "name": "Steel production",
+                "description": "Unit normalization fixture",
+                "exchanges": [
+                    {
+                        "internalId": 1,
+                        "flow": {
+                            "@id": FLOW_ID,
+                            "name": "Steel product",
+                            "refUnit": "kg",
+                        },
+                        "amount": 1.0,
+                        "isInput": False,
+                        "isQuantitativeReference": True,
+                        "unit": {"@id": KG_UNIT_ID, "name": "kg"},
+                        "flowProperty": {
+                            "@id": MASS_FLOW_PROPERTY_ID,
+                            "name": "Mass",
+                        },
+                    },
+                    {
+                        "internalId": 2,
+                        "flow": {
+                            "@id": FLOW_ID,
+                            "name": "Steel product",
+                            "refUnit": "kg",
+                        },
+                        "amount": 500,
+                        "isInput": True,
+                        "unit": {"@id": G_UNIT_ID, "name": "g"},
+                        "flowProperty": {
+                            "@id": MASS_FLOW_PROPERTY_ID,
+                            "name": "Mass",
+                        },
+                        "uncertainty": {
+                            "@type": "Uncertainty",
+                            "distributionType": "TRIANGLE_DISTRIBUTION",
+                            "minimum": 400,
+                            "maximum": 600,
+                        },
+                    },
+                    {
+                        "internalId": 3,
+                        "flow": {
+                            "@id": FUEL_FLOW_ID,
+                            "name": "Fuel",
+                            "refUnit": "kg",
+                        },
+                        "amount": 100,
+                        "isInput": True,
+                        "unit": {"@id": MJ_UNIT_ID, "name": "MJ"},
+                        "flowProperty": {
+                            "@id": ENERGY_FLOW_PROPERTY_ID,
+                            "name": "Energy",
+                        },
+                    },
+                    {
+                        "internalId": 4,
+                        "flow": {
+                            "@id": FLOW_ID,
+                            "name": "Steel product",
+                            "refUnit": "kg",
+                        },
+                        "amount": 7,
+                        "isInput": True,
+                        "unit": {"@id": UNKNOWN_UNIT_ID, "name": "bogus"},
+                        "flowProperty": {
+                            "@id": MASS_FLOW_PROPERTY_ID,
+                            "name": "Mass",
+                        },
+                    },
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    return source_dir
+
+
+def write_unit_normalization_provider_jsonld_fixture(tmp_path):
+    source_dir = write_unit_normalization_jsonld_fixture(tmp_path)
+    (source_dir / "provider_process.json").write_text(
+        json.dumps(
+            {
+                "@type": "Process",
+                "@id": PROVIDER_PROCESS_ID,
+                "name": "Steel billet production",
+                "processType": "UNIT_PROCESS",
+                "exchanges": [
+                    {
+                        "internalId": 1,
+                        "flow": {
+                            "@id": FLOW_ID,
+                            "name": "Steel product",
+                            "refUnit": "kg",
+                        },
+                        "amount": 1.0,
+                        "isInput": False,
+                        "isQuantitativeReference": True,
+                        "unit": {"@id": KG_UNIT_ID, "name": "kg"},
+                        "flowProperty": {
+                            "@id": MASS_FLOW_PROPERTY_ID,
+                            "name": "Mass",
+                        },
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (source_dir / "consumer_process.json").write_text(
+        json.dumps(
+            {
+                "@type": "Process",
+                "@id": CONSUMER_PROCESS_ID,
+                "name": "Steel sheet production",
+                "processType": "UNIT_PROCESS",
+                "exchanges": [
+                    {
+                        "internalId": 1,
+                        "flow": {
+                            "@id": FLOW_ID,
+                            "name": "Steel product",
+                            "refUnit": "kg",
+                        },
+                        "amount": 500,
+                        "isInput": True,
+                        "unit": {"@id": G_UNIT_ID, "name": "g"},
+                        "flowProperty": {
+                            "@id": MASS_FLOW_PROPERTY_ID,
+                            "name": "Mass",
+                        },
+                        "defaultProvider": {
+                            "@type": "Process",
+                            "@id": PROVIDER_PROCESS_ID,
+                            "name": "Steel billet production",
+                        },
+                    },
+                    {
+                        "internalId": 2,
+                        "flow": {
+                            "@id": FUEL_FLOW_ID,
+                            "name": "Fuel",
+                            "refUnit": "kg",
+                        },
+                        "amount": 1.0,
+                        "isInput": False,
+                        "isQuantitativeReference": True,
+                        "unit": {"@id": KG_UNIT_ID, "name": "kg"},
+                        "flowProperty": {
+                            "@id": MASS_FLOW_PROPERTY_ID,
+                            "name": "Mass",
+                        },
+                    },
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    return source_dir
 
 
 def write_minimal_jsonld_fixture(tmp_path):

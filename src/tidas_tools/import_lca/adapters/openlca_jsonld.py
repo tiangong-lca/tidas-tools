@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 import re
 from typing import Any, Iterable
@@ -47,6 +47,8 @@ class OpenLcaJsonLdAdapter(SourceAdapter):
         if unsupported_items:
             store.add(_auxiliary_source_entity(unsupported_items))
             count += 1
+
+        _normalize_exchange_amounts(store, report)
 
         lifecycle_model = _provider_graph_lifecycle_model(store, source)
         if lifecycle_model is not None:
@@ -310,6 +312,438 @@ def _process_exchanges(
             }
         )
     return result
+
+
+_UNRESOLVED_SAMPLE_LIMIT = 20
+_REF_UNIT_MISMATCH_SAMPLE_LIMIT = 5
+
+
+def _normalize_exchange_amounts(
+    store: MemoryCanonicalStore, report: ConversionReport
+) -> None:
+    """Rescale exchange amounts to each flow's reference flow property unit.
+
+    openLCA exchanges may be stated in any unit of any flow property defined
+    for the flow (e.g. g for a kg-referenced flow, or MJ for a mass-referenced
+    fuel). TIDAS amounts are interpreted in the flow's reference flow property
+    reference unit, so amounts are converted with
+    ``amount * unit_cf * f_ref / f_property`` where ``unit_cf`` is the
+    exchange unit's conversion factor inside its unit group and ``f_*`` are
+    the flow's flow property conversion factors. All arithmetic stays in
+    :class:`~decimal.Decimal` without rounding.
+    """
+    unit_index, group_ref, group_alias = _unit_group_indexes(store)
+    fp_group, group_properties = _flow_property_indexes(store, group_alias)
+    flow_index = _flow_factor_index(store)
+
+    scanned = 0
+    counts = {
+        "normalized_same_property": 0,
+        "normalized_cross_property": 0,
+        "already_reference": 0,
+        "no_unit_info": 0,
+        "formula_with_scaled_amount": 0,
+        "ref_unit_name_mismatch": 0,
+    }
+    unresolved: dict[str, int] = {}
+    unresolved_samples: list[dict[str, Any]] = []
+    mismatch_samples: list[dict[str, Any]] = []
+
+    for entity in store.iter_type("processes"):
+        for exchange in entity.raw.get("exchanges") or []:
+            if not isinstance(exchange, dict):
+                continue
+            scanned += 1
+            result = _normalize_exchange(
+                exchange,
+                unit_index=unit_index,
+                group_ref=group_ref,
+                fp_group=fp_group,
+                group_properties=group_properties,
+                flow_index=flow_index,
+            )
+            status = result["status"]
+            if status == "unresolved":
+                reason = result["reason"]
+                unresolved[reason] = unresolved.get(reason, 0) + 1
+                if len(unresolved_samples) < _UNRESOLVED_SAMPLE_LIMIT:
+                    unresolved_samples.append(
+                        {
+                            "process_id": entity.internal_id,
+                            "internalId": exchange.get("internalId"),
+                            "unitId": exchange.get("unitId"),
+                            "unitName": exchange.get("unitName"),
+                            "reason": reason,
+                        }
+                    )
+                continue
+            if status == "normalized":
+                counts[
+                    (
+                        "normalized_cross_property"
+                        if result["cross_property"]
+                        else "normalized_same_property"
+                    )
+                ] += 1
+                if result["has_formula"]:
+                    counts["formula_with_scaled_amount"] += 1
+                if result["ref_unit_mismatch"] is not None:
+                    counts["ref_unit_name_mismatch"] += 1
+                    if len(mismatch_samples) < _REF_UNIT_MISMATCH_SAMPLE_LIMIT:
+                        mismatch_samples.append(
+                            {
+                                "process_id": entity.internal_id,
+                                "internalId": exchange.get("internalId"),
+                                "flowRefUnit": result["ref_unit_mismatch"],
+                                "targetUnit": exchange.get("unitName"),
+                            }
+                        )
+                continue
+            counts[status] += 1
+
+    mutated = counts["normalized_same_property"] + counts["normalized_cross_property"]
+    unresolved_total = sum(unresolved.values())
+    if scanned == 0 or (mutated == 0 and unresolved_total == 0):
+        return
+
+    context: dict[str, Any] = {
+        "scanned": scanned,
+        "normalized_same_property": counts["normalized_same_property"],
+        "normalized_cross_property": counts["normalized_cross_property"],
+        "already_reference": counts["already_reference"],
+        "no_unit_info": counts["no_unit_info"],
+        "unresolved": dict(sorted(unresolved.items())),
+        "unresolved_samples": unresolved_samples,
+        "formula_with_scaled_amount": counts["formula_with_scaled_amount"],
+        "ref_unit_name_mismatch": counts["ref_unit_name_mismatch"],
+    }
+    if mismatch_samples:
+        context["ref_unit_name_mismatch_samples"] = mismatch_samples
+    report.add_issue(
+        severity="warning",
+        code="exchange_amounts_normalized_to_reference_units",
+        message=(
+            "Normalized exchange amounts stated in non-reference units to "
+            "each flow's reference flow property reference unit. Original "
+            "values are preserved on the exchange as sourceAmount/sourceUnit* "
+            "fields and in sourceTrace."
+        ),
+        context=context,
+    )
+    if unresolved_total:
+        report.add_issue(
+            severity="warning",
+            code="exchange_unit_normalization_unresolved",
+            message=(
+                "Some exchange amounts could not be normalized to reference "
+                "units and were left unchanged."
+            ),
+            context={
+                "scanned": scanned,
+                "unresolved_total": unresolved_total,
+                "unresolved": dict(sorted(unresolved.items())),
+                "unresolved_samples": unresolved_samples,
+            },
+        )
+
+
+def _normalize_exchange(
+    exchange: dict[str, Any],
+    *,
+    unit_index: dict[str, dict[str, Any]],
+    group_ref: dict[str, dict[str, Any]],
+    fp_group: dict[str, str],
+    group_properties: dict[str, list[str]],
+    flow_index: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    unit_id = exchange.get("unitId")
+    if not unit_id:
+        return {"status": "no_unit_info"}
+    unit_record = unit_index.get(str(unit_id))
+    if unit_record is None:
+        return {"status": "unresolved", "reason": "unknown_unit"}
+    unit_cf = unit_record["cf"]
+    unit_group_id = unit_record["group_id"]
+
+    flow_ref_id = exchange.get("flowRefId")
+    flow_record = flow_index.get(str(flow_ref_id)) if flow_ref_id else None
+
+    property_id = exchange.get("flowPropertyRefId")
+    if property_id:
+        property_id = str(property_id)
+        property_group_id = fp_group.get(property_id)
+        if property_group_id is None:
+            return {"status": "unresolved", "reason": "unknown_flow_property"}
+    else:
+        candidates = group_properties.get(unit_group_id, [])
+        if flow_record is not None:
+            candidates = [
+                candidate
+                for candidate in candidates
+                if candidate in flow_record["factors"]
+            ]
+        if len(candidates) != 1:
+            return {"status": "unresolved", "reason": "unknown_flow_property"}
+        property_id = candidates[0]
+        property_group_id = unit_group_id
+    if property_group_id != unit_group_id:
+        return {"status": "unresolved", "reason": "unit_not_in_property_group"}
+
+    flow_ref = exchange.get("flow") if isinstance(exchange.get("flow"), dict) else {}
+    declared_ref_unit = flow_ref.get("refUnit")
+    declared_ref_unit = (
+        str(declared_ref_unit).strip() if _text(declared_ref_unit) else None
+    )
+
+    target_property: tuple[str, str | None] | None = None
+    if flow_record is None:
+        # Dangling flow reference: only the same-property case is safe, and
+        # only when the exchange's own flow Ref declares the same reference
+        # unit as the property's unit group reference unit.
+        group_info = group_ref.get(unit_group_id) or {}
+        group_ref_unit_name = group_info.get("ref_unit_name")
+        if (
+            not declared_ref_unit
+            or not group_ref_unit_name
+            or declared_ref_unit != str(group_ref_unit_name).strip()
+        ):
+            return {"status": "unresolved", "reason": "missing_flow_factors"}
+        factor_property = factor_ref = Decimal(1)
+        target_group_id = unit_group_id
+        cross_property = False
+    else:
+        factor_property = flow_record["factors"].get(property_id)
+        if factor_property is None:
+            return {"status": "unresolved", "reason": "missing_flow_factors"}
+        ref_fp_id = flow_record["ref_fp_id"]
+        factor_ref = flow_record["factors"].get(ref_fp_id)
+        if factor_ref is None:
+            return {"status": "unresolved", "reason": "missing_flow_factors"}
+        if factor_property == 0 or factor_ref == 0:
+            return {"status": "unresolved", "reason": "zero_factor"}
+        cross_property = ref_fp_id != property_id
+        if cross_property:
+            target_group_id = fp_group.get(ref_fp_id)
+            if target_group_id is None:
+                return {"status": "unresolved", "reason": "unknown_flow_property"}
+            target_property = (ref_fp_id, flow_record["ref_fp_name"])
+        else:
+            target_group_id = unit_group_id
+
+    total = (unit_cf * factor_ref) / factor_property
+    if total == 1:
+        return {"status": "already_reference"}
+
+    group_info = group_ref.get(target_group_id) or {}
+    target_unit_name = group_info.get("ref_unit_name")
+    if not target_unit_name:
+        return {"status": "unresolved", "reason": "missing_reference_unit"}
+
+    amount = _decimal_value(exchange.get("amount", 1))
+    if amount is None:
+        return {"status": "unresolved", "reason": "non_numeric_amount"}
+
+    source_unit_name = exchange.get("unitName") or unit_record.get("unit_name")
+    for key, source_key in (
+        ("amount", "sourceAmount"),
+        ("unitId", "sourceUnitId"),
+        ("unitName", "sourceUnitName"),
+        ("flowPropertyRefId", "sourceFlowPropertyRefId"),
+        ("flowPropertyName", "sourceFlowPropertyName"),
+    ):
+        if key in exchange:
+            exchange[source_key] = exchange[key]
+
+    exchange["amount"] = (amount * unit_cf * factor_ref) / factor_property
+    target_unit_id = group_info.get("ref_unit_id")
+    if target_unit_id:
+        exchange["unitId"] = target_unit_id
+    else:
+        exchange.pop("unitId", None)
+    exchange["unitName"] = target_unit_name
+    if target_property is not None:
+        target_fp_id, target_fp_name = target_property
+        exchange["flowPropertyRefId"] = target_fp_id
+        if target_fp_name:
+            exchange["flowPropertyName"] = target_fp_name
+        else:
+            exchange.pop("flowPropertyName", None)
+    for bound_key in ("minimumAmount", "maximumAmount"):
+        bound = exchange.get(bound_key)
+        if isinstance(bound, bool) or not isinstance(bound, (int, float, Decimal)):
+            continue
+        bound_value = _decimal_value(bound)
+        if bound_value is None:
+            continue
+        exchange[bound_key] = (bound_value * unit_cf * factor_ref) / factor_property
+
+    normalization: dict[str, Any] = {
+        "factor": str(total),
+        "sourceUnit": source_unit_name,
+        "targetUnit": target_unit_name,
+        "crossProperty": cross_property,
+    }
+    has_formula = exchange.get("amountFormula") is not None
+    if has_formula:
+        normalization["amountFormulaNotRescaled"] = True
+    exchange["amountNormalization"] = normalization
+
+    mismatch = bool(
+        declared_ref_unit and declared_ref_unit != str(target_unit_name).strip()
+    )
+    return {
+        "status": "normalized",
+        "cross_property": cross_property,
+        "has_formula": has_formula,
+        "ref_unit_mismatch": declared_ref_unit if mismatch else None,
+    }
+
+
+def _unit_group_indexes(
+    store: MemoryCanonicalStore,
+) -> tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]], dict[str, str]]:
+    unit_index: dict[str, dict[str, Any]] = {}
+    group_ref: dict[str, dict[str, Any]] = {}
+    group_alias: dict[str, str] = {}
+    for entity in store.iter_type("unitgroups"):
+        group_id = entity.internal_id
+        for key in _alias_ids(entity.raw, entity.internal_id):
+            group_alias.setdefault(key, group_id)
+        units = entity.raw.get("units")
+        if not isinstance(units, list):
+            continue
+        reference_unit = next(
+            (
+                unit
+                for unit in units
+                if isinstance(unit, dict) and unit.get("referenceUnit")
+            ),
+            None,
+        )
+        if reference_unit is None:
+            reference_unit = next(
+                (
+                    unit
+                    for unit in units
+                    if isinstance(unit, dict)
+                    and _decimal_value(unit.get("conversionFactor")) == 1
+                ),
+                None,
+            )
+        if reference_unit is not None:
+            group_ref[group_id] = {
+                "ref_unit_id": _ref_id(reference_unit),
+                "ref_unit_name": _name(reference_unit),
+            }
+        for unit in units:
+            if not isinstance(unit, dict):
+                continue
+            conversion_factor = _decimal_value(unit.get("conversionFactor"))
+            if conversion_factor is None:
+                continue
+            record = {
+                "cf": conversion_factor,
+                "group_id": group_id,
+                "unit_name": _name(unit),
+            }
+            for key in _alias_ids(unit):
+                unit_index.setdefault(key, record)
+    return unit_index, group_ref, group_alias
+
+
+def _flow_property_indexes(
+    store: MemoryCanonicalStore, group_alias: dict[str, str]
+) -> tuple[dict[str, str], dict[str, list[str]]]:
+    fp_group: dict[str, str] = {}
+    group_properties: dict[str, list[str]] = {}
+    for entity in store.iter_type("flowproperties"):
+        unit_group = entity.raw.get("unitGroup")
+        group_key = _ref_id(unit_group) if isinstance(unit_group, dict) else None
+        if group_key is None:
+            group_key = entity.raw.get("unitGroupRefId")
+        if not group_key:
+            continue
+        group_id = group_alias.get(str(group_key))
+        if group_id is None:
+            continue
+        canonical_id = _ref_id(entity.raw) or entity.internal_id
+        for key in _alias_ids(entity.raw, entity.internal_id):
+            fp_group.setdefault(key, group_id)
+        members = group_properties.setdefault(group_id, [])
+        if canonical_id not in members:
+            members.append(canonical_id)
+    return fp_group, group_properties
+
+
+def _flow_factor_index(store: MemoryCanonicalStore) -> dict[str, dict[str, Any]]:
+    flow_index: dict[str, dict[str, Any]] = {}
+    for entity in store.iter_type("flows"):
+        entries = entity.raw.get("flowProperties")
+        if not isinstance(entries, list) or not entries:
+            continue
+        factors: dict[str, Decimal] = {}
+        first_entry: tuple[str, str | None] | None = None
+        reference_entry: tuple[str, str | None] | None = None
+        for entry in entries:
+            if not isinstance(entry, dict):
+                continue
+            flow_property = entry.get("flowProperty")
+            if not isinstance(flow_property, dict):
+                continue
+            fp_id = _ref_id(flow_property)
+            if not fp_id:
+                continue
+            # openLCA omits conversionFactor when it is the default 1.0.
+            factor = _decimal_value(entry.get("conversionFactor", 1))
+            if factor is None:
+                continue
+            factors[fp_id] = factor
+            if first_entry is None:
+                first_entry = (fp_id, _name(flow_property))
+            if reference_entry is None and entry.get("isRefFlowProperty"):
+                reference_entry = (fp_id, _name(flow_property))
+        if not factors:
+            continue
+        ref_fp_id, ref_fp_name = reference_entry or first_entry
+        record = {
+            "factors": factors,
+            "ref_fp_id": ref_fp_id,
+            "ref_fp_name": ref_fp_name,
+        }
+        for key in _alias_ids(entity.raw, entity.internal_id):
+            flow_index.setdefault(key, record)
+    return flow_index
+
+
+def _alias_ids(item: Any, internal_id: str | None = None) -> list[str]:
+    keys: list[str] = []
+    if internal_id:
+        keys.append(str(internal_id))
+    if isinstance(item, dict):
+        raw_id = _external_id(item)
+        if raw_id and raw_id not in keys:
+            keys.append(raw_id)
+        ref = _ref_id(item)
+        if ref and ref not in keys:
+            keys.append(ref)
+    return keys
+
+
+def _decimal_value(value: Any) -> Decimal | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, Decimal):
+        return value
+    if isinstance(value, int):
+        return Decimal(value)
+    if isinstance(value, float):
+        return Decimal(str(value))
+    if isinstance(value, str):
+        try:
+            return Decimal(value.strip())
+        except InvalidOperation:
+            return None
+    return None
 
 
 def _provider_graph_lifecycle_model(
