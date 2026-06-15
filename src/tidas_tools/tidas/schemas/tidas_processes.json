@@ -196,52 +196,8 @@
                             }
                           ],
                           "uniqueItems": true,
-                          "allOf": [
-                            {
-                              "maxContains": 1,
-                              "minContains": 0,
-                              "contains": {
-                                "properties": {
-                                  "@level": {
-                                    "const": "0"
-                                  }
-                                }
-                              }
-                            },
-                            {
-                              "maxContains": 1,
-                              "minContains": 0,
-                              "contains": {
-                                "properties": {
-                                  "@level": {
-                                    "const": "1"
-                                  }
-                                }
-                              }
-                            },
-                            {
-                              "maxContains": 1,
-                              "minContains": 0,
-                              "contains": {
-                                "properties": {
-                                  "@level": {
-                                    "const": "2"
-                                  }
-                                }
-                              }
-                            },
-                            {
-                              "maxContains": 1,
-                              "minContains": 0,
-                              "contains": {
-                                "properties": {
-                                  "@level": {
-                                    "const": "3"
-                                  }
-                                }
-                              }
-                            }
-                          ]
+                          "maxItems": 4,
+                          "additionalItems": false
                         },
                         "common:other": {
                           "$ref": "tidas_data_types.json#/$defs/CommonOther"

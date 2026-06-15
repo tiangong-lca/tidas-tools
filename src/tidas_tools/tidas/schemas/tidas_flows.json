@@ -159,41 +159,8 @@
                             }
                           ],
                           "uniqueItems": true,
-                          "allOf": [
-                            {
-                              "maxContains": 1,
-                              "minContains": 0,
-                              "contains": {
-                                "properties": {
-                                  "@level": {
-                                    "const": "0"
-                                  }
-                                }
-                              }
-                            },
-                            {
-                              "maxContains": 1,
-                              "minContains": 0,
-                              "contains": {
-                                "properties": {
-                                  "@level": {
-                                    "const": "1"
-                                  }
-                                }
-                              }
-                            },
-                            {
-                              "maxContains": 1,
-                              "minContains": 0,
-                              "contains": {
-                                "properties": {
-                                  "@level": {
-                                    "const": "2"
-                                  }
-                                }
-                              }
-                            }
-                          ]
+                          "maxItems": 3,
+                          "additionalItems": false
                         },
                         "common:other": {
                           "$ref": "tidas_data_types.json#/$defs/CommonOther"
@@ -336,63 +303,8 @@
                             }
                           ],
                           "uniqueItems": true,
-                          "allOf": [
-                            {
-                              "maxContains": 1,
-                              "minContains": 0,
-                              "contains": {
-                                "properties": {
-                                  "@level": {
-                                    "const": "0"
-                                  }
-                                }
-                              }
-                            },
-                            {
-                              "maxContains": 1,
-                              "minContains": 0,
-                              "contains": {
-                                "properties": {
-                                  "@level": {
-                                    "const": "1"
-                                  }
-                                }
-                              }
-                            },
-                            {
-                              "maxContains": 1,
-                              "minContains": 0,
-                              "contains": {
-                                "properties": {
-                                  "@level": {
-                                    "const": "2"
-                                  }
-                                }
-                              }
-                            },
-                            {
-                              "maxContains": 1,
-                              "minContains": 0,
-                              "contains": {
-                                "properties": {
-                                  "@level": {
-                                    "const": "3"
-                                  }
-                                }
-                              }
-                            },
-                            {
-                              "maxContains": 1,
-                              "minContains": 0,
-                              "contains": {
-                                "properties": {
-                                  "@level": {
-                                    "const": "4"
-                                  }
-                                }
-                              }
-                            }
-                          ]
+                          "maxItems": 5,
+                          "additionalItems": false
                         },
                         "common:other": {
                           "$ref": "tidas_data_types.json#/$defs/CommonOther"
