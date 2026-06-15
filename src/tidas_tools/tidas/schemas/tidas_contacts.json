@@ -109,30 +109,8 @@
                                 }
                               ],
                               "uniqueItems": true,
-                              "allOf": [
-                                {
-                                  "maxContains": 1,
-                                  "minContains": 0,
-                                  "contains": {
-                                    "properties": {
-                                      "@level": {
-                                        "const": "0"
-                                      }
-                                    }
-                                  }
-                                },
-                                {
-                                  "maxContains": 1,
-                                  "minContains": 0,
-                                  "contains": {
-                                    "properties": {
-                                      "@level": {
-                                        "const": "1"
-                                      }
-                                    }
-                                  }
-                                }
-                              ]
+                              "maxItems": 2,
+                              "additionalItems": false
                             },
                             {
                               "type": "object",
