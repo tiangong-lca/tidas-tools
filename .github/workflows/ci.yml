@@ -34,5 +34,8 @@ jobs:
       - name: Install dependencies
         run: uv sync --dev
 
+      - name: Check schema lock
+        run: uv run python scripts/schema_lock.py check
+
       - name: Run tests
         run: uv run pytest

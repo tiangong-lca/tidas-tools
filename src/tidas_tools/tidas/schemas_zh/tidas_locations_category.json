@@ -1,0 +1,2593 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "oneOf": [
+    {
+      "const": "NULL",
+      "description": "无"
+    },
+    {
+      "const": "GLO",
+      "description": "全球"
+    },
+    {
+      "const": "RAF",
+      "description": "非洲"
+    },
+    {
+      "const": "RAM",
+      "description": "美洲"
+    },
+    {
+      "const": "RAS",
+      "description": "亚太地区"
+    },
+    {
+      "const": "RER",
+      "description": "欧洲"
+    },
+    {
+      "const": "OCE",
+      "description": "大洋洲"
+    },
+    {
+      "const": "MEA",
+      "description": "中东和北非"
+    },
+    {
+      "const": "AFR",
+      "description": "撒哈拉以南非洲"
+    },
+    {
+      "const": "RLA",
+      "description": "拉丁美洲和加勒比地区"
+    },
+    {
+      "const": "RNA",
+      "description": "北美洲"
+    },
+    {
+      "const": "CPA",
+      "description": "计划经济亚洲和中国"
+    },
+    {
+      "const": "EAS",
+      "description": "东亚"
+    },
+    {
+      "const": "PAS",
+      "description": "亚洲其他地区"
+    },
+    {
+      "const": "SAS",
+      "description": "南亚"
+    },
+    {
+      "const": "EEU",
+      "description": "中欧和东欧"
+    },
+    {
+      "const": "WEU",
+      "description": "西欧"
+    },
+    {
+      "const": "RNE",
+      "description": "近东"
+    },
+    {
+      "const": "RME",
+      "description": "中东"
+    },
+    {
+      "const": "EU-15",
+      "description": "欧盟15国"
+    },
+    {
+      "const": "EU-NMC",
+      "description": "2004 年欧盟新成员国"
+    },
+    {
+      "const": "EU-25",
+      "description": "欧盟25国"
+    },
+    {
+      "const": "EC-CC",
+      "description": "2005 年欧盟候选国"
+    },
+    {
+      "const": "EU-25&CC",
+      "description": "2005 年欧盟 25 国加候选国"
+    },
+    {
+      "const": "EU-AC",
+      "description": "2005 年欧盟相关国家"
+    },
+    {
+      "const": "EU-25&CC&AC",
+      "description": "2005 年欧盟 25 国加候选国及联系国"
+    },
+    {
+      "const": "EU-27",
+      "description": "欧盟27国"
+    },
+    {
+      "const": "PAO",
+      "description": "太平洋经合组织（日本、澳大利亚、新西兰）"
+    },
+    {
+      "const": "FSU",
+      "description": "前苏联独立国家"
+    },
+    {
+      "const": "UCTE",
+      "description": "输电协调联盟"
+    },
+    {
+      "const": "CENTREL",
+      "description": "中欧电力协会"
+    },
+    {
+      "const": "NORDEL",
+      "description": "北欧国家电力协会"
+    },
+    {
+      "const": "EU+EFTA+UK",
+      "description": "完整的欧盟"
+    },
+    {
+      "const": "AD",
+      "description": "安道尔"
+    },
+    {
+      "const": "AE",
+      "description": "阿拉伯联合酋长国"
+    },
+    {
+      "const": "AF",
+      "description": "阿富汗"
+    },
+    {
+      "const": "AG",
+      "description": "安提瓜和巴布达"
+    },
+    {
+      "const": "AI",
+      "description": "安圭拉"
+    },
+    {
+      "const": "AL",
+      "description": "阿尔巴尼亚"
+    },
+    {
+      "const": "AM",
+      "description": "亚美尼亚"
+    },
+    {
+      "const": "AO",
+      "description": "安哥拉"
+    },
+    {
+      "const": "AQ",
+      "description": "南极洲"
+    },
+    {
+      "const": "AR",
+      "description": "阿根廷"
+    },
+    {
+      "const": "AS",
+      "description": "美属萨摩亚"
+    },
+    {
+      "const": "AT",
+      "description": "奥地利"
+    },
+    {
+      "const": "AU",
+      "description": "澳大利亚"
+    },
+    {
+      "const": "AW",
+      "description": "阿鲁巴岛"
+    },
+    {
+      "const": "AX",
+      "description": "奥兰群岛"
+    },
+    {
+      "const": "AZ",
+      "description": "阿塞拜疆"
+    },
+    {
+      "const": "BA",
+      "description": "波斯尼亚和黑塞哥维那"
+    },
+    {
+      "const": "BB",
+      "description": "巴巴多斯"
+    },
+    {
+      "const": "BD",
+      "description": "孟加拉国"
+    },
+    {
+      "const": "BE",
+      "description": "比利时"
+    },
+    {
+      "const": "BF",
+      "description": "布基纳法索"
+    },
+    {
+      "const": "BG",
+      "description": "保加利亚"
+    },
+    {
+      "const": "BH",
+      "description": "巴林"
+    },
+    {
+      "const": "BI",
+      "description": "布隆迪"
+    },
+    {
+      "const": "BJ",
+      "description": "贝宁"
+    },
+    {
+      "const": "BL",
+      "description": "圣巴泰勒米岛"
+    },
+    {
+      "const": "BM",
+      "description": "百慕大"
+    },
+    {
+      "const": "BN",
+      "description": "文莱达鲁萨兰国"
+    },
+    {
+      "const": "BO",
+      "description": "玻利维亚（多民族国）"
+    },
+    {
+      "const": "BQ",
+      "description": "博内尔岛、圣尤斯特歇斯岛和萨巴岛"
+    },
+    {
+      "const": "BR",
+      "description": "巴西"
+    },
+    {
+      "const": "BS",
+      "description": "巴哈马"
+    },
+    {
+      "const": "BT",
+      "description": "不丹"
+    },
+    {
+      "const": "BV",
+      "description": "布韦岛"
+    },
+    {
+      "const": "BW",
+      "description": "博茨瓦纳"
+    },
+    {
+      "const": "BY",
+      "description": "白俄罗斯"
+    },
+    {
+      "const": "BZ",
+      "description": "伯利兹"
+    },
+    {
+      "const": "CA",
+      "description": "加拿大"
+    },
+    {
+      "const": "CC",
+      "description": "科科斯（基林）群岛"
+    },
+    {
+      "const": "CD",
+      "description": "刚果民主共和国"
+    },
+    {
+      "const": "CF",
+      "description": "中非共和国"
+    },
+    {
+      "const": "CG",
+      "description": "刚果"
+    },
+    {
+      "const": "CH",
+      "description": "瑞士"
+    },
+    {
+      "const": "CI",
+      "description": "科特迪瓦"
+    },
+    {
+      "const": "CK",
+      "description": "库克群岛"
+    },
+    {
+      "const": "CL",
+      "description": "智利"
+    },
+    {
+      "const": "CM",
+      "description": "喀麦隆"
+    },
+    {
+      "const": "CO",
+      "description": "哥伦比亚"
+    },
+    {
+      "const": "CR",
+      "description": "哥斯达黎加"
+    },
+    {
+      "const": "CU",
+      "description": "古巴"
+    },
+    {
+      "const": "CV",
+      "description": "佛得角"
+    },
+    {
+      "const": "CW",
+      "description": "库拉索岛"
+    },
+    {
+      "const": "CX",
+      "description": "圣诞岛"
+    },
+    {
+      "const": "CY",
+      "description": "塞浦路斯"
+    },
+    {
+      "const": "CZ",
+      "description": "捷克"
+    },
+    {
+      "const": "DE",
+      "description": "德国"
+    },
+    {
+      "const": "DJ",
+      "description": "吉布提"
+    },
+    {
+      "const": "DK",
+      "description": "丹麦"
+    },
+    {
+      "const": "DM",
+      "description": "多米尼克"
+    },
+    {
+      "const": "DO",
+      "description": "多米尼加共和国"
+    },
+    {
+      "const": "DZ",
+      "description": "阿尔及利亚"
+    },
+    {
+      "const": "EC",
+      "description": "厄瓜多尔"
+    },
+    {
+      "const": "EE",
+      "description": "爱沙尼亚"
+    },
+    {
+      "const": "EG",
+      "description": "埃及"
+    },
+    {
+      "const": "EH",
+      "description": "西撒哈拉"
+    },
+    {
+      "const": "ER",
+      "description": "厄立特里亚"
+    },
+    {
+      "const": "ES",
+      "description": "西班牙"
+    },
+    {
+      "const": "ET",
+      "description": "埃塞俄比亚"
+    },
+    {
+      "const": "FI",
+      "description": "芬兰"
+    },
+    {
+      "const": "FJ",
+      "description": "斐济"
+    },
+    {
+      "const": "FK",
+      "description": "福克兰群岛（马尔维纳斯）"
+    },
+    {
+      "const": "FM",
+      "description": "密克罗尼西亚（联邦）"
+    },
+    {
+      "const": "FO",
+      "description": "法罗群岛"
+    },
+    {
+      "const": "FR",
+      "description": "法国"
+    },
+    {
+      "const": "GA",
+      "description": "加蓬"
+    },
+    {
+      "const": "GB",
+      "description": "大不列颠及北爱尔兰联合王国"
+    },
+    {
+      "const": "GD",
+      "description": "格林纳达"
+    },
+    {
+      "const": "GE",
+      "description": "格鲁吉亚"
+    },
+    {
+      "const": "GF",
+      "description": "法属圭亚那"
+    },
+    {
+      "const": "GG",
+      "description": "根西岛"
+    },
+    {
+      "const": "GH",
+      "description": "加纳"
+    },
+    {
+      "const": "GI",
+      "description": "直布罗陀"
+    },
+    {
+      "const": "GL",
+      "description": "格陵兰岛"
+    },
+    {
+      "const": "GM",
+      "description": "冈比亚"
+    },
+    {
+      "const": "GN",
+      "description": "几内亚"
+    },
+    {
+      "const": "GP",
+      "description": "瓜德罗普岛"
+    },
+    {
+      "const": "GQ",
+      "description": "赤道几内亚"
+    },
+    {
+      "const": "GR",
+      "description": "希腊"
+    },
+    {
+      "const": "GS",
+      "description": "南乔治亚岛和南桑威奇群岛"
+    },
+    {
+      "const": "GT",
+      "description": "危地马拉"
+    },
+    {
+      "const": "GU",
+      "description": "关岛"
+    },
+    {
+      "const": "GW",
+      "description": "几内亚比绍"
+    },
+    {
+      "const": "GY",
+      "description": "圭亚那"
+    },
+    {
+      "const": "HM",
+      "description": "赫德岛和麦克唐纳群岛"
+    },
+    {
+      "const": "HN",
+      "description": "洪都拉斯"
+    },
+    {
+      "const": "HR",
+      "description": "克罗地亚"
+    },
+    {
+      "const": "HT",
+      "description": "海地"
+    },
+    {
+      "const": "HU",
+      "description": "匈牙利"
+    },
+    {
+      "const": "ID",
+      "description": "印度尼西亚"
+    },
+    {
+      "const": "IE",
+      "description": "爱尔兰"
+    },
+    {
+      "const": "IL",
+      "description": "以色列"
+    },
+    {
+      "const": "IM",
+      "description": "马恩岛"
+    },
+    {
+      "const": "IN",
+      "description": "印度"
+    },
+    {
+      "const": "IO",
+      "description": "英属印度洋领地"
+    },
+    {
+      "const": "IQ",
+      "description": "伊拉克"
+    },
+    {
+      "const": "IR",
+      "description": "伊朗（伊斯兰共和国）"
+    },
+    {
+      "const": "IS",
+      "description": "冰岛"
+    },
+    {
+      "const": "IT",
+      "description": "意大利"
+    },
+    {
+      "const": "JE",
+      "description": "泽西岛"
+    },
+    {
+      "const": "JM",
+      "description": "牙买加"
+    },
+    {
+      "const": "JO",
+      "description": "乔丹"
+    },
+    {
+      "const": "JP",
+      "description": "日本"
+    },
+    {
+      "const": "KE",
+      "description": "肯尼亚"
+    },
+    {
+      "const": "KG",
+      "description": "吉尔吉斯斯坦"
+    },
+    {
+      "const": "KH",
+      "description": "柬埔寨"
+    },
+    {
+      "const": "KI",
+      "description": "基里巴斯"
+    },
+    {
+      "const": "KM",
+      "description": "科摩罗"
+    },
+    {
+      "const": "KN",
+      "description": "圣基茨和尼维斯"
+    },
+    {
+      "const": "KP",
+      "description": "朝鲜（民主主义人民共和国）"
+    },
+    {
+      "const": "KR",
+      "description": "韩国"
+    },
+    {
+      "const": "KW",
+      "description": "科威特"
+    },
+    {
+      "const": "KY",
+      "description": "开曼群岛"
+    },
+    {
+      "const": "KZ",
+      "description": "哈萨克斯坦"
+    },
+    {
+      "const": "LA",
+      "description": "老挝人民民主共和国"
+    },
+    {
+      "const": "LB",
+      "description": "黎巴嫩"
+    },
+    {
+      "const": "LC",
+      "description": "圣卢西亚"
+    },
+    {
+      "const": "LI",
+      "description": "列支敦士登"
+    },
+    {
+      "const": "LK",
+      "description": "斯里兰卡"
+    },
+    {
+      "const": "LR",
+      "description": "利比里亚"
+    },
+    {
+      "const": "LS",
+      "description": "莱索托"
+    },
+    {
+      "const": "LT",
+      "description": "立陶宛"
+    },
+    {
+      "const": "LU",
+      "description": "卢森堡"
+    },
+    {
+      "const": "LV",
+      "description": "拉脱维亚"
+    },
+    {
+      "const": "LY",
+      "description": "利比亚"
+    },
+    {
+      "const": "MA",
+      "description": "摩洛哥"
+    },
+    {
+      "const": "MC",
+      "description": "摩纳哥"
+    },
+    {
+      "const": "MD",
+      "description": "摩尔多瓦共和国"
+    },
+    {
+      "const": "ME",
+      "description": "黑山"
+    },
+    {
+      "const": "MF",
+      "description": "圣马丁岛（法语部分）"
+    },
+    {
+      "const": "MG",
+      "description": "马达加斯加"
+    },
+    {
+      "const": "MH",
+      "description": "马绍尔群岛"
+    },
+    {
+      "const": "MK",
+      "description": "北马其顿"
+    },
+    {
+      "const": "ML",
+      "description": "马里"
+    },
+    {
+      "const": "MM",
+      "description": "缅甸"
+    },
+    {
+      "const": "MN",
+      "description": "蒙古"
+    },
+    {
+      "const": "MP",
+      "description": "北马里亚纳群岛"
+    },
+    {
+      "const": "MQ",
+      "description": "马提尼克岛"
+    },
+    {
+      "const": "MR",
+      "description": "毛里塔尼亚"
+    },
+    {
+      "const": "MS",
+      "description": "蒙特塞拉特"
+    },
+    {
+      "const": "MT",
+      "description": "马耳他"
+    },
+    {
+      "const": "MU",
+      "description": "毛里求斯"
+    },
+    {
+      "const": "MV",
+      "description": "马尔代夫"
+    },
+    {
+      "const": "MW",
+      "description": "马拉维"
+    },
+    {
+      "const": "MX",
+      "description": "墨西哥"
+    },
+    {
+      "const": "MY",
+      "description": "马来西亚"
+    },
+    {
+      "const": "MZ",
+      "description": "莫桑比克"
+    },
+    {
+      "const": "NA",
+      "description": "纳米比亚"
+    },
+    {
+      "const": "NC",
+      "description": "新喀里多尼亚"
+    },
+    {
+      "const": "NE",
+      "description": "尼日尔"
+    },
+    {
+      "const": "NF",
+      "description": "诺福克岛"
+    },
+    {
+      "const": "NG",
+      "description": "尼日利亚"
+    },
+    {
+      "const": "NI",
+      "description": "尼加拉瓜"
+    },
+    {
+      "const": "NL",
+      "description": "荷兰"
+    },
+    {
+      "const": "NO",
+      "description": "挪威"
+    },
+    {
+      "const": "NP",
+      "description": "尼泊尔"
+    },
+    {
+      "const": "NR",
+      "description": "瑙鲁"
+    },
+    {
+      "const": "NU",
+      "description": "纽埃"
+    },
+    {
+      "const": "NZ",
+      "description": "新西兰"
+    },
+    {
+      "const": "OM",
+      "description": "阿曼"
+    },
+    {
+      "const": "PA",
+      "description": "巴拿马"
+    },
+    {
+      "const": "PE",
+      "description": "秘鲁"
+    },
+    {
+      "const": "PF",
+      "description": "法属波利尼西亚"
+    },
+    {
+      "const": "PG",
+      "description": "巴布亚新几内亚"
+    },
+    {
+      "const": "PH",
+      "description": "菲律宾"
+    },
+    {
+      "const": "PK",
+      "description": "巴基斯坦"
+    },
+    {
+      "const": "PL",
+      "description": "波兰"
+    },
+    {
+      "const": "PM",
+      "description": "圣皮埃尔和密克隆群岛"
+    },
+    {
+      "const": "PN",
+      "description": "皮特凯恩"
+    },
+    {
+      "const": "PR",
+      "description": "波多黎各"
+    },
+    {
+      "const": "PS",
+      "description": "巴勒斯坦国"
+    },
+    {
+      "const": "PT",
+      "description": "葡萄牙"
+    },
+    {
+      "const": "PW",
+      "description": "帕劳"
+    },
+    {
+      "const": "PY",
+      "description": "巴拉圭"
+    },
+    {
+      "const": "QA",
+      "description": "卡塔尔"
+    },
+    {
+      "const": "RE",
+      "description": "留尼汪岛"
+    },
+    {
+      "const": "RO",
+      "description": "罗马尼亚"
+    },
+    {
+      "const": "RS",
+      "description": "塞尔维亚"
+    },
+    {
+      "const": "RU",
+      "description": "俄罗斯联邦"
+    },
+    {
+      "const": "RW",
+      "description": "卢旺达"
+    },
+    {
+      "const": "SA",
+      "description": "沙特阿拉伯"
+    },
+    {
+      "const": "SB",
+      "description": "所罗门群岛"
+    },
+    {
+      "const": "SC",
+      "description": "塞舌尔"
+    },
+    {
+      "const": "SD",
+      "description": "苏丹"
+    },
+    {
+      "const": "SE",
+      "description": "瑞典"
+    },
+    {
+      "const": "SG",
+      "description": "新加坡"
+    },
+    {
+      "const": "SH",
+      "description": "圣赫勒拿岛、阿森松岛和特里斯坦达库尼亚"
+    },
+    {
+      "const": "SI",
+      "description": "斯洛文尼亚"
+    },
+    {
+      "const": "SJ",
+      "description": "斯瓦尔巴群岛和扬马延岛"
+    },
+    {
+      "const": "SK",
+      "description": "斯洛伐克"
+    },
+    {
+      "const": "SL",
+      "description": "塞拉利昂"
+    },
+    {
+      "const": "SM",
+      "description": "圣马力诺"
+    },
+    {
+      "const": "SN",
+      "description": "塞内加尔"
+    },
+    {
+      "const": "SO",
+      "description": "索马里"
+    },
+    {
+      "const": "SR",
+      "description": "苏里南"
+    },
+    {
+      "const": "SS",
+      "description": "南苏丹"
+    },
+    {
+      "const": "ST",
+      "description": "圣多美和普林西比"
+    },
+    {
+      "const": "SV",
+      "description": "萨尔瓦多"
+    },
+    {
+      "const": "SX",
+      "description": "圣马丁岛（荷属部分）"
+    },
+    {
+      "const": "SY",
+      "description": "阿拉伯叙利亚共和国"
+    },
+    {
+      "const": "SZ",
+      "description": "史瓦帝尼"
+    },
+    {
+      "const": "TC",
+      "description": "特克斯和凯科斯群岛"
+    },
+    {
+      "const": "TD",
+      "description": "乍得"
+    },
+    {
+      "const": "TF",
+      "description": "法属南部领土"
+    },
+    {
+      "const": "TG",
+      "description": "多哥"
+    },
+    {
+      "const": "TH",
+      "description": "泰国"
+    },
+    {
+      "const": "TJ",
+      "description": "塔吉克斯坦"
+    },
+    {
+      "const": "TK",
+      "description": "托克劳"
+    },
+    {
+      "const": "TL",
+      "description": "东帝汶"
+    },
+    {
+      "const": "TM",
+      "description": "土库曼斯坦"
+    },
+    {
+      "const": "TN",
+      "description": "突尼斯"
+    },
+    {
+      "const": "TO",
+      "description": "汤加"
+    },
+    {
+      "const": "TR",
+      "description": "土耳其"
+    },
+    {
+      "const": "TT",
+      "description": "特立尼达和多巴哥"
+    },
+    {
+      "const": "TV",
+      "description": "图瓦卢"
+    },
+    {
+      "const": "TZ",
+      "description": "坦桑尼亚联合共和国"
+    },
+    {
+      "const": "UA",
+      "description": "乌克兰"
+    },
+    {
+      "const": "UG",
+      "description": "乌干达"
+    },
+    {
+      "const": "UM",
+      "description": "美国本土外小岛屿"
+    },
+    {
+      "const": "US",
+      "description": "美利坚合众国"
+    },
+    {
+      "const": "UY",
+      "description": "乌拉圭"
+    },
+    {
+      "const": "UZ",
+      "description": "乌兹别克斯坦"
+    },
+    {
+      "const": "VA",
+      "description": "罗马教廷"
+    },
+    {
+      "const": "VC",
+      "description": "圣文森特和格林纳丁斯"
+    },
+    {
+      "const": "VE",
+      "description": "委内瑞拉（玻利瓦尔共和国）"
+    },
+    {
+      "const": "VG",
+      "description": "维尔京群岛（英属）"
+    },
+    {
+      "const": "VI",
+      "description": "维尔京群岛（美国）"
+    },
+    {
+      "const": "VN",
+      "description": "越南"
+    },
+    {
+      "const": "VU",
+      "description": "瓦努阿图"
+    },
+    {
+      "const": "WF",
+      "description": "瓦利斯和富图纳群岛"
+    },
+    {
+      "const": "WS",
+      "description": "萨摩亚"
+    },
+    {
+      "const": "YE",
+      "description": "也门"
+    },
+    {
+      "const": "YT",
+      "description": "马约特岛"
+    },
+    {
+      "const": "ZA",
+      "description": "南非"
+    },
+    {
+      "const": "ZM",
+      "description": "赞比亚"
+    },
+    {
+      "const": "ZW",
+      "description": "津巴布韦"
+    },
+    {
+      "const": "CIS",
+      "description": "独立国家联合体"
+    },
+    {
+      "const": "CN",
+      "description": "中国"
+    },
+    {
+      "const": "CN-BJ",
+      "description": "中国北京市"
+    },
+    {
+      "const": "CN-TJ",
+      "description": "中国天津市"
+    },
+    {
+      "const": "CN-HE",
+      "description": "中国河北省"
+    },
+    {
+      "const": "CN-HE-SJW",
+      "description": "中国河北省石家庄市"
+    },
+    {
+      "const": "CN-HE-TGS",
+      "description": "中国河北省唐山市"
+    },
+    {
+      "const": "CN-HE-SHP",
+      "description": "中国河北省秦皇岛市"
+    },
+    {
+      "const": "CN-HE-HDS",
+      "description": "中国河北省邯郸市"
+    },
+    {
+      "const": "CN-HE-XTS",
+      "description": "中国河北省邢台市"
+    },
+    {
+      "const": "CN-HE-BDS",
+      "description": "中国河北省保定市"
+    },
+    {
+      "const": "CN-HE-ZJK",
+      "description": "中国河北省张家口市"
+    },
+    {
+      "const": "CN-HE-CDS",
+      "description": "中国河北省承德市"
+    },
+    {
+      "const": "CN-HE-CGZ",
+      "description": "中国河北省沧州市"
+    },
+    {
+      "const": "CN-HE-LFS",
+      "description": "中国河北省廊坊市"
+    },
+    {
+      "const": "CN-HE-HGS",
+      "description": "中国河北省衡水市"
+    },
+    {
+      "const": "CN-SX",
+      "description": "中国山西省"
+    },
+    {
+      "const": "CN-SX-TYN",
+      "description": "中国山西省太原市"
+    },
+    {
+      "const": "CN-SX-DTG",
+      "description": "中国山西省大同市"
+    },
+    {
+      "const": "CN-SX-YQS",
+      "description": "中国山西省阳泉市"
+    },
+    {
+      "const": "CN-SX-CZS",
+      "description": "中国山西省长治市"
+    },
+    {
+      "const": "CN-SX-JCG",
+      "description": "中国山西省晋城市"
+    },
+    {
+      "const": "CN-SX-SZJ",
+      "description": "中国山西省朔州市"
+    },
+    {
+      "const": "CN-SX-JZN",
+      "description": "中国山西省晋中市"
+    },
+    {
+      "const": "CN-SX-YCE",
+      "description": "中国山西省运城市"
+    },
+    {
+      "const": "CN-SX-XZS",
+      "description": "中国山西省忻州市"
+    },
+    {
+      "const": "CN-SX-LFN",
+      "description": "中国山西省临汾市"
+    },
+    {
+      "const": "CN-SX-LLH",
+      "description": "中国山西省吕梁市"
+    },
+    {
+      "const": "CN-NM",
+      "description": "中国内蒙古自治区"
+    },
+    {
+      "const": "CN-NM-HET",
+      "description": "中国内蒙古自治区呼和浩特市"
+    },
+    {
+      "const": "CN-NM-BTS",
+      "description": "中国内蒙古自治区包头市"
+    },
+    {
+      "const": "CN-NM-WHM",
+      "description": "中国内蒙古自治区乌海市"
+    },
+    {
+      "const": "CN-NM-CFS",
+      "description": "中国内蒙古自治区赤峰（乌兰哈德）市"
+    },
+    {
+      "const": "CN-NM-TLO",
+      "description": "中国内蒙古自治区通辽市"
+    },
+    {
+      "const": "CN-NM-ODS",
+      "description": "中国内蒙古自治区鄂尔多斯市"
+    },
+    {
+      "const": "CN-NM-HBR",
+      "description": "中国内蒙古自治区呼伦贝尔市"
+    },
+    {
+      "const": "CN-NM-BYR",
+      "description": "中国内蒙古自治区巴彦淖尔市"
+    },
+    {
+      "const": "CN-NM-ULS",
+      "description": "中国内蒙古自治区乌兰察布市"
+    },
+    {
+      "const": "CN-NM-HIN",
+      "description": "中国内蒙古自治区兴安盟"
+    },
+    {
+      "const": "CN-NM-XGO",
+      "description": "中国内蒙古自治区锡林郭勒盟"
+    },
+    {
+      "const": "CN-NM-ALM",
+      "description": "阿拉善盟，内蒙古自治区，中国"
+    },
+    {
+      "const": "CN-LN",
+      "description": "中国辽宁省"
+    },
+    {
+      "const": "CN-LN-SHE",
+      "description": "中国辽宁省沉阳市"
+    },
+    {
+      "const": "CN-LN-DLC",
+      "description": "中国辽宁省大连市"
+    },
+    {
+      "const": "CN-LN-ASN",
+      "description": "中国辽宁省鞍山市"
+    },
+    {
+      "const": "CN-LN-FSN",
+      "description": "中国辽宁省抚顺市"
+    },
+    {
+      "const": "CN-LN-BXS",
+      "description": "中国辽宁省本溪市"
+    },
+    {
+      "const": "CN-LN-DDG",
+      "description": "中国辽宁省丹东市"
+    },
+    {
+      "const": "CN-LN-JNZ",
+      "description": "中国辽宁省锦州市"
+    },
+    {
+      "const": "CN-LN-YIK",
+      "description": "中国辽宁省营口市"
+    },
+    {
+      "const": "CN-LN-FXS",
+      "description": "中国辽宁省阜新市"
+    },
+    {
+      "const": "CN-LN-LYL",
+      "description": "中国辽宁省辽阳市"
+    },
+    {
+      "const": "CN-LN-PJS",
+      "description": "中国辽宁省盘锦市"
+    },
+    {
+      "const": "CN-LN-TLS",
+      "description": "中国辽宁省铁岭市"
+    },
+    {
+      "const": "CN-LN-CYS",
+      "description": "中国辽宁省朝阳市"
+    },
+    {
+      "const": "CN-LN-HLD",
+      "description": "中国辽宁省葫芦岛市"
+    },
+    {
+      "const": "CN-JL",
+      "description": "中国吉林省"
+    },
+    {
+      "const": "CN-JL-CGQ",
+      "description": "中国吉林省长春市"
+    },
+    {
+      "const": "CN-JL-JLS",
+      "description": "吉林市, 吉林省, 中国"
+    },
+    {
+      "const": "CN-JL-SPS",
+      "description": "中国吉林省四平市"
+    },
+    {
+      "const": "CN-JL-LYH",
+      "description": "中国吉林省辽源市"
+    },
+    {
+      "const": "CN-JL-THS",
+      "description": "中国吉林省通化市"
+    },
+    {
+      "const": "CN-JL-BSN",
+      "description": "中国吉林省白山市"
+    },
+    {
+      "const": "CN-JL-SYU",
+      "description": "中国吉林省松原市"
+    },
+    {
+      "const": "CN-JL-BCS",
+      "description": "中国吉林省白城市"
+    },
+    {
+      "const": "CN-JL-YBZ",
+      "description": "中国吉林省延边朝鲜族自治州"
+    },
+    {
+      "const": "CN-HL",
+      "description": "中国黑龙江省"
+    },
+    {
+      "const": "CN-HL-HRB",
+      "description": "中国黑龙江省哈尔滨市"
+    },
+    {
+      "const": "CN-HL-NDG",
+      "description": "中国黑龙江省齐齐哈尔市"
+    },
+    {
+      "const": "CN-HL-JXI",
+      "description": "中国黑龙江省鸡西市"
+    },
+    {
+      "const": "CN-HL-HEG",
+      "description": "中国黑龙江省鹤岗市"
+    },
+    {
+      "const": "CN-HL-SYS",
+      "description": "中国黑龙江省双鸭山市"
+    },
+    {
+      "const": "CN-HL-DQG",
+      "description": "中国黑龙江省大庆市"
+    },
+    {
+      "const": "CN-HL-YCH",
+      "description": "中国黑龙江省伊春市"
+    },
+    {
+      "const": "CN-HL-JMU",
+      "description": "中国黑龙江省佳木斯市"
+    },
+    {
+      "const": "CN-HL-QTH",
+      "description": "中国黑龙江省七台河市"
+    },
+    {
+      "const": "CN-HL-MDG",
+      "description": "中国黑龙江省牡丹江市"
+    },
+    {
+      "const": "CN-HL-HEK",
+      "description": "中国黑龙江省黑河市"
+    },
+    {
+      "const": "CN-HL-SUH",
+      "description": "中国黑龙江省绥化市"
+    },
+    {
+      "const": "CN-HL-DHL",
+      "description": "中国黑龙江省大兴安岭地区"
+    },
+    {
+      "const": "CN-SH",
+      "description": "中国上海市"
+    },
+    {
+      "const": "CN-JS",
+      "description": "中国江苏省"
+    },
+    {
+      "const": "CN-JS-NKG",
+      "description": "中国江苏省南京市"
+    },
+    {
+      "const": "CN-JS-WUX",
+      "description": "中国江苏省无锡市"
+    },
+    {
+      "const": "CN-JS-XUZ",
+      "description": "中国江苏省徐州市"
+    },
+    {
+      "const": "CN-JS-CZX",
+      "description": "中国江苏省常州市"
+    },
+    {
+      "const": "CN-JS-SZH",
+      "description": "中国江苏省苏州市"
+    },
+    {
+      "const": "CN-JS-NTG",
+      "description": "中国江苏省南通市"
+    },
+    {
+      "const": "CN-JS-LYG",
+      "description": "中国江苏省连云港市"
+    },
+    {
+      "const": "CN-JS-HAS",
+      "description": "中国江苏省淮安市"
+    },
+    {
+      "const": "CN-JS-YCK",
+      "description": "中国江苏省盐城市"
+    },
+    {
+      "const": "CN-JS-YZH",
+      "description": "中国江苏省扬州市"
+    },
+    {
+      "const": "CN-JS-ZHE",
+      "description": "中国江苏省镇江市"
+    },
+    {
+      "const": "CN-JS-TZS",
+      "description": "中国江苏省泰州市"
+    },
+    {
+      "const": "CN-JS-SUQ",
+      "description": "中国江苏省宿迁市"
+    },
+    {
+      "const": "CN-ZJ",
+      "description": "中国浙江省"
+    },
+    {
+      "const": "CN-ZJ-HGH",
+      "description": "中国浙江省杭州市"
+    },
+    {
+      "const": "CN-ZJ-NGB",
+      "description": "中国浙江省宁波市"
+    },
+    {
+      "const": "CN-ZJ-WNZ",
+      "description": "中国浙江省温州市"
+    },
+    {
+      "const": "CN-ZJ-JIX",
+      "description": "中国浙江省嘉兴市"
+    },
+    {
+      "const": "CN-ZJ-HZH",
+      "description": "中国浙江省湖州市"
+    },
+    {
+      "const": "CN-ZJ-SXG",
+      "description": "中国浙江省绍兴市"
+    },
+    {
+      "const": "CN-ZJ-JHA",
+      "description": "中国浙江省金华市"
+    },
+    {
+      "const": "CN-ZJ-QUZ",
+      "description": "中国浙江省衢州市"
+    },
+    {
+      "const": "CN-ZJ-ZOS",
+      "description": "中国浙江省舟山市"
+    },
+    {
+      "const": "CN-ZJ-TZZ",
+      "description": "中国浙江省台州市"
+    },
+    {
+      "const": "CN-ZJ-LSS",
+      "description": "中国浙江省丽水市"
+    },
+    {
+      "const": "CN-AH",
+      "description": "中国安徽省"
+    },
+    {
+      "const": "CN-AH-HFE",
+      "description": "中国安徽省合肥市"
+    },
+    {
+      "const": "CN-AH-WHI",
+      "description": "中国安徽省芜湖市"
+    },
+    {
+      "const": "CN-AH-BBU",
+      "description": "中国安徽省蚌埠市"
+    },
+    {
+      "const": "CN-AH-HNS",
+      "description": "中国安徽省淮南市"
+    },
+    {
+      "const": "CN-AH-MAA",
+      "description": "中国安徽省马鞍山市"
+    },
+    {
+      "const": "CN-AH-HBE",
+      "description": "中国安徽省淮北市"
+    },
+    {
+      "const": "CN-AH-TOL",
+      "description": "中国安徽省铜陵市"
+    },
+    {
+      "const": "CN-AH-AQG",
+      "description": "中国安徽省安庆市"
+    },
+    {
+      "const": "CN-AH-HSN",
+      "description": "中国安徽省黄山市"
+    },
+    {
+      "const": "CN-AH-CUZ",
+      "description": "中国安徽省滁州市"
+    },
+    {
+      "const": "CN-AH-FYS",
+      "description": "中国安徽省阜阳市"
+    },
+    {
+      "const": "CN-AH-SUZ",
+      "description": "中国安徽省苏州市"
+    },
+    {
+      "const": "CN-AH-CAH",
+      "description": "中国安徽省巢湖市"
+    },
+    {
+      "const": "CN-AH-LAW",
+      "description": "中国安徽省六安市"
+    },
+    {
+      "const": "CN-AH-BOZ",
+      "description": "中国安徽省亳州市"
+    },
+    {
+      "const": "CN-AH-CIZ",
+      "description": "中国安徽省池州市"
+    },
+    {
+      "const": "CN-AH-XCI",
+      "description": "中国安徽省宣城市"
+    },
+    {
+      "const": "CN-FJ",
+      "description": "中国福建省"
+    },
+    {
+      "const": "CN-FJ-FOC",
+      "description": "中国福建省福州市"
+    },
+    {
+      "const": "CN-FJ-XMN",
+      "description": "中国福建省厦门市"
+    },
+    {
+      "const": "CN-FJ-PUT",
+      "description": "中国福建省莆田市"
+    },
+    {
+      "const": "CN-FJ-SMS",
+      "description": "中国福建省三明市"
+    },
+    {
+      "const": "CN-FJ-QZJ",
+      "description": "中国福建省泉州市"
+    },
+    {
+      "const": "CN-FJ-ZZU",
+      "description": "中国福建省漳州市"
+    },
+    {
+      "const": "CN-FJ-NPS",
+      "description": "中国福建省南平市"
+    },
+    {
+      "const": "CN-FJ-LYF",
+      "description": "中国福建省龙岩市"
+    },
+    {
+      "const": "CN-FJ-NDS",
+      "description": "中国福建省宁德市"
+    },
+    {
+      "const": "CN-JX",
+      "description": "中国江西省"
+    },
+    {
+      "const": "CN-JX-KHN",
+      "description": "中国江西省南昌市"
+    },
+    {
+      "const": "CN-JX-JDZ",
+      "description": "中国江西省景德镇市"
+    },
+    {
+      "const": "CN-JX-PXS",
+      "description": "中国江西省萍乡市"
+    },
+    {
+      "const": "CN-JX-JIU",
+      "description": "中国江西省九江市"
+    },
+    {
+      "const": "CN-JX-XYU",
+      "description": "中国江西省新余市"
+    },
+    {
+      "const": "CN-JX-YTS",
+      "description": "中国江西省鹰潭市"
+    },
+    {
+      "const": "CN-JX-GZH",
+      "description": "中国江西省赣州市"
+    },
+    {
+      "const": "CN-JX-JAS",
+      "description": "中国江西省吉安市"
+    },
+    {
+      "const": "CN-JX-YCN",
+      "description": "中国江西省宜春市"
+    },
+    {
+      "const": "CN-JX-FUZ",
+      "description": "中国江西省抚州市"
+    },
+    {
+      "const": "CN-JX-SRS",
+      "description": "中国江西省上饶市"
+    },
+    {
+      "const": "CN-SD",
+      "description": "中国山东省"
+    },
+    {
+      "const": "CN-SD-TNA",
+      "description": "中国山东省济南市"
+    },
+    {
+      "const": "CN-SD-TAO",
+      "description": "中国山东省青岛市"
+    },
+    {
+      "const": "CN-SD-ZBO",
+      "description": "中国山东省淄博市"
+    },
+    {
+      "const": "CN-SD-ZZG",
+      "description": "中国山东省枣庄市"
+    },
+    {
+      "const": "CN-SD-DYG",
+      "description": "中国山东省东营市"
+    },
+    {
+      "const": "CN-SD-YNT",
+      "description": "中国山东省烟台市"
+    },
+    {
+      "const": "CN-SD-WEF",
+      "description": "中国山东省潍坊市"
+    },
+    {
+      "const": "CN-SD-JNG",
+      "description": "中国山东省济宁市"
+    },
+    {
+      "const": "CN-SD-TAI",
+      "description": "中国山东省泰安市"
+    },
+    {
+      "const": "CN-SD-WEH",
+      "description": "中国山东省威海市"
+    },
+    {
+      "const": "CN-SD-RZH",
+      "description": "中国山东省日照市"
+    },
+    {
+      "const": "CN-SD-LWS",
+      "description": "中国山东省莱芜市"
+    },
+    {
+      "const": "CN-SD-LYI",
+      "description": "中国山东省临沂市"
+    },
+    {
+      "const": "CN-SD-DZS",
+      "description": "中国山东省德州市"
+    },
+    {
+      "const": "CN-SD-LCH",
+      "description": "中国山东省聊城市"
+    },
+    {
+      "const": "CN-SD-BZH",
+      "description": "中国山东省滨州市"
+    },
+    {
+      "const": "CN-SD-HZS",
+      "description": "中国山东省菏泽市"
+    },
+    {
+      "const": "CN-HA",
+      "description": "中国河南省"
+    },
+    {
+      "const": "CN-HA-CGO",
+      "description": "中国河南省郑州市"
+    },
+    {
+      "const": "CN-HA-KFS",
+      "description": "中国河南省开封市"
+    },
+    {
+      "const": "CN-HA-LYA",
+      "description": "中国河南省洛阳市"
+    },
+    {
+      "const": "CN-HA-PDS",
+      "description": "中国河南省平顶山市"
+    },
+    {
+      "const": "CN-HA-AYS",
+      "description": "中国河南省安阳市"
+    },
+    {
+      "const": "CN-HA-HBS",
+      "description": "中国河南省鹤壁市"
+    },
+    {
+      "const": "CN-HA-XXS",
+      "description": "中国河南省新乡市"
+    },
+    {
+      "const": "CN-HA-JZY",
+      "description": "中国河南省焦作市"
+    },
+    {
+      "const": "CN-HA-PYS",
+      "description": "中国河南省濮阳市"
+    },
+    {
+      "const": "CN-HA-XCS",
+      "description": "中国河南省许昌市"
+    },
+    {
+      "const": "CN-HA-LHS",
+      "description": "中国河南省漯河市"
+    },
+    {
+      "const": "CN-HA-SMX",
+      "description": "中国河南省三门峡市"
+    },
+    {
+      "const": "CN-HA-NYS",
+      "description": "中国河南省南阳市"
+    },
+    {
+      "const": "CN-HA-SQS",
+      "description": "中国河南省商丘市"
+    },
+    {
+      "const": "CN-HA-XYG",
+      "description": "中国河南省信阳市"
+    },
+    {
+      "const": "CN-HA-ZKS",
+      "description": "中国河南省周口市"
+    },
+    {
+      "const": "CN-HA-ZMD",
+      "description": "中国河南省驻马店市"
+    },
+    {
+      "const": "CN-HB",
+      "description": "中国湖北省"
+    },
+    {
+      "const": "CN-HB-WUH",
+      "description": "中国湖北省武汉市"
+    },
+    {
+      "const": "CN-HB-HSI",
+      "description": "中国湖北省黄石市"
+    },
+    {
+      "const": "CN-HB-SYE",
+      "description": "中国湖北省十堰市"
+    },
+    {
+      "const": "CN-HB-YCO",
+      "description": "中国湖北省宜昌市"
+    },
+    {
+      "const": "CN-HB-XFN",
+      "description": "中国湖北省襄樊市"
+    },
+    {
+      "const": "CN-HB-EZS",
+      "description": "中国湖北省鄂州市"
+    },
+    {
+      "const": "CN-HB-JMS",
+      "description": "中国湖北省荆门市"
+    },
+    {
+      "const": "CN-HB-XGE",
+      "description": "中国湖北省孝感市"
+    },
+    {
+      "const": "CN-HB-JGZ",
+      "description": "中国湖北省荆州市"
+    },
+    {
+      "const": "CN-HB-HGE",
+      "description": "中国湖北省黄冈市"
+    },
+    {
+      "const": "CN-HB-XNS",
+      "description": "中国湖北省咸宁市"
+    },
+    {
+      "const": "CN-HB-SZR",
+      "description": "中国湖北省随州市"
+    },
+    {
+      "const": "CN-HB-ESH",
+      "description": "中国湖北省恩施土家族苗族自治州"
+    },
+    {
+      "const": "CN-HN",
+      "description": "中国湖南省"
+    },
+    {
+      "const": "CN-HN-CSX",
+      "description": "中国湖南省长沙市"
+    },
+    {
+      "const": "CN-HN-ZZS",
+      "description": "中国湖南省株洲市"
+    },
+    {
+      "const": "CN-HN-XGT",
+      "description": "中国湖南省湘潭市"
+    },
+    {
+      "const": "CN-HN-HNY",
+      "description": "中国湖南省衡阳市"
+    },
+    {
+      "const": "CN-HN-SYR",
+      "description": "中国湖南省邵阳市"
+    },
+    {
+      "const": "CN-HN-YYG",
+      "description": "中国湖南省岳阳市"
+    },
+    {
+      "const": "CN-HN-CDE",
+      "description": "中国湖南省常德市"
+    },
+    {
+      "const": "CN-HN-ZJJ",
+      "description": "中国湖南省张家界市"
+    },
+    {
+      "const": "CN-HN-YYS",
+      "description": "中国湖南省益阳市"
+    },
+    {
+      "const": "CN-HN-CNZ",
+      "description": "中国湖南省郴州市"
+    },
+    {
+      "const": "CN-HN-YZS",
+      "description": "中国湖南省永州市"
+    },
+    {
+      "const": "CN-HN-HHS",
+      "description": "中国湖南省怀化市"
+    },
+    {
+      "const": "CN-HN-LDI",
+      "description": "中国湖南省娄底市"
+    },
+    {
+      "const": "CN-HN-XXZ",
+      "description": "​中国湖南省湘西土家族苗族自治州​"
+    },
+    {
+      "const": "CN-GD",
+      "description": "中国广东省"
+    },
+    {
+      "const": "CN-GD-CAN",
+      "description": "中国广东省广州市"
+    },
+    {
+      "const": "CN-GD-HSC",
+      "description": "中国广东省韶关市"
+    },
+    {
+      "const": "CN-GD-SZX",
+      "description": "中国广东省深圳市"
+    },
+    {
+      "const": "CN-GD-ZUH",
+      "description": "中国广东省珠海市"
+    },
+    {
+      "const": "CN-GD-SWA",
+      "description": "中国广东省汕头市"
+    },
+    {
+      "const": "CN-GD-FOS",
+      "description": "中国广东省佛山市"
+    },
+    {
+      "const": "CN-GD-JMN",
+      "description": "中国广东省江门市"
+    },
+    {
+      "const": "CN-GD-ZHA",
+      "description": "中国广东省湛江市"
+    },
+    {
+      "const": "CN-GD-MMI",
+      "description": "中国广东省茂名市"
+    },
+    {
+      "const": "CN-GD-ZQG",
+      "description": "中国广东省肇庆市"
+    },
+    {
+      "const": "CN-GD-HUI",
+      "description": "中国广东省惠州市"
+    },
+    {
+      "const": "CN-GD-MXZ",
+      "description": "中国广东省梅州市"
+    },
+    {
+      "const": "CN-GD-SWE",
+      "description": "中国广东省汕尾市"
+    },
+    {
+      "const": "CN-GD-HEY",
+      "description": "中国广东省河源市"
+    },
+    {
+      "const": "CN-GD-YJI",
+      "description": "中国广东省阳江市"
+    },
+    {
+      "const": "CN-GD-QYN",
+      "description": "中国广东省清远市"
+    },
+    {
+      "const": "CN-GD-DGG",
+      "description": "中国广东省东莞市"
+    },
+    {
+      "const": "CN-GD-ZSN",
+      "description": "中国广东省中山市"
+    },
+    {
+      "const": "CN-GD-CZY",
+      "description": "中国广东省潮州市"
+    },
+    {
+      "const": "CN-GD-JIY",
+      "description": "中国广东省揭阳市"
+    },
+    {
+      "const": "CN-GD-YFS",
+      "description": "中国广东省云浮市"
+    },
+    {
+      "const": "CN-GX",
+      "description": "中国广西壮族自治区"
+    },
+    {
+      "const": "CN-GX-NNG",
+      "description": "中国广西壮族自治区南宁市"
+    },
+    {
+      "const": "CN-GX-LZH",
+      "description": "中国广西壮族自治区柳州市"
+    },
+    {
+      "const": "CN-GX-KWL",
+      "description": "中国广西壮族自治区桂林市"
+    },
+    {
+      "const": "CN-GX-WUZ",
+      "description": "中国广西壮族自治区梧州市"
+    },
+    {
+      "const": "CN-GX-BHY",
+      "description": "中国广西壮族自治区北海市"
+    },
+    {
+      "const": "CN-GX-FAN",
+      "description": "中国广西壮族自治区防城港市"
+    },
+    {
+      "const": "CN-GX-QZH",
+      "description": "中国广西壮族自治区钦州市"
+    },
+    {
+      "const": "CN-GX-GUG",
+      "description": "中国广西壮族自治区贵港市"
+    },
+    {
+      "const": "CN-GX-YUL",
+      "description": "中国广西壮族自治区玉林市"
+    },
+    {
+      "const": "CN-GX-BSS",
+      "description": "中国广西壮族自治区百色市"
+    },
+    {
+      "const": "CN-GX-HZO",
+      "description": "中国广西壮族自治区贺州市"
+    },
+    {
+      "const": "CN-GX-HCS",
+      "description": "中国广西壮族自治区河池市"
+    },
+    {
+      "const": "CN-GX-LIB",
+      "description": "中国广西壮族自治区来宾市"
+    },
+    {
+      "const": "CN-GX-COZ",
+      "description": "中国广西壮族自治区崇左市"
+    },
+    {
+      "const": "CN-HI",
+      "description": "中国海南省"
+    },
+    {
+      "const": "CN-HI-HAK",
+      "description": "中国海南省海口市"
+    },
+    {
+      "const": "CN-HI-SYX",
+      "description": "中国海南省三瓦市"
+    },
+    {
+      "const": "CN-CQ",
+      "description": "中国重庆市"
+    },
+    {
+      "const": "CN-SC",
+      "description": "中国四川省"
+    },
+    {
+      "const": "CN-SC-CTU",
+      "description": "中国四川省成都市"
+    },
+    {
+      "const": "CN-SC-ZGS",
+      "description": "中国四川省自贡市"
+    },
+    {
+      "const": "CN-SC-PZH",
+      "description": "中国四川省攀枝花市"
+    },
+    {
+      "const": "CN-SC-LUZ",
+      "description": "中国四川省泸州市"
+    },
+    {
+      "const": "CN-SC-DEY",
+      "description": "中国四川省德阳市"
+    },
+    {
+      "const": "CN-SC-MYG",
+      "description": "中国四川省绵阳市"
+    },
+    {
+      "const": "CN-SC-GYC",
+      "description": "中国四川省广元市"
+    },
+    {
+      "const": "CN-SC-SNS",
+      "description": "中国四川省遂宁市"
+    },
+    {
+      "const": "CN-SC-NJS",
+      "description": "中国四川省内江市"
+    },
+    {
+      "const": "CN-SC-LES",
+      "description": "中国四川省乐山市"
+    },
+    {
+      "const": "CN-SC-NCO",
+      "description": "中国四川省南充市"
+    },
+    {
+      "const": "CN-SC-MSS",
+      "description": "中国四川省眉山市"
+    },
+    {
+      "const": "CN-SC-YBS",
+      "description": "中国四川省宜宾市"
+    },
+    {
+      "const": "CN-SC-GAC",
+      "description": "中国四川省广安市"
+    },
+    {
+      "const": "CN-SC-DAZ",
+      "description": "中国四川省达州市"
+    },
+    {
+      "const": "CN-SC-YAS",
+      "description": "中国四川省雅安市"
+    },
+    {
+      "const": "CN-SC-BZS",
+      "description": "中国四川省巴中市"
+    },
+    {
+      "const": "CN-SC-ZYS",
+      "description": "中国四川省资阳市"
+    },
+    {
+      "const": "CN-SC-ABA",
+      "description": "中国四川省阿坝藏族羌族自治州"
+    },
+    {
+      "const": "CN-SC-GAZ",
+      "description": "中国四川省甘孜藏族自治州"
+    },
+    {
+      "const": "CN-SC-LSY",
+      "description": "中国四川省凉山彝族自治州​"
+    },
+    {
+      "const": "CN-GZ",
+      "description": "中国贵州省"
+    },
+    {
+      "const": "CN-GZ-KWE",
+      "description": "中国贵州省贵阳市"
+    },
+    {
+      "const": "CN-GZ-LPS",
+      "description": "中国贵州省六盘水市"
+    },
+    {
+      "const": "CN-GZ-ZNY",
+      "description": "中国贵州省遵义市"
+    },
+    {
+      "const": "CN-GZ-ASS",
+      "description": "中国贵州省安顺市"
+    },
+    {
+      "const": "CN-GZ-TRD",
+      "description": "中国贵州省铜仁地区"
+    },
+    {
+      "const": "CN-GZ-QXZ",
+      "description": "中国贵州省黔西南布依族苗族自治州"
+    },
+    {
+      "const": "CN-GZ-BJD",
+      "description": "中国贵州省毕节地区"
+    },
+    {
+      "const": "CN-GZ-QND",
+      "description": "中国贵州省黔东南苗族侗族自治州"
+    },
+    {
+      "const": "CN-GZ-QNZ",
+      "description": "​中国贵州省黔南布依族苗族自治州"
+    },
+    {
+      "const": "CN-YN",
+      "description": "中国云南省"
+    },
+    {
+      "const": "CN-YN-KMG",
+      "description": "中国云南省昆明市"
+    },
+    {
+      "const": "CN-YN-QJS",
+      "description": "中国云南省曲靖市"
+    },
+    {
+      "const": "CN-YN-YXS",
+      "description": "中国云南省玉溪市"
+    },
+    {
+      "const": "CN-YN-BOS",
+      "description": "中国云南省保山市"
+    },
+    {
+      "const": "CN-YN-ZTS",
+      "description": "中国云南省昭通市"
+    },
+    {
+      "const": "CN-YN-LJH",
+      "description": "中国云南省丽江市"
+    },
+    {
+      "const": "CN-YN-PRS",
+      "description": "中国云南省普洱市"
+    },
+    {
+      "const": "CN-YN-LIH",
+      "description": "中国云南省临沧市"
+    },
+    {
+      "const": "CN-YN-CXD",
+      "description": "​中国云南省楚雄彝族自治州"
+    },
+    {
+      "const": "CN-YN-HHZ",
+      "description": "​中国云南省红河哈尼族彝族自治州"
+    },
+    {
+      "const": "CN-YN-WSZ",
+      "description": "​中国云南省文山壮族苗族自治州"
+    },
+    {
+      "const": "CN-YN-XSB",
+      "description": "中国云南省西双版纳傣族自治州"
+    },
+    {
+      "const": "CN-YN-DLZ",
+      "description": "​中国云南省大理白族自治州"
+    },
+    {
+      "const": "CN-YN-DHG",
+      "description": "中国云南省德宏傣族景颇族自治州"
+    },
+    {
+      "const": "CN-YN-NUJ",
+      "description": "中国云南省怒江傈僳族自治州"
+    },
+    {
+      "const": "CN-YN-DEZ",
+      "description": "中国云南省德庆藏族自治州"
+    },
+    {
+      "const": "CN-XZ",
+      "description": "中国西藏自治区"
+    },
+    {
+      "const": "CN-XZ-LXA",
+      "description": "中国西藏自治区拉萨市"
+    },
+    {
+      "const": "CN-XZ-QAD",
+      "description": "中国西藏自治区昌都地区"
+    },
+    {
+      "const": "CN-XZ-SND",
+      "description": "中国西藏自治区山南地区"
+    },
+    {
+      "const": "CN-XZ-XID",
+      "description": "中国西藏自治区日喀则地区"
+    },
+    {
+      "const": "CN-XZ-NAD",
+      "description": "中国西藏自治区那曲地区"
+    },
+    {
+      "const": "CN-XZ-NGD",
+      "description": "中国西藏自治区阿里地区"
+    },
+    {
+      "const": "CN-XZ-NYD",
+      "description": "中国西藏自治区林芝地区"
+    },
+    {
+      "const": "CN-SN",
+      "description": "中国陕西省"
+    },
+    {
+      "const": "CN-SN-SIA",
+      "description": "中国陕西省西安市"
+    },
+    {
+      "const": "CN-SN-TCN",
+      "description": "中国陕西省铜川市"
+    },
+    {
+      "const": "CN-SN-BJI",
+      "description": "中国陕西省宝鸡市"
+    },
+    {
+      "const": "CN-SN-XYS",
+      "description": "中国陕西省咸阳市"
+    },
+    {
+      "const": "CN-SN-WNA",
+      "description": "中国陕西省渭南市"
+    },
+    {
+      "const": "CN-SN-YNA",
+      "description": "中国陕西省延安市"
+    },
+    {
+      "const": "CN-SN-HZJ",
+      "description": "中国陕西省汉中市"
+    },
+    {
+      "const": "CN-SN-YLN",
+      "description": "中国陕西省榆林市"
+    },
+    {
+      "const": "CN-SN-ANK",
+      "description": "中国陕西省安康市"
+    },
+    {
+      "const": "CN-SN-SLH",
+      "description": "中国陕西省商洛市"
+    },
+    {
+      "const": "CN-GS",
+      "description": "中国甘肃省"
+    },
+    {
+      "const": "CN-GS-LHW",
+      "description": "中国甘肃省兰州市"
+    },
+    {
+      "const": "CN-GS-JYG",
+      "description": "中国甘肃省嘉峪关市"
+    },
+    {
+      "const": "CN-GS-JCS",
+      "description": "中国甘肃省金昌市"
+    },
+    {
+      "const": "CN-GS-BYS",
+      "description": "中国甘肃省白银市"
+    },
+    {
+      "const": "CN-GS-TSU",
+      "description": "中国甘肃省天水市"
+    },
+    {
+      "const": "CN-GS-WWS",
+      "description": "中国甘肃省武威市"
+    },
+    {
+      "const": "CN-GS-ZYE",
+      "description": "中国甘肃省张掖市"
+    },
+    {
+      "const": "CN-GS-PLS",
+      "description": "中国甘肃省平凉市"
+    },
+    {
+      "const": "CN-GS-JQG",
+      "description": "中国甘肃省酒泉市"
+    },
+    {
+      "const": "CN-GS-QYI",
+      "description": "中国甘肃省庆阳市"
+    },
+    {
+      "const": "CN-GS-DNX",
+      "description": "中国甘肃省定西市"
+    },
+    {
+      "const": "CN-GS-LGN",
+      "description": "中国甘肃省陇南市"
+    },
+    {
+      "const": "CN-GS-LXH",
+      "description": "​中国甘肃省临夏回族自治州"
+    },
+    {
+      "const": "CN-GS-GNZ",
+      "description": "中国甘肃省甘南藏族自治州"
+    },
+    {
+      "const": "CN-QH",
+      "description": "中国青海省"
+    },
+    {
+      "const": "CN-QH-XNN",
+      "description": "中国青海省西宁市"
+    },
+    {
+      "const": "CN-QH-HDD",
+      "description": "中国青海省海东地区"
+    },
+    {
+      "const": "CN-QH-HBZ",
+      "description": "中国青海省海北藏族自治州"
+    },
+    {
+      "const": "CN-QH-HN7",
+      "description": "中国青海省黄南藏族自治州"
+    },
+    {
+      "const": "CN-QH-HNN",
+      "description": "中国青海省海南藏族自治州"
+    },
+    {
+      "const": "CN-QH-GOL",
+      "description": "中国青海省果洛藏族自治州"
+    },
+    {
+      "const": "CN-QH-YSZ",
+      "description": "中国青海省玉树藏族自治州"
+    },
+    {
+      "const": "CN-QH-HXZ",
+      "description": "中国青海省海西蒙古族藏族自治州"
+    },
+    {
+      "const": "CN-NX",
+      "description": "中国宁夏回族自治区"
+    },
+    {
+      "const": "CN-NX-INC",
+      "description": "中国宁夏回族自治区银川市"
+    },
+    {
+      "const": "CN-NX-SZS",
+      "description": "中国宁夏回族自治区石嘴山市"
+    },
+    {
+      "const": "CN-NX-WZS",
+      "description": "中国宁夏回族自治区吴忠市"
+    },
+    {
+      "const": "CN-NX-GYN",
+      "description": "中国宁夏回族自治区固原市"
+    },
+    {
+      "const": "CN-NX-ZWS",
+      "description": "中国宁夏回族自治区中卫市"
+    },
+    {
+      "const": "CN-XJ",
+      "description": "中国新疆维吾尔自治区"
+    },
+    {
+      "const": "CN-XJ-URC",
+      "description": "中国新疆维吾尔自治区乌鲁木齐市"
+    },
+    {
+      "const": "CN-XJ-KAR",
+      "description": "中国新疆维吾尔自治区克拉玛依市"
+    },
+    {
+      "const": "CN-XJ-TUD",
+      "description": "中国新疆维吾尔自治区吐鲁番地区"
+    },
+    {
+      "const": "CN-XJ-HMD",
+      "description": "中国新疆维吾尔自治区哈密地区"
+    },
+    {
+      "const": "CN-XJ-CJZ",
+      "description": "中国新疆维吾尔自治区昌吉回族自治州"
+    },
+    {
+      "const": "CN-XJ-BOR",
+      "description": "中国新疆维吾尔自治区博尔塔拉蒙古自治州"
+    },
+    {
+      "const": "CN-XJ-BAG",
+      "description": "中国新疆维吾尔自治区巴音郭楞蒙古自治州"
+    },
+    {
+      "const": "CN-XJ-AKD",
+      "description": "中国新疆维吾尔自治区阿克苏地区"
+    },
+    {
+      "const": "CN-XJ-KIZ",
+      "description": "​中国新疆维吾尔自治区克孜勒苏柯尔克孜自治州"
+    },
+    {
+      "const": "CN-XJ-KSI",
+      "description": "中国新疆维吾尔自治区喀什地区"
+    },
+    {
+      "const": "CN-XJ-HOD",
+      "description": "中国新疆维吾尔自治区和田地区"
+    },
+    {
+      "const": "CN-XJ-ILD",
+      "description": "​中国新疆维吾尔自治区伊犁哈萨克自治州"
+    },
+    {
+      "const": "CN-XJ-TCD",
+      "description": "中国新疆维吾尔自治区塔城地区"
+    },
+    {
+      "const": "CN-XJ-ALD",
+      "description": "中国新疆维吾尔自治区阿勒泰地区"
+    },
+    {
+      "const": "CN-TW",
+      "description": "中国台湾省"
+    },
+    {
+      "const": "CN-HK",
+      "description": "中华人民共和国香港特别行政区"
+    },
+    {
+      "const": "CN-MO",
+      "description": "中华人民共和国澳门特别行政区"
+    }
+  ]
+}

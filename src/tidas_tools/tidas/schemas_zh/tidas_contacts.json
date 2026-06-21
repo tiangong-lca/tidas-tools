@@ -1,0 +1,290 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "contactDataSet": {
+      "type": "object",
+      "properties": {
+        "@xmlns": {
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/Contact"
+        },
+        "@xmlns:common": {
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/Common"
+        },
+        "@xmlns:xsi": {
+          "type": "string",
+          "const": "http://www.w3.org/2001/XMLSchema-instance"
+        },
+        "@version": {
+          "type": "string",
+          "const": "1.1",
+          "description": "指示使用哪个版本的 ILCD 格式"
+        },
+        "@xsi:schemaLocation": {
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/Contact ../../schemas/ILCD_ContactDataSet.xsd"
+        },
+        "contactInformation": {
+          "type": "object",
+          "properties": {
+            "dataSetInformation": {
+              "type": "object",
+              "properties": {
+                "common:UUID": {
+                  "$ref": "tidas_data_types.json#/$defs/UUID",
+                  "description": "自动生成该数据集的通用唯一标识符。UUID 与“数据集版本”一起唯一标识每个数据集。"
+                },
+                "common:shortName": {
+                  "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                  "description": "联系人的简称，用于显示，例如指向该数据集的链接（特别是在联系人的全名相当长的情况下，例如“FAO”代表“粮食及农业组织”）。"
+                },
+                "common:name": {
+                  "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                  "description": "此联系人数据集表示的人员、工作组、组织或数据库网络的名称。"
+                },
+                "classificationInformation": {
+                  "type": "object",
+                  "description": "预计用于构建数据库的联系人内容的联系人的层次分类。 （注意：识别联系人数据集不需要此条目。不过，应避免对同一类中的联系人使用相同的名称。",
+                  "properties": {
+                    "common:classification": {
+                      "type": "object",
+                      "description": "数据集的可选统计或其他分类。通常也用于构建 LCA 数据库。",
+                      "properties": {
+                        "common:class": {
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "@level": {
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                      "const": "0"
+                                    },
+                                    "@classId": {
+                                      "type": "string"
+                                    },
+                                    "#text": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "@level",
+                                    "@classId",
+                                    "#text"
+                                  ],
+                                  "dependencies": {
+                                    "@level": {
+                                      "$ref": "./tidas_contacts_category.json#/$defs/Contact"
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "@level": {
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                      "const": "1"
+                                    },
+                                    "@classId": {
+                                      "type": "string"
+                                    },
+                                    "#text": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "@level",
+                                    "@classId",
+                                    "#text"
+                                  ],
+                                  "dependencies": {
+                                    "@level": {
+                                      "$ref": "./tidas_contacts_category.json#/$defs/Contact"
+                                    }
+                                  }
+                                }
+                              ],
+                              "uniqueItems": true,
+                              "maxItems": 2,
+                              "additionalItems": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "@level": {
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                  "const": "0"
+                                },
+                                "@classId": {
+                                  "type": "string"
+                                },
+                                "#text": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "@level",
+                                "@classId",
+                                "#text"
+                              ],
+                              "dependencies": {
+                                "@level": {
+                                  "$ref": "./tidas_contacts_category.json#/$defs/Contact"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "common:class"
+                      ]
+                    },
+                    "common:other": {
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                    }
+                  },
+                  "required": [
+                    "common:classification"
+                  ]
+                },
+                "contactAddress": {
+                  "$ref": "tidas_data_types.json#/$defs/STMultiLang",
+                  "description": "联系人的邮件地址；特定于个人、工作组或部门。 [注：“一般联络点”中应提供该组织的一般联络点。]"
+                },
+                "email": {
+                  "$ref": "tidas_data_types.json#/$defs/String",
+                  "format": "email"
+                },
+                "telephone": {
+                  "$ref": "tidas_data_types.json#/$defs/String"
+                },
+                "telefax": {
+                  "$ref": "tidas_data_types.json#/$defs/String"
+                },
+                "WWWAddress": {
+                  "$ref": "tidas_data_types.json#/$defs/ST",
+                  "description": "个人、工作组、组织或数据库网络的网址。"
+                },
+                "centralContactPoint": {
+                  "$ref": "tidas_data_types.json#/$defs/STMultiLang",
+                  "description": "联系人的备用地址/联系方式。提供联系信息，例如该联系人所代表的个人或团体已离开组织或更换了办公室/电话。因此，该替代联系点还可以包含该组织的中央电话号码、电子邮件、www 地址等。"
+                },
+                "contactDescriptionOrComment": {
+                  "$ref": "tidas_data_types.json#/$defs/STMultiLang",
+                  "description": "用于对联系人的组织或个人进行附加描述的自由文本，例如组织简介、个人职责等。"
+                },
+                "referenceToContact": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "此人或实体或此数据库、数据集格式或合规系统所属的工作组、组织或数据库网络的“联系数据集”。 [注：这并不一定意味着具有法律约束力的关系，也可能是自愿的成员资格。]"
+                },
+                "referenceToLogo": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "报告等中使用的组织或来源的徽标的“源数据集”。"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "common:UUID",
+                "common:shortName",
+                "common:name",
+                "classificationInformation"
+              ]
+            },
+            "common:other": {
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+            }
+          },
+          "required": [
+            "dataSetInformation"
+          ]
+        },
+        "administrativeInformation": {
+          "type": "object",
+          "properties": {
+            "dataEntryBy": {
+              "type": "object",
+              "properties": {
+                "common:timeStamp": {
+                  "$ref": "tidas_data_types.json#/$defs/dateTime",
+                  "description": "数据集生成的日期和时间戳，通常是自动输入（“上次保存”）。"
+                },
+                "common:referenceToDataSetFormat": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "ILCD 格式所用版本的“源数据集”。如果使用“命名空间”选项将附加数据格式字段集成到数据集文件中，则将给出所使用的格式命名空间。如果数据集携带由其他特定 LCA 格式指定的附加信息，例如，则属于这种情况。其他数据库网络或 LCA 软件。"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "common:timeStamp",
+                "common:referenceToDataSetFormat"
+              ]
+            },
+            "publicationAndOwnership": {
+              "type": "object",
+              "properties": {
+                "common:dataSetVersion": {
+                  "type": "string",
+                  "description": "数据集的版本号。前两位数字表示主要更新，后两位数字表示较小的修订和错误更正等。第三个三位数字用于在数据集开发过程中自动和内部计数版本。 “数据集版本”与数据集的UUID 一起唯一标识每个数据集。"
+                },
+                "common:referenceToPrecedingDataSetVersion": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "最后一个先前的数据集，已被此版本替换。在TIDAS中，该引用包括前面的数据集URI、UUID和版本号。"
+                },
+                "common:permanentDataSetURI": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "该数据集原始的 URI（即互联网地址）。 [注意：这个同样全球唯一的标识符支持用户和软件工具通过互联网识别和检索数据集的原始版本或检查可用的更新。 URI 不得代表现有的 WWW 地址，但它应该是唯一的并指向数据访问点，例如通过将数据所有者的 www 路径与数据集的UUID 相结合，例如http://www.mycompany.com/lca/processes/50f12420-8855-12db-b606-0900210c9a66。]"
+                },
+                "common:referenceToOwnershipOfDataSet": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "拥有该数据集的个人或实体的“联系人数据集”。 （注意：这不一定是数据集的发布者。）"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "common:dataSetVersion",
+                "common:referenceToOwnershipOfDataSet"
+              ]
+            },
+            "common:other": {
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+            }
+          },
+          "required": [
+            "dataEntryBy",
+            "publicationAndOwnership"
+          ]
+        },
+        "common:other": {
+          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+        }
+      },
+      "required": [
+        "@xmlns:common",
+        "@xmlns",
+        "@xmlns:xsi",
+        "@version",
+        "@xsi:schemaLocation",
+        "contactInformation",
+        "administrativeInformation"
+      ]
+    },
+    "common:other": {
+      "$ref": "tidas_data_types.json#/$defs/CommonOther"
+    }
+  },
+  "required": [
+    "contactDataSet"
+  ]
+}

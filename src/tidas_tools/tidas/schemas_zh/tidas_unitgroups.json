@@ -1,0 +1,338 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "unitGroupDataSet": {
+      "type": "object",
+      "properties": {
+        "@xmlns": {
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/UnitGroup"
+        },
+        "@xmlns:common": {
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/Common"
+        },
+        "@xmlns:xsi": {
+          "type": "string",
+          "const": "http://www.w3.org/2001/XMLSchema-instance"
+        },
+        "@version": {
+          "type": "string",
+          "const": "1.1"
+        },
+        "@xsi:schemaLocation": {
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/UnitGroup ../../schemas/ILCD_UnitGroupDataSet.xsd"
+        },
+        "unitGroupInformation": {
+          "type": "object",
+          "properties": {
+            "dataSetInformation": {
+              "type": "object",
+              "properties": {
+                "common:UUID": {
+                  "$ref": "tidas_data_types.json#/$defs/UUID",
+                  "description": "自动生成该数据集的通用唯一标识符。UUID 与“数据集版本”一起唯一标识每个数据集。"
+                },
+                "common:name": {
+                  "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                  "description": "单元组的名称，通常指示它用于哪个流属性或流属性组。各个单位在“单位组数据集”的“单位”部分中命名"
+                },
+                "classificationInformation": {
+                  "type": "object",
+                  "description": "单元组的层次分类；预计将用于构建数据库的单元组内容。 （注意：识别单元组数据集不需要此条目。不过，应避免对同一类中的单元组使用相同的名称。",
+                  "properties": {
+                    "common:classification": {
+                      "type": "object",
+                      "description": "数据集的可选统计或其他分类。通常也用于构建 LCA 数据库。",
+                      "properties": {
+                        "common:class": {
+                          "type": "object",
+                          "properties": {
+                            "@level": {
+                              "$ref": "tidas_data_types.json#/$defs/LevelType",
+                              "const": "0",
+                              "description": "如果在分层分类系统中指定了多个类别，则可以使用该类别的属性来指定分层级别（1,2，...）。"
+                            },
+                            "@classId": {
+                              "type": "string",
+                              "description": "类的唯一标识符。 [注意：如果引用的类别文件中也定义了此类标识符，则它们应该是相同的。标识符可以是UUID，但也允许使用其他形式。]"
+                            },
+                            "#text": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "@level",
+                            "@classId",
+                            "#text"
+                          ],
+                          "dependencies": {
+                            "@level": {
+                              "$ref": "./tidas_unitgroups_category.json#/$defs/UnitGroup"
+                            }
+                          }
+                        },
+                        "common:other": {
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        }
+                      },
+                      "required": [
+                        "common:class"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "common:classification"
+                  ]
+                },
+                "common:generalComment": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "有关数据集的一般信息的自由文本。例如不同单位制的覆盖范围、使用的信息来源等"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "common:UUID",
+                "common:name",
+                "classificationInformation"
+              ]
+            },
+            "quantitativeReference": {
+              "type": "object",
+              "properties": {
+                "referenceToReferenceUnit": {
+                  "$ref": "tidas_data_types.json#/$defs/Int5"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "referenceToReferenceUnit"
+              ]
+            },
+            "common:other": {
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+            }
+          },
+          "required": [
+            "dataSetInformation",
+            "quantitativeReference"
+          ]
+        },
+        "modellingAndValidation": {
+          "type": "object",
+          "properties": {
+            "complianceDeclarations": {
+              "type": "object",
+              "properties": {
+                "compliance": {
+                  "description": "一份合规声明。可以提供多个声明。",
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "common:referenceToComplianceSystem": {
+                          "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType"
+                        },
+                        "common:approvalOfOverallCompliance": {
+                          "type": "string",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:other": {
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        }
+                      },
+                      "required": [
+                        "common:referenceToComplianceSystem",
+                        "common:approvalOfOverallCompliance"
+                      ]
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "common:referenceToComplianceSystem": {
+                            "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType"
+                          },
+                          "common:approvalOfOverallCompliance": {
+                            "type": "string",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:other": {
+                            "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                          }
+                        },
+                        "required": [
+                          "common:referenceToComplianceSystem",
+                          "common:approvalOfOverallCompliance"
+                        ]
+                      },
+                      "minItems": 1
+                    }
+                  ]
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "compliance"
+              ]
+            },
+            "common:other": {
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+            }
+          },
+          "required": [
+            "complianceDeclarations"
+          ]
+        },
+        "administrativeInformation": {
+          "type": "object",
+          "properties": {
+            "dataEntryBy": {
+              "type": "object",
+              "properties": {
+                "common:timeStamp": {
+                  "$ref": "tidas_data_types.json#/$defs/dateTime",
+                  "description": "数据集生成的日期和时间戳，通常是自动输入（“上次保存”）。"
+                },
+                "common:referenceToDataSetFormat": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "ILCD 格式所用版本的“源数据集”。如果使用“命名空间”选项将附加数据格式字段集成到数据集文件中，则将给出所使用的格式命名空间。如果数据集携带由其他特定 LCA 格式指定的附加信息，例如，则属于这种情况。其他数据库网络或 LCA 软件。"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "common:timeStamp",
+                "common:referenceToDataSetFormat"
+              ]
+            },
+            "publicationAndOwnership": {
+              "type": "object",
+              "properties": {
+                "common:dataSetVersion": {
+                  "type": "string",
+                  "description": "数据集的版本号。前两位数字表示主要更新，后两位数字表示较小的修订和错误更正等。第三个三位数字用于在数据集开发过程中自动和内部计数版本。 “数据集版本”与数据集的UUID 一起唯一标识每个数据集。"
+                },
+                "common:referenceToPrecedingDataSetVersion": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "最后一个先前的数据集，已被此版本替换。在TIDAS中，该引用包括前面的数据集URI、UUID和版本号。"
+                },
+                "common:permanentDataSetURI": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "该数据集原始的 URI（即互联网地址）。 [注意：这个同样全球唯一的标识符支持用户和软件工具通过互联网识别和检索数据集的原始版本或检查可用的更新。 URI 不得代表现有的 WWW 地址，但它应该是唯一的并指向数据访问点，例如通过将数据所有者的 www 路径与数据集的UUID 相结合，例如http://www.mycompany.com/lca/processes/50f12420-8855-12db-b606-0900210c9a66。]"
+                },
+                "common:referenceToOwnershipOfDataSet": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "拥有该数据集的个人或实体的“联系人数据集”。 （注意：这不一定是数据集的发布者。）"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "common:dataSetVersion",
+                "common:referenceToOwnershipOfDataSet"
+              ]
+            },
+            "common:other": {
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+            }
+          },
+          "required": [
+            "dataEntryBy",
+            "publicationAndOwnership"
+          ]
+        },
+        "units": {
+          "type": "object",
+          "properties": {
+            "unit": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "@dataSetInternalID": {
+                      "$ref": "tidas_data_types.json#/$defs/Int5"
+                    },
+                    "name": {
+                      "$ref": "tidas_data_types.json#/$defs/String"
+                    },
+                    "meanValue": {
+                      "$ref": "tidas_data_types.json#/$defs/Real"
+                    },
+                    "generalComment": {
+                      "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                      "description": "对每个单元的一般注释，通常给出该单元所源自的长名称和单元系统，并且（如果需要）引用所使用的特定数据源，或者出于工作流程目的有关条目“最终确定”状态等。"
+                    },
+                    "common:other": {
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                    }
+                  }
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "@dataSetInternalID": {
+                        "$ref": "tidas_data_types.json#/$defs/Int5"
+                      },
+                      "name": {
+                        "$ref": "tidas_data_types.json#/$defs/String"
+                      },
+                      "meanValue": {
+                        "$ref": "tidas_data_types.json#/$defs/Real"
+                      },
+                      "generalComment": {
+                        "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                        "description": "对每个单元的一般注释，通常给出该单元所源自的长名称和单元系统，并且（如果需要）引用所使用的特定数据源，或者出于工作流程目的有关条目“最终确定”状态等。"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "common:other": {
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+            }
+          }
+        },
+        "common:other": {
+          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+        }
+      },
+      "required": [
+        "@xmlns",
+        "@xmlns:common",
+        "@xmlns:xsi",
+        "@version",
+        "@xsi:schemaLocation",
+        "unitGroupInformation",
+        "modellingAndValidation",
+        "administrativeInformation"
+      ]
+    }
+  },
+  "required": [
+    "unitGroupDataSet"
+  ]
+}

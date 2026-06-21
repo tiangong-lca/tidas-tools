@@ -1,0 +1,722 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "flowDataSet": {
+      "type": "object",
+      "properties": {
+        "@xmlns": {
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/Flow"
+        },
+        "@xmlns:common": {
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/Common"
+        },
+        "@xmlns:ecn": {
+          "type": "string",
+          "const": "http://eplca.jrc.ec.europa.eu/ILCD/Extensions/2018/ECNumber"
+        },
+        "@xmlns:xsi": {
+          "type": "string",
+          "const": "http://www.w3.org/2001/XMLSchema-instance"
+        },
+        "@version": {
+          "type": "string",
+          "const": "1.1"
+        },
+        "@locations": {
+          "type": "string",
+          "const": "../ILCDLocations.xml"
+        },
+        "@xsi:schemaLocation": {
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/Flow ../../schemas/ILCD_FlowDataSet.xsd"
+        },
+        "flowInformation": {
+          "type": "object",
+          "properties": {
+            "dataSetInformation": {
+              "type": "object",
+              "properties": {
+                "common:UUID": {
+                  "$ref": "tidas_data_types.json#/$defs/UUID",
+                  "description": "自动生成该数据集的通用唯一标识符。UUID 与“数据集版本”一起唯一标识每个数据集。"
+                },
+                "name": {
+                  "type": "object",
+                  "properties": {
+                    "baseName": {
+                      "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
+                    },
+                    "treatmentStandardsRoutes": {
+                      "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
+                    },
+                    "mixAndLocationTypes": {
+                      "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
+                    },
+                    "flowProperties": {
+                      "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
+                    },
+                    "common:other": {
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                    }
+                  },
+                  "required": [
+                    "baseName",
+                    "treatmentStandardsRoutes",
+                    "mixAndLocationTypes"
+                  ]
+                },
+                "common:synonyms": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "商品、服务或过程的同义词/替代名称/品牌。用分号分隔。"
+                },
+                "classificationInformation": {
+                  "type": "object",
+                  "description": "预计将使用流属性的分层分类来构造数据库的流属性内容。 （注意：识别流属性数据集不需要此条目。不过，应避免在同一类中对流属性使用相同的名称。",
+                  "properties": {
+                    "common:elementaryFlowCategorization": {
+                      "type": "object",
+                      "properties": {
+                        "common:category": {
+                          "type": "array",
+                          "items": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "@level": {
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                  "const": "0"
+                                },
+                                "@catId": {
+                                  "type": "string"
+                                },
+                                "#text": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "@level",
+                                "@catId",
+                                "#text"
+                              ],
+                              "dependencies": {
+                                "@level": {
+                                  "$ref": "./tidas_flows_elementary_category.json"
+                                }
+                              }
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "@level": {
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                  "const": "1"
+                                },
+                                "@catId": {
+                                  "type": "string"
+                                },
+                                "#text": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "@level",
+                                "@catId",
+                                "#text"
+                              ],
+                              "dependencies": {
+                                "@level": {
+                                  "$ref": "./tidas_flows_elementary_category.json"
+                                }
+                              }
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "@level": {
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                  "const": "2"
+                                },
+                                "@catId": {
+                                  "type": "string"
+                                },
+                                "#text": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "@level",
+                                "@catId",
+                                "#text"
+                              ],
+                              "dependencies": {
+                                "@level": {
+                                  "$ref": "./tidas_flows_elementary_category.json"
+                                }
+                              }
+                            }
+                          ],
+                          "uniqueItems": true,
+                          "maxItems": 3,
+                          "additionalItems": false
+                        },
+                        "common:other": {
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        }
+                      },
+                      "required": [
+                        "common:category"
+                      ]
+                    },
+                    "common:classification": {
+                      "type": "object",
+                      "properties": {
+                        "common:class": {
+                          "type": "array",
+                          "items": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "@level": {
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                  "const": "0"
+                                },
+                                "@classId": {
+                                  "type": "string"
+                                },
+                                "#text": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "@level",
+                                "@classId",
+                                "#text"
+                              ],
+                              "dependencies": {
+                                "@level": {
+                                  "$ref": "./tidas_flows_product_category.json"
+                                }
+                              }
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "@level": {
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                  "const": "1"
+                                },
+                                "@classId": {
+                                  "type": "string"
+                                },
+                                "#text": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "@level",
+                                "@classId",
+                                "#text"
+                              ],
+                              "dependencies": {
+                                "@level": {
+                                  "$ref": "./tidas_flows_product_category.json"
+                                }
+                              }
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "@level": {
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                  "const": "2"
+                                },
+                                "@classId": {
+                                  "type": "string"
+                                },
+                                "#text": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "@level",
+                                "@classId",
+                                "#text"
+                              ],
+                              "dependencies": {
+                                "@level": {
+                                  "$ref": "./tidas_flows_product_category.json"
+                                }
+                              }
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "@level": {
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                  "const": "3"
+                                },
+                                "@classId": {
+                                  "type": "string"
+                                },
+                                "#text": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "@level",
+                                "@classId",
+                                "#text"
+                              ],
+                              "dependencies": {
+                                "@level": {
+                                  "$ref": "./tidas_flows_product_category.json"
+                                }
+                              }
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "@level": {
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                  "const": "4"
+                                },
+                                "@classId": {
+                                  "type": "string"
+                                },
+                                "#text": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "@level",
+                                "@classId",
+                                "#text"
+                              ],
+                              "dependencies": {
+                                "@level": {
+                                  "$ref": "./tidas_flows_product_category.json"
+                                }
+                              }
+                            }
+                          ],
+                          "uniqueItems": true,
+                          "maxItems": 5,
+                          "additionalItems": false
+                        },
+                        "common:other": {
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        }
+                      },
+                      "required": [
+                        "common:class"
+                      ]
+                    }
+                  },
+                  "oneOf": [
+                    {
+                      "required": [
+                        "common:elementaryFlowCategorization"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "common:classification"
+                      ]
+                    }
+                  ]
+                },
+                "CASNumber": {
+                  "$ref": "tidas_data_types.json#/$defs/CASNumber",
+                  "description": "化学文摘系统 物质的编号。 [注：仅应给出（几乎）纯物质，但不适用于材料或产品等的主要成分]"
+                },
+                "sumFormula": {
+                  "$ref": "tidas_data_types.json#/$defs/String",
+                  "description": "物质的化学总式。"
+                },
+                "common:generalComment": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "有关 流数据集的一般信息的自由文本。它可能包含以下信息：在特定技术或行业环境中物质、商品、服务或过程的使用、使用的信息源、数据选择原则等。"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "common:UUID",
+                "name",
+                "classificationInformation"
+              ]
+            },
+            "quantitativeReference": {
+              "type": "object",
+              "properties": {
+                "referenceToReferenceFlowProperty": {
+                  "$ref": "tidas_data_types.json#/$defs/Int5"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "referenceToReferenceFlowProperty"
+              ]
+            },
+            "geography": {
+              "type": "object",
+              "properties": {
+                "locationOfSupply": {
+                  "$ref": "tidas_locations_category.json"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              }
+            },
+            "technology": {
+              "type": "object",
+              "properties": {
+                "technologicalApplicability": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "对商品或服务或废物的预期/可能应用的描述。例如该数据集代表的材料用于哪种类型的产品。示例：“这种高纯度化学品仅用于分析实验室。”或“这种技术质量的散装化学品用于化学工业的大规模合成。”。或者：“这种类型的生物废物通常被堆肥或生物消化，因为含水量太高而无法有效燃烧”。"
+                },
+                "referenceToTechnicalSpecification": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "产品或废物的技术规范、废物数据表、安全数据表等的“源数据集”。"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              }
+            },
+            "common:other": {
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+            }
+          },
+          "required": [
+            "dataSetInformation",
+            "quantitativeReference"
+          ]
+        },
+        "modellingAndValidation": {
+          "type": "object",
+          "properties": {
+            "LCIMethod": {
+              "type": "object",
+              "properties": {
+                "typeOfDataSet": {
+                  "type": "string",
+                  "enum": [
+                    "Elementary flow",
+                    "Product flow",
+                    "Waste flow",
+                    "Other flow"
+                  ]
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "typeOfDataSet"
+              ]
+            },
+            "complianceDeclarations": {
+              "type": "object",
+              "properties": {
+                "compliance": {
+                  "description": "一份合规声明。可以提供多个声明。",
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "common:referenceToComplianceSystem": {
+                          "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType"
+                        },
+                        "common:approvalOfOverallCompliance": {
+                          "type": "string",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:other": {
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        }
+                      },
+                      "required": [
+                        "common:referenceToComplianceSystem",
+                        "common:approvalOfOverallCompliance"
+                      ]
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "common:referenceToComplianceSystem": {
+                            "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType"
+                          },
+                          "common:approvalOfOverallCompliance": {
+                            "type": "string",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:other": {
+                            "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                          }
+                        },
+                        "required": [
+                          "common:referenceToComplianceSystem",
+                          "common:approvalOfOverallCompliance"
+                        ]
+                      },
+                      "minItems": 1
+                    }
+                  ]
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "compliance"
+              ]
+            },
+            "common:other": {
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+            }
+          },
+          "required": [
+            "LCIMethod",
+            "complianceDeclarations"
+          ]
+        },
+        "administrativeInformation": {
+          "type": "object",
+          "properties": {
+            "dataEntryBy": {
+              "type": "object",
+              "properties": {
+                "common:timeStamp": {
+                  "$ref": "tidas_data_types.json#/$defs/dateTime",
+                  "description": "数据集生成的日期和时间戳，通常是自动输入（“上次保存”）。"
+                },
+                "common:referenceToDataSetFormat": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "ILCD 格式所用版本的“源数据集”。如果使用“命名空间”选项将附加数据格式字段集成到数据集文件中，则将给出所使用的格式命名空间。如果数据集携带由其他特定 LCA 格式指定的附加信息，例如，则属于这种情况。其他数据库网络或 LCA 软件。"
+                },
+                "common:referenceToPersonOrEntityEnteringTheData": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "记录该数据集的负责人或实体的“联系数据集”，即输入的数据和描述性信息。"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "common:timeStamp",
+                "common:referenceToDataSetFormat"
+              ]
+            },
+            "publicationAndOwnership": {
+              "type": "object",
+              "properties": {
+                "common:dataSetVersion": {
+                  "type": "string",
+                  "description": "数据集的版本号。前两位数字表示主要更新，后两位数字表示较小的修订和错误更正等。第三个三位数字用于在数据集开发过程中自动和内部计数版本。 “数据集版本”与数据集的UUID 一起唯一标识每个数据集。"
+                },
+                "common:referenceToPrecedingDataSetVersion": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "最后一个先前的数据集，已被此版本替换。在TIDAS中，该引用包括前面的数据集URI、UUID和版本号。"
+                },
+                "common:permanentDataSetURI": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "该数据集原始的 URI（即互联网地址）。 [注意：这个同样全球唯一的标识符支持用户和软件工具通过互联网识别和检索数据集的原始版本或检查可用的更新。 URI 不得代表现有的 WWW 地址，但它应该是唯一的并指向数据访问点，例如通过将数据所有者的 www 路径与数据集的UUID 相结合，例如http://www.mycompany.com/lca/processes/50f12420-8855-12db-b606-0900210c9a66。]"
+                },
+                "common:referenceToOwnershipOfDataSet": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "拥有该数据集的个人或实体的“联系人数据集”。 （注意：这不一定是数据集的发布者。）"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "common:dataSetVersion",
+                "common:referenceToOwnershipOfDataSet"
+              ]
+            },
+            "common:other": {
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+            }
+          },
+          "required": [
+            "dataEntryBy",
+            "publicationAndOwnership"
+          ]
+        },
+        "flowProperties": {
+          "type": "object",
+          "properties": {
+            "flowProperty": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "@dataSetInternalID": {
+                      "$ref": "tidas_data_types.json#/$defs/Int5",
+                      "description": "自动输入：内部ID，在“定量参考”部分中用于识别参考流属性。"
+                    },
+                    "referenceToFlowPropertyDataSet": {
+                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType"
+                    },
+                    "meanValue": {
+                      "$ref": "tidas_data_types.json#/$defs/Real",
+                      "description": "此流属性中表示的流量值与其参考流属性中表示的流量值的关系（请参阅“定量参考”部分中的“对参考流属性的参考”字段）。 [注释和示例：如果产品流“柴油”默认以“质量”（= 参考流属性）和“千克”（= 相应的参考单位）表示，则此处将针对附加流属性说明值，例如“净热值”将为“42.5”，因为该流属性的参考单位为“MJ”，而柴油的净热值为每 1 kg 42.5 MJ。建议仅报告该值的有效数字。]"
+                    },
+                    "minimumValue": {
+                      "$ref": "tidas_data_types.json#/$defs/Real",
+                      "description": "在不确定性分布为均匀或三角形的情况下，该流动属性的最小值。"
+                    },
+                    "maximumValue": {
+                      "$ref": "tidas_data_types.json#/$defs/Real",
+                      "description": "在不确定性分布为均匀或三角形的情况下，该流动属性的最大值。"
+                    },
+                    "uncertaintyDistributionType": {
+                      "type": "string",
+                      "enum": [
+                        "undefined",
+                        "log-normal",
+                        "normal",
+                        "triangular",
+                        "uniform"
+                      ]
+                    },
+                    "relativeStandardDeviation95In": {
+                      "$ref": "tidas_data_types.json#/$defs/Perc",
+                      "description": "考虑到测量、建模、适当性等的不确定性，计算得出的变量值的总体不确定性。 [注：对于对数正态分布，规定了几何标准差的平方 (SDg^2)。平均值乘以 SDg^2 等于 97.5% 值（= 最大值），平均值除以 SDg^2 等于 2.5% 值（= 最小值）。对于正态分布，输入双倍标准差值 (2*SD)。平均值加上 2*SD 等于 97.5% 值（= 最大值），平均值减去 2*SD 等于 2.5% 值（= 最小值）。当应用均匀或三角不确定性分布时，该数据字段保持为空。]"
+                    },
+                    "dataDerivationTypeStatus": {
+                      "type": "string",
+                      "enum": [
+                        "Measured",
+                        "Calculated",
+                        "Estimated",
+                        "Unknown derivation"
+                      ]
+                    },
+                    "generalComment": {
+                      "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
+                    },
+                    "common:other": {
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                    }
+                  },
+                  "required": [
+                    "@dataSetInternalID",
+                    "referenceToFlowPropertyDataSet",
+                    "meanValue"
+                  ]
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "@dataSetInternalID": {
+                        "$ref": "tidas_data_types.json#/$defs/Int5",
+                        "description": "自动输入：内部ID，在“定量参考”部分中用于识别参考流属性。"
+                      },
+                      "referenceToFlowPropertyDataSet": {
+                        "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType"
+                      },
+                      "meanValue": {
+                        "$ref": "tidas_data_types.json#/$defs/Real",
+                        "description": "此流属性中表示的流量值与其参考流属性中表示的流量值的关系（请参阅“定量参考”部分中的“对参考流属性的参考”字段）。 [注释和示例：如果产品流“柴油”默认以“质量”（= 参考流属性）和“千克”（= 相应的参考单位）表示，则此处将针对附加流属性说明值，例如“净热值”将为“42.5”，因为该流属性的参考单位为“MJ”，而柴油的净热值为每 1 kg 42.5 MJ。建议仅报告该值的有效数字。]"
+                      },
+                      "minimumValue": {
+                        "$ref": "tidas_data_types.json#/$defs/Real",
+                        "description": "在不确定性分布为均匀或三角形的情况下，该流动属性的最小值。"
+                      },
+                      "maximumValue": {
+                        "$ref": "tidas_data_types.json#/$defs/Real",
+                        "description": "在不确定性分布为均匀或三角形的情况下，该流动属性的最大值。"
+                      },
+                      "uncertaintyDistributionType": {
+                        "type": "string",
+                        "enum": [
+                          "undefined",
+                          "log-normal",
+                          "normal",
+                          "triangular",
+                          "uniform"
+                        ]
+                      },
+                      "relativeStandardDeviation95In": {
+                        "$ref": "tidas_data_types.json#/$defs/Perc",
+                        "description": "考虑到测量、建模、适当性等的不确定性，计算得出的变量值的总体不确定性。 [注：对于对数正态分布，规定了几何标准差的平方 (SDg^2)。平均值乘以 SDg^2 等于 97.5% 值（= 最大值），平均值除以 SDg^2 等于 2.5% 值（= 最小值）。对于正态分布，输入双倍标准差值 (2*SD)。平均值加上 2*SD 等于 97.5% 值（= 最大值），平均值减去 2*SD 等于 2.5% 值（= 最小值）。当应用均匀或三角不确定性分布时，该数据字段保持为空。]"
+                      },
+                      "dataDerivationTypeStatus": {
+                        "type": "string",
+                        "enum": [
+                          "Measured",
+                          "Calculated",
+                          "Estimated",
+                          "Unknown derivation"
+                        ]
+                      },
+                      "generalComment": {
+                        "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
+                      },
+                      "common:other": {
+                        "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                      }
+                    },
+                    "required": [
+                      "@dataSetInternalID",
+                      "referenceToFlowPropertyDataSet",
+                      "meanValue"
+                    ]
+                  }
+                }
+              ]
+            },
+            "common:other": {
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+            }
+          },
+          "required": [
+            "flowProperty"
+          ]
+        },
+        "common:other": {
+          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+        }
+      },
+      "required": [
+        "@xmlns",
+        "@xmlns:common",
+        "@xmlns:ecn",
+        "@xmlns:xsi",
+        "@version",
+        "@locations",
+        "@xsi:schemaLocation",
+        "flowInformation",
+        "modellingAndValidation",
+        "administrativeInformation",
+        "flowProperties"
+      ]
+    }
+  },
+  "required": [
+    "flowDataSet"
+  ]
+}

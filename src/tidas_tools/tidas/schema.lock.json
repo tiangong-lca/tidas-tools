@@ -1,0 +1,269 @@
+{
+  "allowedLocalizedKeys": [
+    "description"
+  ],
+  "generation": {
+    "mode": "deterministic-v1",
+    "tool": "scripts/schema_lock.py"
+  },
+  "schemaRoot": "src/tidas_tools/tidas",
+  "schemaSets": {
+    "en": {
+      "contentAggregateSha256": "4f969fa19de3bff55c8f0317f9e6b271e03152d0ea4c50605871f3950971aedd",
+      "contractAggregateSha256": "83e946565f76adcb1d821e3f798100aa4b554a09d6d5f03569bc7af5dd4e12af",
+      "fileCount": 18,
+      "files": {
+        "tidas_contacts.json": {
+          "contentSha256": "44c9168b0a456381da54767d234d2e1fdf51d7407248b00b135a87e08432bbe0",
+          "contractSha256": "0f641273339a04e4f3d8b64594c07cd2d571071ce6ec6a02ec68024ed6b19d0a"
+        },
+        "tidas_contacts_category.json": {
+          "contentSha256": "2d043a6686320b5fec5d4012dfd03bdb57897375002b25fc6a64df8ea10092b5",
+          "contractSha256": "4b8d35f80ac16d5362095eb7bd83ebcb4c96411d3870c8242373b76d41cd876c"
+        },
+        "tidas_data_types.json": {
+          "contentSha256": "3336af1264b1c2903c171043fcd2a30457b7de9b5e69129f44782649977d4967",
+          "contractSha256": "39227a54a9eab8c5493a930631319ec3d100a2d58ad3ab62694fa30b0d1a991a"
+        },
+        "tidas_flowproperties.json": {
+          "contentSha256": "1beaa26260203534664bd56da2a7b33de0198407d688c222bfcc6247a349540e",
+          "contractSha256": "6bfa6697515299d7912942edd8efb3fec81dc9db06e5a9dbcf3e0c6f203780d9"
+        },
+        "tidas_flowproperties_category.json": {
+          "contentSha256": "0fd7f4b2e350532ba5809019a079f8fadb90f91702358c1ff7deea19c956a846",
+          "contractSha256": "78018626e461315fd821988b87b53e919516a5eb7c91e1f9a4320d76a6adb431"
+        },
+        "tidas_flows.json": {
+          "contentSha256": "48d010a8c41eac7d7063445d709d813bd468cea7ce7cdab24aa3126825795105",
+          "contractSha256": "d03f6d1cfa07cccf14808be1c28d849865cc78d192d0ed7fb7d5ea0d06862002"
+        },
+        "tidas_flows_elementary_category.json": {
+          "contentSha256": "e7b05dd2f082f2a60f4520f9a6eee1f28a2cabd5ea92f47c6ce07194275b26ea",
+          "contractSha256": "78c76935ef941853bea7ba766318e8fa363fcaf54756b864f5fd14828c729974"
+        },
+        "tidas_flows_product_category.json": {
+          "contentSha256": "e62e1f676dedaeb6028b05f0c1cc84f53c1c47058ae6e17897f77b2cb17b7cb2",
+          "contractSha256": "1c096f134747298c4d5a72aae271cc8a07ea9e60205383408281701497cc3b65"
+        },
+        "tidas_lciamethods.json": {
+          "contentSha256": "5b4a728ee0fce591e2dcf76d33740e21cdb10dee46c8ac0828d90cc93f6c7c7d",
+          "contractSha256": "2f6fa9239fb7e55c3ee22bdc9007d3139dee6211a6fad2b381097708e8bb8110"
+        },
+        "tidas_lciamethods_category.json": {
+          "contentSha256": "83b4bbfb53a2ad1cb1f9c97c261cc867ea6f509020a8ea9041ffba08601eaac9",
+          "contractSha256": "fedb096de842fe2675f95d6f8a92564d899e1149dbebbb5fd996e36a07278281"
+        },
+        "tidas_lifecyclemodels.json": {
+          "contentSha256": "90fcf0d4eab38e30e12d2159b73a9cc887aa211f7758908d53faec39fd4b18d2",
+          "contractSha256": "5b552909dbbf22a7c0ee425c0a399dabcf2563fedaff4ce5d67cdec02a21fd99"
+        },
+        "tidas_locations_category.json": {
+          "contentSha256": "f8a9f7e9802cfe9812301564c5c1c541b5aa32100a18b70f5892df20c5b95c9b",
+          "contractSha256": "704ae38294f64442ab8c36cb72f17555a0b7e4a876f5f16bda461846fd061bf3"
+        },
+        "tidas_processes.json": {
+          "contentSha256": "ab3da1159400dbd5012d1184ca807d13e20c8d25a74c5ff56422f257530fdd26",
+          "contractSha256": "b7a2c0a02a2d2bb161fb97cf1357de2d83c530d09f1b926d84d7c2d237aebc3e"
+        },
+        "tidas_processes_category.json": {
+          "contentSha256": "cea1b97b46fd9faa2f7f4d7b911ff19f24a1655ff98b488ebaf5cc9ee6fdec64",
+          "contractSha256": "fbbf0d8006ff5ae55b4213be01a1c4cad7cefe6de63d21ff63c170adda275ecc"
+        },
+        "tidas_sources.json": {
+          "contentSha256": "bf3e19e7c02ae75433f46e2c15a73131f224ce7121175d0a8df1117f5f8d1170",
+          "contractSha256": "ad58a6d6a0fbfa57b73a2a4f64e6dd721ad8c5f64c8c1214336508a3319a1aaa"
+        },
+        "tidas_sources_category.json": {
+          "contentSha256": "dc22fa07e7a2b4742133ea642505b6a18011552459b84764908166d1994c985f",
+          "contractSha256": "6287b6bb2d7955009e2e102a4ff21879202f48f66ad42b36fdd8a4f9ef717be0"
+        },
+        "tidas_unitgroups.json": {
+          "contentSha256": "6abafbb651e26d45bf519e9b24df0b320cd32fbc7984248a1e2fb9d8d2f33f56",
+          "contractSha256": "d7f35b6c0ff5d9ad5f892cb1e63f16b45dbaeaa74b26acb85d64223e68fd3d12"
+        },
+        "tidas_unitgroups_category.json": {
+          "contentSha256": "c490544c405ee6ef06e52e121f29994d112040a3f4888541fa69569c998d8b72",
+          "contractSha256": "90cf93d333183e7527476464d71430244b97ce0435526b57dad2574cdb655bd0"
+        }
+      },
+      "path": "schemas"
+    },
+    "zh": {
+      "contentAggregateSha256": "d898d4f2524fc40510bf4037f2bb4de89b6986108d208c6e3b0cef3e32e0a51a",
+      "contractAggregateSha256": "83e946565f76adcb1d821e3f798100aa4b554a09d6d5f03569bc7af5dd4e12af",
+      "fileCount": 18,
+      "files": {
+        "tidas_contacts.json": {
+          "contentSha256": "53ba55a8e6074b8631248bef9aa3c62dbf0ad3722f0ae5e3514d52df108e8354",
+          "contractSha256": "0f641273339a04e4f3d8b64594c07cd2d571071ce6ec6a02ec68024ed6b19d0a"
+        },
+        "tidas_contacts_category.json": {
+          "contentSha256": "d95c48c28fc2a88ad058d4ae15b9f83b8664f27b691780c9556e590783c0fdb1",
+          "contractSha256": "4b8d35f80ac16d5362095eb7bd83ebcb4c96411d3870c8242373b76d41cd876c"
+        },
+        "tidas_data_types.json": {
+          "contentSha256": "326465634ba1fa7d0a4243fb67ee54e65d1cf4b0f4cf2860fd08651842f8afd4",
+          "contractSha256": "39227a54a9eab8c5493a930631319ec3d100a2d58ad3ab62694fa30b0d1a991a"
+        },
+        "tidas_flowproperties.json": {
+          "contentSha256": "93291967777d1c336f3fbf56fbc4e9f2469c871a1fef3ccf219345578dd0d263",
+          "contractSha256": "6bfa6697515299d7912942edd8efb3fec81dc9db06e5a9dbcf3e0c6f203780d9"
+        },
+        "tidas_flowproperties_category.json": {
+          "contentSha256": "d2962260c52de1af02ed8a40766b3b5391518c6c7df02ab263db3feaa32da523",
+          "contractSha256": "78018626e461315fd821988b87b53e919516a5eb7c91e1f9a4320d76a6adb431"
+        },
+        "tidas_flows.json": {
+          "contentSha256": "105b1391c5dbded0d728b3c1d90a068eba078c4a972a8fa27acb506f9d2af581",
+          "contractSha256": "d03f6d1cfa07cccf14808be1c28d849865cc78d192d0ed7fb7d5ea0d06862002"
+        },
+        "tidas_flows_elementary_category.json": {
+          "contentSha256": "1d1a91c4a24888683441b89ef19115855ec96d3428a722b4ef96877374bbb141",
+          "contractSha256": "78c76935ef941853bea7ba766318e8fa363fcaf54756b864f5fd14828c729974"
+        },
+        "tidas_flows_product_category.json": {
+          "contentSha256": "49e6444a61f833ccf97aeb5863f520971a6c7c3c0ed005a57142f040cfae2223",
+          "contractSha256": "1c096f134747298c4d5a72aae271cc8a07ea9e60205383408281701497cc3b65"
+        },
+        "tidas_lciamethods.json": {
+          "contentSha256": "07a19c476f27beb7ac21785f4d5e8a4a46818c8ff22a912a8c6d2d8c231da192",
+          "contractSha256": "2f6fa9239fb7e55c3ee22bdc9007d3139dee6211a6fad2b381097708e8bb8110"
+        },
+        "tidas_lciamethods_category.json": {
+          "contentSha256": "b11483c16aa5f0d47251b56598109085785168ef88facd28d770df6bb37ebe4c",
+          "contractSha256": "fedb096de842fe2675f95d6f8a92564d899e1149dbebbb5fd996e36a07278281"
+        },
+        "tidas_lifecyclemodels.json": {
+          "contentSha256": "3ee08b57942b731946f4865c362aac97c6902682b576328e582a9f2dc90b728f",
+          "contractSha256": "5b552909dbbf22a7c0ee425c0a399dabcf2563fedaff4ce5d67cdec02a21fd99"
+        },
+        "tidas_locations_category.json": {
+          "contentSha256": "edf04431a40cd514ce816f06201d272e1fb9712c8c64aab1175aa1bf123b284f",
+          "contractSha256": "704ae38294f64442ab8c36cb72f17555a0b7e4a876f5f16bda461846fd061bf3"
+        },
+        "tidas_processes.json": {
+          "contentSha256": "62def689a8074fe480f303895d36dac16389dfdb5c4956db728a59884ab42953",
+          "contractSha256": "b7a2c0a02a2d2bb161fb97cf1357de2d83c530d09f1b926d84d7c2d237aebc3e"
+        },
+        "tidas_processes_category.json": {
+          "contentSha256": "05107a1aab2869a38ffafc05461778a272117a6a1f2805b3c37a9354e7158bdd",
+          "contractSha256": "fbbf0d8006ff5ae55b4213be01a1c4cad7cefe6de63d21ff63c170adda275ecc"
+        },
+        "tidas_sources.json": {
+          "contentSha256": "7c4f00a1eb744a3be86d5b1b00b9a06a4217dc9d9fd1cf61c4b58ff6a823ea68",
+          "contractSha256": "ad58a6d6a0fbfa57b73a2a4f64e6dd721ad8c5f64c8c1214336508a3319a1aaa"
+        },
+        "tidas_sources_category.json": {
+          "contentSha256": "7d6882f088f9ad7c2ed9aa212e5d0030716a209196d8471bd650c75e3c3e4dad",
+          "contractSha256": "6287b6bb2d7955009e2e102a4ff21879202f48f66ad42b36fdd8a4f9ef717be0"
+        },
+        "tidas_unitgroups.json": {
+          "contentSha256": "b005e478854b3cb0c5367c2b5e55e85036f5292893bf541e06f0017a9ef4ab61",
+          "contractSha256": "d7f35b6c0ff5d9ad5f892cb1e63f16b45dbaeaa74b26acb85d64223e68fd3d12"
+        },
+        "tidas_unitgroups_category.json": {
+          "contentSha256": "c39bcc54cf03b010ebf176d18d6572ca7f65d3b656ea854cd729cfd96290faa5",
+          "contractSha256": "90cf93d333183e7527476464d71430244b97ce0435526b57dad2574cdb655bd0"
+        }
+      },
+      "path": "schemas_zh"
+    }
+  },
+  "translationPairs": {
+    "contractAggregateSha256": "83e946565f76adcb1d821e3f798100aa4b554a09d6d5f03569bc7af5dd4e12af",
+    "fileCount": 18,
+    "files": {
+      "tidas_contacts.json": {
+        "contractSha256": "0f641273339a04e4f3d8b64594c07cd2d571071ce6ec6a02ec68024ed6b19d0a",
+        "enContentSha256": "44c9168b0a456381da54767d234d2e1fdf51d7407248b00b135a87e08432bbe0",
+        "zhContentSha256": "53ba55a8e6074b8631248bef9aa3c62dbf0ad3722f0ae5e3514d52df108e8354"
+      },
+      "tidas_contacts_category.json": {
+        "contractSha256": "4b8d35f80ac16d5362095eb7bd83ebcb4c96411d3870c8242373b76d41cd876c",
+        "enContentSha256": "2d043a6686320b5fec5d4012dfd03bdb57897375002b25fc6a64df8ea10092b5",
+        "zhContentSha256": "d95c48c28fc2a88ad058d4ae15b9f83b8664f27b691780c9556e590783c0fdb1"
+      },
+      "tidas_data_types.json": {
+        "contractSha256": "39227a54a9eab8c5493a930631319ec3d100a2d58ad3ab62694fa30b0d1a991a",
+        "enContentSha256": "3336af1264b1c2903c171043fcd2a30457b7de9b5e69129f44782649977d4967",
+        "zhContentSha256": "326465634ba1fa7d0a4243fb67ee54e65d1cf4b0f4cf2860fd08651842f8afd4"
+      },
+      "tidas_flowproperties.json": {
+        "contractSha256": "6bfa6697515299d7912942edd8efb3fec81dc9db06e5a9dbcf3e0c6f203780d9",
+        "enContentSha256": "1beaa26260203534664bd56da2a7b33de0198407d688c222bfcc6247a349540e",
+        "zhContentSha256": "93291967777d1c336f3fbf56fbc4e9f2469c871a1fef3ccf219345578dd0d263"
+      },
+      "tidas_flowproperties_category.json": {
+        "contractSha256": "78018626e461315fd821988b87b53e919516a5eb7c91e1f9a4320d76a6adb431",
+        "enContentSha256": "0fd7f4b2e350532ba5809019a079f8fadb90f91702358c1ff7deea19c956a846",
+        "zhContentSha256": "d2962260c52de1af02ed8a40766b3b5391518c6c7df02ab263db3feaa32da523"
+      },
+      "tidas_flows.json": {
+        "contractSha256": "d03f6d1cfa07cccf14808be1c28d849865cc78d192d0ed7fb7d5ea0d06862002",
+        "enContentSha256": "48d010a8c41eac7d7063445d709d813bd468cea7ce7cdab24aa3126825795105",
+        "zhContentSha256": "105b1391c5dbded0d728b3c1d90a068eba078c4a972a8fa27acb506f9d2af581"
+      },
+      "tidas_flows_elementary_category.json": {
+        "contractSha256": "78c76935ef941853bea7ba766318e8fa363fcaf54756b864f5fd14828c729974",
+        "enContentSha256": "e7b05dd2f082f2a60f4520f9a6eee1f28a2cabd5ea92f47c6ce07194275b26ea",
+        "zhContentSha256": "1d1a91c4a24888683441b89ef19115855ec96d3428a722b4ef96877374bbb141"
+      },
+      "tidas_flows_product_category.json": {
+        "contractSha256": "1c096f134747298c4d5a72aae271cc8a07ea9e60205383408281701497cc3b65",
+        "enContentSha256": "e62e1f676dedaeb6028b05f0c1cc84f53c1c47058ae6e17897f77b2cb17b7cb2",
+        "zhContentSha256": "49e6444a61f833ccf97aeb5863f520971a6c7c3c0ed005a57142f040cfae2223"
+      },
+      "tidas_lciamethods.json": {
+        "contractSha256": "2f6fa9239fb7e55c3ee22bdc9007d3139dee6211a6fad2b381097708e8bb8110",
+        "enContentSha256": "5b4a728ee0fce591e2dcf76d33740e21cdb10dee46c8ac0828d90cc93f6c7c7d",
+        "zhContentSha256": "07a19c476f27beb7ac21785f4d5e8a4a46818c8ff22a912a8c6d2d8c231da192"
+      },
+      "tidas_lciamethods_category.json": {
+        "contractSha256": "fedb096de842fe2675f95d6f8a92564d899e1149dbebbb5fd996e36a07278281",
+        "enContentSha256": "83b4bbfb53a2ad1cb1f9c97c261cc867ea6f509020a8ea9041ffba08601eaac9",
+        "zhContentSha256": "b11483c16aa5f0d47251b56598109085785168ef88facd28d770df6bb37ebe4c"
+      },
+      "tidas_lifecyclemodels.json": {
+        "contractSha256": "5b552909dbbf22a7c0ee425c0a399dabcf2563fedaff4ce5d67cdec02a21fd99",
+        "enContentSha256": "90fcf0d4eab38e30e12d2159b73a9cc887aa211f7758908d53faec39fd4b18d2",
+        "zhContentSha256": "3ee08b57942b731946f4865c362aac97c6902682b576328e582a9f2dc90b728f"
+      },
+      "tidas_locations_category.json": {
+        "contractSha256": "704ae38294f64442ab8c36cb72f17555a0b7e4a876f5f16bda461846fd061bf3",
+        "enContentSha256": "f8a9f7e9802cfe9812301564c5c1c541b5aa32100a18b70f5892df20c5b95c9b",
+        "zhContentSha256": "edf04431a40cd514ce816f06201d272e1fb9712c8c64aab1175aa1bf123b284f"
+      },
+      "tidas_processes.json": {
+        "contractSha256": "b7a2c0a02a2d2bb161fb97cf1357de2d83c530d09f1b926d84d7c2d237aebc3e",
+        "enContentSha256": "ab3da1159400dbd5012d1184ca807d13e20c8d25a74c5ff56422f257530fdd26",
+        "zhContentSha256": "62def689a8074fe480f303895d36dac16389dfdb5c4956db728a59884ab42953"
+      },
+      "tidas_processes_category.json": {
+        "contractSha256": "fbbf0d8006ff5ae55b4213be01a1c4cad7cefe6de63d21ff63c170adda275ecc",
+        "enContentSha256": "cea1b97b46fd9faa2f7f4d7b911ff19f24a1655ff98b488ebaf5cc9ee6fdec64",
+        "zhContentSha256": "05107a1aab2869a38ffafc05461778a272117a6a1f2805b3c37a9354e7158bdd"
+      },
+      "tidas_sources.json": {
+        "contractSha256": "ad58a6d6a0fbfa57b73a2a4f64e6dd721ad8c5f64c8c1214336508a3319a1aaa",
+        "enContentSha256": "bf3e19e7c02ae75433f46e2c15a73131f224ce7121175d0a8df1117f5f8d1170",
+        "zhContentSha256": "7c4f00a1eb744a3be86d5b1b00b9a06a4217dc9d9fd1cf61c4b58ff6a823ea68"
+      },
+      "tidas_sources_category.json": {
+        "contractSha256": "6287b6bb2d7955009e2e102a4ff21879202f48f66ad42b36fdd8a4f9ef717be0",
+        "enContentSha256": "dc22fa07e7a2b4742133ea642505b6a18011552459b84764908166d1994c985f",
+        "zhContentSha256": "7d6882f088f9ad7c2ed9aa212e5d0030716a209196d8471bd650c75e3c3e4dad"
+      },
+      "tidas_unitgroups.json": {
+        "contractSha256": "d7f35b6c0ff5d9ad5f892cb1e63f16b45dbaeaa74b26acb85d64223e68fd3d12",
+        "enContentSha256": "6abafbb651e26d45bf519e9b24df0b320cd32fbc7984248a1e2fb9d8d2f33f56",
+        "zhContentSha256": "b005e478854b3cb0c5367c2b5e55e85036f5292893bf541e06f0017a9ef4ab61"
+      },
+      "tidas_unitgroups_category.json": {
+        "contractSha256": "90cf93d333183e7527476464d71430244b97ce0435526b57dad2574cdb655bd0",
+        "enContentSha256": "c490544c405ee6ef06e52e121f29994d112040a3f4888541fa69569c998d8b72",
+        "zhContentSha256": "c39bcc54cf03b010ebf176d18d6572ca7f65d3b656ea854cd729cfd96290faa5"
+      }
+    }
+  },
+  "version": 1
+}

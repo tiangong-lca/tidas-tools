@@ -48,6 +48,8 @@ ownership:
         include:
           - tests/**
           - test_data/**
+          - scripts/schema_lock.py
+          - .github/workflows/ci.yml
           - .github/workflows/dispatch-tidas-sdk-sync.yml
           - .github/workflows/python-package-deploy.yml
       ownerRepo: tidas-tools
@@ -81,8 +83,10 @@ coverage:
     - src/tidas_tools/package_versions.py
     - src/tidas_tools/tidas/**
     - src/tidas_tools/eilcd/**
+    - scripts/schema_lock.py
     - tests/**
     - test_data/**
+    - .github/workflows/ci.yml
     - .github/workflows/ai-doc-lint.yml
     - .github/workflows/dispatch-tidas-sdk-sync.yml
     - .github/workflows/python-package-deploy.yml
@@ -135,6 +139,9 @@ routing:
         - src/tidas_tools/validation_report.py
         - src/tidas_tools/tidas/schemas/**
         - src/tidas_tools/eilcd/schemas/**
+        - src/tidas_tools/tidas/schemas_zh/**
+        - src/tidas_tools/tidas/schema.lock.json
+        - scripts/schema_lock.py
     export:
       paths:
         - src/tidas_tools/export.py
@@ -147,6 +154,7 @@ routing:
       paths:
         - .github/workflows/dispatch-tidas-sdk-sync.yml
         - src/tidas_tools/tidas/schemas/**
+        - src/tidas_tools/tidas/schemas_zh/**
         - src/tidas_tools/tidas/methodologies/**
     release:
       paths:
@@ -156,9 +164,11 @@ routing:
       paths:
         - docs/agents/repo-validation.md
         - pyproject.toml
+        - scripts/schema_lock.py
         - src/tidas_tools/**
         - tests/**
         - test_data/**
+        - .github/workflows/ci.yml
         - .github/workflows/dispatch-tidas-sdk-sync.yml
         - .github/workflows/python-package-deploy.yml
     repo-docs:
@@ -276,6 +286,10 @@ rules:
         kind: repo-test
       - path: test_data/**
         kind: repo-fixture
+      - path: scripts/schema_lock.py
+        kind: automation
+      - path: .github/workflows/ci.yml
+        kind: automation
       - path: .github/workflows/dispatch-tidas-sdk-sync.yml
         kind: automation
       - path: .github/workflows/python-package-deploy.yml

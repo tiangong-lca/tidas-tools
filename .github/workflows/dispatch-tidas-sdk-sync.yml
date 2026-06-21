@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "src/tidas_tools/tidas/schemas/**"
+      - "src/tidas_tools/tidas/schemas_zh/**"
       - "src/tidas_tools/tidas/methodologies/**"
 
 permissions:
@@ -44,6 +45,7 @@ jobs:
 
           CHANGED_FILES="$(git diff --name-only "$BASE_REF" "$HEAD_REF" -- \
             src/tidas_tools/tidas/schemas \
+            src/tidas_tools/tidas/schemas_zh \
             src/tidas_tools/tidas/methodologies)"
 
           if [ -z "$CHANGED_FILES" ]; then
@@ -55,7 +57,7 @@ jobs:
           PYTHON=false
           REASON_PARTS=()
 
-          if printf '%s\n' "$CHANGED_FILES" | grep -q '^src/tidas_tools/tidas/schemas/'; then
+          if printf '%s\n' "$CHANGED_FILES" | grep -Eq '^src/tidas_tools/tidas/schemas(_zh)?/'; then
             TYPESCRIPT=true
             PYTHON=true
             REASON_PARTS+=("schema update")
