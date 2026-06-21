@@ -27,6 +27,7 @@ checkPaths:
   - .github/workflows/**
   - .githooks/**
   - scripts/docpact
+  - scripts/schema_lock.py
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-06-15
@@ -69,6 +70,7 @@ Read in this order:
 - minimum proof and manual CLI probe guidance live in `docs/agents/repo-validation.md`
 - stable path groups, upstream asset handoffs, and release / dispatch topology live in `docs/agents/repo-architecture.md`
 - repo-local documentation maintenance is enforced locally by the pre-push docpact gate; `.github/workflows/ai-doc-lint.yml` is manual-dispatch fallback
+- schema asset parity and lock validation are enforced by `scripts/schema_lock.py` and `.github/workflows/ci.yml`
 - the main routing intents are `tool-runtime`, `conversion`, `validation`, `export`, `packaged-assets`, `sdk-dispatch`, `release`, `proof`, `repo-docs`, and `root-integration`
 
 ## Minimal Execution Facts
@@ -81,6 +83,7 @@ Keep these entry-level facts in `AGENTS.md`. Use `README.md`, `README_CN.md`, an
 - canonical setup: `uv sync --dev`
 - canonical local test command: `uv run pytest`
 - after every code fix, run Black lint before final validation: `uv run black --check --target-version py313 src tests`
+- canonical schema asset check: `uv run python scripts/schema_lock.py check`
 - common manual probes:
   - `uv run python src/tidas_tools/convert.py --help`
   - `uv run python src/tidas_tools/import_lca/cli.py --help`
@@ -100,7 +103,7 @@ At a human-readable level, this repo owns:
 - validation report and version/export helpers in `src/tidas_tools/validation_report.py` and `src/tidas_tools/package_versions.py`
 - packaged TIDAS schemas and methodologies under `src/tidas_tools/tidas/**`
 - packaged eILCD schemas and stylesheets under `src/tidas_tools/eilcd/**`
-- tests and automation under `tests/**`, `.github/workflows/dispatch-tidas-sdk-sync.yml`, and `.github/workflows/python-package-deploy.yml`
+- tests and automation under `tests/**`, `scripts/schema_lock.py`, `.github/workflows/ci.yml`, `.github/workflows/dispatch-tidas-sdk-sync.yml`, and `.github/workflows/python-package-deploy.yml`
 - `README.md`, `README_CN.md`, `docs/agents/**`, `.docpact/**`, and `.github/workflows/ai-doc-lint.yml` for repo-local governance and retained docs
 
 This repo does not own:
@@ -130,6 +133,7 @@ Route those tasks to:
 - do not move standalone conversion, validation, or export logic into `tidas-sdk`
 - do not treat the public docs site as the executable upstream for packaged schemas and methodologies
 - packaged assets under `src/tidas_tools/**` are executable tooling inputs, not just reference docs
+- English and Chinese TIDAS schema assets must stay structurally aligned through `src/tidas_tools/tidas/schema.lock.json`
 - schema or methodology changes here can require downstream `tidas-sdk` follow-up through the dispatch contract
 - merged repo PRs here are repo-complete, not workspace-delivery complete
 

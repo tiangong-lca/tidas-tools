@@ -22,6 +22,7 @@ checkPaths:
   - .github/workflows/**
   - .githooks/pre-push
   - scripts/docpact
+  - scripts/schema_lock.py
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-06-15
@@ -48,12 +49,16 @@ This repo packages standalone tooling plus the schema, methodology, and styleshe
 | `src/tidas_tools/export.py` | standalone export CLI |
 | `src/tidas_tools/package_versions.py` | version normalization and export package metadata logic |
 | `src/tidas_tools/runtime_rulesets.py` | loader and validator for packaged runtime ruleset metadata |
-| `src/tidas_tools/tidas/**` | packaged TIDAS schemas and methodologies |
+| `src/tidas_tools/tidas/schemas/**` | packaged English TIDAS schemas |
+| `src/tidas_tools/tidas/schemas_zh/**` | packaged Chinese TIDAS schemas |
+| `src/tidas_tools/tidas/schema.lock.json` | deterministic hash and parity lock for paired TIDAS schemas |
+| `src/tidas_tools/tidas/methodologies/**` | packaged TIDAS methodologies |
 | `src/tidas_tools/eilcd/**` | packaged eILCD schemas and stylesheets |
+| `scripts/schema_lock.py` | schema asset parity checker and lock generator |
 | `tests/**` | automated repo tests |
+| `.github/workflows/ci.yml` | manual-dispatch remote reproduction of schema-lock and local tests |
 | `.github/workflows/dispatch-tidas-sdk-sync.yml` | downstream SDK refresh dispatch contract |
 | `.github/workflows/python-package-deploy.yml` | `main` version-bump and tag-driven PyPI publish workflow with a release test gate |
-| `.github/workflows/ci.yml` | manual-dispatch remote reproduction of local tests |
 
 ## Current Tool Families
 
@@ -81,6 +86,8 @@ Important consequences:
 
 - `tidas-sdk` runtime assets and generated models depend on the packaged assets here
 - schema or methodology changes here usually imply downstream SDK follow-up
+- English and Chinese schema files must have matching file sets and matching non-localized structure
+- `schema.lock.json` stores content hashes plus contract hashes after removing localized `description` fields
 - `tidas` remains the public docs surface, but it is not the executable upstream for tooling behavior
 
 `src/tidas_tools/tidas/methodologies/runtime_rulesets.json` is the packaged
@@ -92,7 +99,7 @@ Foundry gates without moving gate execution logic into this repository.
 
 - `main` pushes whose `pyproject.toml` project version changes create the matching `v<version>` tag and publish `tidas-tools`
 - manual `v<version>` tag pushes and workflow-dispatch runs for existing release tags remain recovery/backfill paths
-- changes under packaged schema and methodology paths can dispatch downstream SDK refresh workflows
+- changes under packaged English schema, Chinese schema, and methodology paths can dispatch downstream SDK refresh workflows
 
 This dispatch path is part of the repo architecture, not just a convenience automation.
 

@@ -1,0 +1,1294 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "LCIAMethodDataSet": {
+      "type": "object",
+      "properties": {
+        "@xmlns": {
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/LCIAMethod"
+        },
+        "@xmlns:common": {
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/Common"
+        },
+        "@xmlns:xsi": {
+          "type": "string",
+          "const": "http://www.w3.org/2001/XMLSchema-instance"
+        },
+        "@version": {
+          "type": "string",
+          "const": "1.1"
+        },
+        "@xsi:schemaLocation": {
+          "type": "string",
+          "const": "http://lca.jrc.it/ILCD/LCIAMethod ../../schemas/ILCD_LCIAMethodDataSet.xsd"
+        },
+        "LCIAMethodInformation": {
+          "type": "object",
+          "properties": {
+            "dataSetInformation": {
+              "type": "object",
+              "properties": {
+                "common:UUID": {
+                  "$ref": "tidas_data_types.json#/$defs/UUID",
+                  "description": "数据集的唯一标识符。UUID 是一个 128 位数字，表示为以下形式的十六进制字符串：xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx。UUID用于唯一标识ILCD数据库中的数据集。"
+                },
+                "common:name": {
+                  "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                  "description": "数据集的名称。组成如下：“LCIA 方法简称；影响类别；中点/终点；影响指标；来源简称”。不适用的组件被省略。示例：“Impacts2007+；气候变化；中点；全球变暖潜力；IPCC 2001”； “ABC 2006；酸化；终点；物种多样性丧失；John Doe 2006”； “My-indicator2009；组合；终点；生态点；各种”"
+                },
+                "methodology": {
+                  "type": "string",
+                  "description": "数据集所属的 LCIA 方法名称（如果有）"
+                },
+                "classificationInformation": {
+                  "type": "object",
+                  "properties": {
+                    "common:classification": {
+                      "type": "object",
+                      "description": "数据集的可选统计或其他分类。通常也用于构建 LCA 数据库。",
+                      "properties": {
+                        "common:class": {
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "@level": {
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                      "const": "0"
+                                    },
+                                    "@classId": {
+                                      "type": "string"
+                                    },
+                                    "#text": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "@level",
+                                    "@classId",
+                                    "#text"
+                                  ],
+                                  "dependencies": {
+                                    "@level": {
+                                      "$ref": "./tidas_lciamethods_category.json#/$defs/LCIAMethod"
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "@level": {
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                      "const": "1"
+                                    },
+                                    "@classId": {
+                                      "type": "string"
+                                    },
+                                    "#text": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "@level",
+                                    "@classId",
+                                    "#text"
+                                  ],
+                                  "dependencies": {
+                                    "@level": {
+                                      "$ref": "./tidas_lciamethods_category.json#/$defs/LCIAMethod"
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "@level": {
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                      "const": "2"
+                                    },
+                                    "@classId": {
+                                      "type": "string"
+                                    },
+                                    "#text": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "@level",
+                                    "@classId",
+                                    "#text"
+                                  ],
+                                  "dependencies": {
+                                    "@level": {
+                                      "$ref": "./tidas_lciamethods_category.json#/$defs/LCIAMethod"
+                                    }
+                                  }
+                                }
+                              ],
+                              "uniqueItems": true,
+                              "maxItems": 3,
+                              "additionalItems": false
+                            }
+                          ]
+                        },
+                        "common:other": {
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        }
+                      },
+                      "required": [
+                        "common:class"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "common:classification"
+                  ]
+                },
+                "impactCategory": {
+                  "type": "string",
+                  "description": "LCIA 方法或方法学涵盖的影响类别。",
+                  "enum": [
+                    "Climate change",
+                    "Ozone depletion",
+                    "Terrestrial Eutrophication",
+                    "Aquatic Eutrophication",
+                    "Acidification",
+                    "Photochemical ozone creation",
+                    "Land use",
+                    "Abiotic resource depletion",
+                    "Biotic resource depletion",
+                    "Ionizing radiation",
+                    "Cancer human health effects",
+                    "Non-cancer human health effects",
+                    "Respiratory inorganics",
+                    "Aquatic eco-toxicity",
+                    "Terrestrial eco-toxicity",
+                    "other"
+                  ]
+                },
+                "areaOfProtection": {
+                  "type": "string",
+                  "description": "仅适用于损害（终点）和单一评分指标：数据集相关的保护区域。",
+                  "enum": [
+                    "Natural resources",
+                    "Natural environment",
+                    "Human health",
+                    "Man-made environment",
+                    "Other"
+                  ]
+                },
+                "impactIndicator": {
+                  "$ref": "tidas_data_types.json#/$defs/String",
+                  "description": "描述该数据集影响指标的含义（不适用于 LCIA 方法数据集）。"
+                },
+                "common:generalComment": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "有关数据集的一般信息，包括例如一般（内部，未经审查）质量声明以及使用的信息来源。 （注意：另请检查更具体的字段，例如“预期应用”、“数据集使用建议”以及“建模和验证”部分中的字段，以避免条目重叠。）"
+                },
+                "referenceToExternalDocumentation": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "外部文档/文件的“源数据集”，包含有关数据集的进一步文档信息，包括基础数据源（例如时间、地理覆盖范围、影响模型、表征因子、所使用的物质属性数据库等）。 （注：可以间接引用数字文件。）"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "common:UUID",
+                "common:name",
+                "classificationInformation"
+              ]
+            },
+            "quantitativeReference": {
+              "description": "本节允许参考 LCIA 方法/方法学的定量参考，该参考始终是测量影响指标的表征因子的单位，例如“千克二氧化碳当量”。",
+              "type": "object",
+              "properties": {
+                "referenceQuantity": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "参考量（流属性）的“流属性数据集”，其中测量影响指标值。"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "referenceQuantity"
+              ]
+            },
+            "time": {
+              "type": "object",
+              "properties": {
+                "referenceYear": {
+                  "$ref": "tidas_data_types.json#/$defs/STMultiLang",
+                  "description": "假设发生排放的参考年，即影响建模时间段的开始年。对于时间无关模型，应注明“时间无关”。"
+                },
+                "duration": {
+                  "$ref": "tidas_data_types.json#/$defs/STMultiLang",
+                  "description": "对影响进行建模的时间段。"
+                },
+                "timeRepresentativenessDescription": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "数据集有效时间跨度的描述，包括有关子时间跨度内有限可用性的信息（如果有）。"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "referenceYear",
+                "duration",
+                "timeRepresentativenessDescription"
+              ]
+            },
+            "geography": {
+              "type": "object",
+              "properties": {
+                "interventionLocation": {
+                  "description": "LCIA 方法/方法学有效/建模的基本流动/交换发生的特定国家或地区。 [注：条目可以是针对国家的“两字母 ISO 3166 国家/地区代码”类型，针对地区或大洲的“七字母区域代码”类型，或针对 ILCD 预定义的“市场区域和市场组织”类型。也是一个名称，例如可以在此处给出特定工厂等（例如“FR、里昂、XY 公司、Z 站点”；用户定义）。 ]",
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "#text": {
+                          "type": "string"
+                        },
+                        "@latitudeAndLongitude": {
+                          "$ref": "tidas_data_types.json#/$defs/GIS",
+                          "description": "“位置”/“子位置”的地理纬度和经度参考。对于区域类型位置（例如国家、大洲），该字段为空。"
+                        }
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "intervensionSubLocation": {
+                  "description": "“干预位置”的地理子单元，进一步指定具体建模的子位置。这样的子位置可以是例如公司地点、建模的特定流域、大陆国家或国家中的位置。如果适用，应提供有关有限代表性的信息。",
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "#text": {
+                          "type": "string"
+                        },
+                        "@latitudeAndLongitude": {
+                          "$ref": "tidas_data_types.json#/$defs/GIS",
+                          "description": "“位置”/“子位置”的地理纬度和经度参考。对于区域类型位置（例如国家、大洲），该字段为空。"
+                        }
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "impactLocation": {
+                  "description": "模拟影响发生的位置或区域。 [注：条目可以是针对国家的“两字母 ISO 3166 国家/地区代码”类型，针对地区或大洲的“七字母区域代码”类型，或针对 ILCD 预定义的“市场区域和市场组织”类型。也是一个名称，例如可以在此处给出特定的流域等，用户定义）。]",
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "#text": {
+                          "type": "string"
+                        },
+                        "@latitudeAndLongitude": {
+                          "$ref": "tidas_data_types.json#/$defs/GIS",
+                          "description": "“位置”/“子位置”的地理纬度和经度参考。对于区域类型位置（例如国家、大洲），该字段为空。"
+                        }
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "geographicalRepresentativenessDescription": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "关于位置的其他方面的进一步解释，包括干预和影响：某些区域是否不受该位置的影响，数据是否仅对指示位置内的某些子位置有效，或者某些基本流的影响指标值是否从指示以外的另一个地理区域推断出来。有关使用通用干预措施和/或影响地点以及其他限制的信息。"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              }
+            },
+            "impactModel": {
+              "description": "提供有关数据集的一般代表性及其单个 LCIA 方法的组成的信息。",
+              "type": "object",
+              "properties": {
+                "modelName": {
+                  "$ref": "tidas_data_types.json#/$defs/ST",
+                  "description": "用于计算 LCIA 影响指标值的模型名称（如有）"
+                },
+                "modelDescription": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "用于计算 LCIA 影响指标值的模型的描述，包括基础物质属性数据源、背景浓度等。如果 LCIA 方法包括多种 LCIA 方法，则这些方法将明确包含在描述中。使用专业术语进行描述。请注意，最终包含的归一化和加权因子在专用的单独字段中进行了描述。"
+                },
+                "referenceToModelSource": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "有关表征模型的数据源的“源数据集”（指南、支持文档等）"
+                },
+                "referenceToIncludedMethods": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "该数据集中包含或用于导出该 LCIA 方法的 LCIA 表征方法的“LCIA 方法数据集”"
+                },
+                "consideredMechanisms": {
+                  "$ref": "tidas_data_types.json#/$defs/STMultiLang",
+                  "description": "对影响链中明确考虑的部分中包含的环境或其他机制的描述。可以涉及（说明性）：对于排放，例如：运输、转化/降解、暴露、对人类和自然环境的影响、损害。对于物质和能源资源：稀缺或其他影响概念。对于土地利用：土壤、面积、生物群落相关机制、影响、损害。"
+                },
+                "referenceToMethodologyFlowChart": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "描绘 LCIA 方法的流程图和/或图片的“源数据集”。"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "modelName",
+                "modelDescription"
+              ]
+            },
+            "common:other": {
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+            }
+          },
+          "required": [
+            "dataSetInformation",
+            "quantitativeReference",
+            "time",
+            "impactModel"
+          ]
+        },
+        "modellingAndValidation": {
+          "description": "涵盖五个小节：1) LCIA 方法、标准化、加权 2) 数据源 3) 完整性、4) 验证和 5) 合规声明。",
+          "type": "object",
+          "properties": {
+            "useAdviceForDataSet": {
+              "$ref": "tidas_data_types.json#/$defs/STMultiLang",
+              "description": "针对该数据集的使用和应用的方法学建议，例如适用性或代表性的限制，以及与同一 LCIA 方法中的其他数据集一起使用以确保一致性的建议。"
+            },
+            "LCIAMethodNormalisationAndWeighting": {
+              "description": "LCIA 方法论建模方面",
+              "type": "object",
+              "properties": {
+                "typeOfDataSet": {
+                  "type": "string",
+                  "description": "有关所涵盖影响链范围的数据集类型。",
+                  "enum": [
+                    "Inventory indicator",
+                    "Mid-point indicator",
+                    "Damage indicator",
+                    "Area of Protection damage indicator",
+                    "Combined single-point indicator",
+                    "LCIA methodology documentation"
+                  ]
+                },
+                "LCIAMethodPrinciple": {
+                  "type": "string",
+                  "description": "得出影响因子时遵循的 LCIA 方法原则。",
+                  "enum": [
+                    "Distance-to-target",
+                    "Critical surface-time",
+                    "Effective volumes",
+                    "AoP-Damage model",
+                    "Carrying capacity",
+                    "Resource dissipation",
+                    "other"
+                  ]
+                },
+                "deviationsFromLCIAMethodPrinciple": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "与“LCIA 方法原理”可能存在的数据集特定偏差的简短描述。特别指对在单一 LCIA 方法中结合不同原理的 LCIA 方法的解释。"
+                },
+                "normalisation": {
+                  "type": "string",
+                  "description": "指示所产生的影响因子中是否包含标准化步骤。",
+                  "enum": [
+                    "true",
+                    "false"
+                  ]
+                },
+                "referenceToUsableNormalisationDataSets": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "“标准化数据集”可以与该数据集的影响因子一起使用。"
+                },
+                "normalisationDescription": {
+                  "$ref": "tidas_data_types.json#/$defs/STMultiLang",
+                  "description": "所包含标准化的简短描述（如果有）。"
+                },
+                "referenceToIncludedNormalisationDataSets": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "用于计算该数据集的标准化影响因子（如果有）的“标准化数据集”。"
+                },
+                "weighting": {
+                  "type": "string",
+                  "description": "指示权重步骤是否包含在生成的影响因子中。",
+                  "enum": [
+                    "true",
+                    "false"
+                  ]
+                },
+                "referenceToUsableWeightingDataSets": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "“加权数据集”，可以与该数据集的影响因子一起使用。"
+                },
+                "weightingDescription": {
+                  "$ref": "tidas_data_types.json#/$defs/STMultiLang",
+                  "description": "所包含权重的简短描述（如果有）。"
+                },
+                "referenceToIncludedWeightingDataSets": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "“加权数据集”用于计算该数据集的加权影响因子（如果有）。"
+                }
+              },
+              "required": [
+                "typeOfDataSet",
+                "LCIAMethodPrinciple"
+              ]
+            },
+            "dataSources": {
+              "description": "用于模型和基础物质以及其他数据的数据源。",
+              "type": "object",
+              "properties": {
+                "referenceToDataSource": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "用于数据集的数据源的“源数据集”，例如论文、问卷、专着等。主要数据来源如：对于基础物质的属性也进行了命名。"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "referenceToDataSource"
+              ]
+            },
+            "completeness": {
+              "type": "object",
+              "properties": {
+                "completenessImpactCoverage": {
+                  "$ref": "tidas_data_types.json#/$defs/Perc",
+                  "description": "对影响覆盖范围完整性的估计，如“影响类别”字段中所确定的，或 - 仅适用于具有损害指标或组合单点指标的 LCIA 方法 - “保护区域”。用科学认可的覆盖范围、影响的定量程度来表示。请注意，此信息通常高度不确定。"
+                },
+                "inventoryItems": {
+                  "$ref": "tidas_data_types.json#/$defs/Int6",
+                  "description": "所涵盖的化学物质/物质组、化学元素或类型的数量，不考虑环境排放或源区、地理位置、时间或其他因素的变化。"
+                }
+              }
+            },
+            "validation": {
+              "description": "查看有关 LCIA 方法的信息。",
+              "type": "object",
+              "properties": {
+                "review": {
+                  "description": "已针对独立性和审核流程类型进行的审核类型。",
+                  "type": "object",
+                  "properties": {
+                    "@type": {
+                      "type": "string",
+                      "enum": [
+                        "Dependent internal review",
+                        "Independent internal review",
+                        "Independent external review",
+                        "Accredited third party review",
+                        "Independent review panel",
+                        "Not reviewed"
+                      ]
+                    },
+                    "common:scope": {
+                      "description": "审查范围，涉及审查或验证数据集的哪些方面和组成部分。如果是聚合的，例如LCI 结果以及进行审查/验证的详细程度（例如仅 LCI 结果，包括单元流程……）。",
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "@name": {
+                              "type": "string",
+                              "enum": [
+                                "Raw data",
+                                "Unit process(es), single operation",
+                                "Unit process(es), black box",
+                                "LCI results or Partly terminated system",
+                                "LCIA results",
+                                "Documentation",
+                                "Life cycle inventory methods",
+                                "LCIA results calculation",
+                                "Goal and scope definition"
+                              ]
+                            },
+                            "common:method": {
+                              "description": "相应“审查范围”中使用的验证方法。",
+                              "anyOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "@name": {
+                                      "type": "string",
+                                      "enum": [
+                                        "Validation of data sources",
+                                        "Sample tests on calculations",
+                                        "Energy balance",
+                                        "Element balance",
+                                        "Cross-check with other source",
+                                        "Cross-check with other data set",
+                                        "Expert judgement",
+                                        "Mass balance",
+                                        "Compliance with legal limits",
+                                        "Compliance with ISO 14040 to 14044",
+                                        "Documentation",
+                                        "Evidence collection by means of plant visits and/or interviews"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "@name"
+                                  ]
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "@name": {
+                                        "type": "string",
+                                        "enum": [
+                                          "Validation of data sources",
+                                          "Sample tests on calculations",
+                                          "Energy balance",
+                                          "Element balance",
+                                          "Cross-check with other source",
+                                          "Cross-check with other data set",
+                                          "Expert judgement",
+                                          "Mass balance",
+                                          "Compliance with legal limits",
+                                          "Compliance with ISO 14040 to 14044",
+                                          "Documentation",
+                                          "Evidence collection by means of plant visits and/or interviews"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "@name"
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "@name",
+                            "common:method"
+                          ]
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "@name": {
+                                "type": "string",
+                                "enum": [
+                                  "Raw data",
+                                  "Unit process(es), single operation",
+                                  "Unit process(es), black box",
+                                  "LCI results or Partly terminated system",
+                                  "LCIA results",
+                                  "Documentation",
+                                  "Life cycle inventory methods",
+                                  "LCIA results calculation",
+                                  "Goal and scope definition"
+                                ]
+                              },
+                              "common:method": {
+                                "description": "相应“审查范围”中使用的验证方法。",
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "@name": {
+                                        "type": "string",
+                                        "enum": [
+                                          "Validation of data sources",
+                                          "Sample tests on calculations",
+                                          "Energy balance",
+                                          "Element balance",
+                                          "Cross-check with other source",
+                                          "Cross-check with other data set",
+                                          "Expert judgement",
+                                          "Mass balance",
+                                          "Compliance with legal limits",
+                                          "Compliance with ISO 14040 to 14044",
+                                          "Documentation",
+                                          "Evidence collection by means of plant visits and/or interviews"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "@name"
+                                    ]
+                                  },
+                                  {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "@name": {
+                                          "type": "string",
+                                          "enum": [
+                                            "Validation of data sources",
+                                            "Sample tests on calculations",
+                                            "Energy balance",
+                                            "Element balance",
+                                            "Cross-check with other source",
+                                            "Cross-check with other data set",
+                                            "Expert judgement",
+                                            "Mass balance",
+                                            "Compliance with legal limits",
+                                            "Compliance with ISO 14040 to 14044",
+                                            "Documentation",
+                                            "Evidence collection by means of plant visits and/or interviews"
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "@name"
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "@name",
+                              "common:method"
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    "common:reviewDetails": {
+                      "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                      "description": "审查摘要。应明确解决以下所有问题：模型的完整性和适当性、地理和时间覆盖范围和差异、物质数据或其他基础数据的正确性和精确性；标准化和/或加权方案（如果包括）的应用的适当性和连贯性；数据集文档的正确性、适当性、可理解性和完整性；利益相关者对 LCIA 方法的接受程度。可选：审阅者对单个基本流或基本流组的表征因子的评论。应指出由于缺乏透明度或文件而对审查造成的相关限制。此处可能包含总体质量声明。"
+                    },
+                    "common:referenceToNameOfReviewerAndInstitution": {
+                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                      "description": "审稿人的“联系数据集”。该联系数据集中应提供审稿人和机构的全名以及联系地址和/或电子邮件。"
+                    },
+                    "common:otherReviewDetails": {
+                      "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                      "description": "来自审核过程的更多信息，特别是数据集发布后从第三方收到的评论或来自其他外部审核的其他审核者评论。"
+                    },
+                    "common:referenceToCompleteReviewReport": {
+                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                      "description": "完整审查报告的“源数据集”。"
+                    },
+                    "common:other": {
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                    }
+                  },
+                  "required": [
+                    "@type"
+                  ],
+                  "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "@type": {
+                            "const": "Not reviewed"
+                          }
+                        }
+                      },
+                      "then": {},
+                      "else": {
+                        "required": [
+                          "common:scope",
+                          "common:reviewDetails",
+                          "common:referenceToNameOfReviewerAndInstitution",
+                          "common:referenceToCompleteReviewReport"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "review"
+              ]
+            },
+            "complianceDeclarations": {
+              "description": "关于多个数据集方面符合参考合规系统定义的合规要求的声明（例如 EPD 计划、国家或国际数据网络手册，如 ILCD 等）。",
+              "type": "object",
+              "properties": {
+                "compliance": {
+                  "description": "一份合规声明。可以提供多个声明。",
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "common:referenceToComplianceSystem": {
+                          "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                          "description": "声明数据集满足的“合规体系”的“源数据集”。"
+                        },
+                        "common:approvalOfOverallCompliance": {
+                          "type": "string",
+                          "description": "官方批准数据集是否以及在多大程度上满足所提及的“合规体系”的所有要求。该批准应由该合规系统的所有者发布/确认，该所有者通过相应的“联系数据集”进行识别。",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:nomenclatureCompliance": {
+                          "type": "string",
+                          "description": "该数据集的命名符合所提及的“合规系统”规定的相应要求。",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:methodologicalCompliance": {
+                          "type": "string",
+                          "description": "该数据集的方法符合所提及的“合规体系”规定的相应要求。",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:reviewCompliance": {
+                          "type": "string",
+                          "description": "审查/验证该数据集是否符合所提及的“合规体系”规定的相应要求。",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:documentationCompliance": {
+                          "type": "string",
+                          "description": "记录/报告该数据集是否符合所提及的“合规系统”规定的相应要求。",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:qualityCompliance": {
+                          "type": "string",
+                          "description": "该数据集的质量符合所提及的“合规体系”规定的相应要求。",
+                          "enum": [
+                            "Fully compliant",
+                            "Not compliant",
+                            "Not defined"
+                          ]
+                        },
+                        "common:other": {
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        }
+                      },
+                      "required": [
+                        "common:referenceToComplianceSystem",
+                        "common:approvalOfOverallCompliance",
+                        "common:nomenclatureCompliance",
+                        "common:methodologicalCompliance",
+                        "common:reviewCompliance",
+                        "common:documentationCompliance",
+                        "common:qualityCompliance"
+                      ]
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "common:referenceToComplianceSystem": {
+                            "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                            "description": "声明数据集满足的“合规体系”的“源数据集”。"
+                          },
+                          "common:approvalOfOverallCompliance": {
+                            "type": "string",
+                            "description": "官方批准数据集是否以及在多大程度上满足所提及的“合规体系”的所有要求。该批准应由该合规系统的所有者发布/确认，该所有者通过相应的“联系数据集”进行识别。",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:nomenclatureCompliance": {
+                            "type": "string",
+                            "description": "该数据集的命名符合所提及的“合规系统”规定的相应要求。",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:methodologicalCompliance": {
+                            "type": "string",
+                            "description": "该数据集的方法符合所提及的“合规体系”规定的相应要求。",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:reviewCompliance": {
+                            "type": "string",
+                            "description": "审查/验证该数据集是否符合所提及的“合规体系”规定的相应要求。",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:documentationCompliance": {
+                            "type": "string",
+                            "description": "记录/报告该数据集是否符合所提及的“合规系统”规定的相应要求。",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:qualityCompliance": {
+                            "type": "string",
+                            "description": "该数据集的质量符合所提及的“合规体系”规定的相应要求。",
+                            "enum": [
+                              "Fully compliant",
+                              "Not compliant",
+                              "Not defined"
+                            ]
+                          },
+                          "common:other": {
+                            "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                          }
+                        },
+                        "required": [
+                          "common:referenceToComplianceSystem",
+                          "common:approvalOfOverallCompliance",
+                          "common:nomenclatureCompliance",
+                          "common:methodologicalCompliance",
+                          "common:reviewCompliance",
+                          "common:documentationCompliance",
+                          "common:qualityCompliance"
+                        ]
+                      },
+                      "minItems": 1
+                    }
+                  ]
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "compliance"
+              ]
+            },
+            "common:other": {
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+            }
+          },
+          "required": [
+            "LCIAMethodNormalisationAndWeighting",
+            "dataSources",
+            "validation",
+            "complianceDeclarations"
+          ]
+        },
+        "administrativeInformation": {
+          "description": "数据集管理和管理所需的信息。",
+          "type": "object",
+          "properties": {
+            "common:commissionerAndGoal": {
+              "description": "与 LCIA 方法建模的目标和范围相关的信息项摘录。",
+              "type": "object",
+              "properties": {
+                "common:referenceToCommissioner": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "数据收集/编译和数据集建模的委托方/融资方的“联系数据集”。对于专员小组，应指定每个组织的名称。对于数据集更新和直接使用以前委托研究的数据，还应指定原委托人的姓名。"
+                },
+                "common:project": {
+                  "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                  "description": "与 LCIA 方法建模的目标和范围相关的信息项摘录。"
+                },
+                "common:intendedApplications": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "数据收集和数据集建模的预期应用的文档。这表明/包括有关工作的详细程度、特异性和质量目标的信息。"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              }
+            },
+            "dataGenerator": {
+              "description": "专家，对数据集以及与数据生成活动相关的内部管理信息进行编译和建模。",
+              "type": "object",
+              "properties": {
+                "common:referenceToPersonOrEntityGeneratingTheDataSet": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "生成数据集的人员、工作组、组织或数据库网络的“联系数据集”，即对其方法、清单和文档的正确性负责。"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "common:referenceToPersonOrEntityGeneratingTheDataSet"
+              ]
+            },
+            "dataEntryBy": {
+              "description": "记录生成的数据集并将信息输入数据库的人员或实体；加上与数据输入活动相关的管理信息。",
+              "type": "object",
+              "properties": {
+                "common:timeStamp": {
+                  "$ref": "tidas_data_types.json#/$defs/dateTime",
+                  "description": "数据集生成的日期和时间戳，通常是自动输入（“上次保存”）。"
+                },
+                "common:referenceToDataSetFormat": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "ILCD 格式所用版本的“源数据集”。如果使用“命名空间”选项将附加数据格式字段集成到数据集文件中，则将给出所使用的格式命名空间。如果数据集携带由其他特定 LCA 格式指定的附加信息，例如，则属于这种情况。其他数据库网络或 LCA 软件。"
+                },
+                "common:referenceToConvertedOriginalDataSetFrom": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "通过转换获得该数据集的数据库或数据集出版物的“源数据集”。这可以涵盖例如转换为不同的格式、应用不同的命名法、流名称的映射、单位的转换等。然而，这可能不会改变或重新建模输入和输出，即获得相同的 LCIA 结果。对于最初源自其他 LCA 数据库的转换数据集（例如，从 IISI、ILCD 等数据库重新发布数据时），需要此条目。 [注：相同的重新发布的数据集在“发布和所有权”部分的“未更改的重新发布：”字段中标识。]"
+                },
+                "common:referenceToPersonOrEntityEnteringTheData": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "记录该数据集的负责人或实体的“联系数据集”，即输入的数据和描述性信息。"
+                },
+                "recommendationBy": {
+                  "type": "object",
+                  "properties": {
+                    "referenceToEntity": {
+                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                      "description": "已正式推荐此 LCIA 方法数据集及其影响因子在记录范围内使用的政府机构的“联系数据集”。最终对各个交易所的偏离（降级）建议记录在数据集的“输入和输出”部分中。"
+                    },
+                    "level": {
+                      "type": "string",
+                      "description": "推荐政府机构对此数据集的推荐程度。请注意，各个基本过程的推荐级别可能与一般级别不同（较低）；这在“特征因素”部分中直接针对每个受影响的基本流记录为“偏离建议”。",
+                      "enum": [
+                        "Level I",
+                        "Level II",
+                        "Level III",
+                        "Interim",
+                        "Not recommended"
+                      ]
+                    },
+                    "meaning": {
+                      "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                      "description": "该 LCIA 方法/方法学声明的推荐级别和特征因素的具体含义，如“合规体系”领域引用的指导文件中所定义"
+                    }
+                  },
+                  "required": [
+                    "referenceToEntity",
+                    "level",
+                    "meaning"
+                  ]
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "common:timeStamp",
+                "common:referenceToDataSetFormat",
+                "recommendationBy"
+              ]
+            },
+            "publicationAndOwnership": {
+              "description": "与数据集的发布和版本管理相关的信息，包括版权和访问限制。",
+              "type": "object",
+              "properties": {
+                "common:dateOfLastRevision": {
+                  "$ref": "tidas_data_types.json#/$defs/dateTime",
+                  "description": "数据集最后一次修改的日期，通常是手动设置的。"
+                },
+                "common:dataSetVersion": {
+                  "type": "string",
+                  "description": "数据集的版本号。前两位数字表示主要更新，后两位数字表示较小的修订和错误更正等。第三个三位数字用于在数据集开发过程中自动和内部计数版本。 “数据集版本”与数据集的UUID 一起唯一标识每个数据集。"
+                },
+                "common:referenceToPrecedingDataSetVersion": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "最后一个先前的数据集，已被此版本替换。在TIDAS中，该引用包括前面的数据集URI、UUID和版本号。"
+                },
+                "common:permanentDataSetURI": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "该数据集原始的 URI（即互联网地址）。 [注意：这个同样全球唯一的标识符支持用户和软件工具通过互联网识别和检索数据集的原始版本或检查可用的更新。 URI 不得代表现有的 WWW 地址，但它应该是唯一的并指向数据访问点，例如通过将数据所有者的 www 路径与数据集的UUID 相结合，例如http://www.mycompany.com/lca/processes/50f12420-8855-12db-b606-0900210c9a66。]"
+                },
+                "common:workflowAndPublicationStatus": {
+                  "type": "string",
+                  "description": "数据集的工作流程或发布状态。详细信息例如应根据“数据集所有者”的要求提供预计的发布日期。",
+                  "enum": [
+                    "Working draft",
+                    "Final draft for internal review",
+                    "Final draft for external review",
+                    "Data set finalised; unpublished",
+                    "Under revision",
+                    "Withdrawn",
+                    "Data set finalised; subsystems published",
+                    "Data set finalised; entirely published"
+                  ]
+                },
+                "common:referenceToUnchangedRepublication": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "出版物的“源数据集”，该数据集是首次发布的。 [注：这指的是该数据集本身，没有任何格式转换、调整、流名称映射等。如果该数据集被修改/转换，原始来源记录在“数据输入依据”部分的“转换后的原始数据集：”中。]"
+                },
+                "common:referenceToOwnershipOfDataSet": {
+                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                  "description": "拥有该数据集的个人或实体的“联系人数据集”。 （注意：这不一定是数据集的发布者。）"
+                },
+                "common:copyright": {
+                  "type": "string",
+                  "description": "指示数据集是否存在版权。由“数据集所有者”决定。 [注：另请参阅“访问和使用限制”字段。]",
+                  "enum": [
+                    "true",
+                    "false"
+                  ]
+                },
+                "common:accessRestrictions": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "该数据集的访问限制/使用条件为自由文本或参考例如许可条件。如果没有限制，则输入“无”。"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                }
+              },
+              "required": [
+                "common:dateOfLastRevision",
+                "common:dataSetVersion",
+                "common:referenceToOwnershipOfDataSet"
+              ]
+            },
+            "common:other": {
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+            }
+          },
+          "required": [
+            "dataGenerator",
+            "dataEntryBy",
+            "publicationAndOwnership"
+          ]
+        },
+        "characterisationFactors": {
+          "description": "流量/交易所根据各自的 LCIA 方法列出相应的影响因子。",
+          "type": "object",
+          "properties": {
+            "factor": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "referenceToFlowDataSet": {
+                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                      "description": "参考“流数据集”的“流的UUID”，将“LCIA 数据集”中的特定影响因子链接到相应的“流数据集”。请注意，对于特定位置的 LCIA 方法，可能会多次引用同一 流数据集。"
+                    },
+                    "location": {
+                      "type": "string",
+                      "description": "基本流交换发生的位置。仅用于使用此类信息的 LCIA 方法。该信息是指“过程数据集”中同一字段中的条目。"
+                    },
+                    "exchangeDirection": {
+                      "type": "string",
+                      "description": "交换方向；该信息指的是“过程数据集”中同一字段中的条目。",
+                      "enum": [
+                        "Input",
+                        "Output"
+                      ]
+                    },
+                    "meanValue": {
+                      "$ref": "tidas_data_types.json#/$defs/Real",
+                      "description": "由“流量数据集参考”、“交换方向”和“方向位置”字段标识的交换影响表征因子的平均值。建议仅报告金额的有效数字。 ！如果对于基本流程而言，其对该 LCIA 主题的相关贡献是通过最先进的科学知识已知的，但 LCIA 方法中未提供影响因子，则仍应引用该过程，并且要输入的平均值为“0”！"
+                    },
+                    "minimumValue": {
+                      "$ref": "tidas_data_types.json#/$defs/Real",
+                      "description": "在不确定性分布为均匀或三角形的情况下，交换的表征因子的最小值。"
+                    },
+                    "maximumValue": {
+                      "$ref": "tidas_data_types.json#/$defs/Real",
+                      "description": "在不确定性分布为均匀或三角形的情况下，交换的表征因子的最大值。"
+                    },
+                    "uncertaintyDistributionType": {
+                      "type": "string",
+                      "description": "定义对该特定对象或参数有效的不确定性分布类型。",
+                      "enum": [
+                        "undefined",
+                        "log-normal",
+                        "normal",
+                        "triangular",
+                        "uniform"
+                      ]
+                    },
+                    "relativeStandardDeviation95In": {
+                      "$ref": "tidas_data_types.json#/$defs/Perc",
+                      "description": "考虑到测量、建模、适当性等的不确定性，计算得出的变量值的总体不确定性。 [注：对于对数正态分布，规定了几何标准差的平方 (SDg^2)。平均值乘以 SDg^2 等于 97.5% 值（= 最大值），平均值除以 SDg^2 等于 2.5% 值（= 最小值）。对于正态分布，输入双倍标准差值 (2*SD)。平均值加上 2*SD 等于 97.5% 值（= 最大值），平均值减去 2*SD 等于 2.5% 值（= 最小值）。当应用均匀或三角不确定性分布时，该数据字段保持为空。]"
+                    },
+                    "dataDerivationTypeStatus": {
+                      "type": "string",
+                      "description": "确定单个输入/输出量的得出方式（例如测量、估计等），分别是缺失数据的状态和相关性。",
+                      "enum": [
+                        "Measured",
+                        "Calculated",
+                        "Estimated",
+                        "Unknown derivation",
+                        "Missing important",
+                        "Missing unimportant"
+                      ]
+                    },
+                    "deviatingRecommendation": {
+                      "type": "string",
+                      "description": "参照整个 LCIA 方法数据集的推荐级别，本次交换的推荐级别有所偏差（降级）（请参阅字段“政府机构对数据集的官方推荐：”）。",
+                      "enum": [
+                        "Level I",
+                        "Level II",
+                        "Level III",
+                        "Interim",
+                        "Not recommended"
+                      ]
+                    },
+                    "referenceToDataSource": {
+                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                      "description": "参考用于对该单个 LCIA 因子的值进行建模的数据源的“源数据集”中的“源的UUID”，例如一篇具体的论文、调查问卷、专着等。如果通常使用多个数据源，则可以引用多个数据源。"
+                    },
+                    "generalComment": {
+                      "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                      "description": "有关数据集的一般信息，包括例如一般（内部，未经审查）质量声明以及使用的信息来源。 （注意：另请检查更具体的字段，例如“预期应用”、“数据集使用建议”以及“建模和验证”部分中的字段，以避免条目重叠。）"
+                    },
+                    "common:other": {
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                    }
+                  },
+                  "required": [
+                    "referenceToFlowDataSet",
+                    "exchangeDirection",
+                    "meanValue",
+                    "deviatingRecommendation"
+                  ]
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "referenceToFlowDataSet": {
+                        "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                        "description": "参考“流数据集”的“流的UUID”，将“LCIA 数据集”中的特定影响因子链接到相应的“流数据集”。请注意，对于特定位置的 LCIA 方法，可能会多次引用同一 流数据集。"
+                      },
+                      "location": {
+                        "type": "string",
+                        "description": "基本流交换发生的位置。仅用于使用此类信息的 LCIA 方法。该信息是指“过程数据集”中同一字段中的条目。"
+                      },
+                      "exchangeDirection": {
+                        "type": "string",
+                        "description": "交换方向；该信息指的是“过程数据集”中同一字段中的条目。",
+                        "enum": [
+                          "Input",
+                          "Output"
+                        ]
+                      },
+                      "meanValue": {
+                        "$ref": "tidas_data_types.json#/$defs/Real",
+                        "description": "由“流量数据集参考”、“交换方向”和“方向位置”字段标识的交换影响表征因子的平均值。建议仅报告金额的有效数字。 ！如果对于基本流程而言，其对该 LCIA 主题的相关贡献是通过最先进的科学知识已知的，但 LCIA 方法中未提供影响因子，则仍应引用该过程，并且要输入的平均值为“0”！"
+                      },
+                      "minimumValue": {
+                        "$ref": "tidas_data_types.json#/$defs/Real",
+                        "description": "在不确定性分布为均匀或三角形的情况下，交换的表征因子的最小值。"
+                      },
+                      "maximumValue": {
+                        "$ref": "tidas_data_types.json#/$defs/Real",
+                        "description": "在不确定性分布为均匀或三角形的情况下，交换的表征因子的最大值。"
+                      },
+                      "uncertaintyType": {
+                        "type": "string",
+                        "description": "定义对该特定对象或参数有效的不确定性分布类型。",
+                        "enum": [
+                          "undefined",
+                          "log-normal",
+                          "normal",
+                          "triangular",
+                          "uniform"
+                        ]
+                      },
+                      "relativeStandardDeviation95In": {
+                        "$ref": "tidas_data_types.json#/$defs/Perc",
+                        "description": "考虑到测量、建模、适当性等的不确定性，计算得出的变量值的总体不确定性。 [注：对于对数正态分布，规定了几何标准差的平方 (SDg^2)。平均值乘以 SDg^2 等于 97.5% 值（= 最大值），平均值除以 SDg^2 等于 2.5% 值（= 最小值）。对于正态分布，输入双倍标准差值 (2*SD)。平均值加上 2*SD 等于 97.5% 值（= 最大值），平均值减去 2*SD 等于 2.5% 值（= 最小值）。当应用均匀或三角不确定性分布时，该数据字段保持为空。]"
+                      },
+                      "dataDerivationTypeStatus": {
+                        "type": "string",
+                        "description": "确定单个输入/输出量的得出方式（例如测量、估计等），分别是缺失数据的状态和相关性。",
+                        "enum": [
+                          "Measured",
+                          "Calculated",
+                          "Estimated",
+                          "Unknown derivation",
+                          "Missing important",
+                          "Missing unimportant"
+                        ]
+                      },
+                      "deviatingRecommendation": {
+                        "type": "string",
+                        "description": "参照整个 LCIA 方法数据集的推荐级别，本次交换的推荐级别有所偏差（降级）（请参阅字段“政府机构对数据集的官方推荐：”）。",
+                        "enum": [
+                          "Level I",
+                          "Level II",
+                          "Level III",
+                          "Interim",
+                          "Not recommended"
+                        ]
+                      },
+                      "referenceToDataSource": {
+                        "properties": {
+                          "referenceToDataSource": {
+                            "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                            "description": "参考用于对该单个 LCIA 因子的值进行建模的数据源的“源数据集”中的“源的UUID”，例如一篇具体的论文、调查问卷、专着等。如果通常使用多个数据源，则可以引用多个数据源。"
+                          }
+                        }
+                      },
+                      "generalComment": {
+                        "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
+                        "description": "有关数据集的一般信息，包括例如一般（内部，未经审查）质量声明以及使用的信息来源。 （注意：另请检查更具体的字段，例如“预期应用”、“数据集使用建议”以及“建模和验证”部分中的字段，以避免条目重叠。）"
+                      }
+                    },
+                    "required": [
+                      "referenceToFlowDataSet",
+                      "exchangeDirection",
+                      "meanValue",
+                      "deviatingRecommendation"
+                    ]
+                  }
+                }
+              ]
+            },
+            "common:other": {
+              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+            }
+          },
+          "required": [
+            "factor"
+          ]
+        },
+        "common:other": {
+          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+        }
+      },
+      "required": [
+        "LCIAMethodInformation",
+        "modellingAndValidation",
+        "administrativeInformation",
+        "characterisationFactors"
+      ]
+    }
+  },
+  "required": [
+    "LCIAMethodDataSet"
+  ]
+}
