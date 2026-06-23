@@ -1414,18 +1414,38 @@
                     "description": "container tag for the specification of allocations if process has more than one reference product. Use only for multifunctional processes.",
                     "properties": {
                       "allocation": {
-                        "type": "object",
                         "description": "specifies one allocation of this exchange (see the attributes of this tag below)",
-                        "properties": {
-                          "@internalReferenceToCoProduct": {
-                            "$ref": "tidas_data_types.json#/$defs/Int6",
-                            "description": "Reference to one of the co-products. The applied allocation approach(es), details and and explanations are documented in the fields \"LCI method approaches\" and \"Deviations from LCI method approaches / explanations\". [Notes: Applicable only to multifunctional processes. The documented allocated fractions are only applicable when using the data set for attributional modelling and are to be ignored for consequential modeling.]"
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "@internalReferenceToCoProduct": {
+                                "$ref": "tidas_data_types.json#/$defs/Int6",
+                                "description": "Reference to one of the co-products. The applied allocation approach(es), details and and explanations are documented in the fields \"LCI method approaches\" and \"Deviations from LCI method approaches / explanations\". [Notes: Applicable only to multifunctional processes. The documented allocated fractions are only applicable when using the data set for attributional modelling and are to be ignored for consequential modeling.]"
+                              },
+                              "@allocatedFraction": {
+                                "$ref": "tidas_data_types.json#/$defs/Perc",
+                                "description": "Fraction (expressed in %) of this Input or Output flow that is foreseen to be allocated to this co-product (recommended allocation). The numbers across the co-products should sum up to 100%."
+                              }
+                            }
                           },
-                          "@allocatedFraction": {
-                            "$ref": "tidas_data_types.json#/$defs/Perc",
-                            "description": "Fraction (expressed in %) of this Input or Output flow that is foreseen to be allocated to this co-product (recommended allocation). The numbers across the co-products should sum up to 100%."
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "@internalReferenceToCoProduct": {
+                                  "$ref": "tidas_data_types.json#/$defs/Int6",
+                                  "description": "Reference to one of the co-products. The applied allocation approach(es), details and and explanations are documented in the fields \"LCI method approaches\" and \"Deviations from LCI method approaches / explanations\". [Notes: Applicable only to multifunctional processes. The documented allocated fractions are only applicable when using the data set for attributional modelling and are to be ignored for consequential modeling.]"
+                                },
+                                "@allocatedFraction": {
+                                  "$ref": "tidas_data_types.json#/$defs/Perc",
+                                  "description": "Fraction (expressed in %) of this Input or Output flow that is foreseen to be allocated to this co-product (recommended allocation). The numbers across the co-products should sum up to 100%."
+                                }
+                              }
+                            }
                           }
-                        }
+                        ]
                       }
                     }
                   },

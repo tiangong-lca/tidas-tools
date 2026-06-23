@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from functools import lru_cache
 import json
 from pathlib import Path
@@ -657,6 +657,7 @@ def _process_dataset(entity: CanonicalEntity):
         exchange_items.append(_exchange_item(exchange, idx))
         if exchange.get("isQuantitativeReference") and reference_flow is None:
             reference_flow = str(idx)
+    _apply_exchange_allocations(entity, exchanges, exchange_items)
     if reference_flow is None:
         reference_flow = _reference_flow_id(exchange_items)
     functional_unit = _functional_unit_or_other(
@@ -1298,6 +1299,82 @@ def _exchange_item(exchange: dict[str, Any], idx: int) -> dict[str, Any]:
     if common_other:
         item["common:other"] = common_other
     return item
+
+
+def _allocation_fraction(value: Any) -> str | None:
+    """openLCA allocationFactor.value (0..1 fraction) -> TIDAS Perc (% 0..100)."""
+    try:
+        amount = value if isinstance(value, Decimal) else Decimal(str(value))
+    except (InvalidOperation, TypeError, ValueError):
+        return None
+    return _percentage(str((amount * 100).quantize(Decimal("0.001"))))
+
+
+def _apply_exchange_allocations(
+    entity: CanonicalEntity,
+    exchanges: list[dict[str, Any]],
+    exchange_items: list[dict[str, Any]],
+) -> None:
+    """Map openLCA process allocationFactors onto the TIDAS exchange allocations.
+
+    eILCD allows a list of <allocation> per exchange (maxOccurs unbounded), so a
+    multifunctional process whose inputs/elementary flows are split across several
+    co-products (causal/physical/economic allocation) is represented losslessly:
+    each allocated exchange carries one allocation entry per co-product with the
+    co-product output's @dataSetInternalID and the allocated fraction. Sparse
+    zero-fraction cells are omitted (the listed non-zero fractions sum to 100%).
+    """
+    factors = entity.raw.get("allocationFactors")
+    if not isinstance(factors, list) or not factors:
+        return
+
+    def flow_id(exchange: dict[str, Any]) -> str | None:
+        flow = exchange.get("flow")
+        return flow.get("@id") if isinstance(flow, dict) else None
+
+    # openLCA allocationFactor.exchange is an Exchange object (internalId + flow);
+    # match the allocated exchange by its source internalId. The co-product is a
+    # Flow ref matched to the output exchange carrying that flow.
+    item_by_internal: dict[Any, dict[str, Any]] = {}
+    coproduct_internal: dict[str, str] = {}
+    for exchange, item in zip(exchanges, exchange_items):
+        internal = exchange.get("internalId")
+        if internal is not None:
+            item_by_internal[internal] = item
+        fid = flow_id(exchange)
+        if fid and not exchange.get("isInput", False):
+            coproduct_internal.setdefault(fid, item.get("@dataSetInternalID"))
+
+    allocations_by_item: dict[int, list[dict[str, str]]] = {}
+    for factor in factors:
+        if not isinstance(factor, dict):
+            continue
+        allocated = factor.get("exchange")
+        product = factor.get("product")
+        allocated_internal = (
+            allocated.get("internalId") if isinstance(allocated, dict) else None
+        )
+        product_fid = product.get("@id") if isinstance(product, dict) else None
+        target = item_by_internal.get(allocated_internal)
+        coproduct = coproduct_internal.get(product_fid or "")
+        fraction = _allocation_fraction(factor.get("value"))
+        if target is None or coproduct is None or fraction is None:
+            continue
+        if fraction in ("0", "0.0", "0.00", "0.000"):
+            continue  # sparse zero cell; the listed non-zero fractions sum to 100%
+        allocations_by_item.setdefault(id(target), []).append(
+            {
+                "@internalReferenceToCoProduct": coproduct,
+                "@allocatedFraction": fraction,
+            }
+        )
+
+    for item in exchange_items:
+        entries = allocations_by_item.get(id(item))
+        if entries:
+            item["allocations"] = {
+                "allocation": entries if len(entries) > 1 else entries[0]
+            }
 
 
 def _reference_flow_id(exchange_items: list[dict[str, Any]]) -> str:

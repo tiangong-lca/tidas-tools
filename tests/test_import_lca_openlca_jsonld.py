@@ -1052,3 +1052,40 @@ def test_process_pedigree_maps_to_ilcd_data_quality_indicators():
     ]
     # no pedigree -> no indicators (raw still round-trips in trace)
     assert _process_data_quality_indicators({}, index) == []
+
+
+def test_allocation_factors_map_to_exchange_allocations_list():
+    from decimal import Decimal
+    from tidas_tools.import_lca.writers.tidas_json import (
+        _apply_exchange_allocations,
+        _exchange_item,
+    )
+
+    class _Ent:
+        raw = {
+            "allocationFactors": [
+                {"exchange": {"internalId": 7, "flow": {"@id": "in-x"}},
+                 "product": {"@id": "prodA"}, "value": Decimal("0.6")},
+                {"exchange": {"internalId": 7, "flow": {"@id": "in-x"}},
+                 "product": {"@id": "prodB"}, "value": Decimal("0.4")},
+                {"exchange": {"internalId": 7, "flow": {"@id": "in-x"}},
+                 "product": {"@id": "prodA"}, "value": Decimal("0")},  # sparse zero -> omitted
+            ]
+        }
+
+    exchanges = [
+        {"internalId": 7, "isInput": True, "flow": {"@id": "in-x"}, "amount": Decimal("5")},
+        {"internalId": 1, "isInput": False, "flow": {"@id": "prodA"}, "amount": Decimal("1")},
+        {"internalId": 2, "isInput": False, "flow": {"@id": "prodB"}, "amount": Decimal("1")},
+    ]
+    items = [_exchange_item(e, i + 1) for i, e in enumerate(exchanges)]
+    _apply_exchange_allocations(_Ent(), exchanges, items)
+    # the allocated input exchange (idx 1) carries a list of allocation entries
+    allocation = items[0]["allocations"]["allocation"]
+    assert isinstance(allocation, list) and len(allocation) == 2  # zero cell omitted
+    fractions = {a["@internalReferenceToCoProduct"]: a["@allocatedFraction"] for a in allocation}
+    # co-products prodA (output idx 2) and prodB (output idx 3); fractions sum to 100
+    assert fractions == {"2": "60.000", "3": "40.000"}
+    # the co-product outputs themselves carry no allocations
+    assert "allocations" not in items[1]
+    assert "allocations" not in items[2]

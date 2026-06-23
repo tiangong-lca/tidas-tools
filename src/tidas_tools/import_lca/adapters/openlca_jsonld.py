@@ -1237,11 +1237,11 @@ def _report_rich_field_fidelity(store: MemoryCanonicalStore, report: ConversionR
             "uncertainty_dispersion_param": uncertainty_dispersion,
             "uncertainty_min_max": uncertainty_bounds,
             "process_pedigree_data_quality_indicators": process_pedigree_mapped,
+            "allocation_processes_mapped_to_exchange_allocations": allocation_processes_trace_only,
             "residual_exchange_pedigree_trace_only": exchange_pedigree_trace_only,
-            "residual_allocation_factors_trace_only": allocation_processes_trace_only,
             "residual_notes": {
                 "exchange_pedigree": "ILCD has no per-exchange data-quality slot (D1)",
-                "allocation": "ILCD allocations is one fraction per exchange; openLCA causal allocation is a multi-co-product matrix (A2) — method kept in LCIMethodApproaches, full factors in trace",
+                "allocation": "Mapped: per-exchange allocations list (eILCD maxOccurs unbounded) carries the multi-co-product fractions; sparse zero cells omitted; allocation method also in LCIMethodApproaches",
                 "triangular_mode": "ILCD exchange has no mode field; min/max kept (U1)",
             },
         },

@@ -1414,18 +1414,38 @@
                     "description": "如果流程有多个参考产品，则用于分配规范的容器标签。仅用于多功能流程。",
                     "properties": {
                       "allocation": {
-                        "type": "object",
                         "description": "指定此交换的一次分配（请参阅下面此标签的属性）",
-                        "properties": {
-                          "@internalReferenceToCoProduct": {
-                            "$ref": "tidas_data_types.json#/$defs/Int6",
-                            "description": "参考其中一种联产品。所应用的分配方法、细节和解释记录在“LCI 方法方法”和“LCI 方法方法/解释的偏差”字段中。 [注：仅适用于多功能流程。记录的分配分数仅在使用数据集进行归因建模时适用，并且对于结果建模将被忽略。]"
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "@internalReferenceToCoProduct": {
+                                "$ref": "tidas_data_types.json#/$defs/Int6",
+                                "description": "参考其中一种联产品。所应用的分配方法、细节和解释记录在“LCI 方法方法”和“LCI 方法方法/解释的偏差”字段中。 [注：仅适用于多功能流程。记录的分配分数仅在使用数据集进行归因建模时适用，并且对于结果建模将被忽略。]"
+                              },
+                              "@allocatedFraction": {
+                                "$ref": "tidas_data_types.json#/$defs/Perc",
+                                "description": "预计分配给该联产品（建议分配）的输入或输出流的比例（以%表示）。联产品的数字总和应为 100%。"
+                              }
+                            }
                           },
-                          "@allocatedFraction": {
-                            "$ref": "tidas_data_types.json#/$defs/Perc",
-                            "description": "预计分配给该联产品（建议分配）的输入或输出流的比例（以%表示）。联产品的数字总和应为 100%。"
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "@internalReferenceToCoProduct": {
+                                  "$ref": "tidas_data_types.json#/$defs/Int6",
+                                  "description": "参考其中一种联产品。所应用的分配方法、细节和解释记录在“LCI 方法方法”和“LCI 方法方法/解释的偏差”字段中。 [注：仅适用于多功能流程。记录的分配分数仅在使用数据集进行归因建模时适用，并且对于结果建模将被忽略。]"
+                                },
+                                "@allocatedFraction": {
+                                  "$ref": "tidas_data_types.json#/$defs/Perc",
+                                  "description": "预计分配给该联产品（建议分配）的输入或输出流的比例（以%表示）。联产品的数字总和应为 100%。"
+                                }
+                              }
+                            }
                           }
-                        }
+                        ]
                       }
                     }
                   },
