@@ -918,3 +918,78 @@ def write_provider_graph_jsonld_fixture(tmp_path):
         encoding="utf-8",
     )
     return source_dir
+
+
+def test_elementary_categorization_maps_fedefl_compartments():
+    from tidas_tools.import_lca.writers.tidas_json import (
+        _elementary_categorization,
+        _flow_classification,
+    )
+
+    def leaf(path):
+        cats = _elementary_categorization({"category": path})
+        assert cats is not None, path
+        return (cats[0]["#text"], cats[-1]["@catId"], cats[-1]["#text"])
+
+    # Emissions: real compartment -> correct leaf (was all "air, unspecified" before)
+    assert leaf("Elementary flows/emission/air") == (
+        "Emissions",
+        "1.3.4",
+        "Emissions to air, unspecified",
+    )
+    assert leaf("Elementary flows/emission/air/troposphere/urban") == (
+        "Emissions",
+        "1.3.1",
+        "Emissions to urban air close to ground",
+    )
+    assert leaf("Elementary flows/emission/air/troposphere/rural") == (
+        "Emissions",
+        "1.3.2",
+        "Emissions to non-urban air or from high stacks",
+    )
+    assert leaf("Elementary flows/emission/air/stratosphere") == (
+        "Emissions",
+        "1.3.3",
+        "Emissions to lower stratosphere and upper troposphere",
+    )
+    assert leaf("Elementary flows/emission/water/saline water body/ocean") == (
+        "Emissions",
+        "1.1.2",
+        "Emissions to sea water",
+    )
+    assert leaf("Elementary flows/emission/water/fresh water body/river") == (
+        "Emissions",
+        "1.1.1",
+        "Emissions to fresh water",
+    )
+    assert leaf("Elementary flows/emission/ground") == (
+        "Emissions",
+        "1.2.3",
+        "Emissions to soil, unspecified",
+    )
+    assert leaf("Elementary flows/emission/ground/human-dominated/agricultural") == (
+        "Emissions",
+        "1.2.1",
+        "Emissions to agricultural soil",
+    )
+    # Resources: correct top-level category kind (was wrongly under "Emissions")
+    assert leaf("Elementary flows/resource/ground/subterranean") == (
+        "Resources",
+        "2.1.8",
+        "Non-renewable resources from ground, unspecified",
+    )
+    assert leaf("Elementary flows/resource/water") == (
+        "Resources",
+        "2.2.7",
+        "Renewable resources from water, unspecified",
+    )
+
+    # ecoSpold single-token compartments and non-FEDEFL shapes -> None (no regression):
+    # the writer keeps the legacy "air, unspecified" default for these.
+    assert _elementary_categorization({"category": "air"}) is None
+    assert _elementary_categorization({"category": "resource"}) is None
+    assert _elementary_categorization({"category": "air/low population density"}) is None
+    assert _elementary_categorization({}) is None
+    default = _flow_classification("Elementary flow", {"category": "resource"})
+    leaves = default["common:elementaryFlowCategorization"]["common:category"]
+    assert leaves[-1]["#text"] == "Emissions to air, unspecified"

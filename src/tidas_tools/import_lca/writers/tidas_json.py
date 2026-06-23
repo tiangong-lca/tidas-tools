@@ -1565,23 +1565,121 @@ def _location_codes() -> frozenset[str]:
     )
 
 
+def _elementary_categorization(
+    raw: dict[str, Any] | None,
+) -> list[dict[str, str]] | None:
+    """Map a FEDEFL/openLCA compartment path to the TIDAS elementary category tree.
+
+    Returns the [L0, L1, L2] category list when the source carries a recognizable
+    FEDEFL emission/resource compartment path (e.g.
+    "Elementary flows/emission/air/troposphere/rural"); returns None otherwise so
+    the caller keeps the legacy default. ecoSpold single-token compartments
+    ("air"/"resource") and non-FEDEFL shapes have no recognizable medium and yield
+    None, so this never changes the ecoSpold/BAFU output. Compartment text/catIds
+    match tidas_flows_elementary_category.json.
+    """
+    if not raw:
+        return None
+    raw_path = raw.get("category")
+    if not raw_path and isinstance(raw.get("sourceCategoryPath"), list):
+        raw_path = "/".join(str(part) for part in raw["sourceCategoryPath"])
+    segments = [segment.strip().lower() for segment in str(raw_path or "").split("/")]
+    segments = [
+        segment
+        for segment in segments
+        if segment and segment not in ("elementary flows", "non-fedefl")
+    ]
+    if len(segments) < 2:
+        return None
+    direction, medium = segments[0], segments[1]
+    sub = " ".join(segments[2:])
+
+    def path(
+        level1: tuple[str, str], leaf: tuple[str, str], root: tuple[str, str]
+    ) -> list[dict[str, str]]:
+        return [
+            {"@level": "0", "@catId": root[0], "#text": root[1]},
+            {"@level": "1", "@catId": level1[0], "#text": level1[1]},
+            {"@level": "2", "@catId": leaf[0], "#text": leaf[1]},
+        ]
+
+    emissions = ("1", "Emissions")
+    if direction == "emission":
+        if medium == "air":
+            if "indoor" in sub:
+                leaf = ("1.3.4", "Emissions to air, unspecified")
+            elif "stratosphere" in sub:
+                leaf = ("1.3.3", "Emissions to lower stratosphere and upper troposphere")
+            elif "urban" in sub:
+                leaf = ("1.3.1", "Emissions to urban air close to ground")
+            elif "rural" in sub or "troposphere" in sub or "high" in sub:
+                leaf = ("1.3.2", "Emissions to non-urban air or from high stacks")
+            else:
+                leaf = ("1.3.4", "Emissions to air, unspecified")
+            return path(("1.3", "Emissions to air"), leaf, emissions)
+        if medium == "water":
+            if "saline" in sub or "ocean" in sub or "sea" in sub:
+                leaf = ("1.1.2", "Emissions to sea water")
+            elif "fresh" in sub or "river" in sub or "lake" in sub:
+                leaf = ("1.1.1", "Emissions to fresh water")
+            else:
+                leaf = ("1.1.3", "Emissions to water, unspecified")
+            return path(("1.1", "Emissions to water"), leaf, emissions)
+        if medium in ("ground", "soil"):
+            if "agricultur" in sub:
+                leaf = ("1.2.1", "Emissions to agricultural soil")
+            elif "industri" in sub or "forest" in sub or "terrestrial" in sub:
+                leaf = ("1.2.2", "Emissions to non-agricultural soil")
+            else:
+                leaf = ("1.2.3", "Emissions to soil, unspecified")
+            return path(("1.2", "Emissions to soil"), leaf, emissions)
+        return None
+    if direction == "resource":
+        resources = ("2", "Resources")
+        if medium == "ground":
+            return path(
+                ("2.1", "Resources from ground"),
+                ("2.1.8", "Non-renewable resources from ground, unspecified"),
+                resources,
+            )
+        if medium == "water":
+            return path(
+                ("2.2", "Resources from water"),
+                ("2.2.7", "Renewable resources from water, unspecified"),
+                resources,
+            )
+        if medium == "air":
+            return path(
+                ("2.3", "Resources from air"),
+                ("2.3.7", "Renewable resources from air, unspecified"),
+                resources,
+            )
+        if medium in ("biotic", "biosphere"):
+            return path(
+                ("2.4", "Resources from biosphere"),
+                ("2.4.5", "Renewable resources from biosphere, unspecified"),
+                resources,
+            )
+        return None
+    return None
+
+
 def _flow_classification(
     flow_type: str, raw: dict[str, Any] | None = None
 ) -> dict[str, Any]:
     trace = _classification_trace(raw)
     if flow_type == "Elementary flow":
+        categories = _elementary_categorization(raw) or [
+            {"@level": "0", "@catId": "1", "#text": "Emissions"},
+            {"@level": "1", "@catId": "1.3", "#text": "Emissions to air"},
+            {
+                "@level": "2",
+                "@catId": "1.3.4",
+                "#text": "Emissions to air, unspecified",
+            },
+        ]
         classification = {
-            "common:elementaryFlowCategorization": {
-                "common:category": [
-                    {"@level": "0", "@catId": "1", "#text": "Emissions"},
-                    {"@level": "1", "@catId": "1.3", "#text": "Emissions to air"},
-                    {
-                        "@level": "2",
-                        "@catId": "1.3.4",
-                        "#text": "Emissions to air, unspecified",
-                    },
-                ]
-            }
+            "common:elementaryFlowCategorization": {"common:category": categories}
         }
         if trace:
             classification["common:elementaryFlowCategorization"][
