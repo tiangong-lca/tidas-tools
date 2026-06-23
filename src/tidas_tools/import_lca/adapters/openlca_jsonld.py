@@ -35,9 +35,10 @@ class OpenLcaJsonLdAdapter(SourceAdapter):
             if isinstance(item, dict)
         ]
         location_index = _location_index(entries)
+        dq_system_index = _dq_system_index(entries)
         unsupported_items = []
         for label, item in entries:
-            entity = _to_entity(item, label, location_index)
+            entity = _to_entity(item, label, location_index, dq_system_index)
             if entity is None:
                 unsupported_items.append(_unsupported_item(label, item))
                 continue
@@ -49,6 +50,7 @@ class OpenLcaJsonLdAdapter(SourceAdapter):
             count += 1
 
         _normalize_exchange_amounts(store, report)
+        _report_rich_field_fidelity(store, report)
 
         lifecycle_model = _provider_graph_lifecycle_model(store, source)
         if lifecycle_model is not None:
@@ -116,7 +118,10 @@ def _iter_items(payload: Any) -> Iterable[dict[str, Any]]:
 
 
 def _to_entity(
-    item: dict[str, Any], label: str, location_index: dict[str, dict[str, Any]]
+    item: dict[str, Any],
+    label: str,
+    location_index: dict[str, dict[str, Any]],
+    dq_system_index: dict[str, list[tuple[int, str]]] | None = None,
 ) -> CanonicalEntity | None:
     type_name = _type_name(item.get("@type"))
     entity_type = {
@@ -140,6 +145,9 @@ def _to_entity(
         raw.update(_flow_metadata(item))
     elif entity_type == "processes":
         raw.update(_process_metadata(item, location_index))
+        indicators = _process_data_quality_indicators(item, dq_system_index or {})
+        if indicators:
+            raw["dataQualityIndicators"] = indicators
         raw["exchanges"] = _process_exchanges(item, label, location_index)
 
     return CanonicalEntity(
@@ -299,6 +307,7 @@ def _process_exchanges(
             "sourceLocation": location,
             "dqEntry": exchange.get("dqEntry"),
             "uncertaintyDistributionType": _uncertainty_distribution_type(uncertainty),
+            "relativeStandardDeviation95In": _uncertainty_dispersion(uncertainty),
             "minimumAmount": _uncertainty_bound(uncertainty, "minimum"),
             "maximumAmount": _uncertainty_bound(uncertainty, "maximum"),
             "generalComment": exchange.get("description"),
@@ -1154,6 +1163,193 @@ def _uncertainty_bound(value: Any, key: str) -> Any:
     if isinstance(value, dict):
         return value.get(key)
     return None
+
+
+def _uncertainty_dispersion(value: Any) -> Any:
+    """openLCA uncertainty -> ILCD relativeStandardDeviation95In (a TIDAS Perc, 0..100).
+
+    ILCD stores, for a log-normal distribution, the SQUARE of the geometric standard
+    deviation (SDg^2), and for a normal distribution the doubled standard deviation
+    (2*SD). Triangular/uniform use minimum/maximum instead and carry no dispersion.
+    The downstream TIDAS Perc validator drops values outside 0..100, so a very wide
+    spread (SDg^2 or 2*SD > 100) is preserved only in the source trace (residual U2).
+    """
+    if not isinstance(value, dict):
+        return None
+    dist = str(value.get("distributionType") or "").strip().upper()
+    dispersion: Decimal | None = None
+    if dist == "LOG_NORMAL_DISTRIBUTION":
+        gsd = _decimal_value(value.get("geomSd"))
+        if gsd is not None:
+            dispersion = gsd * gsd
+    elif dist == "NORMAL_DISTRIBUTION":
+        sd = _decimal_value(value.get("sd"))
+        if sd is not None:
+            dispersion = sd * 2
+    if dispersion is None:
+        return None
+    # TIDAS Perc is 0..100 with at most 3 decimals; round to fit, and leave out-of-range
+    # spreads to the source trace (residual U2) rather than emitting an invalid value.
+    rounded = dispersion.quantize(Decimal("0.001"))
+    if rounded < 0 or rounded > 100:
+        return None
+    return rounded
+
+
+def _report_rich_field_fidelity(store: MemoryCanonicalStore, report: ConversionReport) -> None:
+    """Summarise how the rich USLCI fields landed in TIDAS fields vs the source trace.
+
+    Lets the import gate verify lossless coverage and lists the evidenced residuals
+    that ILCD/TIDAS has no faithful slot for (kept in sourceTrace).
+    """
+    uncertainty_type = 0
+    uncertainty_dispersion = 0
+    uncertainty_bounds = 0
+    process_pedigree_mapped = 0
+    exchange_pedigree_trace_only = 0
+    allocation_processes_trace_only = 0
+    for entity in store.iter_type("processes"):
+        if entity.raw.get("dataQualityIndicators"):
+            process_pedigree_mapped += 1
+        if entity.raw.get("allocationFactors"):
+            allocation_processes_trace_only += 1
+        for exchange in entity.raw.get("exchanges") or []:
+            if exchange.get("uncertaintyDistributionType"):
+                uncertainty_type += 1
+            if exchange.get("relativeStandardDeviation95In") is not None:
+                uncertainty_dispersion += 1
+            if (
+                exchange.get("minimumAmount") is not None
+                or exchange.get("maximumAmount") is not None
+            ):
+                uncertainty_bounds += 1
+            if exchange.get("dqEntry"):
+                exchange_pedigree_trace_only += 1
+    report.add_issue(
+        severity="info",
+        code="rich_field_fidelity_summary",
+        message=(
+            "Carried rich source fields into TIDAS fields where a faithful slot "
+            "exists; residuals without an ILCD slot are preserved in sourceTrace."
+        ),
+        context={
+            "uncertainty_distribution_type": uncertainty_type,
+            "uncertainty_dispersion_param": uncertainty_dispersion,
+            "uncertainty_min_max": uncertainty_bounds,
+            "process_pedigree_data_quality_indicators": process_pedigree_mapped,
+            "residual_exchange_pedigree_trace_only": exchange_pedigree_trace_only,
+            "residual_allocation_factors_trace_only": allocation_processes_trace_only,
+            "residual_notes": {
+                "exchange_pedigree": "ILCD has no per-exchange data-quality slot (D1)",
+                "allocation": "ILCD allocations is one fraction per exchange; openLCA causal allocation is a multi-co-product matrix (A2) — method kept in LCIMethodApproaches, full factors in trace",
+                "triangular_mode": "ILCD exchange has no mode field; min/max kept (U1)",
+            },
+        },
+    )
+
+
+def _dq_system_index(
+    entries: Iterable[tuple[str, dict[str, Any]]],
+) -> dict[str, list[tuple[int, str]]]:
+    """Index DQ-system definitions by @id -> [(position, indicator_name), ...].
+
+    openLCA dq_systems carry the named pedigree indicators (e.g. US EPA Process /
+    Flow Pedigree Matrix). They are not a TIDAS entity type, but the converter
+    still walks them, so we read their indicator names here to label the pedigree
+    scores faithfully instead of guessing the system.
+    """
+    index: dict[str, list[tuple[int, str]]] = {}
+    for _label, item in entries:
+        if _type_name(item.get("@type")) != "dqsystem":
+            continue
+        system_id = _ref_id(item) or _external_id(item)
+        if not system_id:
+            continue
+        indicators: list[tuple[int, str]] = []
+        for indicator in item.get("indicators") or []:
+            if not isinstance(indicator, dict):
+                continue
+            position = indicator.get("position")
+            name = _name(indicator)
+            if isinstance(position, int) and name:
+                indicators.append((position, name))
+        if indicators:
+            index[system_id] = sorted(indicators, key=lambda pair: pair[0])
+    return index
+
+
+# openLCA/US-EPA pedigree indicator name (lower-case keywords) -> ILCD
+# dataQualityIndicator @name. Keyword match keeps it general across DQ systems.
+_DQ_INDICATOR_NAME_MAP = (
+    ("complete", "Completeness"),
+    ("temporal", "Time representativeness"),
+    ("time", "Time representativeness"),
+    ("geograph", "Geographical representativeness"),
+    ("technolog", "Technological representativeness"),
+    ("reliab", "Precision"),
+    ("review", "Methodological appropriateness and consistency"),
+    ("data collection", "Methodological appropriateness and consistency"),
+    ("method", "Methodological appropriateness and consistency"),
+)
+# Pedigree score (1 best .. 5 worst) -> ILCD quality level.
+_DQ_SCORE_LEVELS = {
+    1: "Very good",
+    2: "Good",
+    3: "Fair",
+    4: "Poor",
+    5: "Very poor",
+}
+
+
+def _ilcd_dq_indicator_name(source_name: str) -> str | None:
+    text = str(source_name or "").lower()
+    for keyword, ilcd_name in _DQ_INDICATOR_NAME_MAP:
+        if keyword in text:
+            return ilcd_name
+    return None
+
+
+def _parse_pedigree_scores(value: Any) -> list[int]:
+    text = str(value or "").strip().strip("()")
+    if not text:
+        return []
+    scores: list[int] = []
+    for token in text.split(";"):
+        token = token.strip()
+        try:
+            scores.append(int(token))
+        except (TypeError, ValueError):
+            scores.append(0)
+    return scores
+
+
+def _process_data_quality_indicators(
+    item: dict[str, Any], dq_system_index: dict[str, list[tuple[int, str]]]
+) -> list[dict[str, str]]:
+    """Map a process pedigree (dqEntry + dqSystem) to ILCD dataQualityIndicators.
+
+    Only the process-level pedigree maps to a TIDAS field (under
+    validation.review.common:dataQualityIndicators). Per-exchange flow pedigree has
+    no ILCD slot and survives only in the source trace (residual D1). When the named
+    DQ system is unavailable, positions cannot be labelled and we emit nothing
+    (the raw pedigree still round-trips in the trace).
+    """
+    scores = _parse_pedigree_scores(item.get("dqEntry"))
+    if not scores:
+        return []
+    system_id = _ref_id(item.get("dqSystem"))
+    indicators = dq_system_index.get(system_id or "", [])
+    result: list[dict[str, str]] = []
+    used_names: set[str] = set()
+    for position, score in enumerate(scores, start=1):
+        source_name = next((n for p, n in indicators if p == position), None)
+        ilcd_name = _ilcd_dq_indicator_name(source_name) if source_name else None
+        level = _DQ_SCORE_LEVELS.get(score)
+        if not ilcd_name or not level or ilcd_name in used_names:
+            continue
+        used_names.add(ilcd_name)
+        result.append({"@name": ilcd_name, "@value": level})
+    return result
 
 
 def _looks_like_chemical_formula(value: Any) -> bool:

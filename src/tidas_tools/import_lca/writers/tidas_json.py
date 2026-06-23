@@ -1011,19 +1011,35 @@ def _process_commissioner_ref(entity: CanonicalEntity) -> dict[str, Any]:
     )
 
 
+def _data_quality_indicators(entity: CanonicalEntity) -> dict[str, Any] | None:
+    indicators = [
+        indicator
+        for indicator in entity.raw.get("dataQualityIndicators") or []
+        if isinstance(indicator, dict) and indicator.get("@name") and indicator.get("@value")
+    ]
+    if not indicators:
+        return None
+    payload = indicators if len(indicators) > 1 else indicators[0]
+    return {"common:dataQualityIndicator": payload}
+
+
 def _review_item(entity: CanonicalEntity) -> dict[str, Any]:
     reviews = [
         review
         for review in entity.raw.get("sourceReviews") or []
         if isinstance(review, dict)
     ]
+    quality_indicators = _data_quality_indicators(entity)
     if not reviews:
-        return {"@type": "Not reviewed"}
+        item = {"@type": "Not reviewed"}
+        if quality_indicators:
+            item["common:dataQualityIndicators"] = quality_indicators
+        return item
 
     primary = reviews[0]
     review_type = _review_type(primary.get("reviewType"))
     if review_type is None:
-        return {
+        item = {
             "@type": "Not reviewed",
             "common:other": _common_other_trace(
                 {
@@ -1035,6 +1051,9 @@ def _review_item(entity: CanonicalEntity) -> dict[str, Any]:
                 }
             ),
         }
+        if quality_indicators:
+            item["common:dataQualityIndicators"] = quality_indicators
+        return item
 
     report_ref = (
         _source_ref_from_raw(primary.get("reportRef"))
@@ -1071,6 +1090,8 @@ def _review_item(entity: CanonicalEntity) -> dict[str, Any]:
     )
     if other:
         item["common:other"] = other
+    if quality_indicators:
+        item["common:dataQualityIndicators"] = quality_indicators
     return item
 
 

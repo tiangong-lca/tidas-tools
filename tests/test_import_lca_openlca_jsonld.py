@@ -993,3 +993,62 @@ def test_elementary_categorization_maps_fedefl_compartments():
     default = _flow_classification("Elementary flow", {"category": "resource"})
     leaves = default["common:elementaryFlowCategorization"]["common:category"]
     assert leaves[-1]["#text"] == "Emissions to air, unspecified"
+
+
+def test_uncertainty_dispersion_maps_lognormal_and_normal():
+    from decimal import Decimal
+    from tidas_tools.import_lca.adapters.openlca_jsonld import _uncertainty_dispersion
+
+    # log-normal -> GSD^2, rounded to TIDAS Perc (<=3 decimals, 0..100)
+    assert _uncertainty_dispersion(
+        {"distributionType": "LOG_NORMAL_DISTRIBUTION", "geomSd": Decimal("2.0")}
+    ) == Decimal("4.000")
+    assert _uncertainty_dispersion(
+        {"distributionType": "LOG_NORMAL_DISTRIBUTION", "geomSd": Decimal("1.05")}
+    ) == Decimal("1.102")
+    # GSD^2 > 100 has no valid Perc slot -> None (residual U2, stays in trace)
+    assert (
+        _uncertainty_dispersion(
+            {"distributionType": "LOG_NORMAL_DISTRIBUTION", "geomSd": Decimal("11")}
+        )
+        is None
+    )
+    # normal -> 2*SD
+    assert _uncertainty_dispersion(
+        {"distributionType": "NORMAL_DISTRIBUTION", "sd": Decimal("3")}
+    ) == Decimal("6.000")
+    # triangular/uniform carry no dispersion (use min/max)
+    assert (
+        _uncertainty_dispersion(
+            {"distributionType": "TRIANGLE_DISTRIBUTION", "minimum": 1, "maximum": 2}
+        )
+        is None
+    )
+
+
+def test_process_pedigree_maps_to_ilcd_data_quality_indicators():
+    from tidas_tools.import_lca.adapters.openlca_jsonld import (
+        _dq_system_index,
+        _process_data_quality_indicators,
+    )
+
+    system_id = "70bf370f-9912-4ec1-baa3-fbd4eaf85a10"
+    system = {
+        "@type": "DQSystem",
+        "@id": system_id,
+        "indicators": [
+            {"position": 1, "name": "Process Review"},
+            {"position": 2, "name": "Process Completeness"},
+        ],
+    }
+    index = _dq_system_index([("x", system)])
+    assert index == {system_id: [(1, "Process Review"), (2, "Process Completeness")]}
+    indicators = _process_data_quality_indicators(
+        {"dqEntry": "(2;1)", "dqSystem": {"@id": system_id}}, index
+    )
+    assert indicators == [
+        {"@name": "Methodological appropriateness and consistency", "@value": "Good"},
+        {"@name": "Completeness", "@value": "Very good"},
+    ]
+    # no pedigree -> no indicators (raw still round-trips in trace)
+    assert _process_data_quality_indicators({}, index) == []
