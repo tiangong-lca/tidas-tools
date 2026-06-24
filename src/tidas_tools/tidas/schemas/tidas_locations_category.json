@@ -2582,15 +2582,15 @@
       "description": "Altay Diqu,Xinjiang Uygur Autonomous Region,China"
     },
     {
-      "const": "CN-TW",
+      "const": "TW",
       "description": "Taiwan Province,China"
     },
     {
-      "const": "CN-HK",
+      "const": "HK",
       "description": "Hong Kong Special Administrative Region of the People's Republic of China"
     },
     {
-      "const": "CN-MO",
+      "const": "MO",
       "description": "Macao Special Administrative Region of the People's Republic of China"
     }
   ]

@@ -1243,7 +1243,11 @@
                   "description": "数据集最后一次修改的日期，通常是手动设置的。"
                 },
                 "common:dataSetVersion": {
-                  "type": "string",
+                  "allOf": [
+                    {
+                      "$ref": "tidas_data_types.json#/$defs/Version"
+                    }
+                  ],
                   "description": "数据集的版本号。前两位数字表示主要更新，后两位数字表示较小的修订和错误更正等。第三个三位数字用于在数据集开发过程中自动和内部计数版本。 “数据集版本”与数据集的UUID 一起唯一标识每个数据集。"
                 },
                 "common:referenceToPrecedingDataSetVersion": {

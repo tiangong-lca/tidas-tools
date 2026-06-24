@@ -232,8 +232,7 @@
               "properties": {
                 "referenceToReferenceProcess": {
                   "description": "Process instance that scales the life cycle model and thereby all directly and indirectly connected process instances of the model; it is often a process instance at the \"end\" of the life cycle model chain, or the process that provides the delivered good, service or function of the model.",
-                  "type": "string",
-                  "pattern": "^-?\\d+$"
+                  "type": "integer"
                 },
                 "common:other": {
                   "$ref": "tidas_data_types.json#/$defs/CommonOther"
@@ -428,11 +427,16 @@
                                                       "true",
                                                       "false"
                                                     ]
+                                                  },
+                                                  "@version": {
+                                                    "$ref": "tidas_data_types.json#/$defs/Version",
+                                                    "description": "Version number of the referenced data set."
                                                   }
                                                 },
                                                 "required": [
                                                   "@id",
-                                                  "@flowUUID"
+                                                  "@flowUUID",
+                                                  "@version"
                                                 ]
                                               },
                                               {
@@ -460,20 +464,30 @@
                                                         "true",
                                                         "false"
                                                       ]
+                                                    },
+                                                    "@version": {
+                                                      "$ref": "tidas_data_types.json#/$defs/Version",
+                                                      "description": "Version number of the referenced data set."
                                                     }
                                                   },
                                                   "required": [
                                                     "@id",
-                                                    "@flowUUID"
+                                                    "@flowUUID",
+                                                    "@version"
                                                   ]
                                                 }
                                               }
                                             ]
+                                          },
+                                          "@version": {
+                                            "$ref": "tidas_data_types.json#/$defs/Version",
+                                            "description": "Version number of the referenced data set."
                                           }
                                         },
                                         "required": [
                                           "@flowUUID",
-                                          "downstreamProcess"
+                                          "downstreamProcess",
+                                          "@version"
                                         ]
                                       },
                                       {
@@ -519,11 +533,16 @@
                                                         "true",
                                                         "false"
                                                       ]
+                                                    },
+                                                    "@version": {
+                                                      "$ref": "tidas_data_types.json#/$defs/Version",
+                                                      "description": "Version number of the referenced data set."
                                                     }
                                                   },
                                                   "required": [
                                                     "@id",
-                                                    "@flowUUID"
+                                                    "@flowUUID",
+                                                    "@version"
                                                   ]
                                                 },
                                                 {
@@ -551,20 +570,30 @@
                                                           "true",
                                                           "false"
                                                         ]
+                                                      },
+                                                      "@version": {
+                                                        "$ref": "tidas_data_types.json#/$defs/Version",
+                                                        "description": "Version number of the referenced data set."
                                                       }
                                                     },
                                                     "required": [
                                                       "@id",
-                                                      "@flowUUID"
+                                                      "@flowUUID",
+                                                      "@version"
                                                     ]
                                                   }
                                                 }
                                               ]
+                                            },
+                                            "@version": {
+                                              "$ref": "tidas_data_types.json#/$defs/Version",
+                                              "description": "Version number of the referenced data set."
                                             }
                                           },
                                           "required": [
                                             "@flowUUID",
-                                            "downstreamProcess"
+                                            "downstreamProcess",
+                                            "@version"
                                           ]
                                         }
                                       }
@@ -725,11 +754,16 @@
                                                     "true",
                                                     "false"
                                                   ]
+                                                },
+                                                "@version": {
+                                                  "$ref": "tidas_data_types.json#/$defs/Version",
+                                                  "description": "Version number of the referenced data set."
                                                 }
                                               },
                                               "required": [
                                                 "@id",
-                                                "@flowUUID"
+                                                "@flowUUID",
+                                                "@version"
                                               ]
                                             },
                                             {
@@ -757,20 +791,30 @@
                                                       "true",
                                                       "false"
                                                     ]
+                                                  },
+                                                  "@version": {
+                                                    "$ref": "tidas_data_types.json#/$defs/Version",
+                                                    "description": "Version number of the referenced data set."
                                                   }
                                                 },
                                                 "required": [
                                                   "@id",
-                                                  "@flowUUID"
+                                                  "@flowUUID",
+                                                  "@version"
                                                 ]
                                               }
                                             }
                                           ]
+                                        },
+                                        "@version": {
+                                          "$ref": "tidas_data_types.json#/$defs/Version",
+                                          "description": "Version number of the referenced data set."
                                         }
                                       },
                                       "required": [
                                         "@flowUUID",
-                                        "downstreamProcess"
+                                        "downstreamProcess",
+                                        "@version"
                                       ]
                                     },
                                     {
@@ -816,11 +860,16 @@
                                                       "true",
                                                       "false"
                                                     ]
+                                                  },
+                                                  "@version": {
+                                                    "$ref": "tidas_data_types.json#/$defs/Version",
+                                                    "description": "Version number of the referenced data set."
                                                   }
                                                 },
                                                 "required": [
                                                   "@id",
-                                                  "@flowUUID"
+                                                  "@flowUUID",
+                                                  "@version"
                                                 ]
                                               },
                                               {
@@ -848,20 +897,30 @@
                                                         "true",
                                                         "false"
                                                       ]
+                                                    },
+                                                    "@version": {
+                                                      "$ref": "tidas_data_types.json#/$defs/Version",
+                                                      "description": "Version number of the referenced data set."
                                                     }
                                                   },
                                                   "required": [
                                                     "@id",
-                                                    "@flowUUID"
+                                                    "@flowUUID",
+                                                    "@version"
                                                   ]
                                                 }
                                               }
                                             ]
+                                          },
+                                          "@version": {
+                                            "$ref": "tidas_data_types.json#/$defs/Version",
+                                            "description": "Version number of the referenced data set."
                                           }
                                         },
                                         "required": [
                                           "@flowUUID",
-                                          "downstreamProcess"
+                                          "downstreamProcess",
+                                          "@version"
                                         ]
                                       }
                                     }
@@ -1241,7 +1300,11 @@
               "type": "object",
               "properties": {
                 "common:dataSetVersion": {
-                  "type": "string",
+                  "allOf": [
+                    {
+                      "$ref": "tidas_data_types.json#/$defs/Version"
+                    }
+                  ],
                   "description": "Version number of data set. First two digits refer to major updates, the second two digits to minor revisions and error corrections etc. The third three digits are intended for automatic and internal counting of versions during data set development. Together with the data set's UUID, the \"Data set version\" uniquely identifies each data set."
                 },
                 "common:referenceToPrecedingDataSetVersion": {

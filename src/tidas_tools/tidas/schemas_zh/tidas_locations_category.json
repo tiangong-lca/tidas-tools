@@ -2582,15 +2582,15 @@
       "description": "中国新疆维吾尔自治区阿勒泰地区"
     },
     {
-      "const": "CN-TW",
+      "const": "TW",
       "description": "中国台湾省"
     },
     {
-      "const": "CN-HK",
+      "const": "HK",
       "description": "中华人民共和国香港特别行政区"
     },
     {
-      "const": "CN-MO",
+      "const": "MO",
       "description": "中华人民共和国澳门特别行政区"
     }
   ]

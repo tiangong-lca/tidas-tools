@@ -1243,7 +1243,11 @@
                   "description": "Date when the data set was revised for the last time, typically manually set."
                 },
                 "common:dataSetVersion": {
-                  "type": "string",
+                  "allOf": [
+                    {
+                      "$ref": "tidas_data_types.json#/$defs/Version"
+                    }
+                  ],
                   "description": "Version number of data set. First two digits refer to major updates, the second two digits to minor revisions and error corrections etc. The third three digits are intended for automatic and internal counting of versions during data set development. Together with the data set's UUID, the \"Data set version\" uniquely identifies each data set."
                 },
                 "common:referenceToPrecedingDataSetVersion": {

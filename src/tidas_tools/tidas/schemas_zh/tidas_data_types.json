@@ -355,9 +355,9 @@
       "$ref": "#/$defs/Int1"
     },
     "Perc": {
-      "description": "百分比金额",
+      "description": "百分比金额（ILCD Perc：十进制，totalDigits=5，fractionDigits=3）",
       "type": "string",
-      "pattern": "^(100(\\.0{1,3})?|([0-9]|[1-9][0-9])(\\.\\d{1,3})?)$"
+      "pattern": "^[+-]?(?=(?:\\D*\\d){1,5}\\D*$)(?:\\d+(?:\\.\\d{1,3})?|\\.\\d{1,3})$"
     },
     "MatR": {
       "description": "数学规则",
@@ -370,7 +370,7 @@
     "Real": {
       "description": "38位实数",
       "type": "string",
-      "pattern": "[+-]?(\\d+(\\.\\d*)?|\\.\\d+)([Ee][+-]?\\d+)?$"
+      "pattern": "^[+-]?(\\d+(\\.\\d*)?|\\.\\d+)([Ee][+-]?\\d+)?$"
     },
     "ST": {
       "description": "短文本，最大长度为 1000 个字符",
@@ -468,14 +468,14 @@
           "type": "object",
           "properties": {
             "@type": {
-              "type": "string"
+              "$ref": "#/$defs/GlobalReferenceTypeValues"
             },
             "@refObjectId": {
               "type": "string",
               "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
             },
             "@version": {
-              "type": "string"
+              "$ref": "#/$defs/Version"
             },
             "@uri": {
               "type": "string"
@@ -498,14 +498,14 @@
             "type": "object",
             "properties": {
               "@type": {
-                "type": "string"
+                "$ref": "#/$defs/GlobalReferenceTypeValues"
               },
               "@refObjectId": {
                 "type": "string",
                 "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
               },
               "@version": {
-                "type": "string"
+                "$ref": "#/$defs/Version"
               },
               "@uri": {
                 "type": "string"
@@ -534,6 +534,25 @@
       "description": "唯一通用标识符，16 字节十六进制数",
       "type": "string",
       "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "Version": {
+      "description": "数据集版本号，格式 NN.NN(.NNN)（符合 ILCD）。",
+      "type": "string",
+      "pattern": "^\\d{2}\\.\\d{2}(\\.\\d{3})?$"
+    },
+    "GlobalReferenceTypeValues": {
+      "description": "被引用数据集/文件的类型（ILCD GlobalReferenceTypeValues）。",
+      "type": "string",
+      "enum": [
+        "source data set",
+        "process data set",
+        "flow data set",
+        "flow property data set",
+        "unit group data set",
+        "contact data set",
+        "LCIA method data set",
+        "other external file"
+      ]
     },
     "Year": {
       "description": "4 位数字年份",

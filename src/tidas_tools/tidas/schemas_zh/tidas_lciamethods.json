@@ -408,12 +408,8 @@
                   "description": "与“LCIA 方法原理”可能存在的数据集特定偏差的简短描述。特别指对在单一 LCIA 方法中结合不同原理的 LCIA 方法的解释。"
                 },
                 "normalisation": {
-                  "type": "string",
-                  "description": "指示所产生的影响因子中是否包含标准化步骤。",
-                  "enum": [
-                    "true",
-                    "false"
-                  ]
+                  "type": "boolean",
+                  "description": "指示所产生的影响因子中是否包含标准化步骤。"
                 },
                 "referenceToUsableNormalisationDataSets": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
@@ -428,12 +424,8 @@
                   "description": "用于计算该数据集的标准化影响因子（如果有）的“标准化数据集”。"
                 },
                 "weighting": {
-                  "type": "string",
-                  "description": "指示权重步骤是否包含在生成的影响因子中。",
-                  "enum": [
-                    "true",
-                    "false"
-                  ]
+                  "type": "boolean",
+                  "description": "指示权重步骤是否包含在生成的影响因子中。"
                 },
                 "referenceToUsableWeightingDataSets": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
@@ -510,15 +502,17 @@
                             "@name": {
                               "type": "string",
                               "enum": [
-                                "Raw data",
-                                "Unit process(es), single operation",
-                                "Unit process(es), black box",
-                                "LCI results or Partly terminated system",
-                                "LCIA results",
-                                "Documentation",
-                                "Life cycle inventory methods",
-                                "LCIA results calculation",
-                                "Goal and scope definition"
+                                "Substance properties, physical and chemical",
+                                "Substance properties, biological",
+                                "Model for Transport and Fate",
+                                "Model for Exposure",
+                                "Model for Effect",
+                                "Model for Damage",
+                                "Characterisation factors",
+                                "Application of model",
+                                "Normalisation",
+                                "Weighting",
+                                "Documentation"
                               ]
                             },
                             "common:method": {
@@ -530,18 +524,11 @@
                                     "@name": {
                                       "type": "string",
                                       "enum": [
-                                        "Validation of data sources",
-                                        "Sample tests on calculations",
-                                        "Energy balance",
-                                        "Element balance",
+                                        "Recollection / Validation of data",
+                                        "Recalculation",
                                         "Cross-check with other source",
-                                        "Cross-check with other data set",
-                                        "Expert judgement",
-                                        "Mass balance",
-                                        "Compliance with legal limits",
-                                        "Compliance with ISO 14040 to 14044",
-                                        "Documentation",
-                                        "Evidence collection by means of plant visits and/or interviews"
+                                        "Cross-check with other LCIA method(ology)",
+                                        "Expert judgement"
                                       ]
                                     }
                                   },
@@ -557,18 +544,11 @@
                                       "@name": {
                                         "type": "string",
                                         "enum": [
-                                          "Validation of data sources",
-                                          "Sample tests on calculations",
-                                          "Energy balance",
-                                          "Element balance",
+                                          "Recollection / Validation of data",
+                                          "Recalculation",
                                           "Cross-check with other source",
-                                          "Cross-check with other data set",
-                                          "Expert judgement",
-                                          "Mass balance",
-                                          "Compliance with legal limits",
-                                          "Compliance with ISO 14040 to 14044",
-                                          "Documentation",
-                                          "Evidence collection by means of plant visits and/or interviews"
+                                          "Cross-check with other LCIA method(ology)",
+                                          "Expert judgement"
                                         ]
                                       }
                                     },
@@ -593,15 +573,17 @@
                               "@name": {
                                 "type": "string",
                                 "enum": [
-                                  "Raw data",
-                                  "Unit process(es), single operation",
-                                  "Unit process(es), black box",
-                                  "LCI results or Partly terminated system",
-                                  "LCIA results",
-                                  "Documentation",
-                                  "Life cycle inventory methods",
-                                  "LCIA results calculation",
-                                  "Goal and scope definition"
+                                  "Substance properties, physical and chemical",
+                                  "Substance properties, biological",
+                                  "Model for Transport and Fate",
+                                  "Model for Exposure",
+                                  "Model for Effect",
+                                  "Model for Damage",
+                                  "Characterisation factors",
+                                  "Application of model",
+                                  "Normalisation",
+                                  "Weighting",
+                                  "Documentation"
                                 ]
                               },
                               "common:method": {
@@ -613,18 +595,11 @@
                                       "@name": {
                                         "type": "string",
                                         "enum": [
-                                          "Validation of data sources",
-                                          "Sample tests on calculations",
-                                          "Energy balance",
-                                          "Element balance",
+                                          "Recollection / Validation of data",
+                                          "Recalculation",
                                           "Cross-check with other source",
-                                          "Cross-check with other data set",
-                                          "Expert judgement",
-                                          "Mass balance",
-                                          "Compliance with legal limits",
-                                          "Compliance with ISO 14040 to 14044",
-                                          "Documentation",
-                                          "Evidence collection by means of plant visits and/or interviews"
+                                          "Cross-check with other LCIA method(ology)",
+                                          "Expert judgement"
                                         ]
                                       }
                                     },
@@ -640,18 +615,11 @@
                                         "@name": {
                                           "type": "string",
                                           "enum": [
-                                            "Validation of data sources",
-                                            "Sample tests on calculations",
-                                            "Energy balance",
-                                            "Element balance",
+                                            "Recollection / Validation of data",
+                                            "Recalculation",
                                             "Cross-check with other source",
-                                            "Cross-check with other data set",
-                                            "Expert judgement",
-                                            "Mass balance",
-                                            "Compliance with legal limits",
-                                            "Compliance with ISO 14040 to 14044",
-                                            "Documentation",
-                                            "Evidence collection by means of plant visits and/or interviews"
+                                            "Cross-check with other LCIA method(ology)",
+                                            "Expert judgement"
                                           ]
                                         }
                                       },
@@ -1014,7 +982,11 @@
                   "description": "数据集最后一次修改的日期，通常是手动设置的。"
                 },
                 "common:dataSetVersion": {
-                  "type": "string",
+                  "allOf": [
+                    {
+                      "$ref": "tidas_data_types.json#/$defs/Version"
+                    }
+                  ],
                   "description": "数据集的版本号。前两位数字表示主要更新，后两位数字表示较小的修订和错误更正等。第三个三位数字用于在数据集开发过程中自动和内部计数版本。 “数据集版本”与数据集的UUID 一起唯一标识每个数据集。"
                 },
                 "common:referenceToPrecedingDataSetVersion": {
@@ -1207,7 +1179,7 @@
                         "$ref": "tidas_data_types.json#/$defs/Real",
                         "description": "在不确定性分布为均匀或三角形的情况下，交换的表征因子的最大值。"
                       },
-                      "uncertaintyType": {
+                      "uncertaintyDistributionType": {
                         "type": "string",
                         "description": "定义对该特定对象或参数有效的不确定性分布类型。",
                         "enum": [

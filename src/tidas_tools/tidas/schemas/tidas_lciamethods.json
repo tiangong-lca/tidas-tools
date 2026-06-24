@@ -408,12 +408,8 @@
                   "description": "Short description of possible data set specific deviations from \"LCIA method principle(s)\". Refers especially to explanations on the combination of LCIA methods with different principles in a single LCIA methodology."
                 },
                 "normalisation": {
-                  "type": "string",
-                  "description": "Indication whether or not a normalisation step was included in the resulting impact factors.",
-                  "enum": [
-                    "true",
-                    "false"
-                  ]
+                  "type": "boolean",
+                  "description": "Indication whether or not a normalisation step was included in the resulting impact factors."
                 },
                 "referenceToUsableNormalisationDataSets": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
@@ -428,12 +424,8 @@
                   "description": "\"Normalisation data set(s)\" that was/were used to calculate the normalised impact factors of this data set, if any."
                 },
                 "weighting": {
-                  "type": "string",
-                  "description": "Indication whether or not a weighting-step was included in the resulting impact factors.",
-                  "enum": [
-                    "true",
-                    "false"
-                  ]
+                  "type": "boolean",
+                  "description": "Indication whether or not a weighting-step was included in the resulting impact factors."
                 },
                 "referenceToUsableWeightingDataSets": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
@@ -510,15 +502,17 @@
                             "@name": {
                               "type": "string",
                               "enum": [
-                                "Raw data",
-                                "Unit process(es), single operation",
-                                "Unit process(es), black box",
-                                "LCI results or Partly terminated system",
-                                "LCIA results",
-                                "Documentation",
-                                "Life cycle inventory methods",
-                                "LCIA results calculation",
-                                "Goal and scope definition"
+                                "Substance properties, physical and chemical",
+                                "Substance properties, biological",
+                                "Model for Transport and Fate",
+                                "Model for Exposure",
+                                "Model for Effect",
+                                "Model for Damage",
+                                "Characterisation factors",
+                                "Application of model",
+                                "Normalisation",
+                                "Weighting",
+                                "Documentation"
                               ]
                             },
                             "common:method": {
@@ -530,18 +524,11 @@
                                     "@name": {
                                       "type": "string",
                                       "enum": [
-                                        "Validation of data sources",
-                                        "Sample tests on calculations",
-                                        "Energy balance",
-                                        "Element balance",
+                                        "Recollection / Validation of data",
+                                        "Recalculation",
                                         "Cross-check with other source",
-                                        "Cross-check with other data set",
-                                        "Expert judgement",
-                                        "Mass balance",
-                                        "Compliance with legal limits",
-                                        "Compliance with ISO 14040 to 14044",
-                                        "Documentation",
-                                        "Evidence collection by means of plant visits and/or interviews"
+                                        "Cross-check with other LCIA method(ology)",
+                                        "Expert judgement"
                                       ]
                                     }
                                   },
@@ -557,18 +544,11 @@
                                       "@name": {
                                         "type": "string",
                                         "enum": [
-                                          "Validation of data sources",
-                                          "Sample tests on calculations",
-                                          "Energy balance",
-                                          "Element balance",
+                                          "Recollection / Validation of data",
+                                          "Recalculation",
                                           "Cross-check with other source",
-                                          "Cross-check with other data set",
-                                          "Expert judgement",
-                                          "Mass balance",
-                                          "Compliance with legal limits",
-                                          "Compliance with ISO 14040 to 14044",
-                                          "Documentation",
-                                          "Evidence collection by means of plant visits and/or interviews"
+                                          "Cross-check with other LCIA method(ology)",
+                                          "Expert judgement"
                                         ]
                                       }
                                     },
@@ -593,15 +573,17 @@
                               "@name": {
                                 "type": "string",
                                 "enum": [
-                                  "Raw data",
-                                  "Unit process(es), single operation",
-                                  "Unit process(es), black box",
-                                  "LCI results or Partly terminated system",
-                                  "LCIA results",
-                                  "Documentation",
-                                  "Life cycle inventory methods",
-                                  "LCIA results calculation",
-                                  "Goal and scope definition"
+                                  "Substance properties, physical and chemical",
+                                  "Substance properties, biological",
+                                  "Model for Transport and Fate",
+                                  "Model for Exposure",
+                                  "Model for Effect",
+                                  "Model for Damage",
+                                  "Characterisation factors",
+                                  "Application of model",
+                                  "Normalisation",
+                                  "Weighting",
+                                  "Documentation"
                                 ]
                               },
                               "common:method": {
@@ -613,18 +595,11 @@
                                       "@name": {
                                         "type": "string",
                                         "enum": [
-                                          "Validation of data sources",
-                                          "Sample tests on calculations",
-                                          "Energy balance",
-                                          "Element balance",
+                                          "Recollection / Validation of data",
+                                          "Recalculation",
                                           "Cross-check with other source",
-                                          "Cross-check with other data set",
-                                          "Expert judgement",
-                                          "Mass balance",
-                                          "Compliance with legal limits",
-                                          "Compliance with ISO 14040 to 14044",
-                                          "Documentation",
-                                          "Evidence collection by means of plant visits and/or interviews"
+                                          "Cross-check with other LCIA method(ology)",
+                                          "Expert judgement"
                                         ]
                                       }
                                     },
@@ -640,18 +615,11 @@
                                         "@name": {
                                           "type": "string",
                                           "enum": [
-                                            "Validation of data sources",
-                                            "Sample tests on calculations",
-                                            "Energy balance",
-                                            "Element balance",
+                                            "Recollection / Validation of data",
+                                            "Recalculation",
                                             "Cross-check with other source",
-                                            "Cross-check with other data set",
-                                            "Expert judgement",
-                                            "Mass balance",
-                                            "Compliance with legal limits",
-                                            "Compliance with ISO 14040 to 14044",
-                                            "Documentation",
-                                            "Evidence collection by means of plant visits and/or interviews"
+                                            "Cross-check with other LCIA method(ology)",
+                                            "Expert judgement"
                                           ]
                                         }
                                       },
@@ -1014,7 +982,11 @@
                   "description": "Date when the data set was revised for the last time, typically manually set."
                 },
                 "common:dataSetVersion": {
-                  "type": "string",
+                  "allOf": [
+                    {
+                      "$ref": "tidas_data_types.json#/$defs/Version"
+                    }
+                  ],
                   "description": "Version number of data set. First two digits refer to major updates, the second two digits to minor revisions and error corrections etc. The third three digits are intended for automatic and internal counting of versions during data set development. Together with the data set's UUID, the \"Data set version\" uniquely identifies each data set."
                 },
                 "common:referenceToPrecedingDataSetVersion": {
@@ -1207,7 +1179,7 @@
                         "$ref": "tidas_data_types.json#/$defs/Real",
                         "description": "Maximum value of the characterisation factor for the exchange in case uncertainty distribution is uniform or triangular."
                       },
-                      "uncertaintyType": {
+                      "uncertaintyDistributionType": {
                         "type": "string",
                         "description": "Defines the kind of uncertainty distribution that is valid for this particular object or parameter.",
                         "enum": [

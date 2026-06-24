@@ -208,7 +208,9 @@ def test_tidas_lciamethod_and_flow_enums_match_tidas_contract():
     factor_schema = lcia_dataset["characterisationFactors"]["properties"]["factor"]
     uncertainty_enums = [
         factor_schema["anyOf"][0]["properties"]["uncertaintyDistributionType"]["enum"],
-        factor_schema["anyOf"][1]["items"]["properties"]["uncertaintyType"]["enum"],
+        factor_schema["anyOf"][1]["items"]["properties"]["uncertaintyDistributionType"][
+            "enum"
+        ],
     ]
     for uncertainty_enum in uncertainty_enums:
         assert "normal" in uncertainty_enum
@@ -218,6 +220,14 @@ def test_tidas_lciamethod_and_flow_enums_match_tidas_contract():
         "properties"
     ]["review"]["properties"]
     scope_options = review_schema["common:scope"]["anyOf"]
+    # LCIA review uses the LCIA-method-specific ScopeOfReviewValues, not the
+    # process-review scope list.
+    for scope_enum in (
+        scope_options[0]["properties"]["@name"]["enum"],
+        scope_options[1]["items"]["properties"]["@name"]["enum"],
+    ):
+        assert "Characterisation factors" in scope_enum
+        assert "Raw data" not in scope_enum
     method_enums = [
         scope_options[0]["properties"]["common:method"]["anyOf"][0]["properties"][
             "@name"
@@ -232,12 +242,12 @@ def test_tidas_lciamethod_and_flow_enums_match_tidas_contract():
             "properties"
         ]["@name"]["enum"],
     ]
+    # LCIA review uses MethodOfReviewValues, not the process-review method list.
     for method_enum in method_enums:
-        assert "Compliance with legal limits" in method_enum
-        assert all(
-            not value.startswith("Compliance with legal limitsRegulated")
-            for value in method_enum
-        )
+        assert "Cross-check with other LCIA method(ology)" in method_enum
+        assert "Expert judgement" in method_enum
+        assert "Compliance with legal limits" not in method_enum
+        assert "Energy balance" not in method_enum
 
 
 def test_fastjsonschema_schema_failure_falls_back_to_strict_error_collection():

@@ -58,6 +58,8 @@ PERMANENT_URI_PATHS = {
 }
 REAL_PATTERN = re.compile(r"[+-]?(\d+(\.\d*)?|\.\d+)([Ee][+-]?\d+)?$")
 PERCENT_PATTERN = re.compile(r"100(\.0{1,3})?|([0-9]|[1-9][0-9])(\.\d{1,3})?")
+# ILCD data set version lexical form NN.NN(.NNN); mirrors $defs/Version.
+VERSION_PATTERN = re.compile(r"^\d{2}\.\d{2}(\.\d{3})?$")
 
 # Schema-required classification slots the importer cannot derive from the
 # source at import time: the source only carries its own native taxonomy text
@@ -911,6 +913,7 @@ def _lifecycle_process_instances(entity: CanonicalEntity) -> list[dict[str, Any]
         downstream = {
             "@id": instance_by_process[consumer_id],
             "@flowUUID": flow_id,
+            "@version": DEFAULT_VERSION,
         }
         location = _location_code(connection.get("location"))
         if connection.get("location") and location != "GLO":
@@ -939,6 +942,7 @@ def _lifecycle_process_instances(entity: CanonicalEntity) -> list[dict[str, Any]
             output_exchanges.append(
                 {
                     "@flowUUID": flow_id,
+                    "@version": DEFAULT_VERSION,
                     "@dominant": "true",
                     "downstreamProcess": (
                         downstream_items[0]
@@ -969,15 +973,15 @@ def _lifecycle_process_instances(entity: CanonicalEntity) -> list[dict[str, Any]
 
 def _lifecycle_reference_instance(
     raw: dict[str, Any], process_instances: list[dict[str, Any]]
-) -> str:
+) -> int:
     reference_process_id = raw.get("referenceProcessId")
     process_refs = raw.get("processRefs") or []
     for index, ref in enumerate(process_refs, start=1):
         if isinstance(ref, dict) and ref.get("id") == reference_process_id:
-            return str(index)
+            return index
     if process_instances:
-        return str(process_instances[0].get("@dataSetInternalID") or "1")
-    return "1"
+        return int(process_instances[0].get("@dataSetInternalID") or 1)
+    return 1
 
 
 def _default_process_classification(
@@ -1629,7 +1633,7 @@ def _dataset_version(value: Any) -> str:
     if value is None:
         return DEFAULT_VERSION
     text = str(value).strip()
-    return text or DEFAULT_VERSION
+    return text if VERSION_PATTERN.fullmatch(text) else DEFAULT_VERSION
 
 
 def _date_time(value: Any) -> str | None:
