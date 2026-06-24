@@ -225,7 +225,8 @@ def _process_metadata(
         "sourceCategoryPath": category_path,
         "version": item.get("version"),
         "lastChange": item.get("lastChange"),
-        "referenceYear": _year_from(documentation.get("validFrom")),
+        "referenceYear": _year_from(documentation.get("validFrom"))
+        or _year_from(documentation.get("creationDate")),
         "dataSetValidUntil": _year_from(documentation.get("validUntil")),
         "timeDescription": documentation.get("timeDescription"),
         "location": location.get("code"),

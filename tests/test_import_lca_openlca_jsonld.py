@@ -1089,3 +1089,34 @@ def test_allocation_factors_map_to_exchange_allocations_list():
     # the co-product outputs themselves carry no allocations
     assert "allocations" not in items[1]
     assert "allocations" not in items[2]
+
+
+def test_reference_year_falls_back_to_creation_date_and_data_sources_always_emitted():
+    from tidas_tools.import_lca.adapters.openlca_jsonld import _to_entity
+    from tidas_tools.import_lca.writers.tidas_json import (
+        _data_sources_treatment_and_representativeness,
+    )
+
+    # process with no validFrom but a creationDate, and no source refs / documentation
+    item = {
+        "@type": "Process",
+        "@id": "d3d3d3d3-3333-4333-8333-333333333333",
+        "name": "Sparse process",
+        "processType": "UNIT_PROCESS",
+        "processDocumentation": {"creationDate": "2021-01-07T19:02:01Z"},
+        "exchanges": [
+            {"@type": "Exchange", "internalId": 1, "isInput": False,
+             "isQuantitativeReference": True, "amount": 1,
+             "flow": {"@type": "Flow", "@id": "f0f0f0f0-0000-4000-8000-000000000000",
+                      "name": "Product", "flowType": "PRODUCT_FLOW", "refUnit": "kg"},
+             "unit": {"@id": "u0", "name": "kg"}},
+        ],
+    }
+    entity = _to_entity(item, "x", {}, {})
+    # referenceYear comes from creationDate, NOT the 9999 placeholder
+    assert entity.raw["referenceYear"] == 2021
+    # the schema-required dataSourcesTreatmentAndRepresentativeness block is always emitted,
+    # even with no source refs / documentation (the format-source fallback fills it)
+    block = _data_sources_treatment_and_representativeness(entity)
+    assert block is not None
+    assert "referenceToDataSource" in block

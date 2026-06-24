@@ -1164,8 +1164,9 @@ def _data_sources_treatment_and_representativeness(
         "dataTreatmentAndExtrapolationsPrinciples",
         "dataCutOffAndCompletenessPrinciples",
     }
-    if not source_refs and not any(_text(raw.get(key)) for key in relevant_keys):
-        return None
+    # dataSourcesTreatmentAndRepresentativeness (and its annualSupplyOrProductionVolume)
+    # is schema-required, so always emit the block — the fields below already fall back
+    # to format-source / placeholder values when the source has no documentation.
 
     source_refs_payload = [
         _ref(
