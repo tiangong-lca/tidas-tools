@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from collections.abc import Iterator
+from copy import deepcopy
 from decimal import Decimal, InvalidOperation
 from functools import lru_cache
 import json
@@ -19,6 +20,11 @@ DEFAULT_VERSION = "00.00.001"
 IMPORT_ID_NAMESPACE = "tidas-tools/import"
 IMPORT_TRACE_NAMESPACE = "https://tiangong.earth/tidas/import-trace/1.0"
 IMPORT_TRACE_MARKER = "TIDAS_IMPORT_TRACE_V1"
+IMPORT_GAP_MARKER = "TIDAS_IMPORT_GAP_V1"
+# Deterministic, obviously-fake timestamp used when the source declares none.
+# Fixed (never wall-clock) so re-importing the same bundle is idempotent, and
+# recognisable so it can be told apart from a real timeStamp and repaired.
+PLACEHOLDER_TIMESTAMP = "1900-01-01T00:00:00Z"
 IMPORT_TOOL_CONTACT_NAME = "TianGong LCA import tooling"
 COMPLIANCE_NOT_DECLARED = "External LCA source compliance context"
 DATA_SOURCE_NOT_DECLARED = "External LCA source metadata"
@@ -52,6 +58,64 @@ PERMANENT_URI_PATHS = {
 }
 REAL_PATTERN = re.compile(r"[+-]?(\d+(\.\d*)?|\.\d+)([Ee][+-]?\d+)?$")
 PERCENT_PATTERN = re.compile(r"100(\.0{1,3})?|([0-9]|[1-9][0-9])(\.\d{1,3})?")
+
+# Schema-required classification slots the importer cannot derive from the
+# source at import time: the source only carries its own native taxonomy text
+# (e.g. {"category": "chemicals"}), never a CPC/ISIC code, and the real code is
+# assigned by a downstream classification step. These are deliberate
+# placeholders; every emission is tagged with an IMPORT_GAP_MARKER
+# conversionGap in common:other so it is machine-distinguishable from a real
+# classification and can be picked up for repair (see scan_conversion_gaps).
+PLACEHOLDER_PRODUCT_CLASSIFICATION = [
+    {
+        "@level": "0",
+        "@classId": "9",
+        "#text": "Community, social and personal services",
+    },
+    {
+        "@level": "1",
+        "@classId": "94",
+        "#text": "Sewage and waste collection, treatment and disposal and other environmental protection services",
+    },
+    {
+        "@level": "2",
+        "@classId": "949",
+        "#text": "Other environmental protection services n.e.c.",
+    },
+    {
+        "@level": "3",
+        "@classId": "9490",
+        "#text": "Other environmental protection services n.e.c.",
+    },
+    {
+        "@level": "4",
+        "@classId": "94900",
+        "#text": "Other environmental protection services n.e.c.",
+    },
+]
+PLACEHOLDER_PROCESS_CLASSIFICATION = [
+    {"@level": "0", "@classId": "T", "#text": "Other service activities"},
+    {
+        "@level": "1",
+        "@classId": "94",
+        "#text": "Activities of membership organizations",
+    },
+    {
+        "@level": "2",
+        "@classId": "949",
+        "#text": "Activities of other membership organizations",
+    },
+    {
+        "@level": "3",
+        "@classId": "9499",
+        "#text": "Activities of other membership organizations n.e.c.",
+    },
+]
+PLACEHOLDER_ELEMENTARY_CATEGORY = [
+    {"@level": "0", "@catId": "1", "#text": "Emissions"},
+    {"@level": "1", "@catId": "1.3", "#text": "Emissions to air"},
+    {"@level": "2", "@catId": "1.3.4", "#text": "Emissions to air, unspecified"},
+]
 
 
 def write_tidas_package(store: MemoryCanonicalStore, output_dir: str | Path) -> None:
@@ -152,15 +216,6 @@ def _truncate(text: str, max_length: int) -> str:
     return text[: max_length - 3].rstrip() + "..."
 
 
-def _now() -> str:
-    return (
-        datetime.now(timezone.utc)
-        .replace(microsecond=0)
-        .isoformat()
-        .replace("+00:00", "Z")
-    )
-
-
 def _ref(
     *,
     ref_type: str,
@@ -241,7 +296,7 @@ def _admin_info(
     access_restrictions: Any = None,
 ) -> dict[str, Any]:
     data_entry = {
-        "common:timeStamp": _date_time(timestamp) or _now(),
+        "common:timeStamp": _date_time(timestamp) or PLACEHOLDER_TIMESTAMP,
         "common:referenceToDataSetFormat": _format_ref(),
     }
     if process:
@@ -678,7 +733,9 @@ def _process_dataset(entity: CanonicalEntity):
             entity.raw.get("description") or CONVERTED_EXTERNAL_LCA_DATA
         ),
     }
-    common_other = _common_other_trace(entity.raw.get("sourceTrace"))
+    common_other = _common_other_trace(
+        entity.raw.get("sourceTrace"), _location_gap(entity.raw.get("location"))
+    )
     if common_other:
         data_set_information["common:other"] = common_other
 
@@ -928,33 +985,19 @@ def _default_process_classification(
 ) -> dict[str, Any]:
     classification = {
         "common:classification": {
-            "common:class": [
-                {
-                    "@level": "0",
-                    "@classId": "T",
-                    "#text": "Other service activities",
-                },
-                {
-                    "@level": "1",
-                    "@classId": "94",
-                    "#text": "Activities of membership organizations",
-                },
-                {
-                    "@level": "2",
-                    "@classId": "949",
-                    "#text": "Activities of other membership organizations",
-                },
-                {
-                    "@level": "3",
-                    "@classId": "9499",
-                    "#text": "Activities of other membership organizations n.e.c.",
-                },
-            ]
+            "common:class": deepcopy(PLACEHOLDER_PROCESS_CLASSIFICATION)
         }
     }
-    trace = _classification_trace(raw)
-    if trace:
-        classification["common:classification"]["common:other"] = trace
+    other = _common_other_trace(
+        _classification_payload(raw),
+        _conversion_gap(
+            "classificationInformation.common:classification",
+            "unclassified-pending",
+            detail="process classification not derivable from source; pending ISIC assignment",
+        ),
+    )
+    if other:
+        classification["common:classification"]["common:other"] = other
     return classification
 
 
@@ -1016,7 +1059,9 @@ def _data_quality_indicators(entity: CanonicalEntity) -> dict[str, Any] | None:
     indicators = [
         indicator
         for indicator in entity.raw.get("dataQualityIndicators") or []
-        if isinstance(indicator, dict) and indicator.get("@name") and indicator.get("@value")
+        if isinstance(indicator, dict)
+        and indicator.get("@name")
+        and indicator.get("@value")
     ]
     if not indicators:
         return None
@@ -1638,11 +1683,27 @@ def _location_code(value: Any) -> str:
     text = str(value).strip()
     if not text:
         return "GLO"
-    if text.casefold() == "row":
-        return "GLO"
     if text in _location_codes():
         return text
     return "GLO"
+
+
+def _location_gap(value: Any) -> dict[str, Any] | None:
+    """Mark a conversion gap when a declared source location is not a known
+    TIDAS location code and therefore gets collapsed to GLO by _location_code.
+
+    Returns None when the source has no location or the code is recognised
+    (including aggregate regions like RoW now that they are in the enum)."""
+    if value is None:
+        return None
+    text = str(value).strip()
+    if not text or text in _location_codes():
+        return None
+    return _conversion_gap(
+        "geography.locationOfSupply",
+        "placeholder-location",
+        detail=f"source location {text!r} not in TIDAS location list; defaulted to GLO",
+    )
 
 
 @lru_cache(maxsize=1)
@@ -1708,7 +1769,10 @@ def _elementary_categorization(
             if "indoor" in sub:
                 leaf = ("1.3.4", "Emissions to air, unspecified")
             elif "stratosphere" in sub:
-                leaf = ("1.3.3", "Emissions to lower stratosphere and upper troposphere")
+                leaf = (
+                    "1.3.3",
+                    "Emissions to lower stratosphere and upper troposphere",
+                )
             elif "urban" in sub:
                 leaf = ("1.3.1", "Emissions to urban air close to ground")
             elif "rural" in sub or "troposphere" in sub or "high" in sub:
@@ -1766,71 +1830,53 @@ def _elementary_categorization(
 def _flow_classification(
     flow_type: str, raw: dict[str, Any] | None = None
 ) -> dict[str, Any]:
-    trace = _classification_trace(raw)
+    payload = _classification_payload(raw)
     if flow_type == "Elementary flow":
-        categories = _elementary_categorization(raw) or [
-            {"@level": "0", "@catId": "1", "#text": "Emissions"},
-            {"@level": "1", "@catId": "1.3", "#text": "Emissions to air"},
-            {
-                "@level": "2",
-                "@catId": "1.3.4",
-                "#text": "Emissions to air, unspecified",
-            },
-        ]
+        categories = _elementary_categorization(raw)
+        gap = None
+        if categories is None:
+            categories = deepcopy(PLACEHOLDER_ELEMENTARY_CATEGORY)
+            gap = _conversion_gap(
+                "classificationInformation.common:elementaryFlowCategorization",
+                "placeholder-compartment",
+                detail="source compartment not mapped; defaulted to air-unspecified",
+            )
         classification = {
             "common:elementaryFlowCategorization": {"common:category": categories}
         }
-        if trace:
+        other = _common_other_trace(payload, gap)
+        if other:
             classification["common:elementaryFlowCategorization"][
                 "common:other"
-            ] = trace
+            ] = other
         return classification
     classification = {
         "common:classification": {
-            "common:class": [
-                {
-                    "@level": "0",
-                    "@classId": "9",
-                    "#text": "Community, social and personal services",
-                },
-                {
-                    "@level": "1",
-                    "@classId": "94",
-                    "#text": "Sewage and waste collection, treatment and disposal and other environmental protection services",
-                },
-                {
-                    "@level": "2",
-                    "@classId": "949",
-                    "#text": "Other environmental protection services n.e.c.",
-                },
-                {
-                    "@level": "3",
-                    "@classId": "9490",
-                    "#text": "Other environmental protection services n.e.c.",
-                },
-                {
-                    "@level": "4",
-                    "@classId": "94900",
-                    "#text": "Other environmental protection services n.e.c.",
-                },
-            ]
+            "common:class": deepcopy(PLACEHOLDER_PRODUCT_CLASSIFICATION)
         }
     }
-    if trace:
-        classification["common:classification"]["common:other"] = trace
+    other = _common_other_trace(
+        payload,
+        _conversion_gap(
+            "classificationInformation.common:classification",
+            "unclassified-pending",
+            detail="product flow classification not derivable from source; pending CPC assignment",
+        ),
+    )
+    if other:
+        classification["common:classification"]["common:other"] = other
     return classification
 
 
-def _classification_trace(raw: dict[str, Any] | None) -> dict[str, Any] | None:
+def _classification_payload(raw: dict[str, Any] | None) -> dict[str, Any] | None:
     if not raw:
         return None
-    payload = {
+    return {
         "sourceCategoryPath": raw.get("sourceCategoryPath"),
         "sourceCategory": raw.get("category"),
         "sourceFlowType": raw.get("flowType"),
         "sourceProcessType": raw.get("sourceProcessType"),
     }
-    return _common_other_trace(payload)
 
 
 def _real(value: Any) -> str:
@@ -1913,17 +1959,72 @@ def _uncertainty_distribution_type(value: Any) -> str | None:
     return text if text in allowed else None
 
 
-def _common_other_trace(payload: Any) -> dict[str, Any] | None:
+def _common_other_trace(
+    payload: Any, gap: dict[str, Any] | None = None
+) -> dict[str, Any] | None:
     cleaned = _clean_trace_value(payload)
-    if cleaned in (None, {}, []):
-        return None
-    return {
-        "@xmlns:tidasimport": IMPORT_TRACE_NAMESPACE,
-        "tidasimport:sourceTrace": {
+    parts: dict[str, Any] = {}
+    if cleaned not in (None, {}, []):
+        parts["tidasimport:sourceTrace"] = {
             "@marker": IMPORT_TRACE_MARKER,
             "payload": cleaned,
-        },
-    }
+        }
+    if gap:
+        parts["tidasimport:conversionGap"] = {"@marker": IMPORT_GAP_MARKER, **gap}
+    if not parts:
+        return None
+    return {"@xmlns:tidasimport": IMPORT_TRACE_NAMESPACE, **parts}
+
+
+def _conversion_gap(
+    field: str, status: str, *, detail: str | None = None
+) -> dict[str, Any]:
+    """Build a conversion-gap marker for a placeholder the importer emitted."""
+    gap: dict[str, Any] = {"field": field, "status": status}
+    if detail:
+        gap["detail"] = detail
+    return gap
+
+
+def scan_conversion_gaps(package_dir: str | Path) -> list[dict[str, Any]]:
+    """Collect importer placeholder markers from a written TIDAS package.
+
+    Walks every dataset JSON and returns one entry per placeholder the importer
+    emitted (unclassified classifications, unmapped compartments/locations,
+    placeholder timestamps). This is the repair worklist, and the primitive an
+    export guard can use to avoid shipping un-repaired placeholders as if they
+    were real data."""
+    root = Path(package_dir)
+    gaps: list[dict[str, Any]] = []
+    for path in sorted(root.rglob("*.json")):
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        try:
+            rel = str(path.relative_to(root))
+        except ValueError:
+            rel = str(path)
+        for marker in _iter_gap_markers(payload):
+            gaps.append({"file": rel, **marker})
+    return gaps
+
+
+def _iter_gap_markers(node: Any) -> Iterator[dict[str, Any]]:
+    if isinstance(node, dict):
+        gap = node.get("tidasimport:conversionGap")
+        if isinstance(gap, dict) and gap.get("@marker") == IMPORT_GAP_MARKER:
+            yield {key: value for key, value in gap.items() if key != "@marker"}
+        if node.get("common:timeStamp") == PLACEHOLDER_TIMESTAMP:
+            yield {
+                "field": "administrativeInformation.dataEntryBy.common:timeStamp",
+                "status": "placeholder-timestamp",
+            }
+        for value in node.values():
+            yield from _iter_gap_markers(value)
+    elif isinstance(node, list):
+        for item in node:
+            yield from _iter_gap_markers(item)
 
 
 def _clean_trace_value(value: Any) -> Any:

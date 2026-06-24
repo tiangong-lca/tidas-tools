@@ -24,7 +24,11 @@ if __package__:
     from .process_bundles import write_process_bundles
     from .report import ConversionReport
     from .store import MemoryCanonicalStore
-    from .writers import write_ilcd_from_tidas, write_tidas_package
+    from .writers import (
+        scan_conversion_gaps,
+        write_ilcd_from_tidas,
+        write_tidas_package,
+    )
     from ..validate import validate_ilcd_package_dir, validate_package_dir
     from ..tidas_log import setup_logging
 else:
@@ -47,6 +51,7 @@ else:
     from tidas_tools.import_lca.report import ConversionReport
     from tidas_tools.import_lca.store import MemoryCanonicalStore
     from tidas_tools.import_lca.writers import (
+        scan_conversion_gaps,
         write_ilcd_from_tidas,
         write_tidas_package,
     )
@@ -262,6 +267,18 @@ def run_import(args: argparse.Namespace) -> int:
 
     tidas_dir = Path(report.tidas_dir)
     write_tidas_package(store, tidas_dir)
+    conversion_gaps = scan_conversion_gaps(tidas_dir)
+    if conversion_gaps:
+        report.add_issue(
+            severity="warning",
+            code="import_conversion_gap",
+            message=(
+                "Generated TIDAS package contains importer placeholders that "
+                "need downstream repair (classification, compartment, location, "
+                "or timestamp)."
+            ),
+            context={"count": len(conversion_gaps), "examples": conversion_gaps[:10]},
+        )
     tidas_validation = validate_package_dir(
         str(tidas_dir), emit_logs=False, jobs=args.validation_jobs
     )

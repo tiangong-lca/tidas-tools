@@ -10,6 +10,10 @@
       "description": "全球"
     },
     {
+      "const": "RoW",
+      "description": "世界其余地区（残差区域：全球减去其他已单独建模的区域；不等同于 GLO）"
+    },
+    {
       "const": "RAF",
       "description": "非洲"
     },

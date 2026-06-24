@@ -10,6 +10,10 @@
       "description": "Global"
     },
     {
+      "const": "RoW",
+      "description": "Rest of World (residual region: global minus the regions explicitly modelled elsewhere; not equivalent to GLO)"
+    },
+    {
       "const": "RAF",
       "description": "Africa"
     },
