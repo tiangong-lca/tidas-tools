@@ -531,16 +531,32 @@ def _compliance_source() -> dict[str, Any]:
 def _unit_group_dataset(entity: CanonicalEntity) -> dict[str, Any]:
     units = entity.raw.get("units") or [{"name": entity.name or "unit", "meanValue": 1}]
     unit_items = []
+    # Pick the reference unit instead of hardcoding the first source unit:
+    # openLCA marks it with referenceUnit=true, and (universally) the reference
+    # unit's conversionFactor is exactly 1.0. Hardcoding "1" mislabels groups
+    # whose source order does not start with the reference unit (e.g. USLCI
+    # "Units of mass*length", where t*km is the reference with meanValue 1.0 but
+    # lb*mi is listed first), leaving the reference pointer inconsistent with the
+    # meanValues.
+    explicit_reference_internal_id: str | None = None
+    unit_reference_internal_id: str | None = None
     for idx, unit in enumerate(units, start=1):
+        internal_id = str(idx)
+        mean_value = _real(unit.get("conversionFactor", unit.get("meanValue", 1)))
         unit_items.append(
             {
-                "@dataSetInternalID": str(idx),
+                "@dataSetInternalID": internal_id,
                 "name": str(unit.get("name") or unit.get("refUnit") or "unit"),
-                "meanValue": _real(
-                    unit.get("conversionFactor", unit.get("meanValue", 1))
-                ),
+                "meanValue": mean_value,
             }
         )
+        if explicit_reference_internal_id is None and unit.get("referenceUnit"):
+            explicit_reference_internal_id = internal_id
+        if unit_reference_internal_id is None and _real_equals_one(mean_value):
+            unit_reference_internal_id = internal_id
+    reference_internal_id = (
+        explicit_reference_internal_id or unit_reference_internal_id or "1"
+    )
     dataset_info = {
         "common:UUID": entity.internal_id,
         "common:name": _ml_500(entity.name or "Unit group"),
@@ -567,7 +583,9 @@ def _unit_group_dataset(entity: CanonicalEntity) -> dict[str, Any]:
             "@xsi:schemaLocation": "http://lca.jrc.it/ILCD/UnitGroup ../../schemas/ILCD_UnitGroupDataSet.xsd",
             "unitGroupInformation": {
                 "dataSetInformation": dataset_info,
-                "quantitativeReference": {"referenceToReferenceUnit": "1"},
+                "quantitativeReference": {
+                    "referenceToReferenceUnit": reference_internal_id
+                },
             },
             "modellingAndValidation": {
                 "complianceDeclarations": _compliance_declarations()
@@ -1891,6 +1909,18 @@ def _classification_payload(raw: dict[str, Any] | None) -> dict[str, Any] | None
 def _real(value: Any) -> str:
     text = _real_text(value)
     return text if text is not None else "0"
+
+
+def _real_equals_one(value: Any) -> bool:
+    """True when a real-valued string represents exactly 1 (the openLCA reference
+    unit's conversion factor). Used to locate a UnitGroup's reference unit."""
+    text = _real_text(value)
+    if text is None:
+        return False
+    try:
+        return Decimal(text) == Decimal(1)
+    except (InvalidOperation, ValueError):
+        return False
 
 
 def _optional_real(value: Any) -> str | None:

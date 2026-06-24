@@ -1158,3 +1158,61 @@ def test_reference_year_falls_back_to_creation_date_and_data_sources_always_emit
     block = _data_sources_treatment_and_representativeness(entity)
     assert block is not None
     assert "referenceToDataSource" in block
+
+
+def test_unit_group_reference_unit_is_meanvalue_one_not_first():
+    # Regression: USLCI "Units of mass*length" lists lb*mi first but t*km
+    # (conversionFactor 1.0) is the real reference unit. The writer must point
+    # referenceToReferenceUnit at the meanValue==1 unit, not hardcode "1".
+    from tidas_tools.import_lca.model.entities import CanonicalEntity
+    from tidas_tools.import_lca.writers.tidas_json import _unit_group_dataset
+
+    entity = CanonicalEntity(
+        entity_type="unitgroups",
+        internal_id="838aaa21-0117-11db-92e3-0800200c9a66",
+        name="Units of mass*length",
+        raw={
+            "units": [
+                {"name": "lb*mi", "conversionFactor": "0.00072998615"},
+                {"name": "t*mi", "conversionFactor": "1.609344"},
+                {"name": "kg*km", "conversionFactor": "0.001"},
+                {"name": "t*km", "conversionFactor": "1.0"},
+                {"name": "kt*km", "conversionFactor": "1000.0"},
+            ]
+        },
+    )
+    ds = _unit_group_dataset(entity)
+    qr = ds["unitGroupDataSet"]["unitGroupInformation"]["quantitativeReference"]
+    units = ds["unitGroupDataSet"]["units"]["unit"]
+    ref_id = qr["referenceToReferenceUnit"]
+    ref_unit = next(u for u in units if u["@dataSetInternalID"] == ref_id)
+    assert ref_unit["name"] == "t*km"
+    assert ref_unit["meanValue"] == "1.0"
+
+
+def test_unit_group_reference_unit_honors_explicit_flag():
+    # When openLCA marks referenceUnit=true, that wins even if another unit's
+    # factor happens to be 1.0.
+    from tidas_tools.import_lca.model.entities import CanonicalEntity
+    from tidas_tools.import_lca.writers.tidas_json import _unit_group_dataset
+
+    entity = CanonicalEntity(
+        entity_type="unitgroups",
+        internal_id="11111111-1111-4111-8111-111111111111",
+        name="Units of time",
+        raw={
+            "units": [
+                {"name": "hr", "conversionFactor": "1.0", "referenceUnit": False},
+                {"name": "a", "conversionFactor": "8760.0", "referenceUnit": True},
+            ]
+        },
+    )
+    ds = _unit_group_dataset(entity)
+    qr = ds["unitGroupDataSet"]["unitGroupInformation"]["quantitativeReference"]
+    units = ds["unitGroupDataSet"]["units"]["unit"]
+    ref_unit = next(
+        u
+        for u in units
+        if u["@dataSetInternalID"] == qr["referenceToReferenceUnit"]
+    )
+    assert ref_unit["name"] == "a"
