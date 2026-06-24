@@ -89,122 +89,182 @@
                   "properties": {
                     "common:classification": {
                       "description": "Optional statistical or other classification of the data set. Typically also used for structuring LCA databases.",
-                      "type": "object",
-                      "properties": {
-                        "common:class": {
-                          "type": "array",
-                          "items": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
-                                  "const": "0"
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "common:class": {
+                              "type": "array",
+                              "items": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "@level": {
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                      "const": "0"
+                                    },
+                                    "@classId": {
+                                      "type": "string"
+                                    },
+                                    "#text": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "dependencies": {
+                                    "@level": {
+                                      "$ref": "./tidas_processes_category.json"
+                                    }
+                                  },
+                                  "required": [
+                                    "@level",
+                                    "@classId",
+                                    "#text"
+                                  ]
                                 },
-                                "@classId": {
-                                  "type": "string"
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "@level": {
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                      "const": "1"
+                                    },
+                                    "@classId": {
+                                      "type": "string"
+                                    },
+                                    "#text": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "dependencies": {
+                                    "@level": {
+                                      "$ref": "./tidas_processes_category.json"
+                                    }
+                                  },
+                                  "required": [
+                                    "@level",
+                                    "@classId",
+                                    "#text"
+                                  ]
                                 },
-                                "#text": {
-                                  "type": "string"
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "@level": {
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                      "const": "2"
+                                    },
+                                    "@classId": {
+                                      "type": "string"
+                                    },
+                                    "#text": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "dependencies": {
+                                    "@level": {
+                                      "$ref": "./tidas_processes_category.json"
+                                    }
+                                  },
+                                  "required": [
+                                    "@level",
+                                    "@classId",
+                                    "#text"
+                                  ]
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "@level": {
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                      "const": "3"
+                                    },
+                                    "@classId": {
+                                      "type": "string"
+                                    },
+                                    "#text": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "dependencies": {
+                                    "@level": {
+                                      "$ref": "./tidas_processes_category.json"
+                                    }
+                                  },
+                                  "required": [
+                                    "@level",
+                                    "@classId",
+                                    "#text"
+                                  ]
                                 }
-                              },
-                              "dependencies": {
-                                "@level": {
-                                  "$ref": "./tidas_processes_category.json"
-                                }
-                              },
-                              "required": [
-                                "@level",
-                                "@classId",
-                                "#text"
-                              ]
+                              ],
+                              "uniqueItems": true,
+                              "maxItems": 4,
+                              "additionalItems": false
                             },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
-                                  "const": "1"
-                                },
-                                "@classId": {
-                                  "type": "string"
-                                },
-                                "#text": {
-                                  "type": "string"
-                                }
-                              },
-                              "dependencies": {
-                                "@level": {
-                                  "$ref": "./tidas_processes_category.json"
-                                }
-                              },
-                              "required": [
-                                "@level",
-                                "@classId",
-                                "#text"
-                              ]
+                            "common:other": {
+                              "$ref": "tidas_data_types.json#/$defs/CommonOther"
                             },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
-                                  "const": "2"
-                                },
-                                "@classId": {
-                                  "type": "string"
-                                },
-                                "#text": {
-                                  "type": "string"
-                                }
-                              },
-                              "dependencies": {
-                                "@level": {
-                                  "$ref": "./tidas_processes_category.json"
-                                }
-                              },
-                              "required": [
-                                "@level",
-                                "@classId",
-                                "#text"
-                              ]
+                            "@name": {
+                              "type": "string",
+                              "description": "Name of the classification system (e.g. CPC, ISIC, HS). Per ILCD this defaults to 'ILCD' when absent; set it explicitly for non-ILCD systems."
                             },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
-                                  "const": "3"
-                                },
-                                "@classId": {
-                                  "type": "string"
-                                },
-                                "#text": {
-                                  "type": "string"
-                                }
-                              },
-                              "dependencies": {
-                                "@level": {
-                                  "$ref": "./tidas_processes_category.json"
-                                }
-                              },
-                              "required": [
-                                "@level",
-                                "@classId",
-                                "#text"
-                              ]
+                            "@classes": {
+                              "type": "string",
+                              "description": "Optional URL or identifier of the classification file/system."
                             }
-                          ],
-                          "uniqueItems": true,
-                          "maxItems": 4,
-                          "additionalItems": false
+                          },
+                          "required": [
+                            "common:class"
+                          ]
                         },
-                        "common:other": {
-                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        {
+                          "type": "array",
+                          "minItems": 1,
+                          "items": {
+                            "type": "object",
+                            "description": "One named classification system (e.g. CPC or HS). Used in the array form to let multiple systems coexist.",
+                            "properties": {
+                              "@name": {
+                                "type": "string",
+                                "description": "Name of the classification system (e.g. CPC, ISIC, HS). Per ILCD this defaults to 'ILCD' when absent; set it explicitly for non-ILCD systems."
+                              },
+                              "@classes": {
+                                "type": "string",
+                                "description": "Optional URL or identifier of the classification file/system."
+                              },
+                              "common:class": {
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "@level": {
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType"
+                                    },
+                                    "@classId": {
+                                      "type": "string"
+                                    },
+                                    "#text": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "@level",
+                                    "@classId",
+                                    "#text"
+                                  ]
+                                }
+                              },
+                              "common:other": {
+                                "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                              }
+                            },
+                            "required": [
+                              "@name",
+                              "common:class"
+                            ]
+                          }
                         }
-                      },
-                      "required": [
-                        "common:class"
                       ]
                     }
                   },

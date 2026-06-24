@@ -988,7 +988,9 @@ def test_elementary_categorization_maps_fedefl_compartments():
     # the writer keeps the legacy "air, unspecified" default for these.
     assert _elementary_categorization({"category": "air"}) is None
     assert _elementary_categorization({"category": "resource"}) is None
-    assert _elementary_categorization({"category": "air/low population density"}) is None
+    assert (
+        _elementary_categorization({"category": "air/low population density"}) is None
+    )
     assert _elementary_categorization({}) is None
     default = _flow_classification("Elementary flow", {"category": "resource"})
     leaves = default["common:elementaryFlowCategorization"]["common:category"]
@@ -1064,26 +1066,52 @@ def test_allocation_factors_map_to_exchange_allocations_list():
     class _Ent:
         raw = {
             "allocationFactors": [
-                {"exchange": {"internalId": 7, "flow": {"@id": "in-x"}},
-                 "product": {"@id": "prodA"}, "value": Decimal("0.6")},
-                {"exchange": {"internalId": 7, "flow": {"@id": "in-x"}},
-                 "product": {"@id": "prodB"}, "value": Decimal("0.4")},
-                {"exchange": {"internalId": 7, "flow": {"@id": "in-x"}},
-                 "product": {"@id": "prodA"}, "value": Decimal("0")},  # sparse zero -> omitted
+                {
+                    "exchange": {"internalId": 7, "flow": {"@id": "in-x"}},
+                    "product": {"@id": "prodA"},
+                    "value": Decimal("0.6"),
+                },
+                {
+                    "exchange": {"internalId": 7, "flow": {"@id": "in-x"}},
+                    "product": {"@id": "prodB"},
+                    "value": Decimal("0.4"),
+                },
+                {
+                    "exchange": {"internalId": 7, "flow": {"@id": "in-x"}},
+                    "product": {"@id": "prodA"},
+                    "value": Decimal("0"),
+                },  # sparse zero -> omitted
             ]
         }
 
     exchanges = [
-        {"internalId": 7, "isInput": True, "flow": {"@id": "in-x"}, "amount": Decimal("5")},
-        {"internalId": 1, "isInput": False, "flow": {"@id": "prodA"}, "amount": Decimal("1")},
-        {"internalId": 2, "isInput": False, "flow": {"@id": "prodB"}, "amount": Decimal("1")},
+        {
+            "internalId": 7,
+            "isInput": True,
+            "flow": {"@id": "in-x"},
+            "amount": Decimal("5"),
+        },
+        {
+            "internalId": 1,
+            "isInput": False,
+            "flow": {"@id": "prodA"},
+            "amount": Decimal("1"),
+        },
+        {
+            "internalId": 2,
+            "isInput": False,
+            "flow": {"@id": "prodB"},
+            "amount": Decimal("1"),
+        },
     ]
     items = [_exchange_item(e, i + 1) for i, e in enumerate(exchanges)]
     _apply_exchange_allocations(_Ent(), exchanges, items)
     # the allocated input exchange (idx 1) carries a list of allocation entries
     allocation = items[0]["allocations"]["allocation"]
     assert isinstance(allocation, list) and len(allocation) == 2  # zero cell omitted
-    fractions = {a["@internalReferenceToCoProduct"]: a["@allocatedFraction"] for a in allocation}
+    fractions = {
+        a["@internalReferenceToCoProduct"]: a["@allocatedFraction"] for a in allocation
+    }
     # co-products prodA (output idx 2) and prodB (output idx 3); fractions sum to 100
     assert fractions == {"2": "60.000", "3": "40.000"}
     # the co-product outputs themselves carry no allocations
@@ -1105,11 +1133,21 @@ def test_reference_year_falls_back_to_creation_date_and_data_sources_always_emit
         "processType": "UNIT_PROCESS",
         "processDocumentation": {"creationDate": "2021-01-07T19:02:01Z"},
         "exchanges": [
-            {"@type": "Exchange", "internalId": 1, "isInput": False,
-             "isQuantitativeReference": True, "amount": 1,
-             "flow": {"@type": "Flow", "@id": "f0f0f0f0-0000-4000-8000-000000000000",
-                      "name": "Product", "flowType": "PRODUCT_FLOW", "refUnit": "kg"},
-             "unit": {"@id": "u0", "name": "kg"}},
+            {
+                "@type": "Exchange",
+                "internalId": 1,
+                "isInput": False,
+                "isQuantitativeReference": True,
+                "amount": 1,
+                "flow": {
+                    "@type": "Flow",
+                    "@id": "f0f0f0f0-0000-4000-8000-000000000000",
+                    "name": "Product",
+                    "flowType": "PRODUCT_FLOW",
+                    "refUnit": "kg",
+                },
+                "unit": {"@id": "u0", "name": "kg"},
+            },
         ],
     }
     entity = _to_entity(item, "x", {}, {})

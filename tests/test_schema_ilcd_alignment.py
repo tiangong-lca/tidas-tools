@@ -166,7 +166,61 @@ def test_en_zh_structural_parity_for_touched_schemas():
         "tidas_lciamethods.json",
         "tidas_lifecyclemodels.json",
         "tidas_locations_category.json",
+        "tidas_flows.json",
+        "tidas_processes.json",
+        "tidas_sources.json",
     ):
         en = _strip_descriptions(_load(EN, name))
         zh = _strip_descriptions(_load(ZH, name))
         assert en == zh, f"EN/ZH structural drift in {name}"
+
+
+# --- fault-line 4: classification @name / multi-system, subReference, digital files
+
+
+def _product_classification(schema):
+    return schema["properties"]["flowDataSet"]["properties"]["flowInformation"][
+        "properties"
+    ]["dataSetInformation"]["properties"]["classificationInformation"]["properties"][
+        "common:classification"
+    ]
+
+
+def test_classification_supports_name_and_multisystem():
+    cc = _product_classification(_load(EN, "tidas_flows.json"))
+    assert "anyOf" in cc, "common:classification should accept single or array form"
+    single, array = cc["anyOf"]
+    # single (default CPC) form keeps strict pinning but gains optional @name/@classes
+    assert "@name" in single["properties"]
+    assert "@classes" in single["properties"]
+    assert "@name" not in single.get("required", [])  # optional / backward-compatible
+    # array form = multiple named systems coexisting (e.g. CPC + HS)
+    assert array["type"] == "array"
+    item = array["items"]
+    assert item["required"] == ["@name", "common:class"]
+
+
+def test_global_reference_subreference_optional():
+    gr = _load(EN, "tidas_data_types.json")["$defs"]["GlobalReferenceType"]["anyOf"]
+    assert "common:subReference" in gr[0]["properties"]
+    assert "common:subReference" in gr[1]["items"]["properties"]
+    # optional: not added to required
+    assert "common:subReference" not in gr[0]["required"]
+
+
+def test_source_digital_file_single_or_array():
+    src = _load(EN, "tidas_sources.json")
+
+    def find(node, key):
+        if isinstance(node, dict):
+            if key in node:
+                yield node[key]
+            for v in node.values():
+                yield from find(v, key)
+        elif isinstance(node, list):
+            for v in node:
+                yield from find(v, key)
+
+    rdf = next(find(src, "referenceToDigitalFile"))
+    assert "anyOf" in rdf
+    assert any(b.get("type") == "array" for b in rdf["anyOf"])

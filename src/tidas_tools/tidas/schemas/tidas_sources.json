@@ -109,14 +109,31 @@
                   "description": "Free text for additional description of the source. In case of use of published data it may contain a brief summary of the publication and the kind of medium used (e.g. CD-ROM, hard copy)."
                 },
                 "referenceToDigitalFile": {
-                  "type": "object",
                   "description": "Link to a digital file of the source (www-address or intranet-path; relative or absolue path). (Info: Allows direct access to e.g. complete reports of further documentation, which may also be digitally attached to this data set and exchanged jointly with the XML file.)",
-                  "properties": {
-                    "@uri": {
-                      "type": "string",
-                      "format": "uri"
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "@uri": {
+                          "type": "string",
+                          "format": "uri"
+                        }
+                      }
+                    },
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "@uri": {
+                            "type": "string",
+                            "format": "uri"
+                          }
+                        }
+                      }
                     }
-                  }
+                  ]
                 },
                 "referenceToContact": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",

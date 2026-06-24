@@ -109,14 +109,31 @@
                   "description": "用于附加源描述的自由文本。如果使用已发布的数据，则可能包含出版物和所用介质类型（例如 CD-ROM、硬拷贝）的简短摘要。"
                 },
                 "referenceToDigitalFile": {
-                  "type": "object",
                   "description": "链接到源的数字文件（www 地址或 Intranet 路径；相对或绝对路径）。 （信息：允许直接访问进一步文档的完整报告，这些文档也可以数字方式附加到该数据集并与 XML 文件联合交换。）",
-                  "properties": {
-                    "@uri": {
-                      "type": "string",
-                      "format": "uri"
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "@uri": {
+                          "type": "string",
+                          "format": "uri"
+                        }
+                      }
+                    },
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "@uri": {
+                            "type": "string",
+                            "format": "uri"
+                          }
+                        }
+                      }
                     }
-                  }
+                  ]
                 },
                 "referenceToContact": {
                   "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",

@@ -103,6 +103,41 @@ def test_missing_compartment_falls_back_with_gap():
 # --- B3: scanner ----------------------------------------------------------
 
 
+def test_contact_fields_emitted_in_ilcd_sequence_order():
+    # ILCD ContactDataSet xs:sequence: contactAddress, telephone, telefax,
+    # email, WWWAddress, ..., contactDescriptionOrComment.
+    payload = W._contact_payload(
+        contact_id="11111111-1111-4111-8111-111111111111",
+        name="Name",
+        short_name="Short",
+        email="a@b.com",
+        telephone="123",
+        website="http://example.org",
+        address="1 Test Street",
+        description="A description",
+    )
+    info = payload["contactDataSet"]["contactInformation"]["dataSetInformation"]
+    ordered = [
+        k
+        for k in info
+        if k
+        in (
+            "contactAddress",
+            "telephone",
+            "email",
+            "WWWAddress",
+            "contactDescriptionOrComment",
+        )
+    ]
+    assert ordered == [
+        "contactAddress",
+        "telephone",
+        "email",
+        "WWWAddress",
+        "contactDescriptionOrComment",
+    ]
+
+
 def test_scan_conversion_gaps_collects_markers(tmp_path):
     flows = tmp_path / "flows"
     flows.mkdir()

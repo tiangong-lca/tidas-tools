@@ -400,14 +400,17 @@ def _contact_payload(
             }
         },
     }
-    if _email(email):
-        dataset_info["email"] = str(email).strip()
-    if _text(telephone):
-        dataset_info["telephone"] = str(telephone).strip()
-    if _text(website):
-        dataset_info["WWWAddress"] = str(website).strip()
+    # Emit in ILCD ContactDataSet xs:sequence order (contactAddress, telephone,
+    # telefax, email, WWWAddress, ..., contactDescriptionOrComment) so the
+    # exported ILCD XML is XSD-valid; JSON key order is preserved on conversion.
     if _text(address):
         dataset_info["contactAddress"] = _ml(str(address).strip())
+    if _text(telephone):
+        dataset_info["telephone"] = str(telephone).strip()
+    if _email(email):
+        dataset_info["email"] = str(email).strip()
+    if _text(website):
+        dataset_info["WWWAddress"] = str(website).strip()
     if _text(description):
         dataset_info["contactDescriptionOrComment"] = _ml(str(description).strip())
     common_other = _common_other_trace(source_trace)
@@ -989,7 +992,8 @@ def _default_process_classification(
 ) -> dict[str, Any]:
     classification = {
         "common:classification": {
-            "common:class": deepcopy(PLACEHOLDER_PROCESS_CLASSIFICATION)
+            "@name": "ISIC rev.4",
+            "common:class": deepcopy(PLACEHOLDER_PROCESS_CLASSIFICATION),
         }
     }
     other = _common_other_trace(
@@ -1856,7 +1860,8 @@ def _flow_classification(
         return classification
     classification = {
         "common:classification": {
-            "common:class": deepcopy(PLACEHOLDER_PRODUCT_CLASSIFICATION)
+            "@name": "CPC",
+            "common:class": deepcopy(PLACEHOLDER_PRODUCT_CLASSIFICATION),
         }
     }
     other = _common_other_trace(
