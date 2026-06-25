@@ -185,7 +185,10 @@ def collect_schema_set(
 
         docs[path.name] = document
         files[path.name] = {
-            "contentSha256": sha256_bytes(path.read_bytes()),
+            # Normalise CRLF->LF so the content hash is stable across platforms.
+            # Windows CI checks JSON out as CRLF; content identity is EOL-agnostic,
+            # so the lock must not depend on the checkout's line endings.
+            "contentSha256": sha256_bytes(path.read_bytes().replace(b"\r\n", b"\n")),
         }
 
     return {"docs": docs, "files": files, "path": schema_dir}
