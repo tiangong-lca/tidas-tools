@@ -357,7 +357,7 @@
     "Perc": {
       "description": "百分比金额（ILCD Perc：十进制，totalDigits=5，fractionDigits=3）",
       "type": "string",
-      "pattern": "^[+-]?(?=(?:\\D*\\d){1,5}\\D*$)(?:\\d+(?:\\.\\d{1,3})?|\\.\\d{1,3})$"
+      "pattern": "^[+-]?(\\d{1,5}|\\d{1,4}\\.\\d|\\d{1,3}\\.\\d{2}|\\d{1,2}\\.\\d{3})$"
     },
     "MatR": {
       "description": "数学规则",
