@@ -1938,7 +1938,16 @@ def _percentage(value: Any) -> str | None:
     if value is None:
         return None
     text = str(value).strip()
-    return text if PERCENT_PATTERN.fullmatch(text) else None
+    if not PERCENT_PATTERN.fullmatch(text):
+        return None
+    # eILCD Perc is decimal totalDigits=5 (fractionDigits=3): "100.000" (a 3-digit
+    # integer with 3 fractional zeros) is 6 digits and is rejected by the schema
+    # Perc pattern. Trailing fractional zeros never change the value, so strip them
+    # (e.g. "100.000" -> "100", "50.0" -> "50", "33.330" -> "33.33"); genuine
+    # 3-fraction values like "33.333" are already <=5 digits and untouched.
+    if "." in text:
+        text = text.rstrip("0").rstrip(".")
+    return text
 
 
 def _annual_supply_or_production_volume(

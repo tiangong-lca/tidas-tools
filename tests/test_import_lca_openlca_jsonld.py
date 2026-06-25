@@ -1216,3 +1216,31 @@ def test_unit_group_reference_unit_honors_explicit_flag():
         if u["@dataSetInternalID"] == qr["referenceToReferenceUnit"]
     )
     assert ref_unit["name"] == "a"
+
+
+def test_percentage_strips_trailing_zeros_to_fit_eilcd_perc():
+    # Regression: allocatedFraction 100% was emitted as "100.000" (6 digits),
+    # which the eILCD Perc pattern (totalDigits=5) rejects -> 6,943 schema errors
+    # in a full USLCI conversion. _percentage must strip trailing fractional zeros.
+    import json, re
+    from tidas_tools.import_lca.writers.tidas_json import _percentage, _allocation_fraction
+
+    perc_pattern = json.loads(
+        (
+            __import__("pathlib").Path(__file__).resolve().parents[1]
+            / "src/tidas_tools/tidas/schemas/tidas_data_types.json"
+        ).read_text()
+    )["$defs"]["Perc"]["pattern"]
+    PR = re.compile(perc_pattern)
+
+    assert _percentage("100.000") == "100"
+    assert _percentage("50.0") == "50"
+    assert _percentage("33.333") == "33.333"  # genuine 3-fraction, already <=5 digits
+    assert _percentage("12.500") == "12.5"
+    assert _allocation_fraction("1.0") == "100"  # full allocation to one co-product
+    for v in ("100.000", "50.0", "33.333", "12.500"):
+        out = _percentage(v)
+        assert out is not None and PR.fullmatch(out), (v, out)
+    for v in ("1.0", "0.5", "0.33333", "0.66667"):
+        out = _allocation_fraction(v)
+        assert out is not None and PR.fullmatch(out), (v, out)
