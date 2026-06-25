@@ -490,10 +490,20 @@ def _source_payload(
         dataset_info["sourceCitation"] = str(citation).strip()
     if _publication_type(publication_type):
         dataset_info["publicationType"] = str(publication_type).strip()
-    if _text(description):
-        dataset_info["sourceDescriptionOrComment"] = _ml(str(description).strip())
+    # ILCD referenceToDigitalFile points at a file held in the platform's OWN
+    # storage (it drives in-app preview/download). An external source URL placed
+    # there renders as a broken file link. On import there is no platform-stored
+    # file, so keep the source URL as text in the description/comment and do NOT
+    # emit referenceToDigitalFile. (A real uploaded digital file would be wired
+    # separately, not from the source's URL field.)
+    description_text = str(description).strip() if _text(description) else ""
     if _uri(url):
-        dataset_info["referenceToDigitalFile"] = {"@uri": str(url).strip()}
+        url_note = f"Source URL: {str(url).strip()}"
+        description_text = (
+            f"{description_text}\n{url_note}".strip() if description_text else url_note
+        )
+    if description_text:
+        dataset_info["sourceDescriptionOrComment"] = _ml(description_text)
     common_other = _common_other_trace(source_trace)
     if common_other:
         dataset_info["common:other"] = common_other

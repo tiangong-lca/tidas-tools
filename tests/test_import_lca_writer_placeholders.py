@@ -168,3 +168,36 @@ def test_scan_conversion_gaps_collects_markers(tmp_path):
     assert "unclassified-pending" in statuses
     assert "placeholder-timestamp" in statuses
     assert all("file" in gap for gap in gaps)
+
+
+def test_imported_source_url_goes_to_description_not_digital_file():
+    # Regression: an external source URL was written into referenceToDigitalFile,
+    # which the platform treats as a storage-held file (preview/download) and
+    # renders as a broken link for an external URL. The URL must be kept as text in
+    # sourceDescriptionOrComment, and referenceToDigitalFile must NOT be emitted.
+    from tidas_tools.import_lca.model.entities import CanonicalEntity
+    from tidas_tools.import_lca.writers.tidas_json import _imported_source_dataset
+
+    e = CanonicalEntity(
+        entity_type="sources",
+        internal_id="13381888-a763-33c7-aa84-8d0f23f1fc8b",
+        name="U.S. EPA (2012) WebFIRE",
+        raw={
+            "shortName": "U.S. EPA (2012) WebFIRE",
+            "sourceCitation": "U.S. EPA (2012) WebFIRE",
+            "description": "U.S. Environmental Protection Agency, WebFIRE, 2012",
+            "url": "https://cfpub.epa.gov/webfire/",
+        },
+    )
+    di = _imported_source_dataset(e)["sourceDataSet"]["sourceInformation"]["dataSetInformation"]
+    assert "referenceToDigitalFile" not in di
+    desc = di["sourceDescriptionOrComment"]["#text"]
+    assert "https://cfpub.epa.gov/webfire/" in desc
+    assert "U.S. Environmental Protection Agency, WebFIRE, 2012" in desc
+
+    # url-only source: still no digital file, URL preserved as text
+    e2 = CanonicalEntity(entity_type="sources", internal_id="x", name="S",
+                         raw={"url": "https://example.com/doc.pdf"})
+    di2 = _imported_source_dataset(e2)["sourceDataSet"]["sourceInformation"]["dataSetInformation"]
+    assert "referenceToDigitalFile" not in di2
+    assert "https://example.com/doc.pdf" in di2["sourceDescriptionOrComment"]["#text"]

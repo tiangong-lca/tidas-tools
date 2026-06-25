@@ -1112,8 +1112,10 @@ def test_allocation_factors_map_to_exchange_allocations_list():
     fractions = {
         a["@internalReferenceToCoProduct"]: a["@allocatedFraction"] for a in allocation
     }
-    # co-products prodA (output idx 2) and prodB (output idx 3); fractions sum to 100
-    assert fractions == {"2": "60.000", "3": "40.000"}
+    # co-products prodA (output idx 2) and prodB (output idx 3); fractions sum to 100.
+    # Trailing fractional zeros are stripped to stay within eILCD Perc totalDigits=5
+    # ("60.000" -> "60"): same value, canonical form (see _percentage fix).
+    assert fractions == {"2": "60", "3": "40"}
     # the co-product outputs themselves carry no allocations
     assert "allocations" not in items[1]
     assert "allocations" not in items[2]
