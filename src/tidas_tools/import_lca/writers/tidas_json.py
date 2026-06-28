@@ -665,6 +665,13 @@ def _flow_dataset(
     generated_units: dict[str, tuple[CanonicalEntity, CanonicalEntity]] | None = None,
 ):
     flow_type = _flow_type(entity.raw.get("flowType"))
+    # Land-use flows (ecoinvent "Occupation,"/"Transformation, from|to ...") are
+    # elementary even when a source mislabels them as PRODUCT_FLOW (e.g. USLCI's
+    # "Ecosystem Services" product category). Promote them so they receive a real
+    # ILCD Land-use category instead of a CPC product stub. The original flowType is
+    # preserved as provenance in the classification sourceTrace.
+    if flow_type == "Product flow" and _is_land_use_flow(entity.raw):
+        flow_type = "Elementary flow"
     classification = _flow_classification(flow_type, entity.raw)
     dataset_info = {
         "common:UUID": entity.internal_id,
@@ -1761,6 +1768,52 @@ def _location_codes() -> frozenset[str]:
     )
 
 
+# ecoinvent/openLCA land-use elementary flows follow a fixed naming convention:
+# "Occupation, <land class>", "Transformation, from <land class>" and
+# "Transformation, to <land class>". Some sources (notably NREL USLCI) mislabel
+# these as PRODUCT_FLOW under an "Ecosystem Services" product category. Detect them
+# by name so they are emitted as elementary flows under the ILCD "Land use" category
+# instead of a meaningless CPC product stub.
+_LAND_OCCUPATION_RE = re.compile(r"^\s*occupation\s*,", re.IGNORECASE)
+_LAND_TRANSFORMATION_RE = re.compile(
+    r"^\s*transformation\s*,\s*(?:from|to)\b", re.IGNORECASE
+)
+
+
+def _land_use_categorization(name: Any) -> list[dict[str, str]] | None:
+    """Return the ILCD "Land use" elementary category for a land-use flow name.
+
+    Maps the ecoinvent land-flow naming convention to the TIDAS elementary category
+    tree (tidas_flows_elementary_category.json): occupation -> "Land occupation"
+    (3.1), transformation -> "Land transformation" (3.2). Returns None for any other
+    name. The "Land use" branch is two levels deep (L0/L1), which the flow schema's
+    positional category array accepts (maxItems 3, no minItems).
+    """
+    text = str(name or "")
+    if _LAND_OCCUPATION_RE.match(text):
+        leaf = ("3.1", "Land occupation")
+    elif _LAND_TRANSFORMATION_RE.match(text):
+        leaf = ("3.2", "Land transformation")
+    else:
+        return None
+    return [
+        {"@level": "0", "@catId": "3", "#text": "Land use"},
+        {"@level": "1", "@catId": leaf[0], "#text": leaf[1]},
+    ]
+
+
+def _is_land_use_flow(raw: dict[str, Any] | None) -> bool:
+    """True when the flow's name marks it as an ecoinvent land-use elementary flow.
+
+    Keyed on raw["name"], which only the openLCA JSON-LD adapter carries; ecoSpold
+    adapters omit it (their land flows are already typed elementary with real
+    compartments), so this never reclassifies ecoSpold/BAFU output.
+    """
+    if not raw:
+        return False
+    return _land_use_categorization(raw.get("name")) is not None
+
+
 def _elementary_categorization(
     raw: dict[str, Any] | None,
 ) -> list[dict[str, str]] | None:
@@ -1771,11 +1824,15 @@ def _elementary_categorization(
     "Elementary flows/emission/air/troposphere/rural"); returns None otherwise so
     the caller keeps the legacy default. ecoSpold single-token compartments
     ("air"/"resource") and non-FEDEFL shapes have no recognizable medium and yield
-    None, so this never changes the ecoSpold/BAFU output. Compartment text/catIds
-    match tidas_flows_elementary_category.json.
+    None, so this never changes the ecoSpold/BAFU output. Land-use flows are matched
+    by name first (see _land_use_categorization). Compartment text/catIds match
+    tidas_flows_elementary_category.json.
     """
     if not raw:
         return None
+    land = _land_use_categorization(raw.get("name"))
+    if land is not None:
+        return land
     raw_path = raw.get("category")
     if not raw_path and isinstance(raw.get("sourceCategoryPath"), list):
         raw_path = "/".join(str(part) for part in raw["sourceCategoryPath"])
