@@ -100,6 +100,54 @@ def test_missing_compartment_falls_back_with_gap():
     assert other["tidasimport:conversionGap"]["status"] == "placeholder-compartment"
 
 
+# --- land-use elementary flows mislabelled as PRODUCT_FLOW (USLCI) ----------
+
+
+def test_land_use_categorization_by_name():
+    occ = W._land_use_categorization("Occupation, arable, non-irrigated")
+    assert occ == [
+        {"@level": "0", "@catId": "3", "#text": "Land use"},
+        {"@level": "1", "@catId": "3.1", "#text": "Land occupation"},
+    ]
+    for name in ("Transformation, from pasture and meadow", "Transformation, to forest"):
+        assert W._land_use_categorization(name) == [
+            {"@level": "0", "@catId": "3", "#text": "Land use"},
+            {"@level": "1", "@catId": "3.2", "#text": "Land transformation"},
+        ]
+    # Non land-use names (products, emissions) are untouched.
+    for name in ("Electricity, at grid", "Carbon dioxide", "transformer, distribution"):
+        assert W._land_use_categorization(name) is None
+
+
+def test_land_use_product_flow_promoted_to_elementary_land_category():
+    # USLCI ships land-transformation flows as PRODUCT_FLOW / "Ecosystem Services".
+    raw = {"name": "Transformation, from pasture and meadow", "flowType": "PRODUCT_FLOW",
+           "category": "Ecosystem Services"}
+    flow_type = W._flow_type(raw["flowType"])
+    if flow_type == "Product flow" and W._is_land_use_flow(raw):
+        flow_type = "Elementary flow"
+    assert flow_type == "Elementary flow"
+    block = W._flow_classification(flow_type, raw)
+    # Land-use category, not a CPC product stub or air-unspecified placeholder.
+    assert "common:classification" not in block
+    cats = block["common:elementaryFlowCategorization"]["common:category"]
+    assert cats == [
+        {"@level": "0", "@catId": "3", "#text": "Land use"},
+        {"@level": "1", "@catId": "3.2", "#text": "Land transformation"},
+    ]
+    # No conversion gap, but original PRODUCT_FLOW preserved as provenance.
+    other = block["common:elementaryFlowCategorization"]["common:other"]
+    assert "tidasimport:conversionGap" not in other
+    assert other["tidasimport:sourceTrace"]["payload"]["sourceFlowType"] == "PRODUCT_FLOW"
+
+
+def test_ecospold_style_raw_without_name_not_reclassified():
+    # ecoSpold/BAFU flow raw carries no "name" key -> never promoted/reclassified.
+    assert W._is_land_use_flow({"flowType": "PRODUCT_FLOW", "category": "land"}) is False
+    assert W._elementary_categorization({"category": "resource/ground"}) is not None
+    assert W._land_use_categorization(None) is None
+
+
 # --- B3: scanner ----------------------------------------------------------
 
 
