@@ -664,3 +664,29 @@ def test_validate_localized_text_language_constraints_reports_nested_paths():
         "Localized text error at processDataSet/processInformation/dataSetInformation/name/baseName/0: @xml:lang 'zh-CN' is not a TIDAS Languages enumeration value",
         "Localized text error at processDataSet/processInformation/dataSetInformation/name/baseName/1: @xml:lang 'en' must not contain Chinese characters",
     ]
+
+
+def test_retrieve_schema_resolves_bare_and_mangled_ref_uris():
+    # Regression: on Windows the absolute schema paths use backslashes, which
+    # corrupt relative-$ref joining into shapes like
+    # file://.../tidas_sources.json/tidas_data_types.json. retrieve_schema must
+    # resolve by basename so source schema validation (which $refs
+    # tidas_data_types.json, e.g. for referenceToDigitalFile @uri) works on every OS.
+    from tidas_tools.validate import retrieve_schema
+
+    bare = retrieve_schema("tidas_data_types.json")
+    mangled_windows = retrieve_schema(
+        "file://D:\\a\\tidas-tools\\src\\tidas_tools\\tidas\\schemas\\"
+        "tidas_sources.json/tidas_data_types.json"
+    )
+    posix_uri = retrieve_schema(
+        "file:///abs/tidas_tools/tidas/schemas/tidas_data_types.json"
+    )
+
+    for resource in (bare, mangled_windows, posix_uri):
+        assert resource is not None
+        assert "$defs" in resource.contents
+    assert bare.contents == mangled_windows.contents == posix_uri.contents
+
+    # Remote references stay unresolved.
+    assert retrieve_schema("https://example.com/schema.json") is None

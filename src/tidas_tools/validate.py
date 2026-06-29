@@ -564,10 +564,15 @@ def retrieve_schema(uri):
     """Custom retrieval function for schema references"""
     # Handle both local and remote references
     if not uri.startswith(("http://", "https://")):
-        # This is a local reference, load from package
+        # This is a local reference, load from package. The TIDAS schemas are bundled
+        # flat in the `schemas` package, and a $ref target may arrive as a bare
+        # filename or as a file:// URI. On Windows the absolute schema paths use
+        # backslashes, which corrupt relative-$ref URI joining into shapes like
+        # `file://.../tidas_sources.json/tidas_data_types.json`; resolving by the
+        # schema basename is unambiguous for the flat package and works on every OS.
         try:
-            # Try finding the file directly in the schemas package
-            schema_path = pkg_resources.files(schemas) / uri
+            schema_name = uri.replace("\\", "/").rstrip("/").split("/")[-1]
+            schema_path = pkg_resources.files(schemas) / schema_name
             with open(schema_path, "r") as f:
                 schema_data = json.load(f)
                 # Create a proper resource object
