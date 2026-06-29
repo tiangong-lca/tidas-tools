@@ -457,8 +457,38 @@ def _imported_source_dataset(entity: CanonicalEntity) -> dict[str, Any]:
         publication_type=raw.get("publicationType"),
         description=raw.get("description"),
         url=raw.get("url") or raw.get("externalUrl"),
+        digital_files=raw.get("referenceToDigitalFile"),
         source_trace=raw.get("sourceTrace"),
     )
+
+
+def _digital_file_refs(value: Any) -> list[dict[str, str]]:
+    """Normalize a source's digital-file links into ILCD referenceToDigitalFile dicts.
+
+    Accepts a single uri string, a list of uri strings, or {"@uri": ...} dict(s).
+    Only local (non-http) references are emitted; external URLs belong in the
+    description note instead.
+    """
+    if value is None:
+        return []
+    candidates = value if isinstance(value, list) else [value]
+    refs: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for candidate in candidates:
+        if isinstance(candidate, dict):
+            uri = candidate.get("@uri") or candidate.get("uri")
+        else:
+            uri = candidate
+        uri_text = str(uri).strip() if uri is not None else ""
+        # Local relative refs (e.g. "../external_docs/file.pdf") are exactly the
+        # platform-stored files to preserve; external http(s) URLs are not.
+        if not uri_text or uri_text in seen:
+            continue
+        if uri_text.lower().startswith(("http://", "https://")):
+            continue
+        seen.add(uri_text)
+        refs.append({"@uri": uri_text})
+    return refs
 
 
 def _source_payload(
@@ -471,6 +501,7 @@ def _source_payload(
     publication_type: Any = None,
     description: Any = None,
     url: Any = None,
+    digital_files: Any = None,
     source_trace: Any = None,
 ) -> dict[str, Any]:
     dataset_info = {
@@ -504,6 +535,15 @@ def _source_payload(
         )
     if description_text:
         dataset_info["sourceDescriptionOrComment"] = _ml(description_text)
+    # A genuine platform-stored digital file (e.g. an ILCD package's
+    # "../external_docs/<file>" reference) IS preserved as referenceToDigitalFile so
+    # the downstream upload step can stage the binary and rewrite the @uri. This is
+    # distinct from a bare source URL (handled above as a description note).
+    digital_file_refs = _digital_file_refs(digital_files)
+    if digital_file_refs:
+        dataset_info["referenceToDigitalFile"] = (
+            digital_file_refs[0] if len(digital_file_refs) == 1 else digital_file_refs
+        )
     common_other = _common_other_trace(source_trace)
     if common_other:
         dataset_info["common:other"] = common_other

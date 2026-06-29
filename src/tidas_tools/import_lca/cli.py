@@ -10,6 +10,7 @@ import sys
 if __package__:
     from .adapters.ecospold1 import EcoSpold1Adapter
     from .adapters.ecospold2 import EcoSpold2Adapter
+    from .adapters.ilcd import IlcdAdapter
     from .adapters.openlca_jsonld import OpenLcaJsonLdAdapter
     from .adapters.openlca_process_xlsx import OpenLcaProcessXlsxAdapter
     from .adapters.simapro_csv import SimaProCsvAdapter
@@ -34,6 +35,7 @@ if __package__:
 else:
     from tidas_tools.import_lca.adapters.ecospold1 import EcoSpold1Adapter
     from tidas_tools.import_lca.adapters.ecospold2 import EcoSpold2Adapter
+    from tidas_tools.import_lca.adapters.ilcd import IlcdAdapter
     from tidas_tools.import_lca.adapters.openlca_jsonld import OpenLcaJsonLdAdapter
     from tidas_tools.import_lca.adapters.openlca_process_xlsx import (
         OpenLcaProcessXlsxAdapter,
@@ -366,6 +368,8 @@ def _adapter_for(format_id: str):
         return OpenLcaProcessXlsxAdapter()
     if format_id == "simapro-csv":
         return SimaProCsvAdapter()
+    if format_id == "ilcd":
+        return IlcdAdapter()
     return None
 
 

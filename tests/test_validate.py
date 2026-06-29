@@ -448,6 +448,49 @@ def test_validate_ilcd_package_dir_returns_schema_errors(tmp_path):
     assert issue["file_path"].endswith("bad-locations.xml")
 
 
+def test_validate_ilcd_package_dir_validates_multilang_without_internal_error(tmp_path):
+    # Regression: the bundled eilcd XSDs declared `default` on the referenced
+    # `xml:lang` attribute use (and the classification `name` attribute), which
+    # made libxml2 raise an unhandled internal error
+    # ("xmlSchemaVAttributesComplex ... was not precomputed") while validating any
+    # multilang-bearing ILCD file. Removing those defaults lets multilang sources
+    # validate normally instead of aborting the whole package run.
+    xml_path = tmp_path / "source.xml"
+    xml_path.write_text(
+        """<?xml version="1.0" encoding="UTF-8"?>
+<sourceDataSet xmlns:common="http://lca.jrc.it/ILCD/Common" xmlns="http://lca.jrc.it/ILCD/Source" version="1.1">
+    <sourceInformation>
+        <dataSetInformation>
+            <common:UUID>cbeab91f-74a4-4b5a-84dc-69915a22dc71</common:UUID>
+            <common:shortName xml:lang="en">Multilang short name</common:shortName>
+            <classificationInformation>
+                <common:classification name="ILCD">
+                    <common:class level="0">Compliance systems</common:class>
+                </common:classification>
+            </classificationInformation>
+            <sourceCitation>A citation</sourceCitation>
+            <publicationType>Undefined</publicationType>
+            <sourceDescriptionOrComment xml:lang="en">A multilang free-text comment.</sourceDescriptionOrComment>
+        </dataSetInformation>
+    </sourceInformation>
+    <administrativeInformation>
+        <publicationAndOwnership>
+            <common:dataSetVersion>01.00.000</common:dataSetVersion>
+        </publicationAndOwnership>
+    </administrativeInformation>
+</sourceDataSet>
+""",
+        encoding="utf-8",
+    )
+
+    # Must NOT raise lxml.etree.XMLSchemaValidateError (the pre-fix crash).
+    report = validate_ilcd_package_dir(str(tmp_path))
+
+    assert report["ok"] is True
+    assert report["summary"]["category_count"] == 1
+    assert report["categories"][0]["category"] == "sources"
+
+
 def test_validate_ilcd_package_dir_rejects_unknown_xml_roots(tmp_path):
     xml_path = tmp_path / "unknown.xml"
     xml_path.write_text("<custom />", encoding="utf-8")

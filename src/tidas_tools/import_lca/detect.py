@@ -23,6 +23,7 @@ FORMAT_ECOSPOLD2 = "ecospold2"
 FORMAT_SIMAPRO_CSV = "simapro-csv"
 FORMAT_OPENLCA_JSONLD = "openlca-jsonld"
 FORMAT_OPENLCA_PROCESS_XLSX = "openlca-process-xlsx"
+FORMAT_ILCD = "ilcd"
 FORMAT_UNSUPPORTED_ZOLCA = "unsupported-zolca"
 FORMAT_UNKNOWN = "unknown"
 
@@ -32,6 +33,7 @@ SUPPORTED_FORMATS = {
     FORMAT_SIMAPRO_CSV,
     FORMAT_OPENLCA_JSONLD,
     FORMAT_OPENLCA_PROCESS_XLSX,
+    FORMAT_ILCD,
 }
 
 CONFIDENCE_SCORE = {
@@ -323,6 +325,13 @@ def _scan_xml_bytes(data: bytes, source_label: str) -> Iterable[_Candidate]:
             FORMAT_ECOSPOLD1,
             "high" if "ecospold01" in signature else "medium",
             f"{source_label}: XML root {{{namespace}}}{local_name}",
+        )
+        return
+    if "lca.jrc.it/ilcd" in signature and local_name.lower().endswith("dataset"):
+        yield _Candidate(
+            FORMAT_ILCD,
+            "high",
+            f"{source_label}: ILCD XML root {{{namespace}}}{local_name}",
         )
 
 

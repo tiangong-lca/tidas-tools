@@ -178,7 +178,7 @@ also available at http://lca.jrc.ec.europa.eu/eplca/doc/ILCD_format_and_editor_l
       </xs:annotation>
       <xs:simpleContent>
          <xs:extension base="FT">
-            <xs:attribute ref="xml:lang" default="en"/>
+            <xs:attribute ref="xml:lang"/>
          </xs:extension>
       </xs:simpleContent>
    </xs:complexType>
@@ -188,7 +188,7 @@ also available at http://lca.jrc.ec.europa.eu/eplca/doc/ILCD_format_and_editor_l
       </xs:annotation>
       <xs:simpleContent>
          <xs:extension base="ST">
-            <xs:attribute ref="xml:lang" default="en"/>
+            <xs:attribute ref="xml:lang"/>
          </xs:extension>
       </xs:simpleContent>
    </xs:complexType>
@@ -198,7 +198,7 @@ also available at http://lca.jrc.ec.europa.eu/eplca/doc/ILCD_format_and_editor_l
       </xs:annotation>
       <xs:simpleContent>
          <xs:extension base="String">
-            <xs:attribute ref="xml:lang" default="en"/>
+            <xs:attribute ref="xml:lang"/>
          </xs:extension>
       </xs:simpleContent>
    </xs:complexType>

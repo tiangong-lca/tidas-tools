@@ -89,7 +89,7 @@ also available at http://lca.jrc.ec.europa.eu/eplca/doc/ILCD_format_and_editor_l
          </xs:element>
          <xs:element ref="other" maxOccurs="1" minOccurs="0"/>
       </xs:sequence>
-      <xs:attribute name="name" type="xs:string" default="ILCD">
+      <xs:attribute name="name" type="xs:string">
          <xs:annotation>
             <xs:appinfo>
                <ilcd:element id="1-1-2-7-2-a" name="name"/>
@@ -264,7 +264,7 @@ also available at http://lca.jrc.ec.europa.eu/eplca/doc/ILCD_format_and_editor_l
          </xs:element>
          <xs:element ref="other" minOccurs="0" maxOccurs="1"/>
       </xs:sequence>
-      <xs:attribute name="name" type="xs:string" default="ILCD">
+      <xs:attribute name="name" type="xs:string">
          <xs:annotation>
             <xs:appinfo>
                <ilcd:element id="2-9-36-144-a" name="name"/>
