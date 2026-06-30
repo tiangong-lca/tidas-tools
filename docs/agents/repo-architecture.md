@@ -25,8 +25,8 @@ checkPaths:
   - scripts/schema_lock.py
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-06-29
-lastReviewedCommit: f04beed4024d95481792fcfa31d06edba2e6f5bd
+lastReviewedAt: 2026-06-30
+lastReviewedCommit: 9fdacab264caa2c1fdc0991d50561ebab0d6b30e
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
