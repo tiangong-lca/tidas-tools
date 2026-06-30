@@ -213,6 +213,26 @@ def _classification_path(dsi) -> list[str]:
     return [text for node in ordered if (text := _text_of(node))]
 
 
+def _elementary_categorization_pairs(dsi) -> list[dict[str, str]]:
+    """Ordered [{level, text}] from common:elementaryFlowCategorization.
+
+    Preserves the source ILCD compartment path (level + label) verbatim so the
+    writer can map it onto the TIDAS elementary category tree instead of falling
+    back to the air-unspecified placeholder. Returns [] when the flow carries no
+    elementaryFlowCategorization (e.g. a generic classification block)."""
+    node = _find(dsi, "classificationInformation", "elementaryFlowCategorization")
+    if node is None:
+        return []
+    categories = node.xpath("./*[local-name()='category']")
+    ordered = sorted(categories, key=lambda c: _int_attr(c.get("level")))
+    pairs: list[dict[str, str]] = []
+    for cat in ordered:
+        text = _text_of(cat)
+        if text:
+            pairs.append({"level": str(_int_attr(cat.get("level"))), "text": text})
+    return pairs
+
+
 def _int_attr(value: Any) -> int:
     try:
         return int(value)
@@ -366,6 +386,10 @@ def _parse_flow(root, label: str) -> tuple[str | None, dict[str, Any]]:
         if formula:
             raw["sumFormula"] = formula
         raw["_category_path"] = _classification_path(dsi)
+        if (type_of_data_set or "").strip() == "Elementary flow":
+            pairs = _elementary_categorization_pairs(dsi)
+            if pairs:
+                raw["elementaryCategorization"] = pairs
         # Reference flow property: referenceToReferenceFlowProperty (internal id) lives
         # under flowInformation/quantitativeReference, NOT dataSetInformation. Resolve
         # it to flowProperty[@dataSetInternalID]/referenceToFlowPropertyDataSet.

@@ -1868,6 +1868,64 @@ def _is_land_use_flow(raw: dict[str, Any] | None) -> bool:
     return _land_use_categorization(raw.get("name")) is not None
 
 
+@lru_cache(maxsize=1)
+def _elementary_category_catids() -> dict[tuple[str, str], str]:
+    """Build {(level, "#text"): catId} from tidas_flows_elementary_category.json.
+
+    The schema is a oneOf of const triples ({@level, @catId, #text}); the catId is
+    fixed per (level, label), so a flow's source compartment path can be mapped
+    onto the canonical TIDAS tree by looking up each (level, text) pair."""
+    schema_path = (
+        Path(__file__).resolve().parents[2]
+        / "tidas"
+        / "schemas"
+        / "tidas_flows_elementary_category.json"
+    )
+    try:
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    except OSError:
+        return {}
+    lut: dict[tuple[str, str], str] = {}
+    for option in schema.get("oneOf", []):
+        props = option.get("properties", {}) if isinstance(option, dict) else {}
+        level = props.get("@level", {}).get("const")
+        cat_id = props.get("@catId", {}).get("const")
+        text = props.get("#text", {}).get("const")
+        if level is not None and cat_id is not None and text is not None:
+            lut[(str(level), str(text))] = str(cat_id)
+    return lut
+
+
+def _ilcd_elementary_categories(
+    raw: dict[str, Any] | None,
+) -> list[dict[str, str]] | None:
+    """Map a source ILCD elementaryFlowCategorization onto the TIDAS category tree.
+
+    raw["elementaryCategorization"] is the ordered [{level, text}] captured by the
+    ILCD adapter from common:elementaryFlowCategorization. Each pair is resolved to
+    its canonical @catId via tidas_flows_elementary_category.json. Returns the
+    [{@level,@catId,#text}, ...] list only when EVERY source level resolves; if any
+    label is outside the TIDAS tree it returns None so the caller falls back to the
+    FEDEFL mapping / placeholder rather than emitting an invalid category."""
+    pairs = raw.get("elementaryCategorization") if raw else None
+    if not isinstance(pairs, list) or not pairs:
+        return None
+    lut = _elementary_category_catids()
+    if not lut:
+        return None
+    categories: list[dict[str, str]] = []
+    for pair in pairs:
+        if not isinstance(pair, dict):
+            return None
+        level = str(pair.get("level", "")).strip()
+        text = str(pair.get("text", "")).strip()
+        cat_id = lut.get((level, text))
+        if cat_id is None:
+            return None
+        categories.append({"@level": level, "@catId": cat_id, "#text": text})
+    return categories
+
+
 def _elementary_categorization(
     raw: dict[str, Any] | None,
 ) -> list[dict[str, str]] | None:
@@ -1979,7 +2037,7 @@ def _flow_classification(
 ) -> dict[str, Any]:
     payload = _classification_payload(raw)
     if flow_type == "Elementary flow":
-        categories = _elementary_categorization(raw)
+        categories = _ilcd_elementary_categories(raw) or _elementary_categorization(raw)
         gap = None
         if categories is None:
             categories = deepcopy(PLACEHOLDER_ELEMENTARY_CATEGORY)

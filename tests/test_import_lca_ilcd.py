@@ -316,3 +316,57 @@ def test_ilcd_import_preserves_source_dataset_versions(tmp_path):
         version("flowproperties", FLOWPROPERTY_ID, "flowPropertyDataSet") == "20.20.002"
     )
     assert version("processes", PROCESS_ID, "processDataSet") == "20.25.001"
+
+
+ELEM_FLOW_ID = "218d3b51-1339-4389-b4f9-f4fbe8deea46"
+
+ELEM_FLOW_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
+<flowDataSet xmlns:common="http://lca.jrc.it/ILCD/Common" xmlns="http://lca.jrc.it/ILCD/Flow" version="1.1">
+  <flowInformation>
+    <dataSetInformation>
+      <common:UUID>{ELEM_FLOW_ID}</common:UUID>
+      <name><baseName xml:lang="en">Lead-210</baseName></name>
+      <classificationInformation>
+        <common:elementaryFlowCategorization>
+          <common:category level="0">Emissions</common:category>
+          <common:category level="1">Emissions to water</common:category>
+          <common:category level="2">Emissions to fresh water</common:category>
+        </common:elementaryFlowCategorization>
+      </classificationInformation>
+      <CASNumber>014255-04-0</CASNumber>
+    </dataSetInformation>
+    <quantitativeReference><referenceToReferenceFlowProperty>0</referenceToReferenceFlowProperty></quantitativeReference>
+  </flowInformation>
+  <modellingAndValidation><LCIMethod><typeOfDataSet>Elementary flow</typeOfDataSet></LCIMethod></modellingAndValidation>
+  <administrativeInformation><publicationAndOwnership>
+    <common:dataSetVersion>20.25.001</common:dataSetVersion>
+  </publicationAndOwnership></administrativeInformation>
+</flowDataSet>"""
+
+
+def test_ilcd_elementary_compartment_passthrough_to_tidas_category(tmp_path):
+    # An ILCD elementary flow carries its compartment path as level+label (no
+    # catId). The adapter captures it and the writer maps it onto the canonical
+    # TIDAS category tree -- NOT the air-unspecified placeholder.
+    from tidas_tools.import_lca.adapters.ilcd import _parse_flow, _parse_xml
+    from tidas_tools.import_lca.writers.tidas_json import _flow_classification
+
+    root = _parse_xml(ELEM_FLOW_XML.encode("utf-8"))
+    name, raw = _parse_flow(root, "flows/elem.xml")
+    assert name == "Lead-210"
+    assert raw["elementaryCategorization"] == [
+        {"level": "0", "text": "Emissions"},
+        {"level": "1", "text": "Emissions to water"},
+        {"level": "2", "text": "Emissions to fresh water"},
+    ]
+
+    block = _flow_classification("Elementary flow", raw)
+    cats = block["common:elementaryFlowCategorization"]["common:category"]
+    assert cats == [
+        {"@level": "0", "@catId": "1", "#text": "Emissions"},
+        {"@level": "1", "@catId": "1.1", "#text": "Emissions to water"},
+        {"@level": "2", "@catId": "1.1.1", "#text": "Emissions to fresh water"},
+    ]
+    other = block["common:elementaryFlowCategorization"].get("common:other")
+    if other is not None:
+        assert "tidasimport:conversionGap" not in other

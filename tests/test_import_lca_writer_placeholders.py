@@ -100,6 +100,47 @@ def test_missing_compartment_falls_back_with_gap():
     assert other["tidasimport:conversionGap"]["status"] == "placeholder-compartment"
 
 
+# --- ILCD elementaryFlowCategorization passthrough (compartment fidelity) ----
+
+
+def test_ilcd_elementary_categorization_passthrough_resolves_catids():
+    # Source ILCD carries the full compartment path with level+label but no catId;
+    # the writer resolves catId from tidas_flows_elementary_category.json.
+    raw = {
+        "elementaryCategorization": [
+            {"level": "0", "text": "Emissions"},
+            {"level": "1", "text": "Emissions to water"},
+            {"level": "2", "text": "Emissions to fresh water"},
+        ]
+    }
+    block = W._flow_classification("Elementary flow", raw)
+    cats = block["common:elementaryFlowCategorization"]["common:category"]
+    assert cats == [
+        {"@level": "0", "@catId": "1", "#text": "Emissions"},
+        {"@level": "1", "@catId": "1.1", "#text": "Emissions to water"},
+        {"@level": "2", "@catId": "1.1.1", "#text": "Emissions to fresh water"},
+    ]
+    # A correctly-resolved source compartment is not a conversion gap.
+    other = block["common:elementaryFlowCategorization"].get("common:other")
+    if other is not None:
+        assert "tidasimport:conversionGap" not in other
+
+
+def test_ilcd_elementary_categorization_unknown_label_falls_back():
+    # A label outside the TIDAS tree must NOT emit an invalid catId; fall back to
+    # the placeholder + gap rather than guessing.
+    raw = {
+        "elementaryCategorization": [
+            {"level": "0", "text": "Emissions"},
+            {"level": "1", "text": "Emissions to the void"},
+        ]
+    }
+    assert W._ilcd_elementary_categories(raw) is None
+    block = W._flow_classification("Elementary flow", raw)
+    other = block["common:elementaryFlowCategorization"]["common:other"]
+    assert other["tidasimport:conversionGap"]["status"] == "placeholder-compartment"
+
+
 # --- land-use elementary flows mislabelled as PRODUCT_FLOW (USLCI) ----------
 
 
