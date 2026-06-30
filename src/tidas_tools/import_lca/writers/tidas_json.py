@@ -371,6 +371,7 @@ def _contact_dataset(entity: CanonicalEntity) -> dict[str, Any]:
         address=raw.get("address"),
         description=raw.get("description"),
         source_trace=raw.get("sourceTrace"),
+        version=_dataset_version(raw.get("version")),
     )
 
 
@@ -385,6 +386,7 @@ def _contact_payload(
     address: Any = None,
     description: Any = None,
     source_trace: Any = None,
+    version: str = DEFAULT_VERSION,
 ) -> dict[str, Any]:
     dataset_info = {
         "common:UUID": contact_id,
@@ -428,7 +430,9 @@ def _contact_payload(
                 "dataSetInformation": dataset_info,
             },
             "administrativeInformation": _admin_info(
-                category="contacts", dataset_id=contact_id
+                category="contacts",
+                dataset_id=contact_id,
+                version=version,
             ),
         }
     }
@@ -459,6 +463,7 @@ def _imported_source_dataset(entity: CanonicalEntity) -> dict[str, Any]:
         url=raw.get("url") or raw.get("externalUrl"),
         digital_files=raw.get("referenceToDigitalFile"),
         source_trace=raw.get("sourceTrace"),
+        version=_dataset_version(raw.get("version")),
     )
 
 
@@ -503,6 +508,7 @@ def _source_payload(
     url: Any = None,
     digital_files: Any = None,
     source_trace: Any = None,
+    version: str = DEFAULT_VERSION,
 ) -> dict[str, Any]:
     dataset_info = {
         "common:UUID": source_id,
@@ -559,7 +565,9 @@ def _source_payload(
                 "dataSetInformation": dataset_info,
             },
             "administrativeInformation": _admin_info(
-                category="sources", dataset_id=source_id
+                category="sources",
+                dataset_id=source_id,
+                version=version,
             ),
         }
     }
@@ -641,7 +649,9 @@ def _unit_group_dataset(entity: CanonicalEntity) -> dict[str, Any]:
                 "complianceDeclarations": _compliance_declarations()
             },
             "administrativeInformation": _admin_info(
-                category="unitgroups", dataset_id=entity.internal_id
+                category="unitgroups",
+                dataset_id=entity.internal_id,
+                version=_dataset_version(entity.raw.get("version")),
             ),
             "units": {"unit": unit_items},
         }
@@ -693,7 +703,9 @@ def _flow_property_dataset(
                 "complianceDeclarations": _compliance_declarations()
             },
             "administrativeInformation": _admin_info(
-                category="flowproperties", dataset_id=entity.internal_id
+                category="flowproperties",
+                dataset_id=entity.internal_id,
+                version=_dataset_version(entity.raw.get("version")),
             ),
         }
     }
@@ -766,7 +778,9 @@ def _flow_dataset(
                 "complianceDeclarations": _compliance_declarations(),
             },
             "administrativeInformation": _admin_info(
-                category="flows", dataset_id=entity.internal_id
+                category="flows",
+                dataset_id=entity.internal_id,
+                version=_dataset_version(entity.raw.get("version")),
             ),
             "flowProperties": {
                 "flowProperty": {

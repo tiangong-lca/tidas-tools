@@ -277,3 +277,42 @@ def test_ilcd_import_writes_valid_tidas_package_with_digital_file(tmp_path):
     assert "lca.jrc.ec.europa.eu" in json.dumps(
         dataset_info.get("sourceDescriptionOrComment", {})
     )
+
+
+def test_ilcd_import_preserves_source_dataset_versions(tmp_path):
+    # R4: the converted TIDAS entities must keep their source dataSetVersion
+    # (e.g. 20.25.001 products, 20.20.002 support), not be renumbered to 00.00.001.
+    package = build_ilcd_package(tmp_path)
+    output_dir = tmp_path / "out"
+    status = main(
+        [
+            "--input",
+            str(package),
+            "--output-dir",
+            str(output_dir),
+            "--from-format",
+            "ilcd",
+            "--target",
+            "tidas",
+            "--validation-jobs",
+            "0",
+        ]
+    )
+    assert status == 0
+
+    def version(category, dataset_id, root):
+        payload = json.loads(
+            (output_dir / "tidas" / category / f"{dataset_id}.json").read_text("utf-8")
+        )
+        return payload[root]["administrativeInformation"]["publicationAndOwnership"][
+            "common:dataSetVersion"
+        ]
+
+    assert version("flows", FLOW_ID, "flowDataSet") == "20.25.001"
+    assert version("contacts", CONTACT_ID, "contactDataSet") == "20.20.002"
+    assert version("sources", SOURCE_ID, "sourceDataSet") == "20.20.002"
+    assert version("unitgroups", UNITGROUP_ID, "unitGroupDataSet") == "20.20.002"
+    assert (
+        version("flowproperties", FLOWPROPERTY_ID, "flowPropertyDataSet") == "20.20.002"
+    )
+    assert version("processes", PROCESS_ID, "processDataSet") == "20.25.001"
