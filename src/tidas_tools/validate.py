@@ -34,8 +34,8 @@ else:
     )
 
 import tidas_tools.tidas.schemas as schemas
-import tidas_tools.tidas.classifications as classifications
 import tidas_tools.eilcd.schemas as eilcd_schemas
+import tidas_tools.validation_indexes as validation_indexes
 
 CHINESE_CHARACTER_RE = re.compile(r"[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]")
 CAS_NUMBER_RE = re.compile(r"^[0-9]{2,7}-[0-9]{2}-[0-9]$")
@@ -135,6 +135,7 @@ PRODUCT_FLOW_CLASSIFICATION_NAMES = {
     "tidas product category",
     "tidas product flow category",
 }
+PRODUCT_FLOW_CATEGORY_SCHEMA_FILE = "tidas_flows_product_category.json"
 PRODUCT_FLOW_CATEGORY_INDEX_FILE = "product_flow_category_index.json"
 
 
@@ -198,7 +199,9 @@ def validate_product_flows_classification_hierarchy(class_items):
 
 @lru_cache(maxsize=1)
 def product_flow_category_index() -> dict[str, dict]:
-    index_path = pkg_resources.files(classifications) / PRODUCT_FLOW_CATEGORY_INDEX_FILE
+    index_path = (
+        pkg_resources.files(validation_indexes) / PRODUCT_FLOW_CATEGORY_INDEX_FILE
+    )
     with index_path.open(encoding="utf-8") as index_file:
         index = json.load(index_file)
     return index["entries"]
@@ -832,12 +835,34 @@ def _fastjsonschema_schema_handler(uri: str) -> dict:
         raise fastjsonschema.JsonSchemaDefinitionException(
             f"Unsupported empty schema reference: {uri}"
         )
+    if schema_name == PRODUCT_FLOW_CATEGORY_SCHEMA_FILE:
+        return _fast_product_flow_category_schema()
     schema = _load_tidas_schema(schema_name)
     return _normalize_fastjsonschema_schema({**schema, "$id": schema_name})
 
 
+def _is_product_flow_category_ref(value: str) -> bool:
+    return Path(value.split("#", 1)[0]).name == PRODUCT_FLOW_CATEGORY_SCHEMA_FILE
+
+
+def _fast_product_flow_category_schema() -> dict:
+    return {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "@level": {"$ref": "tidas_data_types.json#/$defs/LevelType"},
+            "@classId": {"type": "string"},
+            "#text": {"type": "string"},
+        },
+        "required": ["@level", "@classId", "#text"],
+    }
+
+
 def _normalize_fastjsonschema_schema(node):
     if isinstance(node, dict):
+        ref = node.get("$ref")
+        if isinstance(ref, str) and _is_product_flow_category_ref(ref):
+            return _fast_product_flow_category_schema()
         normalized = {
             key: _normalize_fastjsonschema_schema(value) for key, value in node.items()
         }

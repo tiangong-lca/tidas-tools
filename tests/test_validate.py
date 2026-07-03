@@ -57,6 +57,31 @@ def load_tidas_schema(schema_name):
         return json.load(schema_file)
 
 
+def product_category_entries_from_schema(schema):
+    entries = {}
+    for variant in schema["oneOf"]:
+        properties = variant["properties"]
+        class_id = properties["@classId"]["const"]
+        level = properties["@level"]["const"]
+        text = properties["#text"]["const"]
+        parent = None
+        if level != "0":
+            parent_candidates = [
+                candidate_id
+                for candidate_id, candidate in entries.items()
+                if candidate["level"] == str(int(level) - 1)
+                and class_id.startswith(candidate_id)
+            ]
+            parent = max(parent_candidates, key=len)
+        entries[class_id] = {
+            "allowedInProductFlowPath": True,
+            "level": level,
+            "parent": parent,
+            "text": text,
+        }
+    return entries
+
+
 def build_tidas_schema_fragment_validator(schema_fragment):
     return Draft7Validator(
         schema_fragment,
@@ -297,12 +322,12 @@ def test_fastjsonschema_compiles_all_packaged_tidas_category_schemas():
         assert _build_tidas_validator(category).fast_validator is not None
 
 
-def test_product_flow_category_schema_is_structural_and_index_backed():
+def test_product_flow_category_schema_remains_controlled_contract_with_projection_index():
     schema = load_tidas_schema("tidas_flows_product_category.json")
     index = product_flow_category_index()
 
-    assert "oneOf" not in schema
-    assert schema["required"] == ["@level", "@classId", "#text"]
+    assert len(schema["oneOf"]) == 4586
+    assert product_category_entries_from_schema(schema) == index
     assert index["46121"] == {
         "allowedInProductFlowPath": True,
         "level": "4",
