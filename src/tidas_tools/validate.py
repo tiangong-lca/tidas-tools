@@ -34,6 +34,7 @@ else:
     )
 
 import tidas_tools.tidas.schemas as schemas
+import tidas_tools.tidas.classifications as classifications
 import tidas_tools.eilcd.schemas as eilcd_schemas
 
 CHINESE_CHARACTER_RE = re.compile(r"[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]")
@@ -119,6 +120,24 @@ class TidasSchemaValidator:
     fast_validator: Callable[[dict], dict] | None
 
 
+@dataclass(frozen=True)
+class ClassificationIssueDetail:
+    issue_code: str
+    message: str
+    location: str
+    context: dict
+
+
+PRODUCT_FLOW_CLASSIFICATION_NAMES = {
+    "",
+    "cpc",
+    "ilcd",
+    "tidas product category",
+    "tidas product flow category",
+}
+PRODUCT_FLOW_CATEGORY_INDEX_FILE = "product_flow_category_index.json"
+
+
 def is_valid_cas_number(value: str) -> bool:
     """Return True when a CAS number has valid structure and check digit."""
     if not isinstance(value, str) or not CAS_NUMBER_RE.fullmatch(value):
@@ -172,29 +191,204 @@ def validate_elementary_flows_classification_hierarchy(class_items):
 
 
 def validate_product_flows_classification_hierarchy(class_items):
+    return _validate_product_flows_classification_hierarchy(
+        class_items, "common:classification/common:class"
+    )
 
+
+@lru_cache(maxsize=1)
+def product_flow_category_index() -> dict[str, dict]:
+    index_path = pkg_resources.files(classifications) / PRODUCT_FLOW_CATEGORY_INDEX_FILE
+    with index_path.open(encoding="utf-8") as index_file:
+        index = json.load(index_file)
+    return index["entries"]
+
+
+def _classification_detail(
+    *,
+    issue_code: str,
+    message: str,
+    location: str,
+    context: dict | None = None,
+) -> ClassificationIssueDetail:
+    return ClassificationIssueDetail(
+        issue_code=issue_code,
+        message=message,
+        location=location,
+        context=context or {},
+    )
+
+
+def _normalize_class_items(class_items):
+    if isinstance(class_items, dict):
+        return [class_items]
+    if isinstance(class_items, list):
+        return class_items
+    return []
+
+
+def _validate_product_flows_classification_hierarchy(
+    class_items, location: str
+) -> dict:
     errors = []
+    issue_details = []
+    entries = product_flow_category_index()
+    class_items = _normalize_class_items(class_items)
 
     for i, item in enumerate(class_items):
-        level = int(item["@level"])
-        if level != i:
-            errors.append(
-                f"Product flow classification level sorting error: at index {i}, expected level {i}, got {level}"
+        item_location = f"{location}/{i}"
+        if not isinstance(item, dict):
+            detail = _classification_detail(
+                issue_code="product_category_item_shape_error",
+                location=item_location,
+                message=(
+                    "Product flow category error: classification item "
+                    f"at index {i} must be an object"
+                ),
+                context={"index": i},
             )
+            issue_details.append(detail)
+            errors.append(detail.message)
+            continue
+
+        class_id = item.get("@classId")
+        raw_level = item.get("@level")
+        text = item.get("#text")
+
+        try:
+            level = int(raw_level)
+        except (TypeError, ValueError):
+            detail = _classification_detail(
+                issue_code="product_category_level_parse_error",
+                location=f"{item_location}/@level",
+                message=(
+                    "Product flow category error: missing or invalid "
+                    f"'@level' at index {i}"
+                ),
+                context={"index": i, "level": raw_level},
+            )
+            issue_details.append(detail)
+            errors.append(detail.message)
+            continue
+
+        if level != i:
+            detail = _classification_detail(
+                issue_code="product_category_level_sequence_error",
+                location=f"{item_location}/@level",
+                message=(
+                    "Product flow category level sorting error: "
+                    f"at index {i}, expected level {i}, got {level}"
+                ),
+                context={
+                    "index": i,
+                    "expected_level": str(i),
+                    "actual_level": raw_level,
+                },
+            )
+            issue_details.append(detail)
+            errors.append(detail.message)
+
+        entry = entries.get(class_id)
+        if entry is None:
+            detail = _classification_detail(
+                issue_code="product_category_unknown_class_id",
+                location=f"{item_location}/@classId",
+                message=(
+                    "Product flow category error: "
+                    f"unknown @classId '{class_id}' at index {i}"
+                ),
+                context={"index": i, "classId": class_id},
+            )
+            issue_details.append(detail)
+            errors.append(detail.message)
+            continue
+
+        if not entry.get("allowedInProductFlowPath", True):
+            detail = _classification_detail(
+                issue_code="product_category_disallowed_class_id",
+                location=f"{item_location}/@classId",
+                message=(
+                    "Product flow category error: "
+                    f"@classId '{class_id}' is not allowed in flow classification paths"
+                ),
+                context={"index": i, "classId": class_id},
+            )
+            issue_details.append(detail)
+            errors.append(detail.message)
+
+        expected_level = entry["level"]
+        if str(raw_level) != expected_level:
+            detail = _classification_detail(
+                issue_code="product_category_level_mismatch",
+                location=f"{item_location}/@level",
+                message=(
+                    "Product flow category error: "
+                    f"@classId '{class_id}' expects @level '{expected_level}', "
+                    f"got '{raw_level}'"
+                ),
+                context={
+                    "index": i,
+                    "classId": class_id,
+                    "expected_level": expected_level,
+                    "actual_level": raw_level,
+                },
+            )
+            issue_details.append(detail)
+            errors.append(detail.message)
+
+        expected_text = entry["text"]
+        if text != expected_text:
+            detail = _classification_detail(
+                issue_code="product_category_text_mismatch",
+                location=f"{item_location}/#text",
+                message=(
+                    "Product flow category error: "
+                    f"@classId '{class_id}' expects #text '{expected_text}', "
+                    f"got '{text}'"
+                ),
+                context={
+                    "index": i,
+                    "classId": class_id,
+                    "expected_text": expected_text,
+                    "actual_text": text,
+                },
+            )
+            issue_details.append(detail)
+            errors.append(detail.message)
 
     for i in range(1, len(class_items)):
-        parent_id = class_items[i - 1]["@classId"]
-        child_id = class_items[i]["@classId"]
-
-        if not child_id.startswith(parent_id):
-            errors.append(
-                f"Product flow classification code error: child code '{child_id}' does not start with parent code '{parent_id}'"
+        parent = class_items[i - 1]
+        child = class_items[i]
+        if not isinstance(parent, dict) or not isinstance(child, dict):
+            continue
+        parent_id = parent.get("@classId")
+        child_id = child.get("@classId")
+        child_entry = entries.get(child_id)
+        if child_entry is None:
+            continue
+        expected_parent = child_entry.get("parent")
+        if expected_parent != parent_id:
+            detail = _classification_detail(
+                issue_code="product_category_parent_mismatch",
+                location=f"{location}/{i}/@classId",
+                message=(
+                    "Product flow category parent-chain error: "
+                    f"@classId '{child_id}' expects parent '{expected_parent}', "
+                    f"got '{parent_id}'"
+                ),
+                context={
+                    "index": i,
+                    "classId": child_id,
+                    "expected_parent": expected_parent,
+                    "actual_parent": parent_id,
+                },
             )
+            issue_details.append(detail)
+            errors.append(detail.message)
 
     if errors:
-        return {"valid": False, "errors": errors}
-    else:
-        return {"valid": True}
+        return {"valid": False, "errors": errors, "issue_details": issue_details}
+    return {"valid": True}
 
 
 def validate_processes_classification_hierarchy(class_items):
@@ -377,6 +571,39 @@ def _make_issue(
     )
 
 
+def _is_controlled_product_classification(classification: dict) -> bool:
+    name = str(classification.get("@name", "")).strip().lower()
+    classes = str(classification.get("@classes", "")).strip().lower()
+    return (
+        name in PRODUCT_FLOW_CLASSIFICATION_NAMES
+        or name.startswith("cpc")
+        or name.startswith("ilcd")
+        or PRODUCT_FLOW_CATEGORY_INDEX_FILE.lower() in classes
+        or "tidas_flows_product_category.json" in classes
+    )
+
+
+def _iter_product_classification_lists(classification):
+    base_location = (
+        "flowDataSet/flowInformation/dataSetInformation/"
+        "classificationInformation/common:classification"
+    )
+    if isinstance(classification, dict):
+        if _is_controlled_product_classification(classification):
+            yield classification.get("common:class"), f"{base_location}/common:class"
+        return
+
+    if isinstance(classification, list):
+        for index, classification_item in enumerate(classification):
+            if not isinstance(classification_item, dict):
+                continue
+            if _is_controlled_product_classification(classification_item):
+                yield (
+                    classification_item.get("common:class"),
+                    f"{base_location}/{index}/common:class",
+                )
+
+
 def _collect_classification_issues(json_item: dict, category: str, file_path: str):
     issues = []
     try:
@@ -385,21 +612,29 @@ def _collect_classification_issues(json_item: dict, category: str, file_path: st
                 "LCIMethod"
             ]["typeOfDataSet"]
             if data_set_type == "Product flow":
-                validation_result = validate_product_flows_classification_hierarchy(
-                    json_item["flowDataSet"]["flowInformation"]["dataSetInformation"][
-                        "classificationInformation"
-                    ]["common:classification"]["common:class"]
-                )
-                if not validation_result["valid"]:
-                    issues.extend(
-                        _make_issue(
-                            issue_code="classification_hierarchy_error",
-                            category=category,
-                            file_path=file_path,
-                            message=message,
+                classification = json_item["flowDataSet"]["flowInformation"][
+                    "dataSetInformation"
+                ]["classificationInformation"]["common:classification"]
+                for class_items, location in _iter_product_classification_lists(
+                    classification
+                ):
+                    validation_result = (
+                        _validate_product_flows_classification_hierarchy(
+                            class_items, location
                         )
-                        for message in validation_result["errors"]
                     )
+                    if not validation_result["valid"]:
+                        issues.extend(
+                            _make_issue(
+                                issue_code=detail.issue_code,
+                                category=category,
+                                file_path=file_path,
+                                location=detail.location,
+                                message=detail.message,
+                                context=detail.context,
+                            )
+                            for detail in validation_result["issue_details"]
+                        )
             elif data_set_type == "Elementary flow":
                 validation_result = validate_elementary_flows_classification_hierarchy(
                     json_item["flowDataSet"]["flowInformation"]["dataSetInformation"][
@@ -735,11 +970,19 @@ def _map_chunksize(item_count: int, jobs: int) -> int:
     return max(1, min(64, item_count // (jobs * 16) or 1))
 
 
+def _emit_progress(
+    progress_callback: Callable[[dict], None] | None, event: dict
+) -> None:
+    if progress_callback is not None:
+        progress_callback(event)
+
+
 def category_validate(
     json_file_path: str,
     category: str,
     emit_logs: bool = True,
     jobs: int | None = DEFAULT_VALIDATION_JOBS,
+    progress_callback: Callable[[dict], None] | None = None,
 ):
     issues = []
     json_files = [
@@ -748,6 +991,10 @@ def category_validate(
         if filename.endswith(".json")
     ]
     worker_count = min(_normalize_jobs(jobs), len(json_files)) if json_files else 1
+    _emit_progress(
+        progress_callback,
+        {"type": "category_started", "category": category, "total": len(json_files)},
+    )
 
     if worker_count <= 1:
         validator = _build_tidas_validator(category)
@@ -768,8 +1015,19 @@ def category_validate(
             )
             results = zip(json_files, item_results)
 
-    for full_path, item_issues in results:
+    for index, (full_path, item_issues) in enumerate(results, start=1):
         issues.extend(item_issues)
+        _emit_progress(
+            progress_callback,
+            {
+                "type": "file_validated",
+                "category": category,
+                "file": full_path,
+                "index": index,
+                "total": len(json_files),
+                "issues": len(item_issues),
+            },
+        )
         if emit_logs:
             if item_issues:
                 for issue in item_issues:
@@ -777,6 +1035,15 @@ def category_validate(
             else:
                 logging.info(f"INFO: {full_path} PASSED.")
 
+    _emit_progress(
+        progress_callback,
+        {
+            "type": "category_finished",
+            "category": category,
+            "total": len(json_files),
+            "issues": len(issues),
+        },
+    )
     return build_category_report(category, issues)
 
 
@@ -784,6 +1051,7 @@ def validate_package_dir(
     input_dir: str,
     emit_logs: bool = False,
     jobs: int | None = DEFAULT_VALIDATION_JOBS,
+    progress_callback: Callable[[dict], None] | None = None,
 ):
     schemas_root = pkg_resources.files(schemas)
     category_reports = []
@@ -806,7 +1074,11 @@ def validate_package_dir(
             continue
 
         category_report = category_validate(
-            category_dir, category, emit_logs=emit_logs, jobs=jobs
+            category_dir,
+            category,
+            emit_logs=emit_logs,
+            jobs=jobs,
+            progress_callback=progress_callback,
         )
         category_reports.append(category_report)
 
@@ -1009,12 +1281,18 @@ def validate_ilcd_package_dir(
     input_dir: str,
     emit_logs: bool = False,
     jobs: int | None = DEFAULT_VALIDATION_JOBS,
+    progress_callback: Callable[[dict], None] | None = None,
 ):
     schema_cache: dict[str, etree.XMLSchema] = {}
     issues_by_category: dict[str, list[ValidationIssue]] = defaultdict(list)
+    files_by_category: dict[str, int] = defaultdict(int)
     seen_categories = set()
     xml_files = list(_iter_ilcd_xml_files(input_dir))
     worker_count = min(_normalize_jobs(jobs), len(xml_files)) if xml_files else 1
+    _emit_progress(
+        progress_callback,
+        {"type": "category_started", "category": "ilcd", "total": len(xml_files)},
+    )
 
     if worker_count <= 1:
         results = (
@@ -1036,9 +1314,21 @@ def validate_ilcd_package_dir(
             )
             results = zip(xml_files, item_results)
 
-    for xml_file_path, (category, issues) in results:
+    for index, (xml_file_path, (category, issues)) in enumerate(results, start=1):
         seen_categories.add(category)
+        files_by_category[category] += 1
         issues_by_category[category].extend(issues)
+        _emit_progress(
+            progress_callback,
+            {
+                "type": "file_validated",
+                "category": category,
+                "file": str(xml_file_path),
+                "index": index,
+                "total": len(xml_files),
+                "issues": len(issues),
+            },
+        )
 
         if emit_logs:
             if issues:
@@ -1051,6 +1341,16 @@ def validate_ilcd_package_dir(
         build_category_report(category, issues_by_category[category])
         for category in sorted(seen_categories)
     ]
+    for category in sorted(seen_categories):
+        _emit_progress(
+            progress_callback,
+            {
+                "type": "category_finished",
+                "category": category,
+                "total": files_by_category[category],
+                "issues": len(issues_by_category[category]),
+            },
+        )
     return build_package_report(input_dir, category_reports)
 
 
@@ -1067,11 +1367,14 @@ def main():
     )
     parser.add_argument(
         "--report-format",
-        choices=["text", "json"],
+        "--format",
+        dest="report_format",
+        choices=["text", "json", "jsonl"],
         default="text",
         help=(
             "Validation report output format. This does not change the input "
-            "data format. Defaults to text logging."
+            "data format. Use jsonl for machine-readable progress events plus "
+            "a final report event. Defaults to text logging."
         ),
     )
     parser.add_argument(
@@ -1096,6 +1399,12 @@ def main():
             parser.error("the following arguments are required: --input-dir/-i")
 
         data_format = "ilcd" if args.data_format == "eilcd" else args.data_format
+        progress_callback = None
+        if args.report_format == "jsonl":
+
+            def progress_callback(event):
+                print(json.dumps(event, ensure_ascii=False), flush=True)
+
         if args.report_format == "text":
             setup_logging(args.verbose, "validate")
             if data_format == "ilcd":
@@ -1109,13 +1418,24 @@ def main():
         else:
             if data_format == "ilcd":
                 report = validate_ilcd_package_dir(
-                    args.input_dir, emit_logs=False, jobs=args.jobs
+                    args.input_dir,
+                    emit_logs=False,
+                    jobs=args.jobs,
+                    progress_callback=progress_callback,
                 )
             else:
                 report = validate_package_dir(
-                    args.input_dir, emit_logs=False, jobs=args.jobs
+                    args.input_dir,
+                    emit_logs=False,
+                    jobs=args.jobs,
+                    progress_callback=progress_callback,
                 )
-            print(json.dumps(report, indent=2, ensure_ascii=False))
+            if args.report_format == "jsonl":
+                print(
+                    json.dumps({"type": "report", "report": report}, ensure_ascii=False)
+                )
+            else:
+                print(json.dumps(report, indent=2, ensure_ascii=False))
 
         if not report["ok"]:
             sys.exit(1)

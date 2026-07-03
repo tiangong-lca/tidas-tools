@@ -272,7 +272,7 @@ flowDataSet:
               guidance: |
                 Classify product or waste flows using the CPC product flow hierarchy.
                 - Supply sequential levels (0–4) as applicable.
-                - Ensure `@classId` references controlled entries in `tidas_flows_product_category.json`.
+                - Ensure `@classId` references controlled entries in `product_flow_category_index.json`.
               content_requirements:
                 - "Match each textual label to its official class identifier."
                 - "Do not skip intermediate levels when deeper levels are provided."
@@ -292,7 +292,7 @@ flowDataSet:
             - language: "zh"
               guidance: |
                 按照 CPC 产品/废物流分类层级填写，最多支持0–4级。
-                - `@classId` 必须引用 `tidas_flows_product_category.json` 中的受控条目。
+                - `@classId` 必须引用 `product_flow_category_index.json` 中的受控条目。
                 - 如填写更深层级，不得跳过中间层级。
               content_requirements:
                 - "确保标签文字与官方分类名称一致。"

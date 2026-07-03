@@ -1,6 +1,7 @@
 import importlib.resources as pkg_resources
 import json
 from pathlib import Path
+import sys
 
 import fastjsonschema
 import pytest
@@ -15,17 +16,24 @@ from tidas_tools.validate import (
     SUPPORTED_CATEGORIES,
     _build_tidas_validator,
     _compile_fast_tidas_schema_definition,
+    _collect_classification_issues,
     _collect_ilcd_cas_number_issues,
     _collect_schema_issues,
     _collect_strict_schema_issues,
+    _fastjsonschema_handlers,
+    _load_tidas_schema,
+    _normalize_fastjsonschema_schema,
     category_validate,
-    tidas_language_codes,
     is_valid_cas_number,
+    product_flow_category_index,
     retrieve_schema,
+    tidas_language_codes,
+    validate_product_flows_classification_hierarchy,
     validate_ilcd_package_dir,
     validate_package_dir,
     validate_localized_text_language_constraints,
 )
+from tidas_tools import validate as validate_module
 
 
 def build_data_type_validator(definition_name):
@@ -129,6 +137,105 @@ def test_elementary_flow_classification_hierarchy_checks_adjacent_parent():
     assert result == {"valid": True}
 
 
+def test_product_flow_category_index_validates_class_id_level_text_and_parent():
+    result = validate_product_flows_classification_hierarchy(
+        [
+            {
+                "@level": "0",
+                "@classId": "4",
+                "#text": "Metal products, machinery and equipment",
+            },
+            {
+                "@level": "1",
+                "@classId": "46",
+                "#text": "Electrical machinery and apparatus",
+            },
+            {
+                "@level": "2",
+                "@classId": "461",
+                "#text": "Electric motors, generators and transformers, and parts thereof",
+            },
+            {
+                "@level": "3",
+                "@classId": "4612",
+                "#text": "Electrical transformers, static converters and inductors",
+            },
+            {
+                "@level": "4",
+                "@classId": "46121",
+                "#text": "Electrical transformers",
+            },
+        ]
+    )
+
+    assert result == {"valid": True}
+
+
+def test_product_flow_category_index_reports_precise_classification_errors():
+    result = validate_product_flows_classification_hierarchy(
+        [
+            {
+                "@level": "0",
+                "@classId": "0",
+                "#text": "Agriculture, forestry and fishery products",
+            },
+            {"@level": "1", "@classId": "11", "#text": "Coal and peat"},
+            {"@level": "2", "@classId": "999999", "#text": "Not real"},
+            {"@level": "3", "@classId": "46121", "#text": "Wrong label"},
+        ]
+    )
+
+    assert not result["valid"]
+    issue_codes = [detail.issue_code for detail in result["issue_details"]]
+    assert "product_category_parent_mismatch" in issue_codes
+    assert "product_category_unknown_class_id" in issue_codes
+    assert "product_category_level_mismatch" in issue_codes
+    assert "product_category_text_mismatch" in issue_codes
+
+
+def test_product_flow_array_classification_validates_cpc_and_skips_external_systems():
+    payload = {
+        "flowDataSet": {
+            "modellingAndValidation": {"LCIMethod": {"typeOfDataSet": "Product flow"}},
+            "flowInformation": {
+                "dataSetInformation": {
+                    "classificationInformation": {
+                        "common:classification": [
+                            {
+                                "@name": "HS",
+                                "common:class": [
+                                    {
+                                        "@level": "0",
+                                        "@classId": "not-a-cpc-code",
+                                        "#text": "Allowed external class",
+                                    }
+                                ],
+                            },
+                            {
+                                "@name": "CPC",
+                                "common:class": [
+                                    {
+                                        "@level": "0",
+                                        "@classId": "not-a-cpc-code",
+                                        "#text": "Invalid CPC class",
+                                    }
+                                ],
+                            },
+                        ]
+                    }
+                }
+            },
+        }
+    }
+
+    issues = _collect_classification_issues(payload, "flows", "flow.json")
+
+    assert [issue.issue_code for issue in issues] == [
+        "product_category_unknown_class_id"
+    ]
+    assert "/1/common:class/0/@classId" in issues[0].location
+
+
 def test_cas_number_checksum_validator():
     assert is_valid_cas_number("64-17-5")
     assert is_valid_cas_number("7732-18-5")
@@ -188,6 +295,36 @@ def test_fastjsonschema_tidas_validator_does_not_apply_defaults():
 def test_fastjsonschema_compiles_all_packaged_tidas_category_schemas():
     for category in SUPPORTED_CATEGORIES:
         assert _build_tidas_validator(category).fast_validator is not None
+
+
+def test_product_flow_category_schema_is_structural_and_index_backed():
+    schema = load_tidas_schema("tidas_flows_product_category.json")
+    index = product_flow_category_index()
+
+    assert "oneOf" not in schema
+    assert schema["required"] == ["@level", "@classId", "#text"]
+    assert index["46121"] == {
+        "allowedInProductFlowPath": True,
+        "level": "4",
+        "parent": "4612",
+        "text": "Electrical transformers",
+    }
+
+
+def test_flows_fastjsonschema_codegen_stays_bounded_after_category_index_split():
+    schema = _normalize_fastjsonschema_schema(
+        {**_load_tidas_schema("tidas_flows.json"), "$id": "tidas_flows.json"}
+    )
+
+    code = fastjsonschema.compile_to_code(
+        schema,
+        handlers=_fastjsonschema_handlers(),
+        formats={"cas-number": lambda value: True},
+        use_default=False,
+    )
+
+    assert len(code.encode("utf-8")) < 2_000_000
+    assert code.count("\n") < 10_000
 
 
 def test_tidas_lciamethod_and_flow_enums_match_tidas_contract():
@@ -404,6 +541,74 @@ def test_validate_package_dir_supports_parallel_jobs(tmp_path):
         "bad-1.json",
         "bad-2.json",
     }
+
+
+def test_validate_package_dir_emits_category_and_file_progress_events(tmp_path):
+    package_dir = tmp_path / "package"
+    sources_dir = package_dir / "sources"
+    sources_dir.mkdir(parents=True)
+    (sources_dir / "bad.json").write_text("{}", encoding="utf-8")
+    events = []
+
+    validate_package_dir(str(package_dir), progress_callback=events.append)
+
+    assert [event["type"] for event in events] == [
+        "category_started",
+        "file_validated",
+        "category_finished",
+    ]
+    assert events[0] == {"type": "category_started", "category": "sources", "total": 1}
+    assert events[1]["file"].endswith("bad.json")
+    assert events[1]["issues"] == 1
+    assert events[2]["issues"] == 1
+
+
+def test_validate_cli_jsonl_report_format_streams_events(tmp_path, monkeypatch, capsys):
+    package_dir = tmp_path / "package"
+    (package_dir / "sources").mkdir(parents=True)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "tidas-validate",
+            "--input-dir",
+            str(package_dir),
+            "--report-format",
+            "jsonl",
+        ],
+    )
+
+    validate_module.main()
+
+    events = [json.loads(line) for line in capsys.readouterr().out.splitlines()]
+    assert [event["type"] for event in events] == [
+        "category_started",
+        "category_finished",
+        "report",
+    ]
+    assert events[-1]["report"]["ok"] is True
+
+
+def test_validate_cli_legacy_format_alias_outputs_json(tmp_path, monkeypatch, capsys):
+    package_dir = tmp_path / "package"
+    (package_dir / "sources").mkdir(parents=True)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "tidas-validate",
+            "--input-dir",
+            str(package_dir),
+            "--format",
+            "json",
+        ],
+    )
+
+    validate_module.main()
+
+    report = json.loads(capsys.readouterr().out)
+    assert report["ok"] is True
+    assert report["summary"]["category_count"] == 1
 
 
 def test_validate_ilcd_package_dir_accepts_valid_location_xml(tmp_path):
