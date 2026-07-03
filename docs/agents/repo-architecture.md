@@ -52,6 +52,7 @@ This repo packages standalone tooling plus the schema, methodology, and styleshe
 | `src/tidas_tools/tidas/schemas/**` | packaged English TIDAS schemas |
 | `src/tidas_tools/tidas/schemas_zh/**` | packaged Chinese TIDAS schemas |
 | `src/tidas_tools/tidas/schema.lock.json` | deterministic hash and parity lock for paired TIDAS schemas |
+| `src/tidas_tools/tidas/classifications/**` | packaged runtime classification indexes used by validation logic |
 | `src/tidas_tools/tidas/methodologies/**` | packaged TIDAS methodologies |
 | `src/tidas_tools/eilcd/**` | packaged eILCD schemas and stylesheets |
 | `scripts/schema_lock.py` | schema asset parity checker and lock generator |
@@ -70,7 +71,7 @@ This repo packages standalone tooling plus the schema, methodology, and styleshe
 
 ### Validation
 
-`validate.py` plus `validation_report.py` own standalone validation semantics and structured reporting. The validator covers TIDAS JSON with packaged JSON schemas and eILCD/ILCD XML with packaged XSD schemas. TIDAS JSON validation uses a compiled `fastjsonschema` fast path for files that pass schema validation, while falling back to `jsonschema` for complete error collection when the fast path detects a schema failure.
+`validate.py` plus `validation_report.py` own standalone validation semantics and structured reporting. The validator covers TIDAS JSON with packaged JSON schemas, runtime classification indexes, and eILCD/ILCD XML with packaged XSD schemas. TIDAS JSON validation uses a compiled `fastjsonschema` fast path for files that pass schema validation, while falling back to `jsonschema` for complete error collection when the fast path detects a schema failure.
 
 ### Export
 

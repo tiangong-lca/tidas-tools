@@ -137,6 +137,7 @@ routing:
       paths:
         - src/tidas_tools/validate.py
         - src/tidas_tools/validation_report.py
+        - src/tidas_tools/tidas/classifications/**
         - src/tidas_tools/tidas/schemas/**
         - src/tidas_tools/eilcd/schemas/**
         - src/tidas_tools/tidas/schemas_zh/**
