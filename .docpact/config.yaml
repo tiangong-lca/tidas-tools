@@ -34,6 +34,7 @@ ownership:
           - src/tidas_tools/import_lca/**
           - src/tidas_tools/validate.py
           - src/tidas_tools/validation_report.py
+          - src/tidas_tools/validation_indexes/**
           - src/tidas_tools/export.py
           - src/tidas_tools/package_versions.py
       ownerRepo: tidas-tools
@@ -79,6 +80,7 @@ coverage:
     - src/tidas_tools/import_lca/**
     - src/tidas_tools/validate.py
     - src/tidas_tools/validation_report.py
+    - src/tidas_tools/validation_indexes/**
     - src/tidas_tools/export.py
     - src/tidas_tools/package_versions.py
     - src/tidas_tools/tidas/**
@@ -125,6 +127,7 @@ routing:
         - src/tidas_tools/import_lca/**
         - src/tidas_tools/validate.py
         - src/tidas_tools/validation_report.py
+        - src/tidas_tools/validation_indexes/**
         - src/tidas_tools/export.py
         - src/tidas_tools/package_versions.py
     conversion:
@@ -137,7 +140,7 @@ routing:
       paths:
         - src/tidas_tools/validate.py
         - src/tidas_tools/validation_report.py
-        - src/tidas_tools/tidas/classifications/**
+        - src/tidas_tools/validation_indexes/**
         - src/tidas_tools/tidas/schemas/**
         - src/tidas_tools/eilcd/schemas/**
         - src/tidas_tools/tidas/schemas_zh/**
@@ -246,6 +249,8 @@ rules:
       - path: src/tidas_tools/validate.py
         kind: tooling
       - path: src/tidas_tools/validation_report.py
+        kind: tooling
+      - path: src/tidas_tools/validation_indexes/**
         kind: tooling
       - path: src/tidas_tools/export.py
         kind: tooling

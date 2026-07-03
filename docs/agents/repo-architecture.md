@@ -46,13 +46,13 @@ This repo packages standalone tooling plus the schema, methodology, and styleshe
 | `src/tidas_tools/import_lca/**` | external LCA import CLI scaffolding, format detection, canonical import model, and staged source adapters |
 | `src/tidas_tools/validate.py` | standalone validation CLI |
 | `src/tidas_tools/validation_report.py` | structured validation-report rendering |
+| `src/tidas_tools/validation_indexes/**` | validator-private projection indexes derived from packaged schema assets for fast runtime checks |
 | `src/tidas_tools/export.py` | standalone export CLI |
 | `src/tidas_tools/package_versions.py` | version normalization and export package metadata logic |
 | `src/tidas_tools/runtime_rulesets.py` | loader and validator for packaged runtime ruleset metadata |
 | `src/tidas_tools/tidas/schemas/**` | packaged English TIDAS schemas |
 | `src/tidas_tools/tidas/schemas_zh/**` | packaged Chinese TIDAS schemas |
 | `src/tidas_tools/tidas/schema.lock.json` | deterministic hash and parity lock for paired TIDAS schemas |
-| `src/tidas_tools/tidas/classifications/**` | packaged runtime classification indexes used by validation logic |
 | `src/tidas_tools/tidas/methodologies/**` | packaged TIDAS methodologies |
 | `src/tidas_tools/eilcd/**` | packaged eILCD schemas and stylesheets |
 | `scripts/schema_lock.py` | schema asset parity checker and lock generator |
@@ -71,7 +71,7 @@ This repo packages standalone tooling plus the schema, methodology, and styleshe
 
 ### Validation
 
-`validate.py` plus `validation_report.py` own standalone validation semantics and structured reporting. The validator covers TIDAS JSON with packaged JSON schemas, runtime classification indexes, and eILCD/ILCD XML with packaged XSD schemas. TIDAS JSON validation uses a compiled `fastjsonschema` fast path for files that pass schema validation, while falling back to `jsonschema` for complete error collection when the fast path detects a schema failure.
+`validate.py` plus `validation_report.py` own standalone validation semantics and structured reporting. The validator covers TIDAS JSON with packaged JSON schemas, validator-private projection indexes, and eILCD/ILCD XML with packaged XSD schemas. TIDAS JSON validation uses a compiled `fastjsonschema` fast path for files that pass schema validation, while falling back to `jsonschema` for complete error collection when the fast path detects a schema failure.
 
 ### Export
 
@@ -87,6 +87,7 @@ Important consequences:
 
 - `tidas-sdk` runtime assets and generated models depend on the packaged assets here
 - schema or methodology changes here usually imply downstream SDK follow-up
+- validator-private projection indexes optimize `tidas-tools` validation only; they are not a substitute for the packaged schema contract
 - English and Chinese schema files must have matching file sets and matching non-localized structure
 - `schema.lock.json` stores content hashes plus contract hashes after removing localized `description` fields
 - `tidas` remains the public docs surface, but it is not the executable upstream for tooling behavior

@@ -50,6 +50,7 @@ where = ["src"]
 tidas_tools = [
     "eilcd/**/*",
     "tidas/**/*",
+    "validation_indexes/**/*",
 ]
 
 [build-system]
