@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import dataclass
+from functools import lru_cache
 import hashlib
 import json
 from pathlib import Path
@@ -27,6 +28,7 @@ SCHEMA_VERSION = "tiangong.tidas-tools.release-result.v1"
 UNIT_PROFILE = "unit-process-full-closure.v1"
 RESULT_PROFILE = "standalone-lifecyclemodel-result-full-closure.v1"
 PROFILES = (UNIT_PROFILE, RESULT_PROFILE)
+TIDAS_SCHEMA_ROOT = Path(__file__).resolve().parent / "tidas" / "schemas"
 
 REFERENCE_TYPE_TO_DATASET_TYPE = {
     "contact data set": "contact",
@@ -97,6 +99,179 @@ def _write_json(file_path: Path, value: Any) -> None:
         json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
         encoding="utf-8",
     )
+
+
+@lru_cache(maxsize=None)
+def _load_ordering_schema(schema_path: str) -> dict[str, Any]:
+    path = Path(schema_path)
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ReleaseToolError("tidas_ordering_schema_invalid", str(path)) from exc
+    if not isinstance(document, dict):
+        raise ReleaseToolError("tidas_ordering_schema_invalid", str(path))
+    return document
+
+
+def _resolve_ordering_schema(
+    schema: dict[str, Any], schema_path: Path
+) -> tuple[dict[str, Any], Path]:
+    current = schema
+    current_path = schema_path
+    seen: set[tuple[str, str]] = set()
+    while isinstance(current.get("$ref"), str):
+        reference = str(current["$ref"])
+        file_name, separator, fragment = reference.partition("#")
+        target_path = (
+            current_path
+            if not file_name
+            else (current_path.parent / file_name).resolve()
+        )
+        marker = (str(target_path), fragment)
+        if marker in seen:
+            raise ReleaseToolError("tidas_ordering_schema_cycle", reference)
+        seen.add(marker)
+        target: Any = _load_ordering_schema(str(target_path))
+        if separator and fragment:
+            if not fragment.startswith("/"):
+                raise ReleaseToolError("tidas_ordering_schema_ref_invalid", reference)
+            for raw_token in fragment[1:].split("/"):
+                token = raw_token.replace("~1", "/").replace("~0", "~")
+                if not isinstance(target, dict) or token not in target:
+                    raise ReleaseToolError(
+                        "tidas_ordering_schema_ref_invalid", reference
+                    )
+                target = target[token]
+        if not isinstance(target, dict):
+            raise ReleaseToolError("tidas_ordering_schema_ref_invalid", reference)
+        current = target
+        current_path = target_path
+    return current, current_path
+
+
+def _schema_matches_value(
+    schema: dict[str, Any], schema_path: Path, value: Any
+) -> bool:
+    resolved, resolved_path = _resolve_ordering_schema(schema, schema_path)
+    alternatives = resolved.get("oneOf") or resolved.get("anyOf")
+    if isinstance(alternatives, list):
+        return any(
+            isinstance(candidate, dict)
+            and _schema_matches_value(candidate, resolved_path, value)
+            for candidate in alternatives
+        )
+    schema_type = resolved.get("type")
+    allowed = {schema_type} if isinstance(schema_type, str) else set(schema_type or [])
+    if isinstance(value, dict):
+        return not allowed or "object" in allowed or "properties" in resolved
+    if isinstance(value, list):
+        return not allowed or "array" in allowed or "items" in resolved
+    if value is None:
+        return not allowed or "null" in allowed
+    if isinstance(value, bool):
+        return not allowed or "boolean" in allowed
+    if isinstance(value, (int, float)):
+        return not allowed or bool({"integer", "number"} & allowed)
+    return not allowed or "string" in allowed
+
+
+def _select_ordering_schema(
+    schema: dict[str, Any], schema_path: Path, value: Any
+) -> tuple[dict[str, Any], Path]:
+    resolved, resolved_path = _resolve_ordering_schema(schema, schema_path)
+    alternatives = resolved.get("oneOf") or resolved.get("anyOf")
+    if isinstance(alternatives, list):
+        for candidate in alternatives:
+            if isinstance(candidate, dict) and _schema_matches_value(
+                candidate, resolved_path, value
+            ):
+                return _select_ordering_schema(candidate, resolved_path, value)
+    return resolved, resolved_path
+
+
+def _ordered_property_schemas(
+    schema: dict[str, Any], schema_path: Path, value: dict[str, Any]
+) -> dict[str, tuple[dict[str, Any], Path]]:
+    resolved, resolved_path = _select_ordering_schema(schema, schema_path, value)
+    ordered: dict[str, tuple[dict[str, Any], Path]] = {}
+    all_of = resolved.get("allOf")
+    if isinstance(all_of, list):
+        for component in all_of:
+            if isinstance(component, dict):
+                ordered.update(
+                    _ordered_property_schemas(component, resolved_path, value)
+                )
+    properties = resolved.get("properties")
+    if isinstance(properties, dict):
+        for name, child_schema in properties.items():
+            if isinstance(child_schema, dict):
+                ordered[name] = (child_schema, resolved_path)
+    return ordered
+
+
+def _array_item_schema(
+    schema: dict[str, Any], schema_path: Path, value: list[Any]
+) -> tuple[dict[str, Any], Path] | None:
+    resolved, resolved_path = _select_ordering_schema(schema, schema_path, value)
+    items = resolved.get("items")
+    if isinstance(items, dict):
+        return items, resolved_path
+    all_of = resolved.get("allOf")
+    if isinstance(all_of, list):
+        for component in all_of:
+            if isinstance(component, dict):
+                selected = _array_item_schema(component, resolved_path, value)
+                if selected is not None:
+                    return selected
+    return None
+
+
+def _order_value_for_xml(value: Any, schema: dict[str, Any], schema_path: Path) -> Any:
+    if isinstance(value, list):
+        item_schema = _array_item_schema(schema, schema_path, value)
+        if item_schema is None:
+            return value
+        child_schema, child_path = item_schema
+        return [_order_value_for_xml(item, child_schema, child_path) for item in value]
+    if not isinstance(value, dict):
+        return value
+    properties = _ordered_property_schemas(schema, schema_path, value)
+    ordered: dict[str, Any] = {}
+    for name, (child_schema, child_path) in properties.items():
+        if name in value:
+            ordered[name] = _order_value_for_xml(value[name], child_schema, child_path)
+    for name in sorted(set(value) - set(ordered)):
+        ordered[name] = value[name]
+    return ordered
+
+
+def order_tidas_document_for_xml(
+    document: dict[str, Any], category: str
+) -> dict[str, Any]:
+    """Restore schema element order before serializing canonical TIDAS JSON as ILCD XML."""
+
+    schema_path = (TIDAS_SCHEMA_ROOT / f"tidas_{category.lower()}.json").resolve()
+    if not schema_path.is_file():
+        raise ReleaseToolError("tidas_ordering_schema_missing", category)
+    schema = _load_ordering_schema(str(schema_path))
+    ordered = _order_value_for_xml(document, schema, schema_path)
+    if not isinstance(ordered, dict):
+        raise ReleaseToolError("tidas_document_invalid", category)
+    return ordered
+
+
+def _convert_reference_uris_for_ilcd(value: Any) -> Any:
+    if isinstance(value, list):
+        return [_convert_reference_uris_for_ilcd(item) for item in value]
+    if not isinstance(value, dict):
+        return value
+    converted: dict[str, Any] = {}
+    for name, child in value.items():
+        if name == "@uri" and isinstance(child, str) and child.endswith(".json"):
+            converted[name] = f"{child[:-5]}.xml"
+        else:
+            converted[name] = _convert_reference_uris_for_ilcd(child)
+    return converted
 
 
 def load_dataset_index(
@@ -251,7 +426,11 @@ def convert_tidas_to_ilcd(
             for source_file in sorted(category_dir.glob("*.json")):
                 relative = source_file.relative_to(source_root)
                 document = json.loads(source_file.read_text(encoding="utf-8"))
-                xml = xmltodict.unparse(document, pretty=True)
+                ordered_document = order_tidas_document_for_xml(
+                    document, category_dir.name
+                )
+                ilcd_document = _convert_reference_uris_for_ilcd(ordered_document)
+                xml = xmltodict.unparse(ilcd_document, pretty=True)
                 output_relative = Path("data") / relative.with_suffix(".xml")
                 target_file = staging / output_relative
                 target_file.parent.mkdir(parents=True, exist_ok=True)
@@ -290,15 +469,15 @@ def convert_tidas_to_ilcd(
     }
 
 
-def _normalize_roundtrip(value: Any) -> Any:
+def _normalize_roundtrip(value: Any, field_name: str | None = None) -> Any:
     if isinstance(value, dict):
         normalized = {
-            key: _normalize_roundtrip(child)
+            key: _normalize_roundtrip(child, key)
             for key, child in sorted(value.items(), key=lambda item: item[0])
         }
         return normalized or None
     if isinstance(value, list):
-        normalized = [_normalize_roundtrip(child) for child in value]
+        normalized = [_normalize_roundtrip(child, field_name) for child in value]
         return normalized[0] if len(normalized) == 1 else normalized
     if value is None:
         return None
@@ -306,6 +485,8 @@ def _normalize_roundtrip(value: Any) -> Any:
         return "true" if value else "false"
     if isinstance(value, (int, float)):
         return str(value)
+    if field_name == "@uri" and isinstance(value, str) and value.endswith(".xml"):
+        return f"{value[:-4]}.json"
     return value
 
 
