@@ -49,6 +49,7 @@ This repo packages standalone tooling plus the schema, methodology, and styleshe
 | `src/tidas_tools/validation_indexes/**` | validator-private projection indexes derived from packaged schema assets for fast runtime checks |
 | `src/tidas_tools/export.py` | standalone export CLI |
 | `src/tidas_tools/package_versions.py` | version normalization and export package metadata logic |
+| `src/tidas_tools/release.py` | deterministic release-profile closure, TIDAS/ILCD conversion and validation orchestration, semantic round-trip, and byte-stable ZIP construction |
 | `src/tidas_tools/runtime_rulesets.py` | loader and validator for packaged runtime ruleset metadata |
 | `src/tidas_tools/tidas/schemas/**` | packaged English TIDAS schemas |
 | `src/tidas_tools/tidas/schemas_zh/**` | packaged Chinese TIDAS schemas |
@@ -76,6 +77,10 @@ This repo packages standalone tooling plus the schema, methodology, and styleshe
 ### Export
 
 `export.py` plus `package_versions.py` own database export semantics, version normalization, and archive packaging.
+
+### Release Packaging
+
+`release.py` owns the offline `tidas-release-tool` surface used by the Release control plane. It consumes an already finalized canonical dataset tree and index; it does not assign UUIDs or versions. It resolves exact transitive references for `unit-process-full-closure.v1` and `standalone-lifecyclemodel-result-full-closure.v1`, proves the latter contains the former, converts the same datasets to ILCD, validates TIDAS/ILCD, checks normalized semantic round-trip, and writes byte-stable ZIPs with sorted members and fixed metadata.
 
 ## Upstream Asset Chain
 
