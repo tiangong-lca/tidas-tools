@@ -37,6 +37,7 @@ ownership:
           - src/tidas_tools/validation_indexes/**
           - src/tidas_tools/export.py
           - src/tidas_tools/package_versions.py
+          - src/tidas_tools/release.py
       ownerRepo: tidas-tools
     - id: packaged-assets
       paths:
@@ -83,6 +84,7 @@ coverage:
     - src/tidas_tools/validation_indexes/**
     - src/tidas_tools/export.py
     - src/tidas_tools/package_versions.py
+    - src/tidas_tools/release.py
     - src/tidas_tools/tidas/**
     - src/tidas_tools/eilcd/**
     - scripts/schema_lock.py
@@ -130,6 +132,7 @@ routing:
         - src/tidas_tools/validation_indexes/**
         - src/tidas_tools/export.py
         - src/tidas_tools/package_versions.py
+        - src/tidas_tools/release.py
     conversion:
       paths:
         - src/tidas_tools/convert.py
@@ -150,6 +153,14 @@ routing:
       paths:
         - src/tidas_tools/export.py
         - src/tidas_tools/package_versions.py
+        - src/tidas_tools/release.py
+    release-packaging:
+      paths:
+        - src/tidas_tools/release.py
+        - src/tidas_tools/convert.py
+        - src/tidas_tools/validate.py
+        - src/tidas_tools/tidas/**
+        - src/tidas_tools/eilcd/**
     packaged-assets:
       paths:
         - src/tidas_tools/tidas/**
@@ -255,6 +266,8 @@ rules:
       - path: src/tidas_tools/export.py
         kind: tooling
       - path: src/tidas_tools/package_versions.py
+        kind: tooling
+      - path: src/tidas_tools/release.py
         kind: tooling
     requiredDocs:
       - path: AGENTS.md

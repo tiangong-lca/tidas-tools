@@ -106,7 +106,27 @@ tidas-import --input <source_file_or_dir> --output-dir <output_directory> --writ
 
 ---
 
-## 4. TIDAS and eILCD/ILCD Data Validation Tool Usage
+## 4. Deterministic TIDAS/ILCD Release Packaging
+
+`tidas-release-tool` consumes a finalized canonical TIDAS dataset tree plus its `tiangong.release.canonical-dataset-index.v1`. It never assigns UUIDs or versions. The tool validates exact transitive references, converts and validates ILCD, checks normalized semantic round-trip, and builds the two self-contained release profiles with byte-stable ZIP metadata.
+
+```bash
+tidas-release-tool validate-tidas --input-dir <canonical-tidas-dir>
+tidas-release-tool convert-ilcd --input-dir <canonical-tidas-dir> --output-dir <ilcd-dir>
+tidas-release-tool validate-ilcd --input-dir <ilcd-dir>
+tidas-release-tool semantic-roundtrip --tidas-dir <canonical-tidas-dir> --ilcd-dir <ilcd-dir>
+tidas-release-tool build-packages \
+  --tidas-dir <canonical-tidas-dir> \
+  --ilcd-dir <ilcd-dir> \
+  --dataset-index <canonical-dataset-index.json> \
+  --output-dir <package-dir>
+```
+
+The package command emits canonical TIDAS and derived ILCD variants for `unit-process-full-closure.v1` and `standalone-lifecyclemodel-result-full-closure.v1`. Missing UUID/version references fail closed. JSON stdout is stable machine output; `--report <path>` also persists the same result.
+
+---
+
+## 5. TIDAS and eILCD/ILCD Data Validation Tool Usage
 
 ### (1) Tool Functionalities
 
@@ -135,7 +155,7 @@ tidas-validate --input-dir <eILCD_data_directory> --data-format ilcd
 tidas-validate --input-dir <TIDAS_data_directory> --data-format tidas --jobs 0
 ```
 
-## 5. TIDAS Export Tool Documentation
+## 6. TIDAS Export Tool Documentation
 
 ### (1) Tool Functionalities
 
@@ -188,7 +208,7 @@ tidas-export -z <eILCD_ZIP_File> --to-eilcd --skip-external-docs
 
 ---
 
-## 6. Log File Information
+## 7. Log File Information
 
 Both data conversion and validation tools will automatically generate execution logs. The log file name is:
 
@@ -198,7 +218,7 @@ tidas-{function_name}.log
 
 ---
 
-## 7. Development Environment Setup and Contribution Guide
+## 8. Development Environment Setup and Contribution Guide
 
 If you wish to participate in development, you can set up your environment following these steps:
 
@@ -239,7 +259,7 @@ uv run python src/tidas_tools/convert.py --help
 
 ---
 
-## 8. Code Standards and Testing
+## 9. Code Standards and Testing
 
 ### (1) Code Formatting Tool (black recommended)
 
@@ -275,7 +295,7 @@ uv run python src/tidas_tools/validate.py -i <eILCD_data_directory> --data-forma
 
 ---
 
-## 9. Automatic Building and Publishing (CI/CD)
+## 10. Automatic Building and Publishing (CI/CD)
 
 This project supports automatic building and publishing. When you push a git tag named with the `v<version>` format to the repository, it will trigger the workflow automatically. For example:
 
@@ -296,6 +316,6 @@ That automation requires the repository secret `TIDAS_SDK_AUTOMATION_TOKEN`.
 
 ---
 
-## 10. Contribution
+## 11. Contribution
 
 We welcome your contributions! You can participate in the project by submitting issues or pull requests.

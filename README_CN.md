@@ -131,7 +131,27 @@ tidas-import --input <源文件或目录> --output-dir <输出目录> --write-ma
 
 ---
 
-## 四、TIDAS 与 eILCD/ILCD 数据验证工具使用说明
+## 四、确定性 TIDAS/ILCD Release 打包
+
+`tidas-release-tool` 消费已经完成 UUID/version 决策的 canonical TIDAS 数据树和 `tiangong.release.canonical-dataset-index.v1`，自身不分配 UUID 或版本。它负责精确引用闭包、ILCD 转换与验证、归一化语义 round-trip，以及固定 ZIP 成员顺序、时间和权限的确定性打包。
+
+```bash
+tidas-release-tool validate-tidas --input-dir <canonical-tidas目录>
+tidas-release-tool convert-ilcd --input-dir <canonical-tidas目录> --output-dir <ilcd目录>
+tidas-release-tool validate-ilcd --input-dir <ilcd目录>
+tidas-release-tool semantic-roundtrip --tidas-dir <canonical-tidas目录> --ilcd-dir <ilcd目录>
+tidas-release-tool build-packages \
+  --tidas-dir <canonical-tidas目录> \
+  --ilcd-dir <ilcd目录> \
+  --dataset-index <canonical-dataset-index.json> \
+  --output-dir <发布包目录>
+```
+
+打包命令分别为 `unit-process-full-closure.v1` 与 `standalone-lifecyclemodel-result-full-closure.v1` 生成 canonical TIDAS 和派生 ILCD 变体。缺少精确 UUID/version 引用时会 fail closed。stdout 为稳定 JSON；可用 `--report <路径>` 同时保存报告。
+
+---
+
+## 五、TIDAS 与 eILCD/ILCD 数据验证工具使用说明
 
 ### （一）工具功能说明
 
@@ -160,7 +180,7 @@ tidas-validate --input-dir <eILCD数据目录> --data-format ilcd
 tidas-validate --input-dir <TIDAS数据目录> --data-format tidas --jobs 0
 ```
 
-## 五、TIDAS 数据导出工具使用说明
+## 六、TIDAS 数据导出工具使用说明
 
 ### （一）工具功能说明
 
@@ -215,7 +235,7 @@ tidas-export -z <eILCD ZIP文件> --to-eilcd --skip-external-docs
 ```
 ---
 
-## 六、日志文件说明
+## 七、日志文件说明
 
 数据转换和验证工具执行过程中，会自动生成运行日志，日志文件名为：
 
@@ -225,7 +245,7 @@ tidas-{function_name}.log
 
 ---
 
-## 七、开发环境搭建与代码贡献指南
+## 八、开发环境搭建与代码贡献指南
 
 如果您希望参与开发贡献，您可以参考以下步骤搭建开发环境：
 
@@ -266,7 +286,7 @@ uv run python src/tidas_tools/convert.py --help
 
 ---
 
-## 八、代码规范与测试
+## 九、代码规范与测试
 
 ### （一）代码格式化工具（推荐使用 black）
 
@@ -302,7 +322,7 @@ uv run python src/tidas_tools/validate.py -i <eILCD数据目录> --data-format i
 
 ---
 
-## 九、自动构建构建并发布（CI/CD）
+## 十、自动构建构建并发布（CI/CD）
 
 本项目支持自动构建和发布，当您向 git 仓库推送以 `v版本号` 命名的 tag 时，会自动触发。例如：
 
@@ -323,6 +343,6 @@ git push origin v0.0.1
 
 ---
 
-## 十、参与贡献
+## 十一、参与贡献
 
 我们欢迎您的贡献，您可以通过提交 issue 或 pull request 参与到项目中来。

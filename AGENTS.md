@@ -89,6 +89,7 @@ Keep these entry-level facts in `AGENTS.md`. Use `README.md`, `README_CN.md`, an
   - `uv run python src/tidas_tools/import_lca/cli.py --help`
   - `uv run python src/tidas_tools/validate.py --help`
   - `uv run python src/tidas_tools/export.py --help`
+  - `uv run python -m tidas_tools.release --help`
 - release tag pattern: `v<version>`
 - canonical `main` branch pushes whose `pyproject.toml` project version changed create the matching `v<version>` tag when missing, run the release gate, test on the release matrix, and publish to PyPI in the same workflow run
 - manual `v*` tag pushes and `workflow_dispatch` runs for an existing `v*` tag whose target commit is already on `main` remain supported for recovery/backfill releases
@@ -100,6 +101,7 @@ The authoritative path-level ownership map lives in `.docpact/config.yaml`.
 At a human-readable level, this repo owns:
 
 - standalone CLI behavior in `src/tidas_tools/convert.py`, `src/tidas_tools/import_lca/**`, `src/tidas_tools/validate.py`, and `src/tidas_tools/export.py`
+- deterministic release-profile closure, TIDAS/ILCD conversion, semantic round-trip, and byte-stable ZIP behavior in `src/tidas_tools/release.py`
 - validation report and version/export helpers in `src/tidas_tools/validation_report.py` and `src/tidas_tools/package_versions.py`
 - validator-private projection indexes under `src/tidas_tools/validation_indexes/**`
 - packaged TIDAS schemas and methodologies under `src/tidas_tools/tidas/**`
