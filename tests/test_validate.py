@@ -328,6 +328,8 @@ def test_product_flow_category_schema_remains_controlled_contract_with_projectio
 
     assert len(schema["oneOf"]) == 4586
     assert product_category_entries_from_schema(schema) == index
+    assert index["0163"]["text"] == "Maté leaves"
+    assert index["8582"]["text"] == "Intermediation services\u00a0for telecommunication"
     assert index["46121"] == {
         "allowedInProductFlowPath": True,
         "level": "4",

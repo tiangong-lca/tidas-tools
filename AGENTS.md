@@ -44,6 +44,8 @@ related:
 
 `tidas-tools` owns standalone TIDAS and eILCD conversion, validation, export behavior, and the packaged schema and methodology assets consumed by downstream SDK refreshes. Start here when the task may change how TIDAS data is validated, converted, exported, or versioned as tooling.
 
+Review note, 2026-07-17: Issue #112 makes packaged schema reads explicitly UTF-8 and release JSON writes explicitly LF, adds Windows regression proof, and publishes the recovery as 0.0.42. Conversion/profile semantics, packaged assets, dependencies, release automation, immutable tag rules, and workspace-integration requirements are unchanged.
+
 ## Documentation Roles
 
 | Document | Owns | Does not own |

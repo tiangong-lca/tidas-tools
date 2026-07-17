@@ -56,7 +56,7 @@ SUPPORTED_CATEGORIES = [
 @lru_cache
 def tidas_language_codes() -> frozenset[str]:
     schema_file_path = pkg_resources.files(schemas) / "tidas_data_types.json"
-    with schema_file_path.open() as schema_file:
+    with schema_file_path.open(encoding="utf-8") as schema_file:
         root_schema = json.load(schema_file)
     values = root_schema["$defs"]["Languages"]["enum"]
     return frozenset(str(value) for value in values)
@@ -825,7 +825,7 @@ def retrieve_schema(uri):
 @lru_cache(maxsize=None)
 def _load_tidas_schema(schema_filename: str) -> dict:
     schema_file_path = pkg_resources.files(schemas) / schema_filename
-    with schema_file_path.open() as schema_file:
+    with schema_file_path.open(encoding="utf-8") as schema_file:
         return json.load(schema_file)
 
 

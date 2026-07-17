@@ -98,6 +98,7 @@ def _write_json(file_path: Path, value: Any) -> None:
     file_path.write_text(
         json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
         encoding="utf-8",
+        newline="\n",
     )
 
 
