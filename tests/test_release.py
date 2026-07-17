@@ -14,6 +14,7 @@ from tidas_tools.release import (
     convert_tidas_to_ilcd,
     deterministic_zip,
     load_dataset_index,
+    main as release_main,
     resolve_profile_closure,
     semantic_roundtrip_report,
 )
@@ -39,7 +40,7 @@ def _write_dataset(root, relative_path, document, dataset_type, role, dataset_id
     file_path = root / relative_path
     file_path.parent.mkdir(parents=True, exist_ok=True)
     body = json.dumps(document, ensure_ascii=False, indent=2) + "\n"
-    file_path.write_text(body, encoding="utf-8")
+    file_path.write_text(body, encoding="utf-8", newline="\n")
     return {
         "datasetType": dataset_type,
         "role": role,
@@ -155,6 +156,7 @@ def release_tree(tmp_path):
         )
         + "\n",
         encoding="utf-8",
+        newline="\n",
     )
     return root, index_path
 
@@ -216,6 +218,32 @@ def test_profile_closure_and_four_packages_are_self_contained_and_deterministic(
         )
 
 
+def test_release_report_uses_utf8_lf_bytes(tmp_path, capsys):
+    root, index_path = release_tree(tmp_path)
+    report_path = tmp_path / "closure-report.json"
+
+    exit_code = release_main(
+        [
+            "validate-closure",
+            "--input-dir",
+            str(root),
+            "--dataset-index",
+            str(index_path),
+            "--profile",
+            UNIT_PROFILE,
+            "--report",
+            str(report_path),
+        ]
+    )
+
+    assert exit_code == 0
+    assert json.loads(capsys.readouterr().out)["status"] == "passed"
+    report_bytes = report_path.read_bytes()
+    assert report_bytes.endswith(b"\n")
+    assert b"\r\n" not in report_bytes
+    assert json.loads(report_bytes.decode("utf-8"))["status"] == "passed"
+
+
 def _child_names(element):
     return [child.tag.rsplit("}", 1)[-1] for child in element]
 
@@ -270,6 +298,7 @@ def test_conversion_restores_nested_ilcd_schema_order_from_canonical_json(tmp_pa
             sort_keys=True,
         ),
         encoding="utf-8",
+        newline="\n",
     )
     model_path = root / f"lifecyclemodels/{MODEL_ID}_{VERSION}.json"
     model_path.parent.mkdir(parents=True)
@@ -295,6 +324,7 @@ def test_conversion_restores_nested_ilcd_schema_order_from_canonical_json(tmp_pa
             sort_keys=True,
         ),
         encoding="utf-8",
+        newline="\n",
     )
     lcia_path = root / f"lciamethods/{METHOD_ID}_{VERSION}.json"
     lcia_path.parent.mkdir(parents=True)
@@ -331,6 +361,7 @@ def test_conversion_restores_nested_ilcd_schema_order_from_canonical_json(tmp_pa
             sort_keys=True,
         ),
         encoding="utf-8",
+        newline="\n",
     )
 
     ilcd_dir = tmp_path / "ilcd"
@@ -415,18 +446,20 @@ def test_conversion_restores_nested_ilcd_schema_order_from_canonical_json(tmp_pa
 def test_closure_fails_closed_for_missing_or_inexact_references(tmp_path):
     root, index_path = release_tree(tmp_path)
     unit_path = root / f"processes/{UNIT_ID}_{VERSION}.json"
-    document = json.loads(unit_path.read_text())
+    document = json.loads(unit_path.read_text(encoding="utf-8"))
     reference = document["processDataSet"]["exchanges"]["exchange"][
         "referenceToFlowDataSet"
     ]
     reference.pop("@version")
     body = json.dumps(document, indent=2) + "\n"
-    unit_path.write_text(body)
+    unit_path.write_text(body, encoding="utf-8", newline="\n")
 
-    index = json.loads(index_path.read_text())
+    index = json.loads(index_path.read_text(encoding="utf-8"))
     unit_entry = next(item for item in index["datasets"] if item["uuid"] == UNIT_ID)
     unit_entry["sha256"] = hashlib.sha256(body.encode()).hexdigest()
-    index_path.write_text(json.dumps(index, indent=2) + "\n")
+    index_path.write_text(
+        json.dumps(index, indent=2) + "\n", encoding="utf-8", newline="\n"
+    )
     entries = load_dataset_index(index_path, root)
     with pytest.raises(ReleaseToolError, match="without @version") as error:
         resolve_profile_closure(

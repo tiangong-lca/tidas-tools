@@ -38,6 +38,8 @@ related:
 
 This repo packages standalone tooling plus the schema, methodology, and stylesheet assets those tools execute against.
 
+Review note, 2026-07-17: Issue #112 remains inside the existing validation and release-packaging modules. Explicit UTF-8 reads and LF writes make the same packaged assets and report structures byte-stable on Windows; no tool family, asset source, downstream dispatch path, or release architecture changes.
+
 ## Stable Path Map
 
 | Path group | Role |

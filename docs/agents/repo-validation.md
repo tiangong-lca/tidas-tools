@@ -38,6 +38,8 @@ related:
 
 ## Default Baseline
 
+Review note, 2026-07-17: Issue #112 keeps the existing proof contract and makes its four-platform release matrix authoritative for UTF-8 schema/index parity and LF release bytes. The 0.0.42 recovery still requires schema lock, Black, full pytest, release CLI help, Docpact, the complete publish matrix, and PyPI verification.
+
 Unless the change is doc-only, the default local baseline is:
 
 ```bash

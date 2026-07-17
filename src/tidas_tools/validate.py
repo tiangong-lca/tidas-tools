@@ -56,7 +56,7 @@ SUPPORTED_CATEGORIES = [
 @lru_cache
 def tidas_language_codes() -> frozenset[str]:
     schema_file_path = pkg_resources.files(schemas) / "tidas_data_types.json"
-    with schema_file_path.open() as schema_file:
+    with schema_file_path.open(encoding="utf-8") as schema_file:
         root_schema = json.load(schema_file)
     values = root_schema["$defs"]["Languages"]["enum"]
     return frozenset(str(value) for value in values)
@@ -811,7 +811,7 @@ def retrieve_schema(uri):
         try:
             schema_name = uri.replace("\\", "/").rstrip("/").split("/")[-1]
             schema_path = pkg_resources.files(schemas) / schema_name
-            with open(schema_path, "r") as f:
+            with open(schema_path, "r", encoding="utf-8") as f:
                 schema_data = json.load(f)
                 # Create a proper resource object
                 return DRAFT7.create_resource(schema_data)
@@ -825,7 +825,7 @@ def retrieve_schema(uri):
 @lru_cache(maxsize=None)
 def _load_tidas_schema(schema_filename: str) -> dict:
     schema_file_path = pkg_resources.files(schemas) / schema_filename
-    with schema_file_path.open() as schema_file:
+    with schema_file_path.open(encoding="utf-8") as schema_file:
         return json.load(schema_file)
 
 
@@ -952,7 +952,7 @@ def _collect_tidas_file_issues(
     validator: TidasSchemaValidator,
 ) -> list[ValidationIssue]:
     try:
-        with open(full_path, "r") as json_file:
+        with open(full_path, "r", encoding="utf-8") as json_file:
             json_item = json.load(json_file)
     except Exception as e:
         return [

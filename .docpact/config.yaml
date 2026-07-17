@@ -2,6 +2,7 @@ version: 1
 layout: repo
 lastReviewedAt: "2026-06-30"
 lastReviewedCommit: "9b5030e6862d5aff7776794823c88b7812441233"
+# Review note, 2026-07-17: Issue #112 keeps UTF-8 schema reads, LF release-report writes, Windows-portable fixtures, and the 0.0.42 recovery release inside the existing validation, release-packaging, test, and release routes. No ownership, schema, dependency, dispatch, tag-pattern, or workspace-integration rule changes are required.
 
 catalog:
   repos:
