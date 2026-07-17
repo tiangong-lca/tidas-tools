@@ -38,7 +38,7 @@ from tidas_tools import validate as validate_module
 
 def build_data_type_validator(definition_name):
     schema_file_path = pkg_resources.files(schemas) / "tidas_data_types.json"
-    with schema_file_path.open() as schema_file:
+    with schema_file_path.open(encoding="utf-8") as schema_file:
         root_schema = json.load(schema_file)
 
     return Draft7Validator(
@@ -53,7 +53,7 @@ def build_data_type_validator(definition_name):
 
 def load_tidas_schema(schema_name):
     schema_file_path = pkg_resources.files(schemas) / schema_name
-    with schema_file_path.open() as schema_file:
+    with schema_file_path.open(encoding="utf-8") as schema_file:
         return json.load(schema_file)
 
 
@@ -919,6 +919,15 @@ def test_retrieve_schema_resolves_bare_and_mangled_ref_uris():
         assert resource is not None
         assert "$defs" in resource.contents
     assert bare.contents == mangled_windows.contents == posix_uri.contents
+
+    product_categories = retrieve_schema("tidas_flows_product_category.json")
+    assert product_categories is not None
+    mate = next(
+        variant
+        for variant in product_categories.contents["oneOf"]
+        if variant["properties"]["@classId"]["const"] == "0163"
+    )
+    assert mate["properties"]["#text"]["const"] == "Maté leaves"
 
     # Remote references stay unresolved.
     assert retrieve_schema("https://example.com/schema.json") is None
