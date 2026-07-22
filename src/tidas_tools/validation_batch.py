@@ -95,9 +95,17 @@ def run_document_validation_batch(
         if validator is None:
             validator = _build_tidas_validator(document.category)
             validators[document.category] = validator
+
+        # The manifest preflight establishes that every declared document was
+        # present and matched its expected bytes before the first issue can be
+        # emitted. Recheck immediately around the validator as well: otherwise
+        # a file that changes after preflight could produce evidence for bytes
+        # different from the hash carried by the final certificate.
+        _assert_document_hash(document)
         issues = _collect_tidas_file_issues(
             str(document.path), document.category, validator
         )
+        _assert_document_hash(document)
         for issue_ordinal, issue in enumerate(issues):
             issue_payload = issue.to_dict()
             issue_payload["file_path"] = document.relative_path
@@ -193,13 +201,6 @@ def load_batch_manifest(root: Path, input_manifest: str | Path) -> list[BatchDoc
                 )
 
             path = _safe_regular_file(root, normalized_relative, line_number)
-            actual_sha256 = sha256(path.read_bytes()).hexdigest()
-            if actual_sha256 != content_sha256:
-                raise BatchProtocolError(
-                    f"content hash mismatch for {normalized_relative}: "
-                    f"expected {content_sha256}, got {actual_sha256}"
-                )
-
             seen_keys.add(document_key)
             seen_paths.add(normalized_relative)
             identity = item.get("identity") or {}
@@ -207,22 +208,20 @@ def load_batch_manifest(root: Path, input_manifest: str | Path) -> list[BatchDoc
                 raise BatchProtocolError(
                     f"manifest line {line_number} identity must be an object"
                 )
-            documents.append(
-                BatchDocument(
-                    document_key=document_key,
-                    category=category,
-                    relative_path=normalized_relative,
-                    content_sha256=content_sha256,
-                    dataset_type=_optional_string(
-                        identity, "dataset_type", line_number
-                    ),
-                    dataset_id=_optional_string(identity, "dataset_id", line_number),
-                    dataset_version=_optional_string(
-                        identity, "dataset_version", line_number
-                    ),
-                    path=path,
-                )
+            document = BatchDocument(
+                document_key=document_key,
+                category=category,
+                relative_path=normalized_relative,
+                content_sha256=content_sha256,
+                dataset_type=_optional_string(identity, "dataset_type", line_number),
+                dataset_id=_optional_string(identity, "dataset_id", line_number),
+                dataset_version=_optional_string(
+                    identity, "dataset_version", line_number
+                ),
+                path=path,
             )
+            _assert_document_hash(document)
+            documents.append(document)
 
     return documents
 
@@ -298,6 +297,38 @@ def _safe_regular_file(root: Path, relative_path: str, line_number: int) -> Path
             f"manifest line {line_number} path escapes the batch root: {relative_path}"
         ) from error
     return resolved
+
+
+def _assert_document_hash(document: BatchDocument) -> None:
+    actual_sha256 = _sha256_regular_file(document.path, document.relative_path)
+    if actual_sha256 != document.content_sha256:
+        raise BatchProtocolError(
+            f"content hash mismatch for {document.relative_path}: "
+            f"expected {document.content_sha256}, got {actual_sha256}"
+        )
+
+
+def _sha256_regular_file(path: Path, relative_path: str) -> str:
+    """Hash an input incrementally without weakening the regular-file guard."""
+
+    if path.is_symlink():
+        raise BatchProtocolError(f"manifest document became a symlink: {relative_path}")
+    try:
+        metadata = path.stat()
+    except FileNotFoundError as error:
+        raise BatchProtocolError(
+            f"manifest document no longer exists: {relative_path}"
+        ) from error
+    if not stat.S_ISREG(metadata.st_mode):
+        raise BatchProtocolError(
+            f"manifest document is not a regular file: {relative_path}"
+        )
+
+    digest = sha256()
+    with path.open("rb") as document_file:
+        while chunk := document_file.read(1024 * 1024):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _supported_categories() -> frozenset[str]:

@@ -200,6 +200,26 @@ def test_batch_rejects_duplicate_keys_and_paths(tmp_path):
         )
 
 
+def test_batch_rejects_duplicate_path_with_distinct_document_keys(tmp_path):
+    batch_root = tmp_path / "batch"
+    source_path = batch_root / "sources" / "bad.json"
+    source_path.parent.mkdir(parents=True)
+    source_path.write_text("{}", encoding="utf-8")
+    first = _manifest_item(source_path, batch_root)
+    second = {**first, "document_key": "source:other:01.00.000"}
+    manifest = tmp_path / "manifest.jsonl"
+    manifest.write_text(
+        json.dumps(first) + "\n" + json.dumps(second) + "\n", encoding="utf-8"
+    )
+
+    with pytest.raises(BatchProtocolError, match="duplicate relative_path"):
+        run_document_validation_batch(
+            input_dir=batch_root,
+            input_manifest=manifest,
+            emit_event=lambda _event: None,
+        )
+
+
 def test_batch_rejects_symlink_input(tmp_path):
     batch_root = tmp_path / "batch"
     outside = tmp_path / "outside.json"
@@ -216,6 +236,34 @@ def test_batch_rejects_symlink_input(tmp_path):
             input_manifest=manifest,
             emit_event=lambda _event: None,
         )
+
+
+def test_batch_refuses_content_drift_during_validation(tmp_path, monkeypatch):
+    batch_root = tmp_path / "batch"
+    source_path = batch_root / "sources" / "bad.json"
+    source_path.parent.mkdir(parents=True)
+    source_path.write_text("{}", encoding="utf-8")
+    manifest = tmp_path / "manifest.jsonl"
+    _write_manifest(manifest, source_path, batch_root)
+    original = validate_module._collect_tidas_file_issues
+
+    def mutate_after_validation(*args, **kwargs):
+        result = original(*args, **kwargs)
+        source_path.write_text('{"changed":true}', encoding="utf-8")
+        return result
+
+    monkeypatch.setattr(
+        validate_module, "_collect_tidas_file_issues", mutate_after_validation
+    )
+    events = []
+    with pytest.raises(BatchProtocolError, match="content hash mismatch"):
+        run_document_validation_batch(
+            input_dir=batch_root,
+            input_manifest=manifest,
+            emit_event=events.append,
+        )
+
+    assert events == []
 
 
 def _write_manifest(

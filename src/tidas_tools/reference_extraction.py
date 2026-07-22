@@ -49,7 +49,6 @@ _TYPE_TO_CATEGORY = {
     "source data set": "sources",
     "unit group": "unitgroups",
     "unit group data set": "unitgroups",
-    "other external file": "external_files",
 }
 
 _URI_CATEGORY_ALIASES = {

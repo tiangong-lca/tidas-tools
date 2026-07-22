@@ -171,6 +171,41 @@
       }
     },
     {
+      "name": "schema_valid_external_file_is_not_misrepresented_as_a_dataset_edge",
+      "document_key": "process:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa:01.00.000",
+      "category": "processes",
+      "payload": {
+        "referenceToExternalFile": {
+          "@type": "other external file",
+          "@refObjectId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+          "@version": "01.00.000",
+          "@uri": "../external-files/bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb.pdf"
+        }
+      },
+      "expected": {
+        "schema_version": "tidas.reference-extraction-result.v1",
+        "document_key": "process:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa:01.00.000",
+        "source_category": "processes",
+        "edges": [],
+        "issues": [
+          {
+            "schema_version": "tidas.reference-extraction-issue.v1",
+            "issue_code": "reference_type_unresolved",
+            "severity": "error",
+            "document_key": "process:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa:01.00.000",
+            "source_category": "processes",
+            "json_path": "$.referenceToExternalFile",
+            "reference_role": "support_document",
+            "message": "Reference target type cannot be resolved from @type or @uri.",
+            "details": {
+              "raw_type": "other external file",
+              "uri": "../external-files/bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb.pdf"
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "cycle_and_shared_dependency_edges_remain_occurrences",
       "document_key": "process:77777777-7777-7777-7777-777777777777:01.00.000",
       "category": "processes",
