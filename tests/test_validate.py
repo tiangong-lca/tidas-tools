@@ -11,6 +11,7 @@ from referencing import Registry
 
 import tidas_tools.eilcd.stylesheets as eilcd_stylesheets
 import tidas_tools.tidas.schemas as schemas
+from tidas_tools.reference_extraction import extract_references
 from tidas_tools.validate import (
     FORMAT_CHECKER,
     SUPPORTED_CATEGORIES,
@@ -836,6 +837,28 @@ def test_common_other_schema_rejects_common_namespace_children():
     errors = list(validator.iter_errors({"common:note": "not allowed here"}))
 
     assert errors
+
+
+def test_schema_valid_missing_target_reference_stays_a_closure_concern():
+    missing_target = "22222222-2222-2222-2222-222222222222"
+    reference = {
+        "@type": "flow data set",
+        "@refObjectId": missing_target,
+        "@version": "01.00.000",
+        "@uri": f"../flows/{missing_target}.json",
+        "common:shortDescription": {"@xml:lang": "en", "#text": "Missing"},
+    }
+
+    document_validator = build_data_type_validator("GlobalReferenceType")
+    extraction = extract_references(
+        "process:test:01.00.000",
+        "processes",
+        {"referenceToFlowDataSet": reference},
+    )
+
+    assert list(document_validator.iter_errors(reference)) == []
+    assert extraction.issues == ()
+    assert extraction.edges[0].target_uuid == missing_target
 
 
 def test_common_other_schema_references_common_other_definition():

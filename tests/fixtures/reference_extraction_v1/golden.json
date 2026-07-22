@@ -1,0 +1,206 @@
+{
+  "schema_version": "tidas.reference-extraction-golden.v1",
+  "cases": [
+    {
+      "name": "process_exchange_preserves_exact_version_and_role",
+      "document_key": "process:11111111-1111-1111-1111-111111111111:01.00.000",
+      "category": "processes",
+      "payload": {
+        "processDataSet": {
+          "exchanges": {
+            "exchange": [
+              {
+                "referenceToFlowDataSet": {
+                  "@type": "flow data set",
+                  "@refObjectId": "22222222-2222-2222-2222-222222222222",
+                  "@version": "01.02.003",
+                  "@uri": "../flows/22222222-2222-2222-2222-222222222222.json"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "expected": {
+        "schema_version": "tidas.reference-extraction-result.v1",
+        "document_key": "process:11111111-1111-1111-1111-111111111111:01.00.000",
+        "source_category": "processes",
+        "edges": [
+          {
+            "schema_version": "tidas.reference-edge.v1",
+            "document_key": "process:11111111-1111-1111-1111-111111111111:01.00.000",
+            "source_category": "processes",
+            "target_category": "flows",
+            "target_uuid": "22222222-2222-2222-2222-222222222222",
+            "requested_version_state": "explicit",
+            "requested_version": "01.02.003",
+            "requested_version_raw": "01.02.003",
+            "reference_role": "process_exchange_flow",
+            "json_path": "$.processDataSet.exchanges.exchange[0].referenceToFlowDataSet",
+            "raw_type": "flow data set",
+            "uri": "../flows/22222222-2222-2222-2222-222222222222.json"
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "name": "lcia_factor_flow_uses_distinct_role_and_short_version",
+      "document_key": "method:33333333-3333-3333-3333-333333333333:01.00.000",
+      "category": "lciamethods",
+      "payload": {
+        "LCIAMethodDataSet": {
+          "characterisationFactors": {
+            "characterisationFactor": [
+              {
+                "referenceToFlowDataSet": {
+                  "@type": "flow data set",
+                  "@refObjectId": "22222222-2222-2222-2222-222222222222",
+                  "@version": "01.02",
+                  "@uri": "../flows/22222222-2222-2222-2222-222222222222.json"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "expected": {
+        "schema_version": "tidas.reference-extraction-result.v1",
+        "document_key": "method:33333333-3333-3333-3333-333333333333:01.00.000",
+        "source_category": "lciamethods",
+        "edges": [
+          {
+            "schema_version": "tidas.reference-edge.v1",
+            "document_key": "method:33333333-3333-3333-3333-333333333333:01.00.000",
+            "source_category": "lciamethods",
+            "target_category": "flows",
+            "target_uuid": "22222222-2222-2222-2222-222222222222",
+            "requested_version_state": "explicit",
+            "requested_version": "01.02",
+            "requested_version_raw": "01.02",
+            "reference_role": "lcia_factor_flow",
+            "json_path": "$.LCIAMethodDataSet.characterisationFactors.characterisationFactor[0].referenceToFlowDataSet",
+            "raw_type": "flow data set",
+            "uri": "../flows/22222222-2222-2222-2222-222222222222.json"
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "name": "missing_object_id_is_not_silently_dropped",
+      "document_key": "process:44444444-4444-4444-4444-444444444444:01.00.000",
+      "category": "processes",
+      "payload": {
+        "referenceToContact": {
+          "@type": "contact data set",
+          "@version": "01.00.000",
+          "@uri": "../contacts/missing.json"
+        }
+      },
+      "expected": {
+        "schema_version": "tidas.reference-extraction-result.v1",
+        "document_key": "process:44444444-4444-4444-4444-444444444444:01.00.000",
+        "source_category": "processes",
+        "edges": [],
+        "issues": [
+          {
+            "schema_version": "tidas.reference-extraction-issue.v1",
+            "issue_code": "reference_object_id_missing",
+            "severity": "error",
+            "document_key": "process:44444444-4444-4444-4444-444444444444:01.00.000",
+            "source_category": "processes",
+            "json_path": "$.referenceToContact",
+            "reference_role": "support_document",
+            "message": "Recognized reference is missing a non-empty @refObjectId.",
+            "details": {
+              "raw_ref_object_id": null,
+              "raw_type": "contact data set",
+              "uri": "../contacts/missing.json"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown_type_and_invalid_version_are_structured",
+      "document_key": "source:55555555-5555-5555-5555-555555555555:01.00.000",
+      "category": "sources",
+      "payload": {
+        "unknownReference": {
+          "@type": "mystery data set",
+          "@refObjectId": "66666666-6666-6666-6666-666666666666",
+          "@version": "1.0",
+          "@uri": "opaque:target"
+        }
+      },
+      "expected": {
+        "schema_version": "tidas.reference-extraction-result.v1",
+        "document_key": "source:55555555-5555-5555-5555-555555555555:01.00.000",
+        "source_category": "sources",
+        "edges": [],
+        "issues": [
+          {
+            "schema_version": "tidas.reference-extraction-issue.v1",
+            "issue_code": "reference_type_unresolved",
+            "severity": "error",
+            "document_key": "source:55555555-5555-5555-5555-555555555555:01.00.000",
+            "source_category": "sources",
+            "json_path": "$.unknownReference",
+            "reference_role": "support_document",
+            "message": "Reference target type cannot be resolved from @type or @uri.",
+            "details": {
+              "raw_type": "mystery data set",
+              "uri": "opaque:target"
+            }
+          },
+          {
+            "schema_version": "tidas.reference-extraction-issue.v1",
+            "issue_code": "reference_version_invalid",
+            "severity": "error",
+            "document_key": "source:55555555-5555-5555-5555-555555555555:01.00.000",
+            "source_category": "sources",
+            "json_path": "$.unknownReference",
+            "reference_role": "support_document",
+            "message": "Reference @version must match NN.NN or NN.NN.NNN.",
+            "details": {
+              "requested_version_raw": "1.0"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "cycle_and_shared_dependency_edges_remain_occurrences",
+      "document_key": "process:77777777-7777-7777-7777-777777777777:01.00.000",
+      "category": "processes",
+      "payload": {
+        "references": [
+          {
+            "@type": "process data set",
+            "@refObjectId": "88888888-8888-8888-8888-888888888888",
+            "@version": "01.00.000",
+            "@uri": "../processes/88888888-8888-8888-8888-888888888888.json"
+          },
+          {
+            "@type": "source data set",
+            "@refObjectId": "99999999-9999-9999-9999-999999999999",
+            "@version": "01.00.000",
+            "@uri": "../sources/99999999-9999-9999-9999-999999999999.json"
+          },
+          {
+            "@type": "source data set",
+            "@refObjectId": "99999999-9999-9999-9999-999999999999",
+            "@version": "01.00.000",
+            "@uri": "../sources/99999999-9999-9999-9999-999999999999.json"
+          }
+        ]
+      },
+      "expected_edge_targets": [
+        "88888888-8888-8888-8888-888888888888",
+        "99999999-9999-9999-9999-999999999999",
+        "99999999-9999-9999-9999-999999999999"
+      ]
+    }
+  ]
+}

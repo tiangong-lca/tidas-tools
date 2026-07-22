@@ -1,7 +1,7 @@
 version: 1
 layout: repo
-lastReviewedAt: "2026-06-30"
-lastReviewedCommit: "9b5030e6862d5aff7776794823c88b7812441233"
+lastReviewedAt: "2026-07-22"
+lastReviewedCommit: "683f5be4786145a74dc2913a1a8512e354927575"
 # Review note, 2026-07-17: Issue #112 keeps UTF-8 schema reads, LF release-report writes, Windows-portable fixtures, and the 0.0.42 recovery release inside the existing validation, release-packaging, test, and release routes. No ownership, schema, dependency, dispatch, tag-pattern, or workspace-integration rule changes are required.
 
 catalog:
@@ -35,6 +35,8 @@ ownership:
           - src/tidas_tools/import_lca/**
           - src/tidas_tools/validate.py
           - src/tidas_tools/validation_report.py
+          - src/tidas_tools/validation_batch.py
+          - src/tidas_tools/reference_extraction.py
           - src/tidas_tools/validation_indexes/**
           - src/tidas_tools/export.py
           - src/tidas_tools/package_versions.py
@@ -82,6 +84,8 @@ coverage:
     - src/tidas_tools/import_lca/**
     - src/tidas_tools/validate.py
     - src/tidas_tools/validation_report.py
+    - src/tidas_tools/validation_batch.py
+    - src/tidas_tools/reference_extraction.py
     - src/tidas_tools/validation_indexes/**
     - src/tidas_tools/export.py
     - src/tidas_tools/package_versions.py
@@ -130,6 +134,8 @@ routing:
         - src/tidas_tools/import_lca/**
         - src/tidas_tools/validate.py
         - src/tidas_tools/validation_report.py
+        - src/tidas_tools/validation_batch.py
+        - src/tidas_tools/reference_extraction.py
         - src/tidas_tools/validation_indexes/**
         - src/tidas_tools/export.py
         - src/tidas_tools/package_versions.py
@@ -144,6 +150,8 @@ routing:
       paths:
         - src/tidas_tools/validate.py
         - src/tidas_tools/validation_report.py
+        - src/tidas_tools/validation_batch.py
+        - src/tidas_tools/reference_extraction.py
         - src/tidas_tools/validation_indexes/**
         - src/tidas_tools/tidas/schemas/**
         - src/tidas_tools/eilcd/schemas/**
@@ -261,6 +269,10 @@ rules:
       - path: src/tidas_tools/validate.py
         kind: tooling
       - path: src/tidas_tools/validation_report.py
+        kind: tooling
+      - path: src/tidas_tools/validation_batch.py
+        kind: tooling
+      - path: src/tidas_tools/reference_extraction.py
         kind: tooling
       - path: src/tidas_tools/validation_indexes/**
         kind: tooling

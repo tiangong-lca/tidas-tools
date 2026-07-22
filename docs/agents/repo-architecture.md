@@ -25,8 +25,9 @@ checkPaths:
   - scripts/schema_lock.py
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-06-30
-lastReviewedCommit: 9b5030e6862d5aff7776794823c88b7812441233
+lastReviewedAt: 2026-07-22
+lastReviewedCommit: 683f5be4786145a74dc2913a1a8512e354927575
+lastReviewedNote: "Issue #114 adds stable validation-batch and reference-extraction contract modules; production Scope traversal and resolution remain Worker-owned."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -48,6 +49,8 @@ Review note, 2026-07-17: Issue #112 remains inside the existing validation and r
 | `src/tidas_tools/import_lca/**` | external LCA import CLI scaffolding, format detection, canonical import model, and staged source adapters |
 | `src/tidas_tools/validate.py` | standalone validation CLI |
 | `src/tidas_tools/validation_report.py` | structured validation-report rendering |
+| `src/tidas_tools/validation_batch.py` | certificate-grade manifest validation, describe handshake, streamed issue events, and deterministic logical issue hash |
+| `src/tidas_tools/reference_extraction.py` | pure version-preserving reference edge and extraction-issue contract |
 | `src/tidas_tools/validation_indexes/**` | validator-private projection indexes derived from packaged schema assets for fast runtime checks |
 | `src/tidas_tools/export.py` | standalone export CLI |
 | `src/tidas_tools/package_versions.py` | version normalization and export package metadata logic |
@@ -75,6 +78,10 @@ Review note, 2026-07-17: Issue #112 remains inside the existing validation and r
 ### Validation
 
 `validate.py` plus `validation_report.py` own standalone validation semantics and structured reporting. The validator covers TIDAS JSON with packaged JSON schemas, validator-private projection indexes, and eILCD/ILCD XML with packaged XSD schemas. TIDAS JSON validation uses a compiled `fastjsonschema` fast path for files that pass schema validation, while falling back to `jsonschema` for complete error collection when the fast path detects a schema failure.
+
+`validation_batch.py` adds `document-validation-batch.v1` for Worker orchestration. It validates exactly the regular files declared by a JSONL manifest, verifies their content hashes, streams canonical issue events, and ends with a small final event carrying the logical issue-stream hash and tool/engine/Schema-lock fingerprint. Data issues complete normally; malformed manifests, unsafe paths, drift, or missing final execution proof are protocol failures.
+
+`reference_extraction.py` exposes `ReferenceExtractionResultV1` and `ReferenceEdgeV1`. It preserves explicit or omitted requested versions, stable reference roles, JSON paths, and malformed-reference issues. It does not look up targets or decide visibility, version winners, link readiness, Scope closure, or Certificates; those remain Worker/Database responsibilities. The process-bundle writer consumes this facade as a compatibility adapter while retaining its importer-shaped UUID file layout.
 
 ### Export
 

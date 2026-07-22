@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+from collections import deque
 import json
 from pathlib import Path, PurePosixPath
 from shutil import copy2
 from typing import Any
+
+from tidas_tools.reference_extraction import extract_references
 
 from .writers import TIDAS_CATEGORIES, ensure_tidas_package_dirs
 
@@ -99,10 +102,10 @@ def _collect_dependencies(
     }
     unresolved: list[dict[str, Any]] = []
     visited: set[tuple[str, str]] = set()
-    queue: list[tuple[str, str, str]] = [("processes", process_id, "$")]
+    queue = deque([("processes", process_id, "$")])
 
     while queue:
-        category, dataset_id, ref_path = queue.pop(0)
+        category, dataset_id, ref_path = queue.popleft()
         if category not in dependencies:
             continue
         if (category, dataset_id) in visited:
@@ -122,57 +125,53 @@ def _collect_dependencies(
 
         dependencies[category].add(dataset_id)
         payload = _read_json(dataset_path)
-        for reference in _iter_references(payload):
-            ref_category = reference.get("category")
-            ref_id = reference.get("ref_id")
-            if not isinstance(ref_category, str) or not isinstance(ref_id, str):
-                continue
+        extraction = extract_references(
+            document_key=f"{category}:{dataset_id}",
+            category=category,
+            payload=payload,
+        )
+        unresolved.extend(
+            {
+                "category": None,
+                "ref_id": None,
+                "path": issue.json_path,
+                "issue_code": issue.issue_code,
+                "reference_role": issue.reference_role,
+                "details": issue.details,
+            }
+            for issue in extraction.issues
+        )
+        for edge in extraction.edges:
+            ref_category = edge.target_category
+            ref_id = edge.target_uuid
             if ref_category not in dependencies:
                 continue
-            queue.append((ref_category, ref_id, str(reference["path"])))
+            queue.append((ref_category, ref_id, edge.json_path))
 
     return dependencies, unresolved
 
 
 def _iter_references(payload: Any, path: str = "$"):
-    if isinstance(payload, dict):
-        ref_id = payload.get("@refObjectId")
-        if isinstance(ref_id, str):
-            category = _category_for_reference(payload)
-            if category:
-                yield {
-                    "category": category,
-                    "ref_id": ref_id,
-                    "path": path,
-                }
-        for key, value in payload.items():
-            yield from _iter_references(value, f"{path}.{key}")
-    elif isinstance(payload, list):
-        for index, item in enumerate(payload):
-            yield from _iter_references(item, f"{path}[{index}]")
+    """Compatibility iterator backed by the versioned extraction contract."""
+
+    result = extract_references("process-bundle-adapter", "processes", payload)
+    for edge in result.edges:
+        edge_path = edge.json_path
+        if path != "$" and edge_path.startswith("$"):
+            edge_path = f"{path}{edge_path[1:]}"
+        yield {
+            "category": edge.target_category,
+            "ref_id": edge.target_uuid,
+            "version": edge.requested_version,
+            "version_state": edge.requested_version_state,
+            "reference_role": edge.reference_role,
+            "path": edge_path,
+        }
 
 
 def _category_for_reference(reference: dict[str, Any]) -> str | None:
-    ref_type = str(reference.get("@type") or "").lower()
-    if "flow property" in ref_type:
-        return "flowproperties"
-    if "flow" in ref_type:
-        return "flows"
-    if "unit group" in ref_type:
-        return "unitgroups"
-    if "contact" in ref_type:
-        return "contacts"
-    if "source" in ref_type:
-        return "sources"
-    if "process" in ref_type:
-        return "processes"
-
-    uri = str(reference.get("@uri") or "")
-    uri_parts = {part for part in uri.split("/") if part}
-    for category in PROCESS_BUNDLE_CATEGORIES:
-        if category in uri_parts:
-            return category
-    return None
+    result = extract_references("process-bundle-adapter", "processes", reference)
+    return result.edges[0].target_category if result.edges else None
 
 
 def _copy_dependencies(

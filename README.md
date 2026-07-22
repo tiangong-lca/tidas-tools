@@ -141,6 +141,9 @@ This tool validates whether TIDAS JSON data or eILCD/ILCD XML data complies with
 | `--verbose` | `-v` | Enable verbose logging |
 | `--data-format` | | Input data format to validate: `tidas`, `ilcd`, or `eilcd` (default: `tidas`) |
 | `--jobs` | | Number of parallel validation worker processes; use `0` for all CPU cores |
+| `--describe --format json` | | Report supported validation protocols and package/engine/Schema-lock fingerprints |
+| `--protocol document-validation-batch.v1` | | Validate exactly the JSONL manifest documents and stream issue/final events |
+| `--input-manifest` | | Batch JSONL manifest containing opaque document keys, safe relative paths, exact identities, and SHA-256 hashes |
 
 ### (3) Usage Example
 
@@ -153,7 +156,21 @@ tidas-validate --input-dir <eILCD_data_directory> --data-format ilcd
 
 # Validate large packages with all CPU cores
 tidas-validate --input-dir <TIDAS_data_directory> --data-format tidas --jobs 0
+
+# Inspect the reproducibility handshake used by closure-preflight workers
+tidas-validate --describe --format json
+
+# Stream deterministic validation evidence for exactly the manifest documents
+tidas-validate --protocol document-validation-batch.v1 \
+  --input-dir <batch_root> \
+  --input-manifest <document-validation-batch.v1.jsonl>
 ```
+
+The batch protocol treats document issues as a completed scan: it emits one
+`issue` event per finding, a final summary/hash event, and exits zero. Unsafe
+paths, duplicate keys/paths, symlinks, content-hash drift, malformed input, or
+missing execution proof are protocol failures. Reference target existence and
+database visibility are intentionally outside this document-validation layer.
 
 ## 6. TIDAS Export Tool Documentation
 

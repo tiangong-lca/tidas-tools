@@ -166,6 +166,9 @@ tidas-release-tool build-packages \
 | `--verbose` | `-v` | 开启详细日志模式 |
 | `--data-format` | | 待验证的数据格式：`tidas`、`ilcd` 或 `eilcd`（默认：`tidas`） |
 | `--jobs` | | 并行校验进程数；使用 `0` 表示使用全部 CPU 核心 |
+| `--describe --format json` | | 输出支持的校验协议以及 package/engine/Schema-lock 指纹 |
+| `--protocol document-validation-batch.v1` | | 只校验 JSONL manifest 明确列出的文档，并流式输出 issue/final 事件 |
+| `--input-manifest` | | Batch JSONL manifest，包含 opaque document key、安全相对路径、精确身份和 SHA-256 |
 
 ### （三）使用示例
 
@@ -178,7 +181,17 @@ tidas-validate --input-dir <eILCD数据目录> --data-format ilcd
 
 # 使用全部 CPU 核心校验大型数据包
 tidas-validate --input-dir <TIDAS数据目录> --data-format tidas --jobs 0
+
+# 查看闭包预检 Worker 使用的可复现握手信息
+tidas-validate --describe --format json
+
+# 对 manifest 中明确列出的文档流式生成确定性校验证据
+tidas-validate --protocol document-validation-batch.v1 \
+  --input-dir <batch根目录> \
+  --input-manifest <document-validation-batch.v1.jsonl>
 ```
+
+Batch 协议把数据问题视为一次正常完成的扫描：逐条输出 `issue`，最后输出摘要和逻辑 hash，并以 0 退出。路径越界、重复 key/path、符号链接、内容 hash 漂移、manifest 非法或执行完成证据缺失属于协议/系统故障。引用目标是否存在及数据库可见性不属于文档校验层。
 
 ## 六、TIDAS 数据导出工具使用说明
 
