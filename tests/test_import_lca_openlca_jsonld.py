@@ -1213,9 +1213,7 @@ def test_unit_group_reference_unit_honors_explicit_flag():
     qr = ds["unitGroupDataSet"]["unitGroupInformation"]["quantitativeReference"]
     units = ds["unitGroupDataSet"]["units"]["unit"]
     ref_unit = next(
-        u
-        for u in units
-        if u["@dataSetInternalID"] == qr["referenceToReferenceUnit"]
+        u for u in units if u["@dataSetInternalID"] == qr["referenceToReferenceUnit"]
     )
     assert ref_unit["name"] == "a"
 
@@ -1225,7 +1223,10 @@ def test_percentage_strips_trailing_zeros_to_fit_eilcd_perc():
     # which the eILCD Perc pattern (totalDigits=5) rejects -> 6,943 schema errors
     # in a full USLCI conversion. _percentage must strip trailing fractional zeros.
     import json, re
-    from tidas_tools.import_lca.writers.tidas_json import _percentage, _allocation_fraction
+    from tidas_tools.import_lca.writers.tidas_json import (
+        _percentage,
+        _allocation_fraction,
+    )
 
     perc_pattern = json.loads(
         (
