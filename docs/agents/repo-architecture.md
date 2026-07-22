@@ -26,7 +26,7 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-22
-lastReviewedCommit: 77cf60bc5223307c6d0a382e12cc11bd4cfb5462
+lastReviewedCommit: 81054f37a1ca8f428aa889decacc60a67175187b
 lastReviewedNote: "Issue #114 adds stable validation-batch and reference-extraction contract modules; production Scope traversal and resolution remain Worker-owned."
 related:
   - ../../AGENTS.md
