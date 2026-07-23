@@ -30,8 +30,9 @@ checkPaths:
   - scripts/schema_lock.py
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-07-03
-lastReviewedCommit: e194e3a5eb0e1f926147a4c0e271b1afad9c6eb9
+lastReviewedAt: 2026-07-22
+lastReviewedCommit: 81054f37a1ca8f428aa889decacc60a67175187b
+lastReviewedNote: "Issue #114 adds the versioned document-validation batch and reference-extraction contracts without moving database Scope resolution or Certificate ownership into tidas-tools."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md
@@ -103,6 +104,8 @@ The authoritative path-level ownership map lives in `.docpact/config.yaml`.
 At a human-readable level, this repo owns:
 
 - standalone CLI behavior in `src/tidas_tools/convert.py`, `src/tidas_tools/import_lca/**`, `src/tidas_tools/validate.py`, and `src/tidas_tools/export.py`
+- deterministic `document-validation-batch.v1` streaming validation and reproducibility handshake in `src/tidas_tools/validation_batch.py`
+- the pure `ReferenceExtractionResultV1` / `ReferenceEdgeV1` contract and golden parity fixtures in `src/tidas_tools/reference_extraction.py` and `tests/fixtures/reference_extraction_v1/**`
 - deterministic release-profile closure, TIDAS/ILCD conversion, semantic round-trip, and byte-stable ZIP behavior in `src/tidas_tools/release.py`
 - validation report and version/export helpers in `src/tidas_tools/validation_report.py` and `src/tidas_tools/package_versions.py`
 - validator-private projection indexes under `src/tidas_tools/validation_indexes/**`
@@ -139,6 +142,7 @@ Route those tasks to:
 - do not treat the public docs site as the executable upstream for packaged schemas and methodologies
 - packaged assets under `src/tidas_tools/**` are executable tooling inputs, not just reference docs
 - validator-private projection indexes may optimize standalone validation, but they must not replace or weaken packaged TIDAS schema contracts
+- reference extraction preserves source constraints and extraction defects but does not resolve database targets, visibility, or exact-version winners
 - English and Chinese TIDAS schema assets must stay structurally aligned through `src/tidas_tools/tidas/schema.lock.json`
 - schema or methodology changes here can require downstream `tidas-sdk` follow-up through the dispatch contract
 - merged repo PRs here are repo-complete, not workspace-delivery complete

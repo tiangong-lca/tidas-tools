@@ -27,8 +27,9 @@ checkPaths:
   - scripts/schema_lock.py
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-07-03
-lastReviewedCommit: e194e3a5eb0e1f926147a4c0e271b1afad9c6eb9
+lastReviewedAt: 2026-07-22
+lastReviewedCommit: 81054f37a1ca8f428aa889decacc60a67175187b
+lastReviewedNote: "Issue #114 adds focused proof for the batch protocol, reference extraction, golden parity fixtures, and importer compatibility."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -58,6 +59,7 @@ The local `pre-push` hook runs docpact first and then `uv run pytest`. The GitHu
 | --- | --- | --- | --- |
 | `convert.py`, `import_lca/**`, or eILCD asset changes | `uv run pytest`; `uv run python src/tidas_tools/convert.py --help`; `uv run python src/tidas_tools/import_lca/cli.py --help` when external import paths change | run one representative conversion or import path if the task explicitly changes data transformation behavior | Keep packaged asset, conversion logic, import detection, and staged adapters aligned. |
 | `validate.py`, `validation_report.py`, TIDAS schema changes, or eILCD schema validation changes | `uv run python scripts/schema_lock.py check`; `uv run pytest`; `uv run python src/tidas_tools/validate.py --help` | run one representative TIDAS JSON or eILCD/ILCD XML validation path and record entity types touched | Validation categories, packaged JSON schemas, packaged XSD schemas, and the TIDAS schema parity lock all matter here. |
+| `validation_batch.py` or `reference_extraction.py` | `uv run pytest tests/test_validation_batch.py tests/test_reference_extraction.py tests/test_validate.py -q`; `uv run python -m tidas_tools.validate --describe --format json`; Black | run the batch CLI against a valid manifest and replay the golden fixture in the downstream Rust consumer | Data issues must end with a valid final event and exit 0; protocol/system defects must not emit completion evidence. Explicit versions and roles must survive extraction unchanged. |
 | validator-private projection index changes | `uv run pytest tests/test_validate.py -q`; `uv run python src/tidas_tools/validate.py --help` | compare the projection against its source schema and run a representative package validation path | Projection indexes may optimize validation only; they must stay derived from packaged schema contracts and must not replace them. |
 | `export.py` or `package_versions.py` changes | `uv run pytest`; `uv run python src/tidas_tools/export.py --help` | if the task includes live export proof, record the DB and storage assumptions separately | Export behavior depends on external DB and object-storage state. |
 | `release.py` changes | `uv run pytest`; `uv run python -m tidas_tools.release --help`; `uv run black --check --target-version py313 src tests` | run one four-package fixture and compare archive hashes across two builds; run ILCD XSD validation when canonical production-grade fixtures are available | Release packaging must fail closed on missing exact references and preserve deterministic member order, timestamps, modes, and bytes. |

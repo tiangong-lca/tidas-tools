@@ -1197,7 +1197,9 @@ def _uncertainty_dispersion(value: Any) -> Any:
     return rounded
 
 
-def _report_rich_field_fidelity(store: MemoryCanonicalStore, report: ConversionReport) -> None:
+def _report_rich_field_fidelity(
+    store: MemoryCanonicalStore, report: ConversionReport
+) -> None:
     """Summarise how the rich USLCI fields landed in TIDAS fields vs the source trace.
 
     Lets the import gate verify lossless coverage and lists the evidenced residuals

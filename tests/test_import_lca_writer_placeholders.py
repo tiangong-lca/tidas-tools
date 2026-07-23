@@ -150,7 +150,10 @@ def test_land_use_categorization_by_name():
         {"@level": "0", "@catId": "3", "#text": "Land use"},
         {"@level": "1", "@catId": "3.1", "#text": "Land occupation"},
     ]
-    for name in ("Transformation, from pasture and meadow", "Transformation, to forest"):
+    for name in (
+        "Transformation, from pasture and meadow",
+        "Transformation, to forest",
+    ):
         assert W._land_use_categorization(name) == [
             {"@level": "0", "@catId": "3", "#text": "Land use"},
             {"@level": "1", "@catId": "3.2", "#text": "Land transformation"},
@@ -162,8 +165,11 @@ def test_land_use_categorization_by_name():
 
 def test_land_use_product_flow_promoted_to_elementary_land_category():
     # USLCI ships land-transformation flows as PRODUCT_FLOW / "Ecosystem Services".
-    raw = {"name": "Transformation, from pasture and meadow", "flowType": "PRODUCT_FLOW",
-           "category": "Ecosystem Services"}
+    raw = {
+        "name": "Transformation, from pasture and meadow",
+        "flowType": "PRODUCT_FLOW",
+        "category": "Ecosystem Services",
+    }
     flow_type = W._flow_type(raw["flowType"])
     if flow_type == "Product flow" and W._is_land_use_flow(raw):
         flow_type = "Elementary flow"
@@ -179,12 +185,16 @@ def test_land_use_product_flow_promoted_to_elementary_land_category():
     # No conversion gap, but original PRODUCT_FLOW preserved as provenance.
     other = block["common:elementaryFlowCategorization"]["common:other"]
     assert "tidasimport:conversionGap" not in other
-    assert other["tidasimport:sourceTrace"]["payload"]["sourceFlowType"] == "PRODUCT_FLOW"
+    assert (
+        other["tidasimport:sourceTrace"]["payload"]["sourceFlowType"] == "PRODUCT_FLOW"
+    )
 
 
 def test_ecospold_style_raw_without_name_not_reclassified():
     # ecoSpold/BAFU flow raw carries no "name" key -> never promoted/reclassified.
-    assert W._is_land_use_flow({"flowType": "PRODUCT_FLOW", "category": "land"}) is False
+    assert (
+        W._is_land_use_flow({"flowType": "PRODUCT_FLOW", "category": "land"}) is False
+    )
     assert W._elementary_categorization({"category": "resource/ground"}) is not None
     assert W._land_use_categorization(None) is None
 
@@ -278,15 +288,23 @@ def test_imported_source_url_goes_to_description_not_digital_file():
             "url": "https://cfpub.epa.gov/webfire/",
         },
     )
-    di = _imported_source_dataset(e)["sourceDataSet"]["sourceInformation"]["dataSetInformation"]
+    di = _imported_source_dataset(e)["sourceDataSet"]["sourceInformation"][
+        "dataSetInformation"
+    ]
     assert "referenceToDigitalFile" not in di
     desc = di["sourceDescriptionOrComment"]["#text"]
     assert "https://cfpub.epa.gov/webfire/" in desc
     assert "U.S. Environmental Protection Agency, WebFIRE, 2012" in desc
 
     # url-only source: still no digital file, URL preserved as text
-    e2 = CanonicalEntity(entity_type="sources", internal_id="x", name="S",
-                         raw={"url": "https://example.com/doc.pdf"})
-    di2 = _imported_source_dataset(e2)["sourceDataSet"]["sourceInformation"]["dataSetInformation"]
+    e2 = CanonicalEntity(
+        entity_type="sources",
+        internal_id="x",
+        name="S",
+        raw={"url": "https://example.com/doc.pdf"},
+    )
+    di2 = _imported_source_dataset(e2)["sourceDataSet"]["sourceInformation"][
+        "dataSetInformation"
+    ]
     assert "referenceToDigitalFile" not in di2
     assert "https://example.com/doc.pdf" in di2["sourceDescriptionOrComment"]["#text"]

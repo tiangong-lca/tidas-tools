@@ -1417,8 +1417,60 @@ def main():
             "Use 0 to use all CPU cores. Defaults to 1."
         ),
     )
+    parser.add_argument(
+        "--describe",
+        action="store_true",
+        help="Describe versioned validation protocols and runtime fingerprints.",
+    )
+    parser.add_argument(
+        "--protocol",
+        choices=["document-validation-batch.v1"],
+        help="Run a versioned streaming validation protocol.",
+    )
+    parser.add_argument(
+        "--input-manifest",
+        help=(
+            "JSONL manifest for document-validation-batch.v1. Relative paths "
+            "are resolved only beneath --input-dir."
+        ),
+    )
+    parser.add_argument(
+        "--profile",
+        default="tidas-document-conformance.v1",
+        help="Versioned document-validation profile.",
+    )
     try:
         args = parser.parse_args()
+
+        if args.describe:
+            if args.report_format != "json":
+                parser.error("--describe requires --format json")
+            from tidas_tools.validation_batch import describe_document_validation
+
+            print(
+                json.dumps(describe_document_validation(), indent=2, ensure_ascii=False)
+            )
+            return
+
+        if args.protocol:
+            if not args.input_dir or not args.input_manifest:
+                parser.error(
+                    f"--protocol {args.protocol} requires --input-dir and "
+                    "--input-manifest"
+                )
+            if args.data_format != "tidas":
+                parser.error("document-validation-batch.v1 supports TIDAS JSON only")
+            from tidas_tools.validation_batch import run_document_validation_batch
+
+            run_document_validation_batch(
+                input_dir=args.input_dir,
+                input_manifest=args.input_manifest,
+                profile=args.profile,
+                emit_event=lambda event: print(
+                    json.dumps(event, ensure_ascii=False), flush=True
+                ),
+            )
+            return
 
         if not args.input_dir:
             parser.error("the following arguments are required: --input-dir/-i")
@@ -1467,7 +1519,9 @@ def main():
     except Exception as e:
         error_msg = f"Error validating: {e}"
         logging.error(error_msg)
-        sys.exit(1)
+        from tidas_tools.validation_batch import BatchProtocolError
+
+        sys.exit(2 if isinstance(e, BatchProtocolError) else 1)
 
 
 if __name__ == "__main__":
