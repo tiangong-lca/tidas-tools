@@ -7,9 +7,12 @@ from hashlib import sha256
 from importlib.metadata import PackageNotFoundError, version
 import importlib.resources as pkg_resources
 import json
+import os
 from pathlib import Path, PurePosixPath
 import stat
 from typing import Any, Callable
+
+from concurrent.futures import ProcessPoolExecutor
 
 import fastjsonschema
 
@@ -66,6 +69,7 @@ def run_document_validation_batch(
     input_manifest: str | Path,
     profile: str = DOCUMENT_VALIDATION_PROFILE,
     emit_event: Callable[[dict[str, Any]], None],
+    jobs: int | None = None,
 ) -> dict[str, Any]:
     """Validate exactly the manifest documents and stream issue/final events.
 
@@ -77,12 +81,28 @@ def run_document_validation_batch(
     if profile != DOCUMENT_VALIDATION_PROFILE:
         raise BatchProtocolError(f"unsupported document validation profile: {profile}")
 
-    from .validate import _build_tidas_validator, _collect_tidas_file_issues
+    from .validate import (
+        _build_tidas_validator,
+        _collect_tidas_file_issues,
+        _normalize_jobs,
+        _map_chunksize,
+        _init_tidas_validation_worker,
+        _collect_tidas_file_issues_worker,
+    )
 
     root = Path(input_dir).resolve(strict=True)
     if not root.is_dir():
         raise BatchProtocolError("--input-dir must be a directory")
     documents = load_batch_manifest(root, input_manifest)
+
+    worker_count = _normalize_jobs(jobs)
+    worker_count = min(worker_count, len(documents)) if documents else 1
+
+    if worker_count <= 1:
+        results = _validate_batch_serial(documents)
+    else:
+        results = _validate_batch_parallel(documents, worker_count, _map_chunksize)
+
     validators = {}
     logical_hasher = sha256()
     issue_count = 0
@@ -91,21 +111,8 @@ def run_document_validation_batch(
     info_count = 0
 
     for document_ordinal, document in enumerate(documents):
-        validator = validators.get(document.category)
-        if validator is None:
-            validator = _build_tidas_validator(document.category)
-            validators[document.category] = validator
+        issues = results[document_ordinal]
 
-        # The manifest preflight establishes that every declared document was
-        # present and matched its expected bytes before the first issue can be
-        # emitted. Recheck immediately around the validator as well: otherwise
-        # a file that changes after preflight could produce evidence for bytes
-        # different from the hash carried by the final certificate.
-        _assert_document_hash(document)
-        issues = _collect_tidas_file_issues(
-            str(document.path), document.category, validator
-        )
-        _assert_document_hash(document)
         for issue_ordinal, issue in enumerate(issues):
             issue_payload = issue.to_dict()
             issue_payload["file_path"] = document.relative_path
@@ -155,6 +162,69 @@ def run_document_validation_batch(
     }
     emit_event(final_event)
     return final_event
+
+
+def _validate_batch_serial(
+    documents: list[BatchDocument],
+) -> list[list]:
+    from .validate import _build_tidas_validator, _collect_tidas_file_issues
+
+    validators: dict[str, Any] = {}
+    results: list[list] = []
+    for document in documents:
+        _assert_document_hash(document)
+        validator = validators.get(document.category)
+        if validator is None:
+            validator = _build_tidas_validator(document.category)
+            validators[document.category] = validator
+        issues = _collect_tidas_file_issues(
+            str(document.path), document.category, validator
+        )
+        _assert_document_hash(document)
+        results.append(issues)
+    return results
+
+
+def _validate_batch_parallel(
+    documents: list[BatchDocument],
+    worker_count: int,
+    map_chunksize_fn: Callable[[int, int], int],
+) -> list[list]:
+    from .validate import (
+        _init_tidas_validation_worker,
+        _collect_tidas_file_issues_worker,
+    )
+
+    categories = sorted({doc.category for doc in documents})
+    all_results: dict[int, list] = {}
+
+    for category in categories:
+        cat_docs = [
+            (i, doc) for i, doc in enumerate(documents) if doc.category == category
+        ]
+        if not cat_docs:
+            continue
+
+        paths = [str(doc.path) for _, doc in cat_docs]
+        chunksize = map_chunksize_fn(len(paths), worker_count)
+
+        with ProcessPoolExecutor(
+            max_workers=worker_count,
+            initializer=_init_tidas_validation_worker,
+            initargs=(category,),
+        ) as executor:
+            item_results = list(
+                executor.map(
+                    _collect_tidas_file_issues_worker,
+                    paths,
+                    chunksize=chunksize,
+                )
+            )
+
+        for (original_index, _doc), issues in zip(cat_docs, item_results):
+            all_results[original_index] = issues
+
+    return [all_results.get(i, []) for i in range(len(documents))]
 
 
 def load_batch_manifest(root: Path, input_manifest: str | Path) -> list[BatchDocument]:

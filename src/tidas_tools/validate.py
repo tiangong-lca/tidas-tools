@@ -1469,6 +1469,7 @@ def main():
                 emit_event=lambda event: print(
                     json.dumps(event, ensure_ascii=False), flush=True
                 ),
+                jobs=args.jobs,
             )
             return
 
