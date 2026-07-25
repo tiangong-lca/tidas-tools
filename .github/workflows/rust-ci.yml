@@ -56,8 +56,11 @@ jobs:
         if: matrix.family == 'windows'
         shell: pwsh
         run: |
+          $vcpkgRoot = Split-Path -Parent (Get-Command vcpkg).Source
           vcpkg install libxslt:x64-windows-static-md
+          "VCPKG_ROOT=$vcpkgRoot" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           "VCPKGRS_TRIPLET=x64-windows-static-md" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          vcpkg list
 
       - uses: dtolnay/rust-toolchain@1.88.0
         with:
