@@ -4,6 +4,7 @@ members = [
   "crates/tidas-cli",
   "crates/tidas-contracts",
   "crates/tidas-runtime",
+  "crates/tidas-validation",
   "crates/tidas-xml",
 ]
 resolver = "3"
@@ -21,6 +22,7 @@ clap_complete = "4.6.7"
 crossbeam-channel = "0.5.16"
 ctrlc = "3.5.2"
 include_dir = "0.7.4"
+jsonschema = { version = "0.40.0", default-features = false }
 libxml = "0.3.16"
 libxslt = "0.1.5"
 quick-xml = "0.41.0"

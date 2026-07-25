@@ -13,22 +13,31 @@ release, and ruleset behavior to one cross-platform Rust executable named
 
 ## Rust migration preview
 
-The current Rust slices establish the Cargo workspace, stable machine and
-invocation contracts, bounded runtime primitives, executable-asset integrity
-lock, XML/XSD/XSLT portability boundary, and the final unified CLI adapter:
+The current Rust implementation establishes the Cargo workspace, stable
+machine and invocation contracts, bounded runtime primitives, executable-asset
+integrity lock, XML/XSD/XSLT portability boundary, the unified CLI adapter,
+and native TIDAS JSON validation:
 
 ```bash
 cargo build --workspace
 cargo run -p tidas-cli --bin tidas -- --help
 cargo run -p tidas-cli --bin tidas -- --format json version
+cargo run -p tidas-cli --bin tidas -- validate <package-dir> \
+  --issues <issues.jsonl> --format json
 cargo run -p tidas-cli --bin tidas -- --completion bash > tidas.bash
 cargo run -p tidas-assets --bin tidas-asset-lock -- check
 ```
 
 The final command tree is `convert`, `import`, `export`, `validate`, `release`,
-`ruleset`, and `version`. Only `version` is functional in this foundation
-slice; the other Rust commands fail explicitly with exit class
+`ruleset`, and `version`. `version` and native TIDAS JSON `validate` are
+functional. The remaining Rust paths fail explicitly with exit class
 `unavailable`/code `69` and never invoke Python.
+
+Native validation resolves only embedded integrity-locked schemas. Complete
+issues can be written atomically as deterministic JSONL with `--issues`; the
+operation report retains bounded counts and the spool hash instead of an
+in-memory issue array. ILCD XML validation remains explicitly unavailable
+until the native XSD path lands.
 
 Global runtime options follow `CLI > TIDAS_* environment > built-in default`
 precedence. No configuration file is loaded implicitly. Stdout contains only

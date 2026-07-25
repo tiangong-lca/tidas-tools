@@ -38,8 +38,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-25
-lastReviewedCommit: 1dd24944f3f076864121b7cb3eda7f3e184099e5
-lastReviewedNote: "Issue #119 establishes the authoritative unified CLI, invocation context, output-channel, completion, and bounded-runtime adapter contract."
+lastReviewedCommit: 75d11c1aeec5e0973005eaadc1acb5a26931f894
+lastReviewedNote: "Issue #120 adds the first production Rust domain path: offline native TIDAS JSON validation with bounded issue spooling and stable summary contracts."
 related:
   - .docpact/config.yaml
   - docs/agents/cli-contract.md
@@ -98,6 +98,7 @@ Keep these entry-level facts in `AGENTS.md`. Use `README.md`, `README_CN.md`, an
 - Rust workspace toolchain: Rust 1.88 or newer, Cargo resolver 3
 - final product entry point: `cargo run -p tidas-cli --bin tidas -- <subcommand>`
 - final command tree: `convert`, `import`, `export`, `validate`, `release`, `ruleset`, `version`
+- native TIDAS JSON validation: `cargo run -p tidas-cli --bin tidas -- validate <package-dir> --issues <issues.jsonl> --format json`
 - configuration precedence: explicit CLI option, then matching `TIDAS_*` environment variable, then the documented built-in default; no implicit current-directory config
 - stdout is reserved for one report or completion script; logs, progress, and file-write confirmations use stderr
 - canonical Rust checks: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings`, and `cargo test --workspace --all-targets`
@@ -169,6 +170,7 @@ Route those tasks to:
 - do not add legacy Rust executable aliases or a PyPI Rust wrapper
 - do not invoke Python from Rust; incomplete Rust commands must fail with the stable unavailable exit class
 - large-data paths must stream through bounded queues, explicit memory budgets, and cancellation-aware boundaries
+- native JSON Schema resolution is offline and may resolve only the embedded, integrity-locked TIDAS schema catalog
 - `assets/asset-lock.v1.json` is the integrity authority for executable schemas, methodologies, rulesets, indexes, XSD, XSLT, and XML reference assets
 - `.gitattributes` forces executable assets, machine contracts, source, and governed docs to LF so byte hashes are identical on Windows, macOS, and Linux
 - native libxml2/libxslt access is serialized until thread-safety is independently proved; production XSLT must fail closed on external resource resolution

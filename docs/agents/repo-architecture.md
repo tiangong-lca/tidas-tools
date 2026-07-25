@@ -32,8 +32,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-25
-lastReviewedCommit: 1dd24944f3f076864121b7cb3eda7f3e184099e5
-lastReviewedNote: "Issue #119 adds the stable unified CLI invocation, stream, completion, and bounded-runtime adapter contract."
+lastReviewedCommit: 75d11c1aeec5e0973005eaadc1acb5a26931f894
+lastReviewedNote: "Issue #120 adds the offline native TIDAS JSON validation pipeline and bounded issue/report contracts."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -56,6 +56,7 @@ until all #117 exit gates pass.
 | `crates/tidas-contracts` | versioned operation reports, diagnostics, artifact references, completeness, and exit-code classes |
 | `crates/tidas-runtime` | cancellation, explicit memory reservations, bounded queues, and streaming JSONL spooling |
 | `crates/tidas-assets` | offline executable-asset embedding, classification, integrity checking, and fingerprinting |
+| `crates/tidas-validation` | offline compiled TIDAS JSON Schema validation, deterministic package traversal, bounded issue spooling, and validation summaries |
 | `crates/tidas-xml` | strict streaming XML inspection plus the compatibility boundary to XSD/XSLT engines |
 | `crates/tidas-cli` | the single `tidas` binary, final command tree, output routing, and thin domain dispatch |
 | `docs/agents/cli-contract.md` | authoritative command, configuration precedence, stream, completion, invocation-context, and exit behavior |
@@ -64,14 +65,17 @@ until all #117 exit gates pass.
 | `.gitattributes` | LF checkout contract for byte-identical assets and machine contracts on every platform |
 | `migration/python-to-rust-owners.md` | frozen Python public-symbol inventory and dependency-ordered Rust owner map |
 
-Later issues add `tidas-validate`, `tidas-convert`, `tidas-import`,
-`tidas-export`, and `tidas-release` domain crates. The CLI crate must not absorb
-their logic.
+The native TIDAS JSON path now lives in `tidas-validation`. Later work in #120
+adds ILCD/XSD, methodology, projection-index, and batch-protocol behavior;
+later issues add conversion, import, export, and release domain crates. The CLI
+crate must not absorb their logic.
 
 The command tree is fixed to `convert`, `import`, `export`, `validate`,
 `release`, `ruleset`, and `version`. No old executable alias or Python fallback
 is present. Until a domain slice lands, its Rust command returns the stable
-`unavailable` exit class (69).
+`unavailable` exit class (69). `validate` accepts native TIDAS JSON packages;
+its not-yet-migrated ILCD XML mode remains explicitly unavailable without a
+Python fallback.
 
 The CLI records the resolved configuration source, log/progress policy, memory
 budget, queue capacity, and I/O policy in `tidas.invocation-context.v1`.
@@ -92,6 +96,20 @@ locale-dependent values, or non-deterministically ordered collections.
 Large-data domains must use the `tidas-runtime` cancellation token, bounded
 queues, explicit memory reservations, and streaming spools rather than
 collecting issue lists or complete packages in memory.
+
+## Native TIDAS JSON validation
+
+`tidas-validation` compiles each Draft 7 category schema once per package run.
+Relative `$ref` values resolve only against the in-memory embedded schema
+catalog; the JSON Schema dependency is built without HTTP or filesystem
+resolvers. The `cas-number` format checker is implemented in Rust.
+
+Category and file traversal is sorted. File/path memory is explicitly
+reserved against the invocation budget, schema errors are consumed as an
+iterator, and full issue details are discarded or written immediately to an
+atomically persisted JSONL spool. The operation report retains bounded counts,
+the asset fingerprint, accounted peak memory, and the spool byte/hash summary
+instead of retaining an issue array.
 
 ## XML/XSD/XSLT portability decision
 

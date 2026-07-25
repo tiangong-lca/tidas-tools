@@ -80,6 +80,13 @@ pub fn bundled_assets() -> Vec<BundledAsset> {
     assets
 }
 
+#[must_use]
+pub fn bundled_asset(path: &str) -> Option<BundledAsset> {
+    bundled_assets()
+        .into_iter()
+        .find(|asset| asset.path == path)
+}
+
 fn collect_embedded(dir: &Dir<'static>, prefix: &str, output: &mut Vec<BundledAsset>) {
     for file in dir.files() {
         let relative = file.path().to_string_lossy().replace('\\', "/");
@@ -327,6 +334,16 @@ mod tests {
     #[test]
     fn fingerprint_is_repeatable() {
         assert_eq!(asset_fingerprint().unwrap(), asset_fingerprint().unwrap());
+    }
+
+    #[test]
+    fn bundled_asset_lookup_returns_exact_offline_bytes() {
+        let path = "src/tidas_tools/tidas/schemas/tidas_sources.json";
+        let asset = bundled_asset(path).unwrap();
+        assert_eq!(asset.path, path);
+        assert_eq!(asset.kind, AssetKind::JsonSchema);
+        assert!(asset.bytes.starts_with(b"{"));
+        assert!(bundled_asset("src/tidas_tools/tidas/schemas/missing.json").is_none());
     }
 
     #[test]

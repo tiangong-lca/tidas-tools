@@ -4,13 +4,17 @@ mod output;
 
 use std::process::ExitCode;
 
-use args::{Cli, Commands};
+use args::{Cli, Commands, ValidateArgs, ValidationInputFormat};
 use clap::error::ErrorKind;
 use context::ExecutionContext;
 use tidas_assets::{asset_fingerprint, bundled_assets};
 use tidas_contracts::{
-    CommandNameV1, ExitClass, INVOCATION_CONTEXT_SCHEMA_V1, OPERATION_REPORT_SCHEMA_V1,
-    OperationReportV1,
+    ArtifactRefV1, CommandNameV1, DiagnosticV1, ExitClass, INVOCATION_CONTEXT_SCHEMA_V1,
+    OPERATION_REPORT_SCHEMA_V1, OperationReportV1,
+};
+use tidas_runtime::RuntimeError;
+use tidas_validation::{
+    ValidationError, ValidationRequest, ValidationSummaryV1, validate_tidas_package,
 };
 use tidas_xml::engine_decision;
 
@@ -30,14 +34,16 @@ fn main() -> ExitCode {
         };
     }
 
+    let execution = ExecutionContext::from_cli(&cli);
     let command = cli
         .command
+        .clone()
         .expect("checked CLI always has a command unless completion was requested");
-    let execution = ExecutionContext::from_cli(&cli);
+    let command_name = command.name();
     let report = match execution.install_cancellation_handler() {
         Ok(()) => dispatch(command, &execution),
         Err(error) => OperationReportV1::failed(
-            command.name(),
+            command_name,
             ExitClass::Internal,
             "cancellation_handler_unavailable",
             format!("Failed to install the process cancellation handler: {error}"),
@@ -75,6 +81,7 @@ fn dispatch(command: Commands, execution: &ExecutionContext) -> OperationReportV
     }
 
     match command {
+        Commands::Validate(arguments) => validation_report(&arguments, execution),
         Commands::Version => version_report(execution),
         other => OperationReportV1::unavailable(
             other.name(),
@@ -84,6 +91,90 @@ fn dispatch(command: Commands, execution: &ExecutionContext) -> OperationReportV
             ),
         ),
     }
+}
+
+fn validation_report(arguments: &ValidateArgs, execution: &ExecutionContext) -> OperationReportV1 {
+    if arguments.input_format == ValidationInputFormat::IlcdXml {
+        return OperationReportV1::unavailable(
+            CommandNameV1::Validate,
+            "ILCD XML validation is the next active path in tidas-tools#120; use --input-format tidas-json for the native path available now.",
+        );
+    }
+    let request = ValidationRequest {
+        input_dir: arguments.input.clone(),
+        issue_spool: arguments.issues.clone(),
+        cancellation: execution.cancellation.clone(),
+        memory_budget: execution.memory_budget.clone(),
+        queue_capacity: execution.invocation.queue_capacity,
+    };
+    match validate_tidas_package(&request) {
+        Ok(output) => completed_validation_report(output.summary, output.issue_spool_path),
+        Err(ValidationError::Runtime(RuntimeError::Cancelled)) => {
+            OperationReportV1::cancelled(CommandNameV1::Validate)
+        }
+        Err(error) => failed_validation_report(&error),
+    }
+}
+
+fn completed_validation_report(
+    summary: ValidationSummaryV1,
+    issue_spool_path: Option<std::path::PathBuf>,
+) -> OperationReportV1 {
+    let has_issues = !summary.ok;
+    let issue_spool = summary.issue_spool.clone();
+    let summary_value = match serde_json::to_value(summary) {
+        Ok(value) => value,
+        Err(error) => {
+            return OperationReportV1::failed(
+                CommandNameV1::Validate,
+                ExitClass::Internal,
+                "validation_summary_serialization_failed",
+                error.to_string(),
+            );
+        }
+    };
+    let mut report = if has_issues {
+        OperationReportV1::completed_with_issues(
+            CommandNameV1::Validate,
+            DiagnosticV1::new(
+                "validation_issues",
+                "Validation completed and found data issues.",
+            ),
+        )
+    } else {
+        OperationReportV1::succeeded(CommandNameV1::Validate)
+    };
+    report
+        .summary
+        .insert("validation".to_owned(), summary_value);
+    if let (Some(path), Some(spool)) = (issue_spool_path, issue_spool) {
+        report.artifacts.push(ArtifactRefV1 {
+            path: path.to_string_lossy().into_owned(),
+            media_type: "application/x-ndjson".to_owned(),
+            sha256: Some(spool.sha256),
+            bytes: Some(spool.bytes),
+        });
+    }
+    report
+}
+
+fn failed_validation_report(error: &ValidationError) -> OperationReportV1 {
+    let (exit_class, code) = match &error {
+        ValidationError::InputNotDirectory(_)
+        | ValidationError::SpoolParentMissing(_)
+        | ValidationError::PersistSpool { .. }
+        | ValidationError::Io(_) => (ExitClass::Io, "validation_io_failed"),
+        ValidationError::Runtime(RuntimeError::BudgetExceeded { .. }) => {
+            (ExitClass::Internal, "memory_budget_exceeded")
+        }
+        ValidationError::Runtime(_) => (ExitClass::Internal, "validation_runtime_failed"),
+        ValidationError::ZeroQueueCapacity => (ExitClass::Usage, "invalid_queue_capacity"),
+        ValidationError::PathOutsideInput(_)
+        | ValidationError::SizeOverflow
+        | ValidationError::Asset(_)
+        | ValidationError::Schema(_) => (ExitClass::Internal, "validation_setup_failed"),
+    };
+    OperationReportV1::failed(CommandNameV1::Validate, exit_class, code, error.to_string())
 }
 
 fn version_report(execution: &ExecutionContext) -> OperationReportV1 {

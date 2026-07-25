@@ -1,0 +1,12 @@
+{
+  "schema_version": "tidas.validation-parity.v1",
+  "python_oracle": "The frozen Python validator reports one schema_error for an empty source document, completes validation, and classifies the result as data issues rather than a protocol failure.",
+  "input_format": "tidas-json",
+  "category": "sources",
+  "document_count": 1,
+  "issue_count": 1,
+  "issue_code": "schema_error",
+  "severity": "error",
+  "file_path": "sources/bad.json",
+  "expected_exit_code": 2
+}

@@ -24,7 +24,7 @@ checkPaths:
   - src/tidas_tools/**
   - .github/workflows/**
 lastReviewedAt: 2026-07-25
-lastReviewedCommit: 1dd24944f3f076864121b7cb3eda7f3e184099e5
+lastReviewedCommit: 75d11c1aeec5e0973005eaadc1acb5a26931f894
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -47,21 +47,27 @@ Rust 可执行文件 `tidas`。
 
 ## Rust 迁移预览
 
-当前 Rust 切片已经建立 Cargo workspace、稳定机器与 invocation 契约、有界运行时
-基础设施、可执行资产完整性锁、XML/XSD/XSLT 跨平台边界，以及最终统一 CLI
-适配层：
+当前 Rust 实现已经建立 Cargo workspace、稳定机器与 invocation 契约、有界运行时
+基础设施、可执行资产完整性锁、XML/XSD/XSLT 跨平台边界、最终统一 CLI 适配层，
+以及原生 TIDAS JSON 校验：
 
 ```bash
 cargo build --workspace
 cargo run -p tidas-cli --bin tidas -- --help
 cargo run -p tidas-cli --bin tidas -- --format json version
+cargo run -p tidas-cli --bin tidas -- validate <数据包目录> \
+  --issues <issues.jsonl> --format json
 cargo run -p tidas-cli --bin tidas -- --completion bash > tidas.bash
 cargo run -p tidas-assets --bin tidas-asset-lock -- check
 ```
 
 最终命令树固定为 `convert`、`import`、`export`、`validate`、`release`、
-`ruleset` 和 `version`。本基础切片只有 `version` 已可用；其他 Rust 命令会明确
-返回 `unavailable`（退出码 `69`），绝不调用 Python 回退。
+`ruleset` 和 `version`。`version` 与原生 TIDAS JSON `validate` 已可用；其余尚未
+迁移的 Rust 路径会明确返回 `unavailable`（退出码 `69`），绝不调用 Python 回退。
+
+原生校验只解析内嵌且经过完整性锁验证的 schemas。通过 `--issues` 可把全部问题
+按确定顺序原子写入 JSONL；operation report 只保留有界计数与 spool hash，不在
+内存中累计问题数组。ILCD XML 校验将在 native XSD 路径完成前保持明确 unavailable。
 
 全局运行参数遵循“命令行 > `TIDAS_*` 环境变量 > 内置默认值”的优先级，不会隐式
 读取当前目录中的配置文件。stdout 只包含一次 human/JSON 报告或 completion 脚本；

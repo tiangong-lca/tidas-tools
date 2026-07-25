@@ -1,10 +1,10 @@
 version: 1
 layout: repo
 lastReviewedAt: "2026-07-25"
-lastReviewedCommit: "1dd24944f3f076864121b7cb3eda7f3e184099e5"
-# Issue #119 fixes the unified CLI command/configuration/stream contract,
-# versioned invocation context, deterministic completion surface, and bounded
-# runtime adapter while Python remains a frozen parity oracle.
+lastReviewedCommit: "75d11c1aeec5e0973005eaadc1acb5a26931f894"
+# Issue #120 adds offline native TIDAS JSON validation, stable validation
+# contracts, explicit memory accounting, and deterministic issue spooling
+# while Python remains a frozen parity oracle.
 
 catalog:
   repos:
@@ -181,6 +181,7 @@ routing:
         - crates/tidas-cli/**
         - crates/tidas-contracts/**
         - crates/tidas-runtime/**
+        - crates/tidas-validation/**
         - crates/tidas-xml/**
         - contracts/**
         - src/tidas_tools/validate.py

@@ -87,7 +87,7 @@ impl Cli {
     }
 
     fn validate(&self) -> Result<(), clap::Error> {
-        match (self.completion, self.command) {
+        match (self.completion, self.command.as_ref()) {
             (None, None) => Err(Self::command().error(
                 ErrorKind::MissingSubcommand,
                 "a product command is required; use `tidas --help` or request `--completion <shell>`",
@@ -162,7 +162,7 @@ impl From<CliProgressMode> for ProgressModeV1 {
     }
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Subcommand)]
+#[derive(Clone, Debug, Eq, PartialEq, Subcommand)]
 pub enum Commands {
     /// Convert between TIDAS JSON and eILCD XML.
     Convert,
@@ -171,7 +171,7 @@ pub enum Commands {
     /// Export database records and external documents as a package.
     Export,
     /// Validate TIDAS JSON or eILCD/ILCD XML.
-    Validate,
+    Validate(ValidateArgs),
     /// Build and verify deterministic release packages.
     Release,
     /// Inspect and validate packaged methodology rulesets.
@@ -182,17 +182,38 @@ pub enum Commands {
 
 impl Commands {
     #[must_use]
-    pub const fn name(self) -> CommandNameV1 {
+    pub const fn name(&self) -> CommandNameV1 {
         match self {
             Self::Convert => CommandNameV1::Convert,
             Self::Import => CommandNameV1::Import,
             Self::Export => CommandNameV1::Export,
-            Self::Validate => CommandNameV1::Validate,
+            Self::Validate(_) => CommandNameV1::Validate,
             Self::Release => CommandNameV1::Release,
             Self::Ruleset => CommandNameV1::Ruleset,
             Self::Version => CommandNameV1::Version,
         }
     }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, clap::Args)]
+pub struct ValidateArgs {
+    /// Package directory containing canonical TIDAS category subdirectories.
+    #[arg(value_name = "INPUT")]
+    pub input: PathBuf,
+
+    /// Input representation to validate.
+    #[arg(long, value_enum, default_value_t = ValidationInputFormat::TidasJson)]
+    pub input_format: ValidationInputFormat,
+
+    /// Atomically write the complete deterministic issue stream as JSONL.
+    #[arg(long, value_name = "PATH")]
+    pub issues: Option<PathBuf>,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
+pub enum ValidationInputFormat {
+    TidasJson,
+    IlcdXml,
 }
 
 pub fn write_completion(shell: Shell, writer: &mut impl Write) -> io::Result<()> {

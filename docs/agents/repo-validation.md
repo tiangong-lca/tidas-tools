@@ -34,8 +34,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-25
-lastReviewedCommit: 1dd24944f3f076864121b7cb3eda7f3e184099e5
-lastReviewedNote: "Issue #119 adds CLI help/completion/configuration/output-channel/parity contract proof while retaining the five-platform Rust and Python oracle gates."
+lastReviewedCommit: 75d11c1aeec5e0973005eaadc1acb5a26931f894
+lastReviewedNote: "Issue #120 adds native TIDAS JSON validation, offline schema compilation, deterministic issue spooling, and Python parity proof."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -74,6 +74,7 @@ be removed only by the final #126 cutover.
 | --- | --- | --- | --- |
 | Rust workspace, shared contracts, or CLI adapter | asset lock; Rust fmt/clippy/test; root and command help; deterministic `tidas --format json version` and completion comparisons | exercise configuration precedence, report-file/stdout separation, completion shells, migration parity fixture, structured usage failure, and every affected exit class; validate JSON against the checked-in schema | The CLI remains thin, follows `docs/agents/cli-contract.md`, and incomplete commands fail `unavailable` without invoking Python. |
 | `tidas-runtime` large-data primitives | Rust fmt/clippy/test including bounded queue, cancellation, memory-budget, and streaming spool tests | local large-package benchmark with elapsed time and peak RSS; never start on a Worker server | The target package is intentionally outside Git and issue counts must not cause linear memory growth. |
+| `tidas-validation` native TIDAS JSON path | focused crate and CLI tests; compile all eight schemas offline; compare the frozen Python parity fixture; validate issue and summary payloads against checked-in schemas | run the local 237 MiB benchmark twice with wall time and peak RSS; prove cancellation and deterministic spool bytes/hash | Issue details must stream or be discarded, never accumulate in the operation report; ILCD remains unavailable until its native path lands. |
 | `tidas-assets`, `.gitattributes`, or executable assets | asset-lock check, Rust tests, Python schema lock, full pytest; verify `git check-attr eol` returns `lf` for representative JSON/XSD/XSL files | regenerate the asset lock only after intentional review; compare asset fingerprint twice | The Rust asset lock covers more executable inputs than the legacy paired-schema lock; LF checkout and both lock gates remain during migration. |
 | `tidas-xml` or native dependency workflow | focused `cargo test -p tidas-xml`; full Rust checks; all five CI matrix jobs | representative production XSD/XSLT fixtures; controlled static release-link proof and resolver security tests | `quick-xml` is the streaming reader; libxml2/libxslt native calls are serialized. |
 | `convert.py`, `import_lca/**`, or eILCD asset changes | `uv run pytest`; `uv run python src/tidas_tools/convert.py --help`; `uv run python src/tidas_tools/import_lca/cli.py --help` when external import paths change | run one representative conversion or import path if the task explicitly changes data transformation behavior | Keep packaged asset, conversion logic, import detection, and staged adapters aligned. |

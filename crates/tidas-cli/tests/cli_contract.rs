@@ -212,9 +212,7 @@ fn completion_scripts_are_deterministic_and_do_not_add_a_product_command() {
 
 #[test]
 fn unavailable_commands_return_a_machine_report_without_python_fallback() {
-    for command in [
-        "convert", "import", "export", "validate", "release", "ruleset",
-    ] {
+    for command in ["convert", "import", "export", "release", "ruleset"] {
         let (output, payload) = json_output(&[command, "--format", "json"]);
         assert_eq!(output.status.code(), Some(69), "{command}");
         assert!(output.stderr.is_empty(), "{command}");
@@ -223,6 +221,85 @@ fn unavailable_commands_return_a_machine_report_without_python_fallback() {
         assert_eq!(payload["completeness"], "not-started");
         assert_eq!(payload["diagnostics"][0]["code"], "feature_not_migrated");
     }
+}
+
+#[test]
+fn native_tidas_validation_streams_deterministic_issues_without_python() {
+    let directory = tempfile::tempdir().unwrap();
+    let package = directory.path().join("package");
+    let sources = package.join("sources");
+    fs::create_dir_all(&sources).unwrap();
+    fs::write(sources.join("b.json"), "{").unwrap();
+    fs::write(sources.join("a.json"), "{}").unwrap();
+    let issues = directory.path().join("issues.jsonl");
+
+    let run = || {
+        tidas()
+            .args([
+                "validate",
+                package.to_str().unwrap(),
+                "--issues",
+                issues.to_str().unwrap(),
+                "--format",
+                "json",
+            ])
+            .output()
+            .unwrap()
+    };
+    let first = run();
+    let first_issues = fs::read(&issues).unwrap();
+    let second = run();
+    let second_issues = fs::read(&issues).unwrap();
+
+    assert_eq!(first.status.code(), Some(2));
+    assert_eq!(second.status.code(), Some(2));
+    assert_eq!(first.stdout, second.stdout);
+    assert_eq!(first_issues, second_issues);
+    assert!(first.stderr.is_empty());
+    let report: OperationReportV1 = serde_json::from_slice(&first.stdout).unwrap();
+    assert_eq!(report.command, CommandNameV1::Validate);
+    assert_eq!(report.exit_class.code(), 2);
+    assert_eq!(report.summary["validation"]["input_format"], "tidas-json");
+    assert_eq!(report.summary["validation"]["document_count"], 2);
+    assert!(
+        report.summary["validation"]["issue_count"]
+            .as_u64()
+            .unwrap()
+            >= 2
+    );
+    assert_eq!(report.artifacts.len(), 1);
+    assert_eq!(report.artifacts[0].media_type, "application/x-ndjson");
+}
+
+#[test]
+fn empty_native_tidas_package_is_a_complete_success() {
+    let directory = tempfile::tempdir().unwrap();
+    let (output, payload) = json_output(&[
+        "validate",
+        directory.path().to_str().unwrap(),
+        "--format",
+        "json",
+    ]);
+    assert!(output.status.success());
+    assert_eq!(payload["exit_class"], "success");
+    assert_eq!(payload["summary"]["validation"]["document_count"], 0);
+    assert_eq!(payload["summary"]["validation"]["issue_count"], 0);
+}
+
+#[test]
+fn ilcd_validation_remains_explicitly_unavailable_without_python_fallback() {
+    let directory = tempfile::tempdir().unwrap();
+    let (output, payload) = json_output(&[
+        "validate",
+        directory.path().to_str().unwrap(),
+        "--input-format",
+        "ilcd-xml",
+        "--format",
+        "json",
+    ]);
+    assert_eq!(output.status.code(), Some(69));
+    assert_eq!(payload["command"], "validate");
+    assert_eq!(payload["exit_class"], "unavailable");
 }
 
 #[test]
