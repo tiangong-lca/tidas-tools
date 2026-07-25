@@ -21,7 +21,7 @@
     {
       "name": "known function not yet migrated",
       "python_oracle": "A known tool family is distinguishable from malformed invocation; migration never silently falls back to Python.",
-      "rust_args": ["convert", "--format", "json"],
+      "rust_args": ["import", "--format", "json"],
       "expected_exit_code": 69,
       "expected_exit_class": "unavailable",
       "expected_completeness": "not-started"

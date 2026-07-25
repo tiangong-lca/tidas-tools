@@ -4,13 +4,20 @@ mod output;
 
 use std::process::ExitCode;
 
-use args::{Cli, Commands, RulesetArgs, ValidateArgs, ValidationInputFormat, ValidationProtocol};
+use args::{
+    Cli, Commands, ConversionTarget, ConvertArgs, RulesetArgs, ValidateArgs, ValidationInputFormat,
+    ValidationProtocol,
+};
 use clap::error::ErrorKind;
 use context::ExecutionContext;
 use tidas_assets::{asset_fingerprint, bundled_assets};
 use tidas_contracts::{
     ArtifactRefV1, CommandNameV1, DiagnosticV1, ExitClass, INVOCATION_CONTEXT_SCHEMA_V1,
     OPERATION_REPORT_SCHEMA_V1, OperationReportV1,
+};
+use tidas_conversion::{
+    ConversionDirection, ConversionError, ConversionProgressReporter, ConversionRequest,
+    convert_directory,
 };
 use tidas_rulesets::{RulesetCatalog, RulesetError};
 use tidas_runtime::RuntimeError;
@@ -85,6 +92,7 @@ fn dispatch(command: Commands, execution: &ExecutionContext) -> OperationReportV
     }
 
     match command {
+        Commands::Convert(arguments) => conversion_report(&arguments, execution),
         Commands::Validate(arguments) => validation_report(&arguments, execution),
         Commands::Ruleset(arguments) => ruleset_report(&arguments),
         Commands::Version => version_report(execution),
@@ -96,6 +104,112 @@ fn dispatch(command: Commands, execution: &ExecutionContext) -> OperationReportV
             ),
         ),
     }
+}
+
+fn conversion_report(arguments: &ConvertArgs, execution: &ExecutionContext) -> OperationReportV1 {
+    let direction = match arguments.to {
+        ConversionTarget::Ilcd => ConversionDirection::TidasToIlcd,
+        ConversionTarget::Tidas => ConversionDirection::IlcdToTidas,
+    };
+    let request = ConversionRequest {
+        input_dir: arguments.input.clone(),
+        output_dir: arguments.output.clone(),
+        direction,
+        cancellation: execution.cancellation.clone(),
+        memory_budget: execution.memory_budget.clone(),
+        queue_capacity: execution.invocation.queue_capacity,
+        progress: execution
+            .invocation
+            .progress_enabled
+            .then(conversion_progress_reporter),
+    };
+    match convert_directory(&request) {
+        Ok(summary) => {
+            let mut report = OperationReportV1::succeeded(CommandNameV1::Convert);
+            report.summary.insert(
+                "conversion".to_owned(),
+                serde_json::to_value(&summary).expect("conversion report contract is serializable"),
+            );
+            report.artifacts.push(ArtifactRefV1 {
+                path: arguments.output.to_string_lossy().into_owned(),
+                media_type: "application/vnd.tidas.package-directory".to_owned(),
+                sha256: Some(summary.output_tree_sha256),
+                bytes: Some(summary.output_bytes),
+            });
+            let input_format = match arguments.to {
+                ConversionTarget::Ilcd => "ilcd-xml",
+                ConversionTarget::Tidas => "tidas-json",
+            };
+            report.next_actions.push(format!(
+                "tidas validate {} --input-format {input_format}",
+                arguments.output.join("data").display()
+            ));
+            report
+        }
+        Err(ConversionError::Runtime(RuntimeError::Cancelled)) => {
+            OperationReportV1::cancelled(CommandNameV1::Convert)
+        }
+        Err(error) => failed_conversion_report(&error),
+    }
+}
+
+fn conversion_progress_reporter() -> ConversionProgressReporter {
+    ConversionProgressReporter::new(|progress| {
+        eprintln!(
+            "tidas progress: convert phase={} direction={} files={} converted={} copied={} assets={}",
+            progress.phase,
+            progress.direction.as_str(),
+            progress.files_processed,
+            progress.converted_file_count,
+            progress.copied_file_count,
+            progress.asset_file_count,
+        );
+    })
+}
+
+fn failed_conversion_report(error: &ConversionError) -> OperationReportV1 {
+    let (exit_class, code) = match error {
+        ConversionError::InputNotDirectory(_)
+        | ConversionError::OutputNotDirectory(_)
+        | ConversionError::InvalidOutput(_)
+        | ConversionError::SourceChanged(_)
+        | ConversionError::CommitRollback { .. }
+        | ConversionError::Io(_)
+        | ConversionError::Walk(_) => (ExitClass::Io, "conversion_io_failed"),
+        ConversionError::OutputInsideInput(_) | ConversionError::ZeroQueueCapacity => {
+            (ExitClass::Usage, "invalid_conversion_request")
+        }
+        ConversionError::JsonRootNotObject
+        | ConversionError::JsonRootCount(_)
+        | ConversionError::MissingDatasetRoot { .. }
+        | ConversionError::InvalidEnvelope(_)
+        | ConversionError::OrphanEnvelopeSidecar(_)
+        | ConversionError::EnvelopeKeyCollision { .. }
+        | ConversionError::InvalidXmlName(_)
+        | ConversionError::InvalidXmlCharacter(_)
+        | ConversionError::NonScalarText
+        | ConversionError::TextOutsideRoot
+        | ConversionError::MultipleRoots
+        | ConversionError::MissingRoot
+        | ConversionError::UnmatchedEnd
+        | ConversionError::UnclosedElements
+        | ConversionError::DoctypeForbidden
+        | ConversionError::Symlink(_)
+        | ConversionError::Json(_)
+        | ConversionError::Xml(_)
+        | ConversionError::Attribute(_)
+        | ConversionError::Encoding(_)
+        | ConversionError::Escape(_) => (ExitClass::DataIssues, "conversion_input_invalid"),
+        ConversionError::Runtime(RuntimeError::BudgetExceeded { .. }) => {
+            (ExitClass::Internal, "memory_budget_exceeded")
+        }
+        ConversionError::Runtime(_) => (ExitClass::Internal, "conversion_runtime_failed"),
+        ConversionError::PathOutsideInput(_)
+        | ConversionError::NonPortablePath(_)
+        | ConversionError::SizeOverflow
+        | ConversionError::Asset(_) => (ExitClass::Internal, "conversion_setup_failed"),
+    };
+    OperationReportV1::failed(CommandNameV1::Convert, exit_class, code, error.to_string())
 }
 
 fn ruleset_report(arguments: &RulesetArgs) -> OperationReportV1 {

@@ -1,7 +1,7 @@
 version: 1
 layout: repo
 lastReviewedAt: "2026-07-25"
-lastReviewedCommit: "75d11c1aeec5e0973005eaadc1acb5a26931f894"
+lastReviewedCommit: "3c51461"
 # Issue #120 owns native TIDAS/ILCD validation, semantic indexes, ruleset
 # inspection, stable reference extraction and batch contracts, explicit memory
 # accounting, and deterministic issue/event spooling while Python remains a

@@ -168,7 +168,7 @@ impl From<CliProgressMode> for ProgressModeV1 {
 #[derive(Clone, Debug, Eq, PartialEq, Subcommand)]
 pub enum Commands {
     /// Convert between TIDAS JSON and eILCD XML.
-    Convert,
+    Convert(ConvertArgs),
     /// Import supported external LCA formats into TIDAS.
     Import,
     /// Export database records and external documents as a package.
@@ -187,7 +187,7 @@ impl Commands {
     #[must_use]
     pub const fn name(&self) -> CommandNameV1 {
         match self {
-            Self::Convert => CommandNameV1::Convert,
+            Self::Convert(_) => CommandNameV1::Convert,
             Self::Import => CommandNameV1::Import,
             Self::Export => CommandNameV1::Export,
             Self::Validate(_) => CommandNameV1::Validate,
@@ -196,6 +196,31 @@ impl Commands {
             Self::Version => CommandNameV1::Version,
         }
     }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, clap::Args)]
+#[command(
+    long_about = "Convert one package directory between TIDAS JSON and eILCD XML. The input tree is mirrored under OUTPUT/data, non-convertible files are preserved, and the locked schemas, stylesheets, or methodologies for the target format are materialized beside it. Publication is atomic: malformed input, cancellation, or runtime failure leaves an existing output unchanged.",
+    after_help = "Examples:\n  tidas convert ./package --output ./eilcd-package --to ilcd\n  tidas convert ./eilcd-data --output ./tidas-package --to tidas --format json\n\nNext: validate the generated OUTPUT/data directory with `tidas validate` and the corresponding --input-format."
+)]
+pub struct ConvertArgs {
+    /// Package directory to traverse recursively without following symlinks.
+    #[arg(value_name = "INPUT")]
+    pub input: PathBuf,
+
+    /// Target package directory to publish atomically.
+    #[arg(long, value_name = "DIR")]
+    pub output: PathBuf,
+
+    /// Target representation and locked asset family.
+    #[arg(long, value_enum, value_name = "FORMAT")]
+    pub to: ConversionTarget,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
+pub enum ConversionTarget {
+    Ilcd,
+    Tidas,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, clap::Args)]

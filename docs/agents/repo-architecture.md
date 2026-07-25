@@ -32,8 +32,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-25
-lastReviewedCommit: 75d11c1aeec5e0973005eaadc1acb5a26931f894
-lastReviewedNote: "Issue #120 completes native TIDAS/ILCD validation, semantic indexes, ruleset and reference contracts, and bounded batch evidence."
+lastReviewedCommit: 3c51461
+lastReviewedNote: "Issue #121 adds the native conversion crate, deterministic envelope sidecars, atomic publication, and stable conversion reports."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -56,6 +56,7 @@ until all #117 exit gates pass.
 | `crates/tidas-contracts` | versioned operation reports, diagnostics, artifact references, completeness, and exit-code classes |
 | `crates/tidas-runtime` | cancellation, explicit memory reservations, bounded queues, and streaming JSONL spooling |
 | `crates/tidas-assets` | offline executable-asset embedding, classification, integrity checking, and fingerprinting |
+| `crates/tidas-conversion` | deterministic bidirectional TIDAS JSON/eILCD XML transformation, envelope sidecars, atomic directory publication, and conversion reports |
 | `crates/tidas-references` | side-effect-free, version-preserving reference extraction, role classification, and malformed-reference contracts |
 | `crates/tidas-rulesets` | schema-validated methodology/ruleset catalog, referential integrity, selection, and deterministic fingerprinting |
 | `crates/tidas-validation` | offline TIDAS JSON and ILCD/XSD validation, semantic indexes, batch protocol, deterministic traversal, and bounded issue/event spooling |
@@ -67,16 +68,18 @@ until all #117 exit gates pass.
 | `.gitattributes` | LF checkout contract for byte-identical assets and machine contracts on every platform |
 | `migration/python-to-rust-owners.md` | frozen Python public-symbol inventory and dependency-ordered Rust owner map |
 
-The complete validation domain now lives in `tidas-validation`, with packaged
+The complete conversion domain now lives in `tidas-conversion`; the complete
+validation domain lives in `tidas-validation`, with packaged
 methodology metadata isolated in `tidas-rulesets` and reusable reference
-extraction isolated in `tidas-references`. Later issues add conversion, import,
-export, and release domain crates. The CLI crate must not absorb their logic.
+extraction isolated in `tidas-references`. Later issues add import, export, and
+release domain crates. The CLI crate must not absorb their logic.
 
 The command tree is fixed to `convert`, `import`, `export`, `validate`,
 `release`, `ruleset`, and `version`. No old executable alias or Python fallback
 is present. Until a domain slice lands, its Rust command returns the stable
-`unavailable` exit class (69). `validate` accepts native TIDAS JSON packages,
-ILCD XML packages, and `document-validation-batch.v1`; `ruleset` validates and
+`unavailable` exit class (69). `convert` atomically transforms TIDAS JSON and
+eILCD XML package trees; `validate` accepts native TIDAS JSON packages, ILCD
+XML packages, and `document-validation-batch.v1`; `ruleset` validates and
 inspects the integrity-locked methodology catalog. None invokes Python.
 
 The CLI records the resolved configuration source, log/progress policy, memory
@@ -98,6 +101,31 @@ locale-dependent values, or non-deterministically ordered collections.
 Large-data domains must use the `tidas-runtime` cancellation token, bounded
 queues, explicit memory reservations, and streaming spools rather than
 collecting issue lists or complete packages in memory.
+
+## Native conversion
+
+`tidas-conversion` traverses package trees in sorted order without following
+symlinks, reserves an explicit per-file memory estimate before reading, and
+checks cancellation during conversion, asset materialization, and hashing.
+The target is assembled in a sibling temporary directory, seeded from an
+existing output when present, and renamed into place with rollback; a failed
+conversion never publishes a partial tree.
+
+TIDAS JSON maps `@attribute`, `#text`, repeated children, namespaces, null
+elements, and scalar text to the frozen `xmltodict 1.0.4` semantics. A strict
+single-root transformer remains the reusable format boundary. Package
+documents that contain one known dataset root plus top-level `version` or
+`json_tg` metadata place only those extra fields in a deterministic
+`.tidas-envelope.json` sidecar; reverse conversion consumes the sidecar and
+restores the envelope. Root `manifest.json` is package metadata and is copied.
+XML 1.0-invalid characters and unknown/missing dataset roots fail as data
+issues instead of producing invalid eILCD.
+
+`tidas.conversion-report.v1` records direction, converted/copied/asset/sidecar
+counts, input and output bytes, the locked asset fingerprint, cross-platform
+output-tree SHA-256, and peak accounted memory. It contains no paths or wall
+clock values, so the same input and assets produce the same report summary in
+different directories.
 
 ## Native validation and rulesets
 
@@ -152,9 +180,9 @@ the logical issue-stream hash, and the asset/engine handshake.
   input is accepted; network and arbitrary filesystem resolution are not part
   of the product contract.
 
-This is intentionally a portability spike and boundary decision, not proof
-that all production stylesheets are migrated. Functional conversion and release
-coverage remains in #121 and #124.
+This remains the native XSD/XSLT portability boundary. Native format
+conversion is implemented by #121 without executing XSLT; release transform
+orchestration and production resolver closure remain in #124.
 
 Review note, 2026-07-17: Issue #112 remains inside the existing validation and release-packaging modules. Explicit UTF-8 reads and LF writes make the same packaged assets and report structures byte-stable on Windows; no tool family, asset source, downstream dispatch path, or release architecture changes.
 
@@ -163,7 +191,7 @@ Review note, 2026-07-17: Issue #112 remains inside the existing validation and r
 | Path group | Role |
 | --- | --- |
 | `Cargo.toml`, `Cargo.lock`, `crates/**` | Rust workspace and final product implementation |
-| `contracts/**` | stable machine-readable Rust report, invocation, asset-lock, and spool contract schemas |
+| `contracts/**` | stable machine-readable Rust report, invocation, conversion, asset-lock, and spool contract schemas |
 | `assets/asset-lock.v1.json` | deterministic executable-asset ownership and integrity lock |
 | `.gitattributes` | cross-platform LF checkout normalization for hashed inputs |
 | `migration/**` | tracked migration inventory and ownership decisions |

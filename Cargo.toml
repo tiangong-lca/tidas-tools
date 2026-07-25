@@ -2,6 +2,7 @@
 members = [
   "crates/tidas-assets",
   "crates/tidas-cli",
+  "crates/tidas-conversion",
   "crates/tidas-contracts",
   "crates/tidas-references",
   "crates/tidas-runtime",
