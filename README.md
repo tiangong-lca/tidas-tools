@@ -7,11 +7,46 @@
 
 [English](https://github.com/tiangong-lca/tidas-tools/blob/main/README.md) | [中文](https://github.com/tiangong-lca/tidas-tools/blob/main/README_CN.md)
 
-This toolkit is used for conversion and validation of TianGong TIDAS and eILCD/ILCD data formats.
+This repository is migrating its conversion, import, export, validation,
+release, and ruleset behavior to one cross-platform Rust executable named
+`tidas`.
+
+## Rust migration preview
+
+The first migration slice establishes the Cargo workspace, stable machine
+contracts, bounded runtime primitives, executable-asset integrity lock, and
+the XML/XSD/XSLT portability boundary:
+
+```bash
+cargo build --workspace
+cargo run -p tidas-cli --bin tidas -- --help
+cargo run -p tidas-cli --bin tidas -- --format json version
+cargo run -p tidas-assets --bin tidas-asset-lock -- check
+```
+
+The final command tree is `convert`, `import`, `export`, `validate`, `release`,
+`ruleset`, and `version`. Only `version` is functional in this foundation
+slice; the other Rust commands fail explicitly with exit class
+`unavailable`/code `69` and never invoke Python.
+
+The Python package described below is feature-frozen and remains temporarily
+available as an internal golden/parity oracle. It is not the final product and
+its legacy executable names and argument layout will not be preserved. Python
+will be removed only after Rust functional parity, deterministic output,
+performance/RSS targets, initial cross-platform artifacts, downstream
+cutovers, and workspace cleanup have all passed. Progress is tracked in
+[Issue #117](https://github.com/tiangong-lca/tidas-tools/issues/117).
 
 ---
 
-## 1. Introduction
+## Frozen Python oracle reference
+
+The following documentation describes the transitional Python oracle used to
+verify migration parity.
+
+---
+
+## 1. Oracle scope
 
 This toolkit contains these independent tools:
 

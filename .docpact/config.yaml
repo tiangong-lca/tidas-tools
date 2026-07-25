@@ -1,8 +1,10 @@
 version: 1
 layout: repo
-lastReviewedAt: "2026-07-22"
-lastReviewedCommit: "81054f37a1ca8f428aa889decacc60a67175187b"
-# Review note, 2026-07-17: Issue #112 keeps UTF-8 schema reads, LF release-report writes, Windows-portable fixtures, and the 0.0.42 recovery release inside the existing validation, release-packaging, test, and release routes. No ownership, schema, dependency, dispatch, tag-pattern, or workspace-integration rule changes are required.
+lastReviewedAt: "2026-07-25"
+lastReviewedCommit: "1dd24944f3f076864121b7cb3eda7f3e184099e5"
+# Issue #118 adds the Rust workspace, stable contracts, executable-asset lock,
+# migration inventory, and five-platform Rust CI while Python remains a frozen
+# parity oracle during the dependency-ordered #117 migration.
 
 catalog:
   repos:
@@ -23,13 +25,19 @@ ownership:
           - AGENTS.md
           - README.md
           - README_CN.md
+          - .gitattributes
           - .docpact/config.yaml
           - docs/agents/**
+          - migration/**
           - .github/workflows/ai-doc-lint.yml
       ownerRepo: tidas-tools
     - id: tool-runtime
       paths:
         include:
+          - Cargo.toml
+          - Cargo.lock
+          - crates/**
+          - contracts/**
           - pyproject.toml
           - src/tidas_tools/convert.py
           - src/tidas_tools/import_lca/**
@@ -45,6 +53,7 @@ ownership:
     - id: packaged-assets
       paths:
         include:
+          - assets/**
           - src/tidas_tools/tidas/**
           - src/tidas_tools/eilcd/**
       ownerRepo: tidas-tools
@@ -55,6 +64,7 @@ ownership:
           - test_data/**
           - scripts/schema_lock.py
           - .github/workflows/ci.yml
+          - .github/workflows/rust-ci.yml
           - .github/workflows/dispatch-tidas-sdk-sync.yml
           - .github/workflows/python-package-deploy.yml
       ownerRepo: tidas-tools
@@ -77,8 +87,15 @@ coverage:
     - AGENTS.md
     - README.md
     - README_CN.md
+    - .gitattributes
     - .docpact/config.yaml
     - docs/agents/**
+    - migration/**
+    - Cargo.toml
+    - Cargo.lock
+    - crates/**
+    - contracts/**
+    - assets/**
     - pyproject.toml
     - src/tidas_tools/convert.py
     - src/tidas_tools/import_lca/**
@@ -96,6 +113,7 @@ coverage:
     - tests/**
     - test_data/**
     - .github/workflows/ci.yml
+    - .github/workflows/rust-ci.yml
     - .github/workflows/ai-doc-lint.yml
     - .github/workflows/dispatch-tidas-sdk-sync.yml
     - .github/workflows/python-package-deploy.yml
@@ -129,6 +147,10 @@ routing:
         - scripts/install-git-hooks.sh
     tool-runtime:
       paths:
+        - Cargo.toml
+        - Cargo.lock
+        - crates/**
+        - contracts/**
         - pyproject.toml
         - src/tidas_tools/convert.py
         - src/tidas_tools/import_lca/**
@@ -142,12 +164,21 @@ routing:
         - src/tidas_tools/release.py
     conversion:
       paths:
+        - crates/tidas-cli/**
+        - crates/tidas-contracts/**
+        - crates/tidas-runtime/**
+        - crates/tidas-xml/**
         - src/tidas_tools/convert.py
         - src/tidas_tools/import_lca/**
         - src/tidas_tools/eilcd/**
         - src/tidas_tools/tidas/**
     validation:
       paths:
+        - crates/tidas-cli/**
+        - crates/tidas-contracts/**
+        - crates/tidas-runtime/**
+        - crates/tidas-xml/**
+        - contracts/**
         - src/tidas_tools/validate.py
         - src/tidas_tools/validation_report.py
         - src/tidas_tools/validation_batch.py
@@ -160,11 +191,18 @@ routing:
         - scripts/schema_lock.py
     export:
       paths:
+        - crates/tidas-cli/**
+        - crates/tidas-contracts/**
+        - crates/tidas-runtime/**
         - src/tidas_tools/export.py
         - src/tidas_tools/package_versions.py
         - src/tidas_tools/release.py
     release-packaging:
       paths:
+        - crates/tidas-cli/**
+        - crates/tidas-contracts/**
+        - crates/tidas-runtime/**
+        - crates/tidas-xml/**
         - src/tidas_tools/release.py
         - src/tidas_tools/convert.py
         - src/tidas_tools/validate.py
@@ -172,6 +210,8 @@ routing:
         - src/tidas_tools/eilcd/**
     packaged-assets:
       paths:
+        - assets/**
+        - crates/tidas-assets/**
         - src/tidas_tools/tidas/**
         - src/tidas_tools/eilcd/**
     sdk-dispatch:
@@ -182,17 +222,27 @@ routing:
         - src/tidas_tools/tidas/methodologies/**
     release:
       paths:
+        - Cargo.toml
+        - Cargo.lock
+        - .github/workflows/rust-ci.yml
         - pyproject.toml
         - .github/workflows/python-package-deploy.yml
     proof:
       paths:
         - docs/agents/repo-validation.md
+        - Cargo.toml
+        - Cargo.lock
+        - crates/**
+        - contracts/**
+        - assets/**
+        - migration/**
         - pyproject.toml
         - scripts/schema_lock.py
         - src/tidas_tools/**
         - tests/**
         - test_data/**
         - .github/workflows/ci.yml
+        - .github/workflows/rust-ci.yml
         - .github/workflows/dispatch-tidas-sdk-sync.yml
         - .github/workflows/python-package-deploy.yml
     repo-docs:
@@ -200,8 +250,10 @@ routing:
         - AGENTS.md
         - README.md
         - README_CN.md
+        - .gitattributes
         - .docpact/config.yaml
         - docs/agents/**
+        - migration/**
     root-integration:
       paths:
         - AGENTS.md
@@ -214,6 +266,7 @@ docInventory:
     - .docpact/config.yaml
     - docs/agents/repo-validation.md
     - docs/agents/repo-architecture.md
+    - migration/python-to-rust-owners.md
 
 repo:
   id: tidas-tools
@@ -260,6 +313,16 @@ rules:
     scope: repo
     repo: tidas-tools
     triggers:
+      - path: Cargo.toml
+        kind: rust-workspace
+      - path: Cargo.lock
+        kind: dependency-lock
+      - path: crates/**
+        kind: rust-tooling
+      - path: contracts/**
+        kind: machine-contract
+      - path: migration/**
+        kind: migration-contract
       - path: pyproject.toml
         kind: runtime-config
       - path: src/tidas_tools/convert.py
@@ -296,6 +359,12 @@ rules:
     scope: repo
     repo: tidas-tools
     triggers:
+      - path: .gitattributes
+        kind: repository-normalization
+      - path: assets/**
+        kind: asset-lock
+      - path: crates/tidas-assets/**
+        kind: asset-runtime
       - path: src/tidas_tools/tidas/**
         kind: tidas-asset
       - path: src/tidas_tools/eilcd/**
@@ -321,6 +390,8 @@ rules:
       - path: scripts/schema_lock.py
         kind: automation
       - path: .github/workflows/ci.yml
+        kind: automation
+      - path: .github/workflows/rust-ci.yml
         kind: automation
       - path: .github/workflows/dispatch-tidas-sdk-sync.yml
         kind: automation

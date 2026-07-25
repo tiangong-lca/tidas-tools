@@ -6,5 +6,15 @@ cd "$repo_root"
 
 "$repo_root/scripts/docpact-gate.sh" "$@"
 
-echo "Running local test gate: uv run pytest"
+echo "Checking executable asset lock."
+cargo run --locked -p tidas-assets --bin tidas-asset-lock -- check
+
+echo "Running Rust formatting, lint, and test gates."
+cargo fmt --all --check
+cargo clippy --locked --workspace --all-targets -- -D warnings
+cargo test --locked --workspace --all-targets
+
+echo "Running frozen Python parity-oracle gates."
+uv run python scripts/schema_lock.py check
+uv run black --check --target-version py313 src tests
 uv run pytest

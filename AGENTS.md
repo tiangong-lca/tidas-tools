@@ -18,8 +18,15 @@ checkPaths:
   - AGENTS.md
   - README.md
   - README_CN.md
+  - .gitattributes
   - .docpact/**/*.yaml
   - docs/agents/**
+  - Cargo.toml
+  - Cargo.lock
+  - crates/**
+  - contracts/**
+  - assets/**
+  - migration/**
   - pyproject.toml
   - src/tidas_tools/**
   - tests/**
@@ -30,9 +37,9 @@ checkPaths:
   - scripts/schema_lock.py
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-07-22
-lastReviewedCommit: 81054f37a1ca8f428aa889decacc60a67175187b
-lastReviewedNote: "Issue #114 adds the versioned document-validation batch and reference-extraction contracts without moving database Scope resolution or Certificate ownership into tidas-tools."
+lastReviewedAt: 2026-07-25
+lastReviewedCommit: 1dd24944f3f076864121b7cb3eda7f3e184099e5
+lastReviewedNote: "Issue #118 establishes the Rust workspace, stable report/runtime contracts, executable-asset lock, and cross-platform XML boundary for the staged #117 migration."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md
@@ -43,7 +50,12 @@ related:
 
 ## Repo Contract
 
-`tidas-tools` owns standalone TIDAS and eILCD conversion, validation, export behavior, and the packaged schema and methodology assets consumed by downstream SDK refreshes. Start here when the task may change how TIDAS data is validated, converted, exported, or versioned as tooling.
+`tidas-tools` owns the unified cross-platform `tidas` executable, its reusable
+Rust domain crates, standalone TIDAS/eILCD behavior, and the packaged schema and
+methodology assets consumed by downstream SDK refreshes. Issue #117 is moving
+the frozen Python implementation to Rust in dependency-ordered slices. Until
+the final cutover gate passes, Python is an internal golden/parity oracle and
+must not receive new product features.
 
 Review note, 2026-07-17: Issue #112 makes packaged schema reads explicitly UTF-8 and release JSON writes explicitly LF, adds Windows regression proof, and publishes the recovery as 0.0.42. Conversion/profile semantics, packaged assets, dependencies, release automation, immutable tag rules, and workspace-integration requirements are unchanged.
 
@@ -80,14 +92,19 @@ Read in this order:
 
 Keep these entry-level facts in `AGENTS.md`. Use `README.md`, `README_CN.md`, and `docs/agents/repo-validation.md` for fuller command detail.
 
-- Python package manager and runner: `uv`
+- Rust workspace toolchain: Rust 1.88 or newer, Cargo resolver 3
+- final product entry point: `cargo run -p tidas-cli --bin tidas -- <subcommand>`
+- final command tree: `convert`, `import`, `export`, `validate`, `release`, `ruleset`, `version`
+- canonical Rust checks: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings`, and `cargo test --workspace --all-targets`
+- executable asset lock: `cargo run -p tidas-assets --bin tidas-asset-lock -- check`
+- migration-oracle package manager and runner: `uv`
 - routine branch base: `main`
 - routine PR base: `main`
 - canonical setup: `uv sync --dev`
 - canonical local test command: `uv run pytest`
 - after every code fix, run Black lint before final validation: `uv run black --check --target-version py313 src tests`
 - canonical schema asset check: `uv run python scripts/schema_lock.py check`
-- common manual probes:
+- Python oracle probes during migration:
   - `uv run python src/tidas_tools/convert.py --help`
   - `uv run python src/tidas_tools/import_lca/cli.py --help`
   - `uv run python src/tidas_tools/validate.py --help`
@@ -103,6 +120,10 @@ The authoritative path-level ownership map lives in `.docpact/config.yaml`.
 
 At a human-readable level, this repo owns:
 
+- the Cargo workspace and final `tidas` binary under `Cargo.toml` and `crates/**`
+- stable machine contracts under `contracts/**`
+- the complete executable asset inventory in `assets/asset-lock.v1.json`
+- the Python-to-Rust owner inventory under `migration/**`
 - standalone CLI behavior in `src/tidas_tools/convert.py`, `src/tidas_tools/import_lca/**`, `src/tidas_tools/validate.py`, and `src/tidas_tools/export.py`
 - deterministic `document-validation-batch.v1` streaming validation and reproducibility handshake in `src/tidas_tools/validation_batch.py`
 - the pure `ReferenceExtractionResultV1` / `ReferenceEdgeV1` contract and golden parity fixtures in `src/tidas_tools/reference_extraction.py` and `tests/fixtures/reference_extraction_v1/**`
@@ -139,6 +160,14 @@ Route those tasks to:
 ## Operational Invariants
 
 - do not move standalone conversion, validation, or export logic into `tidas-sdk`
+- keep `tidas-cli` thin; reusable behavior belongs in domain crates
+- do not add legacy Rust executable aliases or a PyPI Rust wrapper
+- do not invoke Python from Rust; incomplete Rust commands must fail with the stable unavailable exit class
+- large-data paths must stream through bounded queues, explicit memory budgets, and cancellation-aware boundaries
+- `assets/asset-lock.v1.json` is the integrity authority for executable schemas, methodologies, rulesets, indexes, XSD, XSLT, and XML reference assets
+- `.gitattributes` forces executable assets, machine contracts, source, and governed docs to LF so byte hashes are identical on Windows, macOS, and Linux
+- native libxml2/libxslt access is serialized until thread-safety is independently proved; production XSLT must fail closed on external resource resolution
+- Python remains frozen until functional parity, deterministic contracts, local performance/RSS targets, cross-platform artifacts, and downstream cutovers all pass; then #126 removes every active Python implementation/install/invocation path
 - do not treat the public docs site as the executable upstream for packaged schemas and methodologies
 - packaged assets under `src/tidas_tools/**` are executable tooling inputs, not just reference docs
 - validator-private projection indexes may optimize standalone validation, but they must not replace or weaken packaged TIDAS schema contracts
@@ -182,4 +211,13 @@ Install the versioned local hook once per checkout:
 ./scripts/install-git-hooks.sh
 ```
 
-The `pre-push` hook runs `scripts/docpact-gate.sh`, which delegates CLI lookup to `scripts/docpact` and performs strict config validation plus enforced lint before the push leaves the machine. It then runs `uv run pytest` as the local test gate. The wrapper checks `DOCPACT_BIN`, Cargo install locations, Homebrew install locations, and then `PATH`, so local agent shells should not fail only because bare `docpact` is unavailable. The default comparison base is `origin/main`. Override it for unusual stacks with `DOCPACT_BASE_REF=<ref>` or `scripts/docpact-gate.sh --base <ref>`. The gate writes its detailed report to a temporary file so normal pushes do not create `.docpact/runs/` artifacts. The GitHub `CI` workflow is manual-dispatch only; the publish workflow creates release tags from `main` version bumps and still runs pytest before publishing.
+The `pre-push` hook runs `scripts/docpact-gate.sh`, the Rust formatting/lint/test
+and asset-lock gates, then the frozen Python schema-lock/Black/pytest oracle.
+The wrapper checks `DOCPACT_BIN`, Cargo install locations, Homebrew install
+locations, and then `PATH`, so local agent shells should not fail only because
+bare `docpact` is unavailable. The default comparison base is `origin/main`.
+Override it for unusual stacks with `DOCPACT_BASE_REF=<ref>` or
+`scripts/docpact-gate.sh --base <ref>`. The gate writes its detailed report to
+a temporary file so normal pushes do not create `.docpact/runs/` artifacts.
+`.github/workflows/rust-ci.yml` proves the initial five-platform matrix on
+pull requests; the existing Python publish workflow remains transitional.
