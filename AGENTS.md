@@ -39,9 +39,10 @@ checkPaths:
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-25
 lastReviewedCommit: 1dd24944f3f076864121b7cb3eda7f3e184099e5
-lastReviewedNote: "Issue #118 establishes the Rust workspace, stable report/runtime contracts, executable-asset lock, and cross-platform XML boundary for the staged #117 migration."
+lastReviewedNote: "Issue #119 establishes the authoritative unified CLI, invocation context, output-channel, completion, and bounded-runtime adapter contract."
 related:
   - .docpact/config.yaml
+  - docs/agents/cli-contract.md
   - docs/agents/repo-validation.md
   - docs/agents/repo-architecture.md
   - README.md
@@ -67,6 +68,7 @@ Review note, 2026-07-17: Issue #112 makes packaged schema reads explicitly UTF-8
 | `.docpact/config.yaml` | machine-readable repo facts, routing intents, governed-doc rules, ownership, coverage, and freshness | explanatory prose or long-form walkthroughs |
 | `docs/agents/repo-validation.md` | minimum proof by change type, manual CLI probes, PR validation note shape | repo contract, branch policy truth, or architecture explanations |
 | `docs/agents/repo-architecture.md` | compact tool topology, stable path map, upstream asset chain, dispatch and release model | checklist-style proof guidance or user-facing CLI docs |
+| `docs/agents/cli-contract.md` | authoritative unified command, configuration, stream, machine-report, completion, and exit contract | domain conversion, validation, import, export, or release semantics |
 | `README.md` | English user-facing CLI examples and basic development commands | machine-readable routing or lint semantics |
 | `README_CN.md` | Chinese user-facing CLI examples and basic development commands | machine-readable routing or lint semantics |
 
@@ -76,7 +78,7 @@ Read in this order:
 
 1. `AGENTS.md`
 2. `.docpact/config.yaml`
-3. `docs/agents/repo-validation.md` or `docs/agents/repo-architecture.md`
+3. `docs/agents/cli-contract.md` for public CLI work, otherwise `docs/agents/repo-validation.md` or `docs/agents/repo-architecture.md`
 4. `README.md` or `README_CN.md` only for user-facing CLI examples
 
 ## Operational Pointers
@@ -84,6 +86,7 @@ Read in this order:
 - path-level ownership, routing intents, governed-doc inventory, and lint rules live in `.docpact/config.yaml`
 - minimum proof and manual CLI probe guidance live in `docs/agents/repo-validation.md`
 - stable path groups, upstream asset handoffs, and release / dispatch topology live in `docs/agents/repo-architecture.md`
+- unified CLI behavior and machine-output stability live in `docs/agents/cli-contract.md`
 - repo-local documentation maintenance is enforced locally by the pre-push docpact gate; `.github/workflows/ai-doc-lint.yml` is manual-dispatch fallback
 - schema asset parity and lock validation are enforced by `scripts/schema_lock.py` and `.github/workflows/ci.yml`
 - the main routing intents are `tool-runtime`, `conversion`, `validation`, `export`, `packaged-assets`, `sdk-dispatch`, `release`, `proof`, `repo-docs`, and `root-integration`
@@ -95,6 +98,8 @@ Keep these entry-level facts in `AGENTS.md`. Use `README.md`, `README_CN.md`, an
 - Rust workspace toolchain: Rust 1.88 or newer, Cargo resolver 3
 - final product entry point: `cargo run -p tidas-cli --bin tidas -- <subcommand>`
 - final command tree: `convert`, `import`, `export`, `validate`, `release`, `ruleset`, `version`
+- configuration precedence: explicit CLI option, then matching `TIDAS_*` environment variable, then the documented built-in default; no implicit current-directory config
+- stdout is reserved for one report or completion script; logs, progress, and file-write confirmations use stderr
 - canonical Rust checks: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings`, and `cargo test --workspace --all-targets`
 - executable asset lock: `cargo run -p tidas-assets --bin tidas-asset-lock -- check`
 - migration-oracle package manager and runner: `uv`

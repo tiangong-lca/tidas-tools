@@ -19,18 +19,20 @@
     "schema_version": {
       "const": "tidas.operation-report.v1"
     },
-    "command": {
-      "type": "string",
-      "minLength": 1
-    },
     "status": {
       "enum": ["succeeded", "completed-with-issues", "failed", "cancelled"]
+    },
+    "command": {
+      "enum": ["convert", "import", "export", "validate", "release", "ruleset", "version"]
     },
     "exit_class": {
       "enum": ["success", "data-issues", "usage", "unavailable", "internal", "io", "cancelled"]
     },
     "completeness": {
       "enum": ["complete", "partial", "not-started"]
+    },
+    "invocation": {
+      "$ref": "#/$defs/invocation"
     },
     "summary": {
       "type": "object"
@@ -55,6 +57,60 @@
     }
   },
   "$defs": {
+    "invocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "config_source",
+        "config_path",
+        "log_level",
+        "progress_mode",
+        "progress_enabled",
+        "memory_budget_bytes",
+        "queue_capacity",
+        "input_policy",
+        "report_destination",
+        "diagnostic_destination"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "tidas.invocation-context.v1"
+        },
+        "config_source": {
+          "enum": ["none", "environment", "cli"]
+        },
+        "config_path": {
+          "type": ["string", "null"]
+        },
+        "log_level": {
+          "enum": ["error", "warn", "info", "debug", "trace"]
+        },
+        "progress_mode": {
+          "enum": ["auto", "never", "always"]
+        },
+        "progress_enabled": {
+          "type": "boolean"
+        },
+        "memory_budget_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "queue_capacity": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "input_policy": {
+          "const": "explicit-path-or-dash"
+        },
+        "report_destination": {
+          "enum": ["stdout", "file"]
+        },
+        "diagnostic_destination": {
+          "const": "stderr"
+        }
+      }
+    },
     "diagnostic": {
       "type": "object",
       "additionalProperties": false,

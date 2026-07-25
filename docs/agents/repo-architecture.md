@@ -33,10 +33,11 @@ checkPaths:
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-25
 lastReviewedCommit: 1dd24944f3f076864121b7cb3eda7f3e184099e5
-lastReviewedNote: "Issue #118 establishes the Rust foundation, executable-asset lock, and XML portability boundary for the staged #117 migration."
+lastReviewedNote: "Issue #119 adds the stable unified CLI invocation, stream, completion, and bounded-runtime adapter contract."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
+  - ./cli-contract.md
   - ./repo-validation.md
   - ../../README.md
 ---
@@ -57,6 +58,7 @@ until all #117 exit gates pass.
 | `crates/tidas-assets` | offline executable-asset embedding, classification, integrity checking, and fingerprinting |
 | `crates/tidas-xml` | strict streaming XML inspection plus the compatibility boundary to XSD/XSLT engines |
 | `crates/tidas-cli` | the single `tidas` binary, final command tree, output routing, and thin domain dispatch |
+| `docs/agents/cli-contract.md` | authoritative command, configuration precedence, stream, completion, invocation-context, and exit behavior |
 | `contracts/**` | checked-in JSON Schema for stable machine contracts |
 | `assets/asset-lock.v1.json` | exact path, kind, byte length, and SHA-256 ownership lock for every executable asset |
 | `.gitattributes` | LF checkout contract for byte-identical assets and machine contracts on every platform |
@@ -70,6 +72,13 @@ The command tree is fixed to `convert`, `import`, `export`, `validate`,
 `release`, `ruleset`, and `version`. No old executable alias or Python fallback
 is present. Until a domain slice lands, its Rust command returns the stable
 `unavailable` exit class (69).
+
+The CLI records the resolved configuration source, log/progress policy, memory
+budget, queue capacity, and I/O policy in `tidas.invocation-context.v1`.
+Configuration never depends on an implicit working-directory file. Completion
+scripts are generated with `tidas --completion <shell>` without adding another
+product command. See `docs/agents/cli-contract.md` for the authoritative public
+behavior.
 
 ## Stable contract policy
 
@@ -109,7 +118,7 @@ Review note, 2026-07-17: Issue #112 remains inside the existing validation and r
 | Path group | Role |
 | --- | --- |
 | `Cargo.toml`, `Cargo.lock`, `crates/**` | Rust workspace and final product implementation |
-| `contracts/**` | stable machine-readable Rust contract schemas |
+| `contracts/**` | stable machine-readable Rust report, invocation, asset-lock, and spool contract schemas |
 | `assets/asset-lock.v1.json` | deterministic executable-asset ownership and integrity lock |
 | `.gitattributes` | cross-platform LF checkout normalization for hashed inputs |
 | `migration/**` | tracked migration inventory and ownership decisions |

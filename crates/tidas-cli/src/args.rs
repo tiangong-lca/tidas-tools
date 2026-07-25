@@ -1,0 +1,272 @@
+use std::io::{self, Write};
+use std::path::PathBuf;
+
+use clap::error::ErrorKind;
+use clap::{CommandFactory, Parser, Subcommand, ValueEnum};
+use clap_complete::Shell;
+use tidas_contracts::{CommandNameV1, LogLevelV1, ProgressModeV1};
+
+pub const DEFAULT_MEMORY_BUDGET_MIB: u64 = 512;
+pub const DEFAULT_QUEUE_CAPACITY: usize = 256;
+
+#[derive(Debug, Parser)]
+#[command(
+    name = "tidas",
+    version,
+    disable_help_subcommand = true,
+    about = "Cross-platform TIDAS conversion, import, export, validation, and release tooling",
+    long_about = "The unified TIDAS executable. Domain behavior lives in reusable Rust crates; this binary only parses inputs, supplies bounded runtime controls, and renders stable human or JSON reports.",
+    after_help = "Examples:\n  tidas version --format json\n  tidas --completion bash > tidas.bash\n\nPrecedence: command-line options override TIDAS_* environment variables, which override documented built-in defaults. No configuration file is loaded implicitly from the current directory.\n\nStdout contains only the requested report or completion script. Logs, progress, diagnostics, and file-write confirmations use stderr. During migration, incomplete Rust commands return unavailable (69) and never invoke Python."
+)]
+pub struct Cli {
+    /// Reading-oriented human output or stable machine-readable JSON.
+    #[arg(long, value_enum, default_value_t = OutputFormat::Human, global = true)]
+    pub format: OutputFormat,
+
+    /// Persist the complete report atomically instead of writing it to stdout.
+    #[arg(long, value_name = "PATH", global = true)]
+    pub report: Option<PathBuf>,
+
+    /// Explicit configuration file; otherwise `TIDAS_CONFIG` is used when set.
+    #[arg(long, value_name = "PATH", global = true)]
+    pub config: Option<PathBuf>,
+
+    /// Diagnostic verbosity; may also be set with `TIDAS_LOG`.
+    #[arg(
+        long,
+        value_enum,
+        env = "TIDAS_LOG",
+        default_value_t = CliLogLevel::Warn,
+        global = true
+    )]
+    pub log_level: CliLogLevel,
+
+    /// Progress policy; may also be set with `TIDAS_PROGRESS`.
+    #[arg(
+        long,
+        value_enum,
+        env = "TIDAS_PROGRESS",
+        default_value_t = CliProgressMode::Auto,
+        global = true
+    )]
+    pub progress: CliProgressMode,
+
+    /// Maximum accounted in-flight memory in MiB.
+    #[arg(
+        long,
+        env = "TIDAS_MEMORY_BUDGET_MIB",
+        default_value_t = DEFAULT_MEMORY_BUDGET_MIB,
+        value_parser = parse_positive_u64,
+        global = true
+    )]
+    pub memory_budget_mib: u64,
+
+    /// Maximum number of items in each bounded work queue.
+    #[arg(
+        long,
+        env = "TIDAS_QUEUE_CAPACITY",
+        default_value_t = DEFAULT_QUEUE_CAPACITY,
+        value_parser = parse_positive_usize,
+        global = true
+    )]
+    pub queue_capacity: usize,
+
+    /// Write a deterministic shell completion script to stdout and exit.
+    #[arg(long, value_enum, value_name = "SHELL")]
+    pub completion: Option<Shell>,
+
+    #[command(subcommand)]
+    pub command: Option<Commands>,
+}
+
+impl Cli {
+    pub fn try_parse_checked() -> Result<Self, clap::Error> {
+        let cli = Self::try_parse()?;
+        cli.validate()?;
+        Ok(cli)
+    }
+
+    fn validate(&self) -> Result<(), clap::Error> {
+        match (self.completion, self.command) {
+            (None, None) => Err(Self::command().error(
+                ErrorKind::MissingSubcommand,
+                "a product command is required; use `tidas --help` or request `--completion <shell>`",
+            )),
+            (Some(_), Some(_)) => Err(Self::command().error(
+                ErrorKind::ArgumentConflict,
+                "--completion generates a script and cannot be combined with a product command",
+            )),
+            (Some(_), None) if self.report.is_some() => Err(Self::command().error(
+                ErrorKind::ArgumentConflict,
+                "--completion writes to stdout and cannot be combined with --report",
+            )),
+            _ => {
+                self.memory_budget_mib.checked_mul(1024 * 1024).ok_or_else(|| {
+                    Self::command().error(
+                        ErrorKind::InvalidValue,
+                        "--memory-budget-mib is too large to represent in bytes",
+                    )
+                })?;
+                Ok(())
+            }
+        }
+    }
+
+    #[must_use]
+    pub const fn memory_budget_bytes(&self) -> u64 {
+        self.memory_budget_mib * 1024 * 1024
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
+pub enum OutputFormat {
+    Human,
+    Json,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
+pub enum CliLogLevel {
+    Error,
+    Warn,
+    Info,
+    Debug,
+    Trace,
+}
+
+impl From<CliLogLevel> for LogLevelV1 {
+    fn from(value: CliLogLevel) -> Self {
+        match value {
+            CliLogLevel::Error => Self::Error,
+            CliLogLevel::Warn => Self::Warn,
+            CliLogLevel::Info => Self::Info,
+            CliLogLevel::Debug => Self::Debug,
+            CliLogLevel::Trace => Self::Trace,
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
+pub enum CliProgressMode {
+    Auto,
+    Never,
+    Always,
+}
+
+impl From<CliProgressMode> for ProgressModeV1 {
+    fn from(value: CliProgressMode) -> Self {
+        match value {
+            CliProgressMode::Auto => Self::Auto,
+            CliProgressMode::Never => Self::Never,
+            CliProgressMode::Always => Self::Always,
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Subcommand)]
+pub enum Commands {
+    /// Convert between TIDAS JSON and eILCD XML.
+    Convert,
+    /// Import supported external LCA formats into TIDAS.
+    Import,
+    /// Export database records and external documents as a package.
+    Export,
+    /// Validate TIDAS JSON or eILCD/ILCD XML.
+    Validate,
+    /// Build and verify deterministic release packages.
+    Release,
+    /// Inspect and validate packaged methodology rulesets.
+    Ruleset,
+    /// Print binary, contract, asset, XML engine, and runtime fingerprints.
+    Version,
+}
+
+impl Commands {
+    #[must_use]
+    pub const fn name(self) -> CommandNameV1 {
+        match self {
+            Self::Convert => CommandNameV1::Convert,
+            Self::Import => CommandNameV1::Import,
+            Self::Export => CommandNameV1::Export,
+            Self::Validate => CommandNameV1::Validate,
+            Self::Release => CommandNameV1::Release,
+            Self::Ruleset => CommandNameV1::Ruleset,
+            Self::Version => CommandNameV1::Version,
+        }
+    }
+}
+
+pub fn write_completion(shell: Shell, writer: &mut impl Write) -> io::Result<()> {
+    let mut command = Cli::command();
+    let mut bytes = Vec::new();
+    clap_complete::generate(shell, &mut command, "tidas", &mut bytes);
+    writer.write_all(&bytes)
+}
+
+fn parse_positive_u64(value: &str) -> Result<u64, String> {
+    value
+        .parse::<u64>()
+        .map_err(|error| format!("expected a positive integer: {error}"))
+        .and_then(|parsed| {
+            if parsed == 0 {
+                Err("value must be greater than zero".to_owned())
+            } else {
+                Ok(parsed)
+            }
+        })
+}
+
+fn parse_positive_usize(value: &str) -> Result<usize, String> {
+    value
+        .parse::<usize>()
+        .map_err(|error| format!("expected a positive integer: {error}"))
+        .and_then(|parsed| {
+            if parsed == 0 {
+                Err("value must be greater than zero".to_owned())
+            } else {
+                Ok(parsed)
+            }
+        })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn clap_contract_is_internally_consistent() {
+        Cli::command().debug_assert();
+    }
+
+    #[test]
+    fn only_the_final_command_names_are_registered() {
+        let command = Cli::command();
+        let names: Vec<_> = command
+            .get_subcommands()
+            .map(clap::Command::get_name)
+            .collect();
+        assert_eq!(
+            names,
+            [
+                "convert", "import", "export", "validate", "release", "ruleset", "version"
+            ]
+        );
+    }
+
+    #[test]
+    fn every_supported_completion_is_repeatable() {
+        for shell in [
+            Shell::Bash,
+            Shell::Elvish,
+            Shell::Fish,
+            Shell::PowerShell,
+            Shell::Zsh,
+        ] {
+            let mut first = Vec::new();
+            let mut second = Vec::new();
+            write_completion(shell, &mut first).unwrap();
+            write_completion(shell, &mut second).unwrap();
+            assert_eq!(first, second);
+            assert!(!first.is_empty());
+        }
+    }
+}

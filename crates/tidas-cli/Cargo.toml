@@ -13,10 +13,17 @@ path = "src/main.rs"
 
 [dependencies]
 clap.workspace = true
+clap_complete.workspace = true
+ctrlc.workspace = true
+serde.workspace = true
 serde_json.workspace = true
 tidas-assets = { path = "../tidas-assets" }
 tidas-contracts = { path = "../tidas-contracts" }
+tidas-runtime = { path = "../tidas-runtime" }
 tidas-xml = { path = "../tidas-xml" }
+
+[dev-dependencies]
+tempfile.workspace = true
 
 [lints]
 workspace = true
