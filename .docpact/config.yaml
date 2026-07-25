@@ -25,6 +25,7 @@ ownership:
           - AGENTS.md
           - README.md
           - README_CN.md
+          - .gitattributes
           - .docpact/config.yaml
           - docs/agents/**
           - migration/**
@@ -86,6 +87,7 @@ coverage:
     - AGENTS.md
     - README.md
     - README_CN.md
+    - .gitattributes
     - .docpact/config.yaml
     - docs/agents/**
     - migration/**
@@ -248,6 +250,7 @@ routing:
         - AGENTS.md
         - README.md
         - README_CN.md
+        - .gitattributes
         - .docpact/config.yaml
         - docs/agents/**
         - migration/**
@@ -356,6 +359,8 @@ rules:
     scope: repo
     repo: tidas-tools
     triggers:
+      - path: .gitattributes
+        kind: repository-normalization
       - path: assets/**
         kind: asset-lock
       - path: crates/tidas-assets/**

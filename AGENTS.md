@@ -18,6 +18,7 @@ checkPaths:
   - AGENTS.md
   - README.md
   - README_CN.md
+  - .gitattributes
   - .docpact/**/*.yaml
   - docs/agents/**
   - Cargo.toml
@@ -164,6 +165,7 @@ Route those tasks to:
 - do not invoke Python from Rust; incomplete Rust commands must fail with the stable unavailable exit class
 - large-data paths must stream through bounded queues, explicit memory budgets, and cancellation-aware boundaries
 - `assets/asset-lock.v1.json` is the integrity authority for executable schemas, methodologies, rulesets, indexes, XSD, XSLT, and XML reference assets
+- `.gitattributes` forces executable assets, machine contracts, source, and governed docs to LF so byte hashes are identical on Windows, macOS, and Linux
 - native libxml2/libxslt access is serialized until thread-safety is independently proved; production XSLT must fail closed on external resource resolution
 - Python remains frozen until functional parity, deterministic contracts, local performance/RSS targets, cross-platform artifacts, and downstream cutovers all pass; then #126 removes every active Python implementation/install/invocation path
 - do not treat the public docs site as the executable upstream for packaged schemas and methodologies

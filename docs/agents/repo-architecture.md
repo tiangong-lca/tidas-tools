@@ -59,6 +59,7 @@ until all #117 exit gates pass.
 | `crates/tidas-cli` | the single `tidas` binary, final command tree, output routing, and thin domain dispatch |
 | `contracts/**` | checked-in JSON Schema for stable machine contracts |
 | `assets/asset-lock.v1.json` | exact path, kind, byte length, and SHA-256 ownership lock for every executable asset |
+| `.gitattributes` | LF checkout contract for byte-identical assets and machine contracts on every platform |
 | `migration/python-to-rust-owners.md` | frozen Python public-symbol inventory and dependency-ordered Rust owner map |
 
 Later issues add `tidas-validate`, `tidas-convert`, `tidas-import`,
@@ -110,6 +111,7 @@ Review note, 2026-07-17: Issue #112 remains inside the existing validation and r
 | `Cargo.toml`, `Cargo.lock`, `crates/**` | Rust workspace and final product implementation |
 | `contracts/**` | stable machine-readable Rust contract schemas |
 | `assets/asset-lock.v1.json` | deterministic executable-asset ownership and integrity lock |
+| `.gitattributes` | cross-platform LF checkout normalization for hashed inputs |
 | `migration/**` | tracked migration inventory and ownership decisions |
 | `src/tidas_tools/convert.py` | standalone conversion CLI |
 | `src/tidas_tools/import_lca/**` | external LCA import CLI scaffolding, format detection, canonical import model, and staged source adapters |

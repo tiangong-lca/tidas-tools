@@ -40,7 +40,7 @@ jobs:
             family: windows
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Linux XML toolchain
         if: matrix.family == 'linux'
@@ -81,8 +81,8 @@ jobs:
     name: Frozen Python parity oracle
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v8
         with:
           enable-cache: true
       - run: uv sync --dev

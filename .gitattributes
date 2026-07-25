@@ -1,0 +1,17 @@
+# Executable assets and machine contracts are hashed byte-for-byte. Keep their
+# checked-out bytes identical on Linux, macOS, and Windows.
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.xml text eol=lf
+*.xsd text eol=lf
+*.xsl text eol=lf
+
+# Source, manifests, scripts, and governed documentation also use the repo's LF
+# determinism contract.
+*.rs text eol=lf
+*.toml text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+Cargo.lock text eol=lf
