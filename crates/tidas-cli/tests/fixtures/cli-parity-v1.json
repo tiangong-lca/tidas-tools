@@ -1,0 +1,42 @@
+{
+  "schema_version": "tidas.cli-parity.v1",
+  "purpose": "Freeze Python-era semantic expectations while the unified Rust CLI replaces the legacy entry points. Arguments are intentionally the new Rust surface; parity is semantic, not command-name or flag-layout compatibility.",
+  "command_cases": [
+    {
+      "name": "successful deterministic introspection",
+      "python_oracle": "Legacy describe/version-style commands returned machine-readable tool and asset identity without changing data.",
+      "rust_args": ["version", "--format", "json"],
+      "expected_exit_code": 0,
+      "expected_exit_class": "success",
+      "expected_completeness": "complete"
+    },
+    {
+      "name": "known function not yet migrated",
+      "python_oracle": "A known tool family is distinguishable from malformed invocation; migration never silently falls back to Python.",
+      "rust_args": ["validate", "--format", "json"],
+      "expected_exit_code": 69,
+      "expected_exit_class": "unavailable",
+      "expected_completeness": "not-started"
+    },
+    {
+      "name": "malformed invocation",
+      "python_oracle": "Malformed command input exits non-zero and prints actionable usage guidance.",
+      "rust_args": ["unknown"],
+      "expected_exit_code": 64,
+      "expected_exit_class": null,
+      "expected_completeness": null
+    }
+  ],
+  "contract_cases": [
+    {
+      "name": "completed validation with data warnings",
+      "python_oracle": "Legacy validation distinguished completed data findings from protocol or runtime failure.",
+      "command": "validate",
+      "diagnostic_code": "fixture_warning",
+      "expected_status": "completed-with-issues",
+      "expected_exit_code": 2,
+      "expected_exit_class": "data-issues",
+      "expected_completeness": "complete"
+    }
+  ]
+}

@@ -35,7 +35,7 @@ checkPaths:
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-25
 lastReviewedCommit: 1dd24944f3f076864121b7cb3eda7f3e184099e5
-lastReviewedNote: "Issue #118 adds Rust format/lint/test, asset-lock, XML spike, CLI contract, and five-platform CI proof while retaining the Python oracle gate."
+lastReviewedNote: "Issue #119 adds CLI help/completion/configuration/output-channel/parity contract proof while retaining the five-platform Rust and Python oracle gates."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -72,7 +72,7 @@ be removed only by the final #126 cutover.
 
 | Change type | Minimum local proof | Additional proof when risk is higher | Notes |
 | --- | --- | --- | --- |
-| Rust workspace, shared contracts, or CLI adapter | asset lock; Rust fmt/clippy/test; `cargo run -p tidas-cli --bin tidas -- --help`; deterministic `tidas --format json version` comparison | exercise structured usage failure and every affected exit class; validate JSON against the checked-in schema | The CLI remains thin and incomplete commands fail `unavailable` without invoking Python. |
+| Rust workspace, shared contracts, or CLI adapter | asset lock; Rust fmt/clippy/test; root and command help; deterministic `tidas --format json version` and completion comparisons | exercise configuration precedence, report-file/stdout separation, completion shells, migration parity fixture, structured usage failure, and every affected exit class; validate JSON against the checked-in schema | The CLI remains thin, follows `docs/agents/cli-contract.md`, and incomplete commands fail `unavailable` without invoking Python. |
 | `tidas-runtime` large-data primitives | Rust fmt/clippy/test including bounded queue, cancellation, memory-budget, and streaming spool tests | local large-package benchmark with elapsed time and peak RSS; never start on a Worker server | The target package is intentionally outside Git and issue counts must not cause linear memory growth. |
 | `tidas-assets`, `.gitattributes`, or executable assets | asset-lock check, Rust tests, Python schema lock, full pytest; verify `git check-attr eol` returns `lf` for representative JSON/XSD/XSL files | regenerate the asset lock only after intentional review; compare asset fingerprint twice | The Rust asset lock covers more executable inputs than the legacy paired-schema lock; LF checkout and both lock gates remain during migration. |
 | `tidas-xml` or native dependency workflow | focused `cargo test -p tidas-xml`; full Rust checks; all five CI matrix jobs | representative production XSD/XSLT fixtures; controlled static release-link proof and resolver security tests | `quick-xml` is the streaming reader; libxml2/libxslt native calls are serialized. |

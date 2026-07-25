@@ -47,19 +47,27 @@ Rust 可执行文件 `tidas`。
 
 ## Rust 迁移预览
 
-首个迁移切片建立 Cargo workspace、稳定机器契约、有界运行时基础设施、可执行资产
-完整性锁，以及 XML/XSD/XSLT 跨平台边界：
+当前 Rust 切片已经建立 Cargo workspace、稳定机器与 invocation 契约、有界运行时
+基础设施、可执行资产完整性锁、XML/XSD/XSLT 跨平台边界，以及最终统一 CLI
+适配层：
 
 ```bash
 cargo build --workspace
 cargo run -p tidas-cli --bin tidas -- --help
 cargo run -p tidas-cli --bin tidas -- --format json version
+cargo run -p tidas-cli --bin tidas -- --completion bash > tidas.bash
 cargo run -p tidas-assets --bin tidas-asset-lock -- check
 ```
 
 最终命令树固定为 `convert`、`import`、`export`、`validate`、`release`、
 `ruleset` 和 `version`。本基础切片只有 `version` 已可用；其他 Rust 命令会明确
 返回 `unavailable`（退出码 `69`），绝不调用 Python 回退。
+
+全局运行参数遵循“命令行 > `TIDAS_*` 环境变量 > 内置默认值”的优先级，不会隐式
+读取当前目录中的配置文件。stdout 只包含一次 human/JSON 报告或 completion 脚本；
+日志、进度、诊断与报告落盘确认写入 stderr。使用 `--report <PATH>` 可在不占用
+stdout 的情况下持久化报告。默认计入内存预算为 512 MiB，有界队列容量为 256。
+规范契约见 [docs/agents/cli-contract.md](docs/agents/cli-contract.md)。
 
 下文记录的 Python 包已经 feature freeze，只在迁移期间作为内部 golden/parity
 oracle。它不是最终产品，旧可执行文件名和参数布局不会保留。只有 Rust 功能语义、

@@ -2,9 +2,9 @@ version: 1
 layout: repo
 lastReviewedAt: "2026-07-25"
 lastReviewedCommit: "1dd24944f3f076864121b7cb3eda7f3e184099e5"
-# Issue #118 adds the Rust workspace, stable contracts, executable-asset lock,
-# migration inventory, and five-platform Rust CI while Python remains a frozen
-# parity oracle during the dependency-ordered #117 migration.
+# Issue #119 fixes the unified CLI command/configuration/stream contract,
+# versioned invocation context, deterministic completion surface, and bounded
+# runtime adapter while Python remains a frozen parity oracle.
 
 catalog:
   repos:
@@ -15,6 +15,7 @@ catalog:
       workflowDocs:
         - docs/agents/repo-validation.md
         - docs/agents/repo-architecture.md
+        - docs/agents/cli-contract.md
       workspaceIntegrationRequired: true
 
 ownership:
@@ -27,6 +28,7 @@ ownership:
           - README_CN.md
           - .gitattributes
           - .docpact/config.yaml
+          - docs/agents/cli-contract.md
           - docs/agents/**
           - migration/**
           - .github/workflows/ai-doc-lint.yml
@@ -89,6 +91,7 @@ coverage:
     - README_CN.md
     - .gitattributes
     - .docpact/config.yaml
+    - docs/agents/cli-contract.md
     - docs/agents/**
     - migration/**
     - Cargo.toml
@@ -147,6 +150,7 @@ routing:
         - scripts/install-git-hooks.sh
     tool-runtime:
       paths:
+        - docs/agents/cli-contract.md
         - Cargo.toml
         - Cargo.lock
         - crates/**
@@ -229,6 +233,7 @@ routing:
         - .github/workflows/python-package-deploy.yml
     proof:
       paths:
+        - docs/agents/cli-contract.md
         - docs/agents/repo-validation.md
         - Cargo.toml
         - Cargo.lock
@@ -252,6 +257,7 @@ routing:
         - README_CN.md
         - .gitattributes
         - .docpact/config.yaml
+        - docs/agents/cli-contract.md
         - docs/agents/**
         - migration/**
     root-integration:
@@ -264,6 +270,7 @@ docInventory:
     - README.md
     - README_CN.md
     - .docpact/config.yaml
+    - docs/agents/cli-contract.md
     - docs/agents/repo-validation.md
     - docs/agents/repo-architecture.md
     - migration/python-to-rust-owners.md
@@ -285,6 +292,8 @@ rules:
         kind: deep-doc
       - path: docs/agents/repo-architecture.md
         kind: deep-doc
+      - path: docs/agents/cli-contract.md
+        kind: cli-contract
     requiredDocs:
       - path: AGENTS.md
         mode: review_or_update
@@ -293,6 +302,8 @@ rules:
       - path: docs/agents/repo-validation.md
         mode: review_or_update
       - path: docs/agents/repo-architecture.md
+        mode: review_or_update
+      - path: docs/agents/cli-contract.md
         mode: review_or_update
     reason: Repo entry guidance, machine-readable routing, and retained source docs must stay aligned.
   - id: tidas-tools-readme-contract
@@ -307,6 +318,8 @@ rules:
       - path: AGENTS.md
         mode: must_exist
       - path: .docpact/config.yaml
+        mode: must_exist
+      - path: docs/agents/cli-contract.md
         mode: must_exist
     reason: User-facing landing docs should stay aligned with the current repo contract and CLI/release surface.
   - id: tidas-tools-runtime-contract
@@ -353,6 +366,8 @@ rules:
       - path: docs/agents/repo-validation.md
         mode: review_or_update
       - path: docs/agents/repo-architecture.md
+        mode: review_or_update
+      - path: docs/agents/cli-contract.md
         mode: review_or_update
     reason: Core standalone tooling changes alter the repo's executable contract and proof expectations.
   - id: tidas-tools-asset-contract

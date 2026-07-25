@@ -13,14 +13,15 @@ release, and ruleset behavior to one cross-platform Rust executable named
 
 ## Rust migration preview
 
-The first migration slice establishes the Cargo workspace, stable machine
-contracts, bounded runtime primitives, executable-asset integrity lock, and
-the XML/XSD/XSLT portability boundary:
+The current Rust slices establish the Cargo workspace, stable machine and
+invocation contracts, bounded runtime primitives, executable-asset integrity
+lock, XML/XSD/XSLT portability boundary, and the final unified CLI adapter:
 
 ```bash
 cargo build --workspace
 cargo run -p tidas-cli --bin tidas -- --help
 cargo run -p tidas-cli --bin tidas -- --format json version
+cargo run -p tidas-cli --bin tidas -- --completion bash > tidas.bash
 cargo run -p tidas-assets --bin tidas-asset-lock -- check
 ```
 
@@ -28,6 +29,14 @@ The final command tree is `convert`, `import`, `export`, `validate`, `release`,
 `ruleset`, and `version`. Only `version` is functional in this foundation
 slice; the other Rust commands fail explicitly with exit class
 `unavailable`/code `69` and never invoke Python.
+
+Global runtime options follow `CLI > TIDAS_* environment > built-in default`
+precedence. No configuration file is loaded implicitly. Stdout contains only
+the requested human/JSON report or completion script; logs, progress,
+diagnostics, and report-file confirmations use stderr. Use `--report <PATH>`
+to persist the report without occupying stdout. The default accounted memory
+budget is 512 MiB and the default bounded queue capacity is 256. The normative
+contract is [docs/agents/cli-contract.md](docs/agents/cli-contract.md).
 
 The Python package described below is feature-frozen and remains temporarily
 available as an internal golden/parity oracle. It is not the final product and
