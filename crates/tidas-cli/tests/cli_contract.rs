@@ -74,8 +74,9 @@ fn every_product_command_has_discoverable_help() {
         assert!(output.status.success(), "{command}");
         assert!(output.stderr.is_empty(), "{command}");
         let stdout = String::from_utf8(output.stdout).unwrap();
+        assert!(stdout.contains("Usage:"), "{stdout}");
         assert!(
-            stdout.contains(&format!("Usage: tidas {command}")),
+            stdout.contains(&format!(" {command} [OPTIONS]")),
             "{stdout}"
         );
     }
