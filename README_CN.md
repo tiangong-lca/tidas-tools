@@ -15,11 +15,16 @@ checkPaths:
   - AGENTS.md
   - .docpact/config.yaml
   - docs/agents/**
+  - Cargo.toml
+  - crates/**
+  - contracts/**
+  - assets/**
+  - migration/**
   - pyproject.toml
   - src/tidas_tools/**
   - .github/workflows/**
-lastReviewedAt: 2026-04-24
-lastReviewedCommit: 7984b9bc9f820da7bc31520e8334c9fddedc85d4
+lastReviewedAt: 2026-07-25
+lastReviewedCommit: 1dd24944f3f076864121b7cb3eda7f3e184099e5
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -37,11 +42,40 @@ related:
 
 [English](https://github.com/tiangong-lca/tidas-tools/blob/main/README.md) | [中文](https://github.com/tiangong-lca/tidas-tools/blob/main/README_CN.md)
 
-本工具箱用于 TianGong TIDAS 与 eILCD/ILCD 数据格式的转换和验证。
+本仓库正在把转换、导入、导出、校验、发布和 ruleset 能力迁移到唯一的跨平台
+Rust 可执行文件 `tidas`。
+
+## Rust 迁移预览
+
+首个迁移切片建立 Cargo workspace、稳定机器契约、有界运行时基础设施、可执行资产
+完整性锁，以及 XML/XSD/XSLT 跨平台边界：
+
+```bash
+cargo build --workspace
+cargo run -p tidas-cli --bin tidas -- --help
+cargo run -p tidas-cli --bin tidas -- --format json version
+cargo run -p tidas-assets --bin tidas-asset-lock -- check
+```
+
+最终命令树固定为 `convert`、`import`、`export`、`validate`、`release`、
+`ruleset` 和 `version`。本基础切片只有 `version` 已可用；其他 Rust 命令会明确
+返回 `unavailable`（退出码 `69`），绝不调用 Python 回退。
+
+下文记录的 Python 包已经 feature freeze，只在迁移期间作为内部 golden/parity
+oracle。它不是最终产品，旧可执行文件名和参数布局不会保留。只有 Rust 功能语义、
+确定性输出、性能/RSS、首批跨平台制品、下游切换与 workspace 清理全部通过后，
+才会删除 Python。进度见
+[Issue #117](https://github.com/tiangong-lca/tidas-tools/issues/117)。
 
 ---
 
-## 一、工具简介
+## 冻结的 Python oracle 参考
+
+下文说明迁移期间用于 parity 验证的 Python oracle。
+
+---
+
+## 一、Oracle 范围
 
 本工具箱包含以下独立工具：
 

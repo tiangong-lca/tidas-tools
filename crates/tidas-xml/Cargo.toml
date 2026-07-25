@@ -1,0 +1,18 @@
+[package]
+name = "tidas-xml"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+libxml.workspace = true
+libxslt.workspace = true
+quick-xml.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

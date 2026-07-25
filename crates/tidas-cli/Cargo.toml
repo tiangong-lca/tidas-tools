@@ -1,0 +1,22 @@
+[package]
+name = "tidas-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[[bin]]
+name = "tidas"
+path = "src/main.rs"
+
+[dependencies]
+clap.workspace = true
+serde_json.workspace = true
+tidas-assets = { path = "../tidas-assets" }
+tidas-contracts = { path = "../tidas-contracts" }
+tidas-xml = { path = "../tidas-xml" }
+
+[lints]
+workspace = true

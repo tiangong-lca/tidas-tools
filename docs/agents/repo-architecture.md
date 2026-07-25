@@ -17,6 +17,12 @@ whenToUpdate:
 checkPaths:
   - docs/agents/repo-architecture.md
   - .docpact/config.yaml
+  - Cargo.toml
+  - Cargo.lock
+  - crates/**
+  - contracts/**
+  - assets/**
+  - migration/**
   - pyproject.toml
   - src/tidas_tools/**
   - .github/workflows/**
@@ -25,9 +31,9 @@ checkPaths:
   - scripts/schema_lock.py
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-07-22
-lastReviewedCommit: 81054f37a1ca8f428aa889decacc60a67175187b
-lastReviewedNote: "Issue #114 adds stable validation-batch and reference-extraction contract modules; production Scope traversal and resolution remain Worker-owned."
+lastReviewedAt: 2026-07-25
+lastReviewedCommit: 1dd24944f3f076864121b7cb3eda7f3e184099e5
+lastReviewedNote: "Issue #118 establishes the Rust foundation, executable-asset lock, and XML portability boundary for the staged #117 migration."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -37,7 +43,63 @@ related:
 
 ## Repo Shape
 
-This repo packages standalone tooling plus the schema, methodology, and stylesheet assets those tools execute against.
+This repo is migrating its standalone tooling into a Cargo workspace that
+builds one cross-platform `tidas` executable. The existing Python tree is
+feature-frozen and remains only as the functional/deterministic parity oracle
+until all #117 exit gates pass.
+
+## Rust workspace
+
+| Path | Stable responsibility |
+| --- | --- |
+| `crates/tidas-contracts` | versioned operation reports, diagnostics, artifact references, completeness, and exit-code classes |
+| `crates/tidas-runtime` | cancellation, explicit memory reservations, bounded queues, and streaming JSONL spooling |
+| `crates/tidas-assets` | offline executable-asset embedding, classification, integrity checking, and fingerprinting |
+| `crates/tidas-xml` | strict streaming XML inspection plus the compatibility boundary to XSD/XSLT engines |
+| `crates/tidas-cli` | the single `tidas` binary, final command tree, output routing, and thin domain dispatch |
+| `contracts/**` | checked-in JSON Schema for stable machine contracts |
+| `assets/asset-lock.v1.json` | exact path, kind, byte length, and SHA-256 ownership lock for every executable asset |
+| `migration/python-to-rust-owners.md` | frozen Python public-symbol inventory and dependency-ordered Rust owner map |
+
+Later issues add `tidas-validate`, `tidas-convert`, `tidas-import`,
+`tidas-export`, and `tidas-release` domain crates. The CLI crate must not absorb
+their logic.
+
+The command tree is fixed to `convert`, `import`, `export`, `validate`,
+`release`, `ruleset`, and `version`. No old executable alias or Python fallback
+is present. Until a domain slice lands, its Rust command returns the stable
+`unavailable` exit class (69).
+
+## Stable contract policy
+
+Machine contracts use explicit `tidas.*.v1` identifiers, reject unknown fields
+at typed Rust boundaries, emit LF-terminated JSON, and use ordered maps where
+field order contributes to reproducibility. Additive evolution requires a new
+optional field or a new schema version; existing field meaning and exit-code
+classes cannot drift silently. Outputs contain no implicit wall-clock time,
+locale-dependent values, or non-deterministically ordered collections.
+
+Large-data domains must use the `tidas-runtime` cancellation token, bounded
+queues, explicit memory reservations, and streaming spools rather than
+collecting issue lists or complete packages in memory.
+
+## XML/XSD/XSLT portability decision
+
+- `quick-xml` owns strict, streaming, pure-Rust XML inspection.
+- `libxml2` through `libxml` owns XSD validation.
+- `libxslt` owns the current XSLT 1.0 compatibility layer required by packaged
+  eILCD stylesheets.
+- native XSD/XSLT calls are serialized behind one process-wide lock because the
+  Rust wrapper does not establish safe concurrent schema use.
+- development builds dynamically resolve system libraries; release packaging
+  must use controlled, pinned native libraries and record their versions.
+- production transforms must install a fail-closed resolver before untrusted
+  input is accepted; network and arbitrary filesystem resolution are not part
+  of the product contract.
+
+This is intentionally a portability spike and boundary decision, not proof
+that all production stylesheets are migrated. Functional conversion and release
+coverage remains in #121 and #124.
 
 Review note, 2026-07-17: Issue #112 remains inside the existing validation and release-packaging modules. Explicit UTF-8 reads and LF writes make the same packaged assets and report structures byte-stable on Windows; no tool family, asset source, downstream dispatch path, or release architecture changes.
 
@@ -45,6 +107,10 @@ Review note, 2026-07-17: Issue #112 remains inside the existing validation and r
 
 | Path group | Role |
 | --- | --- |
+| `Cargo.toml`, `Cargo.lock`, `crates/**` | Rust workspace and final product implementation |
+| `contracts/**` | stable machine-readable Rust contract schemas |
+| `assets/asset-lock.v1.json` | deterministic executable-asset ownership and integrity lock |
+| `migration/**` | tracked migration inventory and ownership decisions |
 | `src/tidas_tools/convert.py` | standalone conversion CLI |
 | `src/tidas_tools/import_lca/**` | external LCA import CLI scaffolding, format detection, canonical import model, and staged source adapters |
 | `src/tidas_tools/validate.py` | standalone validation CLI |
@@ -67,7 +133,7 @@ Review note, 2026-07-17: Issue #112 remains inside the existing validation and r
 | `.github/workflows/dispatch-tidas-sdk-sync.yml` | downstream SDK refresh dispatch contract |
 | `.github/workflows/python-package-deploy.yml` | `main` version-bump and tag-driven PyPI publish workflow with a release test gate |
 
-## Current Tool Families
+## Frozen Python oracle families
 
 ### Conversion
 
@@ -116,6 +182,9 @@ Foundry gates without moving gate execution logic into this repository.
 - `main` pushes whose `pyproject.toml` project version changes create the matching `v<version>` tag and publish `tidas-tools`
 - manual `v<version>` tag pushes and workflow-dispatch runs for existing release tags remain recovery/backfill paths
 - changes under packaged English schema, Chinese schema, and methodology paths can dispatch downstream SDK refresh workflows
+- `.github/workflows/rust-ci.yml` exercises Linux x86_64/ARM64, macOS
+  Intel/Apple Silicon, and Windows x86_64; Windows ARM64 is a tracked
+  second-phase target
 
 This dispatch path is part of the repo architecture, not just a convenience automation.
 
@@ -127,4 +196,8 @@ This dispatch path is part of the repo architecture, not just a convenience auto
 
 ## Local Docpact Push Gate
 
-This repository has a versioned local `pre-push` hook under `.githooks/pre-push` that delegates to `scripts/docpact-gate.sh` and then runs `uv run pytest`. The gate resolves the CLI through `scripts/docpact`, so local agent shells do not need bare `docpact` on `PATH`. The hook is the local guard for docpact config validation, enforced doc-governance linting, and tests; the GitHub `CI` workflow is manual-dispatch only.
+This repository has a versioned local `pre-push` hook under
+`.githooks/pre-push`. It runs docpact, the asset lock, Rust
+format/lint/tests, and the frozen Python schema-lock/Black/pytest parity oracle.
+The gate resolves the CLI through `scripts/docpact`, so local agent shells do
+not need bare `docpact` on `PATH`.

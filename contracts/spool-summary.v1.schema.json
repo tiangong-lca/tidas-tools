@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiangong.earth/contracts/tidas/spool-summary.v1.schema.json",
+  "title": "TIDAS JSONL spool summary v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "event_count", "bytes", "sha256"],
+  "properties": {
+    "schema_version": {
+      "const": "tidas.spool-summary.v1"
+    },
+    "event_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}
