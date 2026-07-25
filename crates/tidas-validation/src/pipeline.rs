@@ -1,5 +1,6 @@
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::sync::Arc;
 
 use tempfile::NamedTempFile;
 use thiserror::Error;
@@ -10,11 +11,42 @@ use crate::contracts::{
     CategorySummaryV1, ValidationIssueEventV1, ValidationIssueV1, ValidationSummaryV1,
 };
 use crate::schema::{SUPPORTED_TIDAS_CATEGORIES, SchemaCatalog, SchemaError, TidasCategory};
+use crate::semantic::{SemanticCatalog, SemanticError};
 
 const PATH_ACCOUNTING_OVERHEAD: u64 = 128;
 const JSON_MEMORY_MULTIPLIER: u64 = 8;
 const JSON_MEMORY_OVERHEAD: u64 = 4096;
 const MAX_ISSUE_EVENT_BYTES: usize = 1024 * 1024;
+pub(crate) const PROGRESS_DOCUMENT_INTERVAL: u64 = 1_000;
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ValidationProgressV1 {
+    pub input_format: String,
+    pub phase: String,
+    pub category: Option<String>,
+    pub documents_processed: u64,
+    pub documents_total: Option<u64>,
+    pub issues_found: u64,
+}
+
+#[derive(Clone)]
+pub struct ValidationProgressReporter(Arc<dyn Fn(&ValidationProgressV1) + Send + Sync>);
+
+impl ValidationProgressReporter {
+    pub fn new(reporter: impl Fn(&ValidationProgressV1) + Send + Sync + 'static) -> Self {
+        Self(Arc::new(reporter))
+    }
+
+    fn report(&self, progress: &ValidationProgressV1) {
+        (self.0)(progress);
+    }
+}
+
+impl std::fmt::Debug for ValidationProgressReporter {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str("ValidationProgressReporter(..)")
+    }
+}
 
 #[derive(Clone, Debug)]
 pub struct ValidationRequest {
@@ -23,6 +55,30 @@ pub struct ValidationRequest {
     pub cancellation: CancellationToken,
     pub memory_budget: MemoryBudget,
     pub queue_capacity: usize,
+    pub progress: Option<ValidationProgressReporter>,
+}
+
+impl ValidationRequest {
+    pub(crate) fn report_progress(
+        &self,
+        input_format: &str,
+        phase: &str,
+        category: Option<&str>,
+        documents_processed: u64,
+        documents_total: Option<u64>,
+        issues_found: u64,
+    ) {
+        if let Some(reporter) = &self.progress {
+            reporter.report(&ValidationProgressV1 {
+                input_format: input_format.to_owned(),
+                phase: phase.to_owned(),
+                category: category.map(ToOwned::to_owned),
+                documents_processed,
+                documents_total,
+                issues_found,
+            });
+        }
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -45,8 +101,10 @@ pub fn validate_tidas_package(
     }
 
     let catalog = SchemaCatalog::load()?;
-    let mut summary = ValidationSummaryV1::new(asset_fingerprint()?);
+    let semantic = SemanticCatalog::load()?;
+    let mut summary = ValidationSummaryV1::new("tidas-json", asset_fingerprint()?);
     let mut sink = IssueSink::new(request.issue_spool.as_deref())?;
+    report_progress(request, &summary, "started", None, None, true);
 
     for category in SUPPORTED_TIDAS_CATEGORIES {
         request.cancellation.check()?;
@@ -69,11 +127,20 @@ pub fn validate_tidas_package(
                 &file_path,
                 category,
                 &validator,
+                &semantic,
                 request,
                 &mut summary,
                 &mut category_summary,
                 &mut sink,
             )?;
+            report_progress(
+                request,
+                &summary,
+                "validating",
+                Some(category.as_str()),
+                None,
+                false,
+            );
         }
         summary.categories.push(category_summary);
     }
@@ -84,10 +151,36 @@ pub fn validate_tidas_package(
     let (issue_spool_path, spool_summary) = sink.finish()?;
     summary.issue_spool = spool_summary;
     summary.peak_accounted_memory_bytes = request.memory_budget.peak();
+    report_progress(request, &summary, "completed", None, None, true);
     Ok(ValidationOutput {
         summary,
         issue_spool_path,
     })
+}
+
+pub(crate) fn report_progress(
+    request: &ValidationRequest,
+    summary: &ValidationSummaryV1,
+    phase: &str,
+    category: Option<&str>,
+    documents_total: Option<u64>,
+    force: bool,
+) {
+    if !force
+        && !summary
+            .document_count
+            .is_multiple_of(PROGRESS_DOCUMENT_INTERVAL)
+    {
+        return;
+    }
+    request.report_progress(
+        &summary.input_format,
+        phase,
+        category,
+        summary.document_count,
+        documents_total,
+        summary.issue_count,
+    );
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -96,6 +189,7 @@ fn validate_file(
     file_path: &Path,
     category: TidasCategory,
     validator: &crate::schema::TidasValidator,
+    semantic: &SemanticCatalog,
     request: &ValidationRequest,
     summary: &mut ValidationSummaryV1,
     category_summary: &mut CategorySummaryV1,
@@ -127,10 +221,14 @@ fn validate_file(
         request.cancellation.check()?;
         record_issue(summary, category_summary, sink, issue)?;
     }
+    semantic.validate(&instance, category, &relative_path, &mut |issue| {
+        request.cancellation.check()?;
+        record_issue(summary, category_summary, sink, issue)
+    })?;
     Ok(())
 }
 
-fn record_issue(
+pub(crate) fn record_issue(
     summary: &mut ValidationSummaryV1,
     category: &mut CategorySummaryV1,
     sink: &mut IssueSink,
@@ -195,14 +293,14 @@ fn normalized_relative_path(root: &Path, path: &Path) -> Result<String, Validati
     Ok(relative.to_string_lossy().replace('\\', "/"))
 }
 
-struct IssueSink {
+pub(crate) struct IssueSink {
     target: Option<PathBuf>,
     spool: Option<JsonlSpool<NamedTempFile>>,
     next_ordinal: u64,
 }
 
 impl IssueSink {
-    fn new(target: Option<&Path>) -> Result<Self, ValidationError> {
+    pub(crate) fn new(target: Option<&Path>) -> Result<Self, ValidationError> {
         let spool = match target {
             Some(target) => {
                 let parent = target.parent().unwrap_or_else(|| Path::new("."));
@@ -223,7 +321,7 @@ impl IssueSink {
         })
     }
 
-    fn push(&mut self, issue: ValidationIssueV1) -> Result<(), ValidationError> {
+    pub(crate) fn push(&mut self, issue: ValidationIssueV1) -> Result<(), ValidationError> {
         if let Some(spool) = &mut self.spool {
             spool.push(&ValidationIssueEventV1::new(self.next_ordinal, issue))?;
         }
@@ -234,7 +332,9 @@ impl IssueSink {
         Ok(())
     }
 
-    fn finish(self) -> Result<(Option<PathBuf>, Option<SpoolSummaryV1>), ValidationError> {
+    pub(crate) fn finish(
+        self,
+    ) -> Result<(Option<PathBuf>, Option<SpoolSummaryV1>), ValidationError> {
         let Some(spool) = self.spool else {
             return Ok((None, None));
         };
@@ -269,19 +369,36 @@ pub enum ValidationError {
     },
     #[error("validation size cannot be represented safely")]
     SizeOverflow,
+    #[error("embedded XSD asset has an unexpected path: {0}")]
+    UnexpectedXsdAsset(String),
+    #[error("recursive validation walk failed: {0}")]
+    Walk(String),
+    #[error("XML input is invalid: {0}")]
+    InvalidXml(String),
+    #[error("document validation batch protocol failed: {0}")]
+    BatchProtocol(String),
     #[error(transparent)]
     Asset(#[from] AssetError),
     #[error(transparent)]
     Runtime(#[from] RuntimeError),
     #[error(transparent)]
     Schema(#[from] SchemaError),
+    #[error(transparent)]
+    Semantic(#[from] SemanticError),
+    #[error(transparent)]
+    Ruleset(#[from] tidas_rulesets::RulesetError),
+    #[error("XML validation failed: {0}")]
+    Xml(#[from] tidas_xml::XmlError),
     #[error("validation I/O failed: {0}")]
     Io(#[from] std::io::Error),
+    #[error("validation JSON processing failed: {0}")]
+    Json(#[from] serde_json::Error),
 }
 
 #[cfg(test)]
 mod tests {
     use std::fs;
+    use std::sync::Mutex;
 
     use super::*;
 
@@ -292,6 +409,7 @@ mod tests {
             cancellation: CancellationToken::default(),
             memory_budget: MemoryBudget::new(16 * 1024 * 1024),
             queue_capacity: 16,
+            progress: None,
         }
     }
 
@@ -303,6 +421,25 @@ mod tests {
         assert_eq!(output.summary.document_count, 0);
         assert_eq!(output.summary.issue_count, 0);
         assert_eq!(output.summary.categories, []);
+    }
+
+    #[test]
+    fn progress_reports_start_and_completion_without_affecting_results() {
+        let directory = tempfile::tempdir().unwrap();
+        let observed = Arc::new(Mutex::new(Vec::new()));
+        let observed_for_reporter = Arc::clone(&observed);
+        let mut request = request(directory.path(), None);
+        request.progress = Some(ValidationProgressReporter::new(move |progress| {
+            observed_for_reporter.lock().unwrap().push(progress.clone());
+        }));
+
+        let output = validate_tidas_package(&request).unwrap();
+        let observed = observed.lock().unwrap();
+        assert_eq!(observed.len(), 2);
+        assert_eq!(observed[0].phase, "started");
+        assert_eq!(observed[1].phase, "completed");
+        assert_eq!(observed[1].documents_processed, 0);
+        assert_eq!(observed[1].issues_found, output.summary.issue_count);
     }
 
     #[test]
@@ -350,6 +487,7 @@ mod tests {
             cancellation,
             memory_budget: MemoryBudget::new(1024),
             queue_capacity: 1,
+            progress: None,
         };
         assert!(matches!(
             validate_tidas_package(&request),
@@ -369,6 +507,7 @@ mod tests {
             cancellation: CancellationToken::default(),
             memory_budget: MemoryBudget::new(1024),
             queue_capacity: 1,
+            progress: None,
         };
         assert!(matches!(
             validate_tidas_package(&request),

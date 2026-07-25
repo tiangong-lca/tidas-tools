@@ -39,7 +39,7 @@ checkPaths:
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-25
 lastReviewedCommit: 75d11c1aeec5e0973005eaadc1acb5a26931f894
-lastReviewedNote: "Issue #120 adds the first production Rust domain path: offline native TIDAS JSON validation with bounded issue spooling and stable summary contracts."
+lastReviewedNote: "Issue #120 completes native TIDAS/ILCD validation, semantic/ruleset/reference contracts, progress, and the bounded document-validation-batch.v1 protocol."
 related:
   - .docpact/config.yaml
   - docs/agents/cli-contract.md
@@ -98,7 +98,9 @@ Keep these entry-level facts in `AGENTS.md`. Use `README.md`, `README_CN.md`, an
 - Rust workspace toolchain: Rust 1.88 or newer, Cargo resolver 3
 - final product entry point: `cargo run -p tidas-cli --bin tidas -- <subcommand>`
 - final command tree: `convert`, `import`, `export`, `validate`, `release`, `ruleset`, `version`
-- native TIDAS JSON validation: `cargo run -p tidas-cli --bin tidas -- validate <package-dir> --issues <issues.jsonl> --format json`
+- native package validation: `cargo run -p tidas-cli --bin tidas -- validate <package-dir> --input-format tidas-json|ilcd-xml --issues <issues.jsonl> --format json`
+- native batch validation: `cargo run -p tidas-cli --bin tidas -- validate <batch-dir> --protocol document-validation-batch.v1 --input-manifest <manifest.jsonl> --events <events.jsonl> --format json`
+- native ruleset inspection: `cargo run -p tidas-cli --bin tidas -- ruleset [--id <ruleset-id>] --format json`
 - configuration precedence: explicit CLI option, then matching `TIDAS_*` environment variable, then the documented built-in default; no implicit current-directory config
 - stdout is reserved for one report or completion script; logs, progress, and file-write confirmations use stderr
 - canonical Rust checks: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings`, and `cargo test --workspace --all-targets`
@@ -132,7 +134,7 @@ At a human-readable level, this repo owns:
 - the Python-to-Rust owner inventory under `migration/**`
 - standalone CLI behavior in `src/tidas_tools/convert.py`, `src/tidas_tools/import_lca/**`, `src/tidas_tools/validate.py`, and `src/tidas_tools/export.py`
 - deterministic `document-validation-batch.v1` streaming validation and reproducibility handshake in `src/tidas_tools/validation_batch.py`
-- the pure `ReferenceExtractionResultV1` / `ReferenceEdgeV1` contract and golden parity fixtures in `src/tidas_tools/reference_extraction.py` and `tests/fixtures/reference_extraction_v1/**`
+- the active pure `ReferenceExtractionResultV1` / `ReferenceEdgeV1` contract in `crates/tidas-references`, checked-in machine schema under `contracts/**`, and frozen Python golden oracle in `src/tidas_tools/reference_extraction.py` plus `tests/fixtures/reference_extraction_v1/**`
 - deterministic release-profile closure, TIDAS/ILCD conversion, semantic round-trip, and byte-stable ZIP behavior in `src/tidas_tools/release.py`
 - validation report and version/export helpers in `src/tidas_tools/validation_report.py` and `src/tidas_tools/package_versions.py`
 - validator-private projection indexes under `src/tidas_tools/validation_indexes/**`

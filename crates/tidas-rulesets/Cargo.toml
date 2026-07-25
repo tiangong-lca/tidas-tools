@@ -1,5 +1,5 @@
 [package]
-name = "tidas-validation"
+name = "tidas-rulesets"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -9,17 +9,12 @@ publish = false
 
 [dependencies]
 jsonschema.workspace = true
-quick-xml.workspace = true
+noyalib.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 sha2.workspace = true
-tempfile.workspace = true
 thiserror.workspace = true
 tidas-assets = { path = "../tidas-assets" }
-tidas-runtime = { path = "../tidas-runtime" }
-tidas-rulesets = { path = "../tidas-rulesets" }
-tidas-xml = { path = "../tidas-xml" }
-walkdir.workspace = true
 
 [lints]
 workspace = true

@@ -104,10 +104,10 @@ pub struct ValidationSummaryV1 {
 
 impl ValidationSummaryV1 {
     #[must_use]
-    pub fn new(asset_fingerprint: String) -> Self {
+    pub fn new(input_format: impl Into<String>, asset_fingerprint: String) -> Self {
         Self {
             schema_version: VALIDATION_SUMMARY_SCHEMA_V1.to_owned(),
-            input_format: "tidas-json".to_owned(),
+            input_format: input_format.into(),
             ok: true,
             category_count: 0,
             document_count: 0,
@@ -153,14 +153,21 @@ mod tests {
         let summary_schema: serde_json::Value =
             serde_json::from_str(VALIDATION_SUMMARY_JSON_SCHEMA_V1).unwrap();
         assert_eq!(
-            issue_schema["properties"]["schema_version"]["const"],
+            issue_schema["$defs"]["packageEvent"]["properties"]["schema_version"]["const"],
             VALIDATION_ISSUE_EVENT_SCHEMA_V1
         );
         assert_eq!(
             summary_schema["properties"]["schema_version"]["const"],
             VALIDATION_SUMMARY_SCHEMA_V1
         );
-        assert_eq!(issue_schema["additionalProperties"], false);
+        assert_eq!(
+            issue_schema["$defs"]["packageEvent"]["additionalProperties"],
+            false
+        );
+        assert_eq!(
+            issue_schema["$defs"]["batchEvent"]["additionalProperties"],
+            false
+        );
         assert_eq!(summary_schema["additionalProperties"], false);
     }
 }

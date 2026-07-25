@@ -20,6 +20,7 @@ serde_json.workspace = true
 tidas-assets = { path = "../tidas-assets" }
 tidas-contracts = { path = "../tidas-contracts" }
 tidas-runtime = { path = "../tidas-runtime" }
+tidas-rulesets = { path = "../tidas-rulesets" }
 tidas-validation = { path = "../tidas-validation" }
 tidas-xml = { path = "../tidas-xml" }
 

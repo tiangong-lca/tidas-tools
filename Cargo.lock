@@ -457,6 +457,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "hashbrown"
+version = "0.17.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ed5909b6e89a2db4456e54cd5f673791d7eca6732202bbf2a9cc504fe2f9b84a"
+
+[[package]]
 name = "heck"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -591,6 +597,18 @@ checksum = "7cab85a7ed0bd5f0e76d93846e0147172bed2e2d3f859bcc33a8d9699cad1a75"
 dependencies = [
  "proc-macro2",
  "quote",
+]
+
+[[package]]
+name = "indexmap"
+version = "2.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d466e9454f08e4a911e14806c24e16fba1b4c121d1ea474396f396069cf949d9"
+dependencies = [
+ "equivalent",
+ "hashbrown 0.17.1",
+ "serde",
+ "serde_core",
 ]
 
 [[package]]
@@ -750,6 +768,19 @@ checksum = "d273983c5a657a70a3e8f2a01329822f3b8c8172b73826411a55751e404a0a4a"
 dependencies = [
  "memchr",
  "minimal-lexical",
+]
+
+[[package]]
+name = "noyalib"
+version = "0.0.16"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c11d7b3d5d0b3d22eecbf678f9830b25444e90e773510ac3092d406082164d69"
+dependencies = [
+ "indexmap",
+ "memchr",
+ "rustc-hash",
+ "serde",
+ "smallvec",
 ]
 
 [[package]]
@@ -984,7 +1015,7 @@ dependencies = [
  "ahash",
  "fluent-uri",
  "getrandom 0.3.4",
- "hashbrown",
+ "hashbrown 0.16.1",
  "parking_lot",
  "percent-encoding",
  "serde_json",
@@ -1227,6 +1258,7 @@ dependencies = [
  "tempfile",
  "tidas-assets",
  "tidas-contracts",
+ "tidas-rulesets",
  "tidas-runtime",
  "tidas-validation",
  "tidas-xml",
@@ -1239,6 +1271,29 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror",
+]
+
+[[package]]
+name = "tidas-references"
+version = "0.1.0"
+dependencies = [
+ "jsonschema",
+ "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
+name = "tidas-rulesets"
+version = "0.1.0"
+dependencies = [
+ "jsonschema",
+ "noyalib",
+ "serde",
+ "serde_json",
+ "sha2",
+ "thiserror",
+ "tidas-assets",
 ]
 
 [[package]]
@@ -1258,12 +1313,17 @@ name = "tidas-validation"
 version = "0.1.0"
 dependencies = [
  "jsonschema",
+ "quick-xml",
  "serde",
  "serde_json",
+ "sha2",
  "tempfile",
  "thiserror",
  "tidas-assets",
+ "tidas-rulesets",
  "tidas-runtime",
+ "tidas-xml",
+ "walkdir",
 ]
 
 [[package]]

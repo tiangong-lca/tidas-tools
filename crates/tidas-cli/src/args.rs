@@ -107,6 +107,9 @@ impl Cli {
                         "--memory-budget-mib is too large to represent in bytes",
                     )
                 })?;
+                if let Some(Commands::Validate(arguments)) = &self.command {
+                    arguments.validate(&Self::command())?;
+                }
                 Ok(())
             }
         }
@@ -175,7 +178,7 @@ pub enum Commands {
     /// Build and verify deterministic release packages.
     Release,
     /// Inspect and validate packaged methodology rulesets.
-    Ruleset,
+    Ruleset(RulesetArgs),
     /// Print binary, contract, asset, XML engine, and runtime fingerprints.
     Version,
 }
@@ -189,31 +192,113 @@ impl Commands {
             Self::Export => CommandNameV1::Export,
             Self::Validate(_) => CommandNameV1::Validate,
             Self::Release => CommandNameV1::Release,
-            Self::Ruleset => CommandNameV1::Ruleset,
+            Self::Ruleset(_) => CommandNameV1::Ruleset,
             Self::Version => CommandNameV1::Version,
         }
     }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, clap::Args)]
+pub struct RulesetArgs {
+    /// Return the ordered rules for one ruleset id; omit to inspect the catalog.
+    #[arg(long, value_name = "RULESET_ID")]
+    pub id: Option<String>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, clap::Args)]
 pub struct ValidateArgs {
     /// Package directory containing canonical TIDAS category subdirectories.
     #[arg(value_name = "INPUT")]
-    pub input: PathBuf,
+    pub input: Option<PathBuf>,
 
     /// Input representation to validate.
     #[arg(long, value_enum, default_value_t = ValidationInputFormat::TidasJson)]
     pub input_format: ValidationInputFormat,
 
+    /// Validation execution protocol.
+    #[arg(long, value_enum, default_value_t = ValidationProtocol::Package)]
+    pub protocol: ValidationProtocol,
+
+    /// JSONL manifest required by document-validation-batch.v1.
+    #[arg(long, value_name = "PATH")]
+    pub input_manifest: Option<PathBuf>,
+
     /// Atomically write the complete deterministic issue stream as JSONL.
     #[arg(long, value_name = "PATH")]
     pub issues: Option<PathBuf>,
+
+    /// Atomically write batch issue and final events as canonical JSONL.
+    #[arg(long, value_name = "PATH")]
+    pub events: Option<PathBuf>,
+
+    /// Print the validation protocol and engine fingerprint handshake.
+    #[arg(long)]
+    pub describe: bool,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
 pub enum ValidationInputFormat {
     TidasJson,
     IlcdXml,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
+pub enum ValidationProtocol {
+    Package,
+    #[value(name = "document-validation-batch.v1")]
+    DocumentValidationBatchV1,
+}
+
+impl ValidateArgs {
+    fn validate(&self, command: &clap::Command) -> Result<(), clap::Error> {
+        let invalid = |message| command.clone().error(ErrorKind::InvalidValue, message);
+        if self.describe {
+            if self.input.is_some()
+                || self.input_manifest.is_some()
+                || self.issues.is_some()
+                || self.events.is_some()
+            {
+                return Err(invalid(
+                    "--describe cannot be combined with input or output paths",
+                ));
+            }
+            return Ok(());
+        }
+        if self.input.is_none() {
+            return Err(command.clone().error(
+                ErrorKind::MissingRequiredArgument,
+                "validate requires INPUT unless --describe is used",
+            ));
+        }
+        match self.protocol {
+            ValidationProtocol::Package => {
+                if self.input_manifest.is_some() || self.events.is_some() {
+                    return Err(invalid(
+                        "--input-manifest and --events require --protocol document-validation-batch.v1",
+                    ));
+                }
+            }
+            ValidationProtocol::DocumentValidationBatchV1 => {
+                if self.input_format != ValidationInputFormat::TidasJson {
+                    return Err(invalid(
+                        "document-validation-batch.v1 supports --input-format tidas-json only",
+                    ));
+                }
+                if self.input_manifest.is_none() || self.events.is_none() {
+                    return Err(command.clone().error(
+                        ErrorKind::MissingRequiredArgument,
+                        "document-validation-batch.v1 requires --input-manifest and --events",
+                    ));
+                }
+                if self.issues.is_some() {
+                    return Err(invalid(
+                        "document-validation-batch.v1 uses --events instead of --issues",
+                    ));
+                }
+            }
+        }
+        Ok(())
+    }
 }
 
 pub fn write_completion(shell: Shell, writer: &mut impl Write) -> io::Result<()> {

@@ -11,6 +11,14 @@
       "expected_completeness": "complete"
     },
     {
+      "name": "native ruleset selection preserves the frozen catalog semantics",
+      "python_oracle": "The Python runtime_rulesets oracle resolves process-authoring/strict to a non-empty, schema-valid ordered rule set containing both warning and blocker severities.",
+      "rust_args": ["ruleset", "--id", "process-authoring/strict", "--format", "json"],
+      "expected_exit_code": 0,
+      "expected_exit_class": "success",
+      "expected_completeness": "complete"
+    },
+    {
       "name": "known function not yet migrated",
       "python_oracle": "A known tool family is distinguishable from malformed invocation; migration never silently falls back to Python.",
       "rust_args": ["convert", "--format", "json"],

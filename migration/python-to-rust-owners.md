@@ -14,9 +14,9 @@ later design extracts a more stable domain.
 | `tidas-convert` | `tidas convert` | `tidas-convert` + thin `tidas-cli` adapter | #121 |
 | `tidas-import` | `tidas import` | `tidas-import` + thin `tidas-cli` adapter | #122 |
 | `tidas-export` | `tidas export` | `tidas-export` + thin `tidas-cli` adapter | #123 |
-| `tidas-validate` | `tidas validate` | `tidas-validate` + thin `tidas-cli` adapter | #120 |
+| `tidas-validate` | `tidas validate` | `tidas-validation` + thin `tidas-cli` adapter | #120 |
 | `tidas-release-tool` | `tidas release` | `tidas-release` + thin `tidas-cli` adapter | #124 |
-| `runtime_rulesets.main` | `tidas ruleset` | `tidas-validate` + thin `tidas-cli` adapter | #120 |
+| `runtime_rulesets.main` | `tidas ruleset` | `tidas-rulesets` + thin `tidas-cli` adapter | #120 |
 | package version reporting | `tidas version` | `tidas-contracts`, `tidas-assets`, `tidas-xml`, `tidas-cli` | #118/#119 |
 
 No legacy executable name is registered by the Rust workspace. During the
@@ -30,11 +30,11 @@ migration the Python commands remain internal golden/parity oracles only.
 | `export.py` | `zip_folder`, `process_record`, `process_common_record`, `export_common_records`, `export_category_records`, `download_external_docs`, `parse_arguments`, `main` | `tidas-export` | #123 |
 | `package_versions.py` | `VersionedRecord`, `normalize_package_versions` | `tidas-export` | #123 |
 | `release.py` | `ReleaseToolError`, `DatasetEntry`, `sha256_file`, `order_tidas_document_for_xml`, `load_dataset_index`, `resolve_profile_closure`, `convert_tidas_to_ilcd`, `semantic_roundtrip_report`, `validate_release_tree`, `deterministic_zip`, `build_release_packages`, `execute`, `main` | `tidas-release` | #124 |
-| `validate.py` | `tidas_language_codes`, `TidasSchemaValidator`, `ClassificationIssueDetail`, `is_valid_cas_number`, hierarchy/localized-text validators, `retrieve_schema`, category/package/ILCD validators, `main` | `tidas-validate` | #120 |
-| `validation_report.py` | `ValidationIssue`, `summarize_issues`, `build_category_report`, `build_package_report` | `tidas-contracts`, `tidas-validate` | #120 |
-| `validation_batch.py` | `BatchProtocolError`, `BatchDocument`, `describe_document_validation`, `run_document_validation_batch`, `load_batch_manifest`, `canonical_json_line` | `tidas-contracts`, `tidas-runtime`, `tidas-validate` | #120 |
-| `reference_extraction.py` | `ReferenceEdgeV1`, `ReferenceExtractionIssueV1`, `ReferenceExtractionResultV1`, `extract_references` | `tidas-contracts`, `tidas-validate` | #120 |
-| `runtime_rulesets.py`, `validate_methodologies.py` | `load_runtime_rulesets`, `validate_runtime_rulesets`, `rules_for_ruleset`, `SchemaMethodologyValidator`, both `main` functions | `tidas-validate` | #120 |
+| `validate.py` | `tidas_language_codes`, `TidasSchemaValidator`, `ClassificationIssueDetail`, `is_valid_cas_number`, hierarchy/localized-text validators, `retrieve_schema`, category/package/ILCD validators, `main` | `tidas-validation` | #120 |
+| `validation_report.py` | `ValidationIssue`, `summarize_issues`, `build_category_report`, `build_package_report` | `tidas-contracts`, `tidas-validation` | #120 |
+| `validation_batch.py` | `BatchProtocolError`, `BatchDocument`, `describe_document_validation`, `run_document_validation_batch`, `load_batch_manifest`, `canonical_json_line` | `tidas-contracts`, `tidas-runtime`, `tidas-validation` | #120 |
+| `reference_extraction.py` | `ReferenceEdgeV1`, `ReferenceExtractionIssueV1`, `ReferenceExtractionResultV1`, `extract_references` | `tidas-references` | #120 |
+| `runtime_rulesets.py`, `validate_methodologies.py` | `load_runtime_rulesets`, `validate_runtime_rulesets`, `rules_for_ruleset`, `SchemaMethodologyValidator`, both `main` functions | `tidas-rulesets` | #120 |
 | `import_lca/cli.py`, `detect.py`, `errors.py` | `build_parser`, `run_import`, `main`, `DetectedFormat`, `detect_format`, import error classes | `tidas-import` | #122 |
 | `import_lca/model/**`, `store/**`, `report.py` | `EntityRef`, `CanonicalEntity`, `CanonicalExchange`, `MemoryCanonicalStore`, `ConversionIssue`, `ConversionReport` | `tidas-import` with bounded/spooled storage from `tidas-runtime` | #122 |
 | `import_lca/adapters/base.py` and concrete adapters | `SourceAdapter`, `EcoSpold1Adapter`, `EcoSpold2Adapter`, `IlcdAdapter`, `OpenLcaJsonLdAdapter`, `OpenLcaProcessXlsxAdapter`, `SimaProCsvAdapter` | `tidas-import` adapter modules | #122 |
@@ -42,7 +42,7 @@ migration the Python commands remain internal golden/parity oracles only.
 | `import_lca/writers/**` | `write_ilcd_from_tidas`, `write_tidas_package`, `scan_conversion_gaps`, `ensure_tidas_package_dirs` | `tidas-import`, using `tidas-xml` where applicable | #122 |
 | `tidas_log.py` | `ColoredFormatter`, `setup_logging` | deleted as a Python-specific adapter; Rust diagnostics use `tidas-contracts` | #119/#126 |
 | package `__init__.py` files | no independent behavior | no Rust owner | #126 |
-| `validation_indexes/**` | packaged private projection data | `tidas-assets`, consumed by `tidas-validate` | #118/#120 |
+| `validation_indexes/**` | packaged private projection data | `tidas-assets`, consumed by `tidas-validation` | #118/#120 |
 | `tidas/**`, `eilcd/**` | JSON Schema, methodology, XSD, XSLT, and XML reference assets | `tidas-assets`, consumed by domain crates | #118 |
 
 ## Foundation already owned by #118

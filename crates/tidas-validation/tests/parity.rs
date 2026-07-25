@@ -36,6 +36,7 @@ fn rust_validation_matches_the_frozen_python_semantics() {
         cancellation: CancellationToken::default(),
         memory_budget: MemoryBudget::new(16 * 1024 * 1024),
         queue_capacity: 16,
+        progress: None,
     })
     .unwrap();
     let events: Vec<ValidationIssueEventV1> = fs::read(issue_spool)

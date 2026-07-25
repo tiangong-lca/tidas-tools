@@ -53,6 +53,12 @@ impl TidasCategory {
     fn schema_filename(self) -> String {
         format!("tidas_{}.json", self.as_str())
     }
+
+    pub(crate) fn parse(value: &str) -> Option<Self> {
+        SUPPORTED_TIDAS_CATEGORIES
+            .into_iter()
+            .find(|category| category.as_str() == value)
+    }
 }
 
 pub(crate) struct SchemaCatalog {

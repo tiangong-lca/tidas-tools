@@ -16,7 +16,8 @@ release, and ruleset behavior to one cross-platform Rust executable named
 The current Rust implementation establishes the Cargo workspace, stable
 machine and invocation contracts, bounded runtime primitives, executable-asset
 integrity lock, XML/XSD/XSLT portability boundary, the unified CLI adapter,
-and native TIDAS JSON validation:
+and native TIDAS/ILCD validation, reference extraction, batch evidence, and
+ruleset inspection:
 
 ```bash
 cargo build --workspace
@@ -24,20 +25,26 @@ cargo run -p tidas-cli --bin tidas -- --help
 cargo run -p tidas-cli --bin tidas -- --format json version
 cargo run -p tidas-cli --bin tidas -- validate <package-dir> \
   --issues <issues.jsonl> --format json
+cargo run -p tidas-cli --bin tidas -- validate <ilcd-dir> \
+  --input-format ilcd-xml --issues <issues.jsonl> --format json
+cargo run -p tidas-cli --bin tidas -- ruleset --format json
 cargo run -p tidas-cli --bin tidas -- --completion bash > tidas.bash
 cargo run -p tidas-assets --bin tidas-asset-lock -- check
 ```
 
 The final command tree is `convert`, `import`, `export`, `validate`, `release`,
-`ruleset`, and `version`. `version` and native TIDAS JSON `validate` are
-functional. The remaining Rust paths fail explicitly with exit class
+`ruleset`, and `version`. `version`, `validate`, and `ruleset` are functional.
+The remaining Rust paths fail explicitly with exit class
 `unavailable`/code `69` and never invoke Python.
 
 Native validation resolves only embedded integrity-locked schemas. Complete
 issues can be written atomically as deterministic JSONL with `--issues`; the
 operation report retains bounded counts and the spool hash instead of an
-in-memory issue array. ILCD XML validation remains explicitly unavailable
-until the native XSD path lands.
+in-memory issue array. ILCD XML uses the same bounded report contract with
+offline reusable XSD contexts. `document-validation-batch.v1` adds manifest
+preflight, drift-proof issue events, and a deterministic final evidence hash.
+Validation progress is bounded and written only to stderr; use
+`--progress always` for non-interactive runs.
 
 Global runtime options follow `CLI > TIDAS_* environment > built-in default`
 precedence. No configuration file is loaded implicitly. Stdout contains only
@@ -185,38 +192,41 @@ The package command emits canonical TIDAS and derived ILCD variants for `unit-pr
 
 This tool validates whether TIDAS JSON data or eILCD/ILCD XML data complies with the packaged schema standards. TIDAS JSON validation uses a compiled schema fast path and falls back to complete error collection when a schema issue is found.
 
-### (2) Command-line Arguments
+### (2) Unified CLI Arguments
 
 | Argument | Short form | Description |
 |----------|------------|-------------|
 | `--help` | `-h` | Display help message |
-| `--input-dir` | `-i` | Directory containing data to validate |
-| `--verbose` | `-v` | Enable verbose logging |
-| `--data-format` | | Input data format to validate: `tidas`, `ilcd`, or `eilcd` (default: `tidas`) |
-| `--jobs` | | Number of parallel validation worker processes; use `0` for all CPU cores |
+| `<INPUT>` | | Directory containing the package or batch documents |
+| `--input-format` | | Input format: `tidas-json` (default) or `ilcd-xml` |
+| `--issues` | | Persist deterministic package issue events as JSONL |
 | `--describe --format json` | | Report supported validation protocols and package/engine/Schema-lock fingerprints |
 | `--protocol document-validation-batch.v1` | | Validate exactly the JSONL manifest documents and stream issue/final events |
 | `--input-manifest` | | Batch JSONL manifest containing opaque document keys, safe relative paths, exact identities, and SHA-256 hashes |
+| `--events` | | Persist deterministic batch issue/final events as JSONL |
 
 ### (3) Usage Example
 
 ```bash
 # Validate TIDAS data format
-tidas-validate --input-dir <TIDAS_data_directory> --data-format tidas
+tidas validate <TIDAS_data_directory> --input-format tidas-json --format json
 
 # Validate eILCD/ILCD XML data format
-tidas-validate --input-dir <eILCD_data_directory> --data-format ilcd
-
-# Validate large packages with all CPU cores
-tidas-validate --input-dir <TIDAS_data_directory> --data-format tidas --jobs 0
+tidas validate <eILCD_data_directory> --input-format ilcd-xml --format json
 
 # Inspect the reproducibility handshake used by closure-preflight workers
-tidas-validate --describe --format json
+tidas validate --describe --format json
 
 # Stream deterministic validation evidence for exactly the manifest documents
-tidas-validate --protocol document-validation-batch.v1 \
-  --input-dir <batch_root> \
-  --input-manifest <document-validation-batch.v1.jsonl>
+tidas validate <batch_root> \
+  --protocol document-validation-batch.v1 \
+  --input-manifest <document-validation-batch.v1.jsonl> \
+  --events <validation-events.jsonl> \
+  --format json
+
+# Inspect or select the integrity-locked native ruleset catalog
+tidas ruleset --format json
+tidas ruleset --id process-authoring/strict --format json
 ```
 
 The batch protocol treats document issues as a completed scan: it emits one

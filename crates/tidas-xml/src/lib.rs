@@ -4,8 +4,10 @@
 //! XSLT 1.0 transformation are isolated behind a serialized libxml2/libxslt
 //! boundary so later crates do not depend on native wrapper details.
 
+use std::path::Path;
 use std::sync::{Mutex, MutexGuard};
 
+use libxml::error::{StructuredError, XmlErrorLevel};
 use libxml::parser::{Parser, ParserOptions};
 use libxml::schemas::{SchemaParserContext, SchemaValidationContext};
 use libxslt::parser as xslt_parser;
@@ -34,6 +36,47 @@ pub struct XmlEngineDecisionV1 {
     pub concurrency: String,
     pub network_access: String,
     pub linking: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct XmlDiagnostic {
+    pub message: String,
+    pub level: String,
+    pub filename: Option<String>,
+    pub line: Option<i32>,
+    pub column: Option<i32>,
+    pub domain: i32,
+    pub code: i32,
+}
+
+/// A reusable XSD validation context compiled from a filesystem path.
+///
+/// Path compilation is required for schemas that use relative imports/includes.
+/// Construction and validation remain serialized behind the native engine lock.
+pub struct CompiledXsd {
+    validation: SchemaValidationContext,
+}
+
+impl CompiledXsd {
+    pub fn from_path(path: &Path) -> Result<Self, XmlError> {
+        let path = path.to_str().ok_or(XmlError::NonUtf8SchemaPath)?;
+        let _guard = native_engine_guard()?;
+        let mut schema_parser = SchemaParserContext::from_file(path);
+        let validation = SchemaValidationContext::from_parser(&mut schema_parser)
+            .map_err(|errors| XmlError::SchemaCompile(format_errors(&errors)))?;
+        Ok(Self { validation })
+    }
+
+    pub fn validate(&mut self, xml: &[u8]) -> Result<Vec<XmlDiagnostic>, XmlError> {
+        let _guard = native_engine_guard()?;
+        let parser = Parser::default();
+        let document = parser.parse_string_with_options(xml, strict_parser_options())?;
+        match self.validation.validate_document(&document) {
+            Ok(()) => Ok(Vec::new()),
+            Err(errors) => Ok(errors.iter().map(XmlDiagnostic::from).collect()),
+        }
+    }
 }
 
 #[must_use]
@@ -94,15 +137,7 @@ pub fn inspect_xml(bytes: &[u8]) -> Result<XmlInspection, XmlError> {
 pub fn validate_xsd(xml: &[u8], xsd: &[u8]) -> Result<(), XmlError> {
     let _guard = native_engine_guard()?;
     let parser = Parser::default();
-    let document = parser.parse_string_with_options(
-        xml,
-        ParserOptions {
-            recover: false,
-            no_net: true,
-            huge: false,
-            ..ParserOptions::default()
-        },
-    )?;
+    let document = parser.parse_string_with_options(xml, strict_parser_options())?;
     let mut schema_parser = SchemaParserContext::from_buffer(xsd);
     let mut validation = SchemaValidationContext::from_parser(&mut schema_parser)
         .map_err(|errors| XmlError::SchemaCompile(format_errors(&errors)))?;
@@ -114,15 +149,7 @@ pub fn validate_xsd(xml: &[u8], xsd: &[u8]) -> Result<(), XmlError> {
 pub fn transform_xslt(xml: &[u8], stylesheet: &[u8]) -> Result<Vec<u8>, XmlError> {
     let _guard = native_engine_guard()?;
     let parser = Parser::default();
-    let document = parser.parse_string_with_options(
-        xml,
-        ParserOptions {
-            recover: false,
-            no_net: true,
-            huge: false,
-            ..ParserOptions::default()
-        },
-    )?;
+    let document = parser.parse_string_with_options(xml, strict_parser_options())?;
     let mut stylesheet =
         xslt_parser::parse_bytes(stylesheet.to_vec(), "embedded-tidas-stylesheet.xsl")
             .map_err(XmlError::Stylesheet)?;
@@ -136,6 +163,15 @@ fn native_engine_guard() -> Result<MutexGuard<'static, ()>, XmlError> {
     NATIVE_XML_ENGINE
         .lock()
         .map_err(|_| XmlError::EnginePoisoned)
+}
+
+fn strict_parser_options() -> ParserOptions<'static> {
+    ParserOptions {
+        recover: false,
+        no_net: true,
+        huge: false,
+        ..ParserOptions::default()
+    }
 }
 
 fn format_errors(errors: &[libxml::error::StructuredError]) -> String {
@@ -153,6 +189,31 @@ fn format_errors(errors: &[libxml::error::StructuredError]) -> String {
         .join("; ")
 }
 
+impl From<&StructuredError> for XmlDiagnostic {
+    fn from(error: &StructuredError) -> Self {
+        let level = match error.level {
+            XmlErrorLevel::None => "none",
+            XmlErrorLevel::Warning => "warning",
+            XmlErrorLevel::Error => "error",
+            XmlErrorLevel::Fatal => "fatal",
+        };
+        Self {
+            message: error
+                .message
+                .as_deref()
+                .unwrap_or("unknown libxml2 error")
+                .trim()
+                .to_owned(),
+            level: level.to_owned(),
+            filename: error.filename.clone(),
+            line: error.line,
+            column: error.col,
+            domain: error.domain,
+            code: error.code,
+        }
+    }
+}
+
 #[derive(Debug, Error)]
 pub enum XmlError {
     #[error("XML input has no root element")]
@@ -163,6 +224,8 @@ pub enum XmlError {
     NativeParse(#[from] libxml::parser::XmlParseError),
     #[error("XSD compilation failed: {0}")]
     SchemaCompile(String),
+    #[error("XSD schema path is not valid UTF-8")]
+    NonUtf8SchemaPath,
     #[error("XSD validation failed: {0}")]
     SchemaValidation(String),
     #[error("XSLT stylesheet compilation failed: {0}")]

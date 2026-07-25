@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiangong.earth/contracts/tidas/validation-describe.v1.schema.json",
+  "title": "TIDAS document validation reproducibility handshake v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "package",
+    "protocols",
+    "profiles",
+    "report_schema_versions",
+    "event_schema_versions",
+    "engines",
+    "asset_fingerprint",
+    "ruleset_catalog"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "tidas.validation-describe.v1"
+    },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": {
+          "const": "tidas"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "protocols": {
+      "const": ["document-validation-batch.v1"]
+    },
+    "profiles": {
+      "const": ["tidas-document-conformance.v1"]
+    },
+    "report_schema_versions": {
+      "const": ["tidas.validation-report.v1"]
+    },
+    "event_schema_versions": {
+      "const": [
+        "tidas.validation-issue-event.v1",
+        "tidas.validation-final-event.v1"
+      ]
+    },
+    "engines": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rust_minimum", "jsonschema", "xml"],
+      "properties": {
+        "rust_minimum": {
+          "type": "string",
+          "minLength": 1
+        },
+        "jsonschema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "xml": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "asset_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "ruleset_catalog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "ruleset_version",
+        "catalog_sha256",
+        "ruleset_count",
+        "rule_count",
+        "ruleset_ids",
+        "methodology_file_count",
+        "methodology_warning_count"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "tidas.ruleset-description.v1"
+        },
+        "ruleset_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "catalog_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "ruleset_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rule_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ruleset_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "methodology_file_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "methodology_warning_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

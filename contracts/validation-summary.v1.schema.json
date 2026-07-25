@@ -24,7 +24,7 @@
       "const": "tidas.validation-summary.v1"
     },
     "input_format": {
-      "const": "tidas-json"
+      "enum": ["tidas-json", "ilcd-xml"]
     },
     "ok": {
       "type": "boolean"

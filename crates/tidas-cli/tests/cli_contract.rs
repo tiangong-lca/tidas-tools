@@ -212,7 +212,7 @@ fn completion_scripts_are_deterministic_and_do_not_add_a_product_command() {
 
 #[test]
 fn unavailable_commands_return_a_machine_report_without_python_fallback() {
-    for command in ["convert", "import", "export", "release", "ruleset"] {
+    for command in ["convert", "import", "export", "release"] {
         let (output, payload) = json_output(&[command, "--format", "json"]);
         assert_eq!(output.status.code(), Some(69), "{command}");
         assert!(output.stderr.is_empty(), "{command}");
@@ -221,6 +221,43 @@ fn unavailable_commands_return_a_machine_report_without_python_fallback() {
         assert_eq!(payload["completeness"], "not-started");
         assert_eq!(payload["diagnostics"][0]["code"], "feature_not_migrated");
     }
+}
+
+#[test]
+fn ruleset_catalog_is_native_validated_and_queryable() {
+    let (catalog_output, catalog) = json_output(&["ruleset", "--format", "json"]);
+    assert!(catalog_output.status.success());
+    assert_eq!(catalog["command"], "ruleset");
+    assert_eq!(
+        catalog["summary"]["ruleset_description"]["ruleset_count"],
+        7
+    );
+    assert_eq!(
+        catalog["summary"]["ruleset_description"]["ruleset_version"],
+        "2026.05.23"
+    );
+
+    let (profile_output, profile) = json_output(&[
+        "ruleset",
+        "--id",
+        "process-authoring/strict",
+        "--format",
+        "json",
+    ]);
+    assert!(profile_output.status.success());
+    assert_eq!(profile["summary"]["ruleset_id"], "process-authoring/strict");
+    assert!(
+        profile["summary"]["rules"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|rule| rule["severity"] == "warning")
+    );
+
+    let (missing_output, missing) =
+        json_output(&["ruleset", "--id", "missing/default", "--format", "json"]);
+    assert_eq!(missing_output.status.code(), Some(64));
+    assert_eq!(missing["diagnostics"][0]["code"], "unknown_ruleset");
 }
 
 #[test]
@@ -287,9 +324,101 @@ fn empty_native_tidas_package_is_a_complete_success() {
 }
 
 #[test]
-fn ilcd_validation_remains_explicitly_unavailable_without_python_fallback() {
+fn explicit_validation_progress_uses_stderr_and_keeps_json_stdout_clean() {
     let directory = tempfile::tempdir().unwrap();
-    let (output, payload) = json_output(&[
+    let output = tidas()
+        .args([
+            "validate",
+            directory.path().to_str().unwrap(),
+            "--progress",
+            "always",
+            "--format",
+            "json",
+        ])
+        .output()
+        .unwrap();
+
+    assert!(output.status.success());
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(payload["exit_class"], "success");
+    let stderr = String::from_utf8(output.stderr).unwrap();
+    assert!(stderr.contains("phase=started"));
+    assert!(stderr.contains("phase=completed"));
+    assert!(stderr.contains("documents=0/?"));
+}
+
+#[test]
+fn validation_describe_and_batch_protocol_are_native_and_deterministic() {
+    let directory = tempfile::tempdir().unwrap();
+    let (describe_output, describe) = json_output(&["validate", "--describe", "--format", "json"]);
+    assert!(describe_output.status.success());
+    assert_eq!(
+        describe["summary"]["validation_describe"]["protocols"][0],
+        "document-validation-batch.v1"
+    );
+    assert_eq!(
+        describe["summary"]["validation_describe"]["package"]["name"],
+        "tidas"
+    );
+
+    let batch = directory.path().join("batch");
+    fs::create_dir_all(batch.join("sources")).unwrap();
+    fs::write(batch.join("sources/bad.json"), b"{}").unwrap();
+    let manifest = directory.path().join("manifest.jsonl");
+    fs::write(
+        &manifest,
+        "{\"document_key\":\"source:test:01.00.000\",\"category\":\"sources\",\"relative_path\":\"sources/bad.json\",\"content_sha256\":\"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a\"}\n",
+    )
+    .unwrap();
+    let events = directory.path().join("events.jsonl");
+    let run = || {
+        json_output(&[
+            "validate",
+            batch.to_str().unwrap(),
+            "--protocol",
+            "document-validation-batch.v1",
+            "--input-manifest",
+            manifest.to_str().unwrap(),
+            "--events",
+            events.to_str().unwrap(),
+            "--format",
+            "json",
+        ])
+    };
+    let (first_output, first_report) = run();
+    let first_events = fs::read(&events).unwrap();
+    let (second_output, second_report) = run();
+    let second_events = fs::read(&events).unwrap();
+
+    assert!(first_output.status.success());
+    assert!(second_output.status.success());
+    assert_eq!(first_report, second_report);
+    assert_eq!(first_events, second_events);
+    assert_eq!(
+        first_report["summary"]["validation_batch_final"]["summary"]["error_count"],
+        1
+    );
+    assert_eq!(
+        first_report["summary"]["validation_batch_final"]["completed"],
+        true
+    );
+    let event_types: Vec<_> = first_events
+        .split(|byte| *byte == b'\n')
+        .filter(|line| !line.is_empty())
+        .map(|line| serde_json::from_slice::<serde_json::Value>(line).unwrap()["type"].clone())
+        .collect();
+    assert_eq!(event_types, ["issue", "final"]);
+}
+
+#[test]
+fn native_ilcd_validation_accepts_valid_assets_and_reports_schema_issues() {
+    let directory = tempfile::tempdir().unwrap();
+    fs::write(
+        directory.path().join("valid.xml"),
+        include_bytes!("../../../src/tidas_tools/eilcd/stylesheets/ILCDLocations_Reference.xml"),
+    )
+    .unwrap();
+    let (valid_output, valid_payload) = json_output(&[
         "validate",
         directory.path().to_str().unwrap(),
         "--input-format",
@@ -297,9 +426,41 @@ fn ilcd_validation_remains_explicitly_unavailable_without_python_fallback() {
         "--format",
         "json",
     ]);
-    assert_eq!(output.status.code(), Some(69));
-    assert_eq!(payload["command"], "validate");
-    assert_eq!(payload["exit_class"], "unavailable");
+    assert!(valid_output.status.success());
+    assert_eq!(
+        valid_payload["summary"]["validation"]["input_format"],
+        "ilcd-xml"
+    );
+    assert_eq!(valid_payload["summary"]["validation"]["document_count"], 1);
+
+    fs::write(
+        directory.path().join("invalid.xml"),
+        br#"<ILCDLocations xmlns="http://lca.jrc.it/ILCD/Locations"/>"#,
+    )
+    .unwrap();
+    let issues = directory.path().join("issues.jsonl");
+    let (invalid_output, invalid_payload) = json_output(&[
+        "validate",
+        directory.path().to_str().unwrap(),
+        "--input-format",
+        "ilcd-xml",
+        "--issues",
+        issues.to_str().unwrap(),
+        "--format",
+        "json",
+    ]);
+    assert_eq!(invalid_output.status.code(), Some(2));
+    assert_eq!(invalid_payload["exit_class"], "data-issues");
+    assert_eq!(invalid_payload["summary"]["validation"]["issue_count"], 1);
+    let event: serde_json::Value = serde_json::from_slice(
+        fs::read(&issues)
+            .unwrap()
+            .split(|byte| *byte == b'\n')
+            .next()
+            .unwrap(),
+    )
+    .unwrap();
+    assert_eq!(event["issue"]["issue_code"], "ilcd_schema_error");
 }
 
 #[test]

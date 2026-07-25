@@ -33,7 +33,7 @@ checkPaths:
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-25
 lastReviewedCommit: 75d11c1aeec5e0973005eaadc1acb5a26931f894
-lastReviewedNote: "Issue #120 adds the offline native TIDAS JSON validation pipeline and bounded issue/report contracts."
+lastReviewedNote: "Issue #120 completes native TIDAS/ILCD validation, semantic indexes, ruleset and reference contracts, and bounded batch evidence."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -56,7 +56,9 @@ until all #117 exit gates pass.
 | `crates/tidas-contracts` | versioned operation reports, diagnostics, artifact references, completeness, and exit-code classes |
 | `crates/tidas-runtime` | cancellation, explicit memory reservations, bounded queues, and streaming JSONL spooling |
 | `crates/tidas-assets` | offline executable-asset embedding, classification, integrity checking, and fingerprinting |
-| `crates/tidas-validation` | offline compiled TIDAS JSON Schema validation, deterministic package traversal, bounded issue spooling, and validation summaries |
+| `crates/tidas-references` | side-effect-free, version-preserving reference extraction, role classification, and malformed-reference contracts |
+| `crates/tidas-rulesets` | schema-validated methodology/ruleset catalog, referential integrity, selection, and deterministic fingerprinting |
+| `crates/tidas-validation` | offline TIDAS JSON and ILCD/XSD validation, semantic indexes, batch protocol, deterministic traversal, and bounded issue/event spooling |
 | `crates/tidas-xml` | strict streaming XML inspection plus the compatibility boundary to XSD/XSLT engines |
 | `crates/tidas-cli` | the single `tidas` binary, final command tree, output routing, and thin domain dispatch |
 | `docs/agents/cli-contract.md` | authoritative command, configuration precedence, stream, completion, invocation-context, and exit behavior |
@@ -65,17 +67,17 @@ until all #117 exit gates pass.
 | `.gitattributes` | LF checkout contract for byte-identical assets and machine contracts on every platform |
 | `migration/python-to-rust-owners.md` | frozen Python public-symbol inventory and dependency-ordered Rust owner map |
 
-The native TIDAS JSON path now lives in `tidas-validation`. Later work in #120
-adds ILCD/XSD, methodology, projection-index, and batch-protocol behavior;
-later issues add conversion, import, export, and release domain crates. The CLI
-crate must not absorb their logic.
+The complete validation domain now lives in `tidas-validation`, with packaged
+methodology metadata isolated in `tidas-rulesets` and reusable reference
+extraction isolated in `tidas-references`. Later issues add conversion, import,
+export, and release domain crates. The CLI crate must not absorb their logic.
 
 The command tree is fixed to `convert`, `import`, `export`, `validate`,
 `release`, `ruleset`, and `version`. No old executable alias or Python fallback
 is present. Until a domain slice lands, its Rust command returns the stable
-`unavailable` exit class (69). `validate` accepts native TIDAS JSON packages;
-its not-yet-migrated ILCD XML mode remains explicitly unavailable without a
-Python fallback.
+`unavailable` exit class (69). `validate` accepts native TIDAS JSON packages,
+ILCD XML packages, and `document-validation-batch.v1`; `ruleset` validates and
+inspects the integrity-locked methodology catalog. None invokes Python.
 
 The CLI records the resolved configuration source, log/progress policy, memory
 budget, queue capacity, and I/O policy in `tidas.invocation-context.v1`.
@@ -97,12 +99,24 @@ Large-data domains must use the `tidas-runtime` cancellation token, bounded
 queues, explicit memory reservations, and streaming spools rather than
 collecting issue lists or complete packages in memory.
 
-## Native TIDAS JSON validation
+## Native validation and rulesets
 
 `tidas-validation` compiles each Draft 7 category schema once per package run.
 Relative `$ref` values resolve only against the in-memory embedded schema
 catalog; the JSON Schema dependency is built without HTTP or filesystem
-resolvers. The `cas-number` format checker is implemented in Rust.
+resolvers. The `cas-number` format checker is implemented in Rust. The same
+pipeline runs localized-language and classification hierarchy checks against
+the locked language and product-category projection assets.
+
+`tidas-rulesets` validates `runtime_rulesets.json` against its bundled schema,
+checks unique ids and profile-to-rule references, and exposes stable catalog
+fingerprints and ordered profile selection.
+
+`tidas-references` reproduces the frozen Python reference golden contract,
+including explicit, omitted, and invalid version state; canonical UUID
+diagnostics; stable reference roles and JSON paths; and occurrence-preserving
+edge order. It deliberately does not resolve targets, visibility, version
+winners, closure, or certificates.
 
 Category and file traversal is sorted. File/path memory is explicitly
 reserved against the invocation budget, schema errors are consumed as an
@@ -110,6 +124,19 @@ iterator, and full issue details are discarded or written immediately to an
 atomically persisted JSONL spool. The operation report retains bounded counts,
 the asset fingerprint, accounted peak memory, and the spool byte/hash summary
 instead of retaining an issue array.
+
+ILCD validation recursively traverses either `<root>/data` or the package root,
+skips packaged schema/stylesheet helpers, resolves 12 supported root
+namespace/type pairs, and reuses XSD contexts compiled from a temporary
+materialization of all locked XSD assets. Relative imports work without
+network access; schema diagnostics and flow CAS checksum findings stream into
+the same bounded issue contract.
+
+`document-validation-batch.v1` preflights every manifest path and content hash
+before emitting evidence, rejects symlinks and non-portable traversal paths,
+rehashes around validation, and uses a per-document temporary spool so content
+drift cannot publish partial issue evidence. The final event carries counts,
+the logical issue-stream hash, and the asset/engine handshake.
 
 ## XML/XSD/XSLT portability decision
 
