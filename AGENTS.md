@@ -101,6 +101,9 @@ Read in this order:
 Keep these entry-level facts in `AGENTS.md`. Use `README.md`, `README_CN.md`, and `docs/agents/repo-validation.md` for fuller command detail.
 
 - Rust workspace toolchain: Rust 1.88 or newer, Cargo resolver 3
+- crates.io qualification/publication toolchain: Cargo 1.94.0, pinned separately
+  from the Rust 1.88 product MSRV because coordinated workspace publication
+  requires Cargo's stable multi-package publishing support
 - final product entry point: `cargo run -p tidas --bin tidas -- <subcommand>`
 - final command tree: `convert`, `import`, `export`, `validate`, `release`, `ruleset`, `version`
 - native package conversion: `cargo run -p tidas --bin tidas -- convert <input-dir> --output <output-dir> --to ilcd|tidas --format json`
