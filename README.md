@@ -17,7 +17,8 @@ The current Rust implementation establishes the Cargo workspace, stable
 machine and invocation contracts, bounded runtime primitives, executable-asset
 integrity lock, XML/XSD/XSLT portability boundary, the unified CLI adapter,
 and native TIDAS/ILCD validation, reference extraction, batch evidence, and
-ruleset inspection, plus bidirectional TIDAS/eILCD conversion:
+ruleset inspection, bidirectional TIDAS/eILCD conversion, and external-format
+import:
 
 ```bash
 cargo build --workspace
@@ -27,6 +28,8 @@ cargo run -p tidas-cli --bin tidas -- convert <tidas-package-dir> \
   --output <eilcd-package-dir> --to ilcd --format json
 cargo run -p tidas-cli --bin tidas -- convert <eilcd-data-dir> \
   --output <tidas-package-dir> --to tidas --format json
+cargo run -p tidas-cli --bin tidas -- import <source-file-or-dir> \
+  --output <import-output-dir> --target both --write-mapping --format json
 cargo run -p tidas-cli --bin tidas -- validate <package-dir> \
   --issues <issues.jsonl> --format json
 cargo run -p tidas-cli --bin tidas -- validate <ilcd-dir> \
@@ -37,10 +40,20 @@ cargo run -p tidas-assets --bin tidas-asset-lock -- check
 ```
 
 The final command tree is `convert`, `import`, `export`, `validate`, `release`,
-`ruleset`, and `version`. `convert`, `version`, `validate`, and `ruleset` are
-functional. The remaining `import`, `export`, and `release` paths fail
+`ruleset`, and `version`. `convert`, `import`, `version`, `validate`, and
+`ruleset` are functional. The remaining `export` and `release` paths fail
 explicitly with exit class
 `unavailable`/code `69` and never invoke Python.
+
+Native import accepts EcoSpold 1/2, SimaPro CSV, openLCA JSON-LD, openLCA
+process XLSX, and ILCD files, directories, or ZIP packages. It detects the
+source format by default; use `--from-format` to resolve ambiguous inputs.
+The command always writes and validates TIDAS internally, optionally publishes
+ILCD with `--target ilcd|both`, writes per-process dependency bundles by
+default, and enables deterministic `mapping.csv.gz` with `--write-mapping`.
+`.zolca` is rejected. Parsing, exchanges, and issue reporting use bounded,
+cancel-aware, disk-backed streams, and no partial output is published on
+failure.
 
 Native conversion mirrors input under `OUTPUT/data`, preserves package
 metadata, materializes the locked target schemas/stylesheets/methodologies,

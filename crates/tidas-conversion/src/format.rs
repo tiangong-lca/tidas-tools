@@ -65,6 +65,15 @@ fn write_element(
             }
         }
     }
+    let empty_element = match value {
+        Value::Null => true,
+        Value::Object(object) => object.keys().all(|key| key.starts_with('@')),
+        _ => false,
+    };
+    if empty_element {
+        writer.write_event(Event::Empty(start))?;
+        return Ok(());
+    }
     writer.write_event(Event::Start(start))?;
     match value {
         Value::Object(object) => {

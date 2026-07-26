@@ -18,14 +18,15 @@ checkPaths:
   - Cargo.lock
   - crates/tidas-cli/**
   - crates/tidas-conversion/**
+  - crates/tidas-import/**
   - crates/tidas-contracts/**
   - crates/tidas-runtime/**
   - contracts/**
   - README.md
   - README_CN.md
-lastReviewedAt: 2026-07-25
-lastReviewedCommit: 3c51461
-lastReviewedNote: "Issue #121 activates native convert with atomic output, stable reports, deterministic envelope sidecars, progress, and actionable validation handoff."
+lastReviewedAt: 2026-07-26
+lastReviewedCommit: 812f9f4
+lastReviewedNote: "Reviewed for Issue #122 Windows bundle-publication hardening; the public command, report, output, warning, and exit-class contracts remain unchanged."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -155,6 +156,40 @@ bytes and a cross-platform tree SHA-256. A deterministic
 cannot appear beside the single eILCD XML root; reverse conversion consumes
 and merges it. The report next action gives the exact `tidas validate
 OUTPUT/data --input-format ...` command.
+
+## Native import surface
+
+External-format import uses:
+
+```bash
+tidas import <INPUT> --output <OUTPUT_DIR> --format json
+tidas import <INPUT> --output <OUTPUT_DIR> \
+  --from-format openlca-jsonld --target both \
+  --write-mapping --format json
+```
+
+Supported `--from-format` values are `ecospold1`, `ecospold2`, `simapro-csv`,
+`openlca-jsonld`, `openlca-process-xlsx`, and `ilcd`. Without that option,
+bounded signature detection selects the format or returns a data issue for
+unsupported/ambiguous input. `.zolca` is explicitly rejected. `--target`
+defaults to `tidas`; `ilcd` and `both` request the validated ILCD bridge.
+Per-process dependency bundles are written by default and
+`--no-process-bundles` disables them. `--write-mapping` enables deterministic
+`mapping.csv.gz`; `--max-entry-mib` limits each source entry.
+
+The operation report summary contains one `import` member conforming to
+`tidas.import-execution-report.v1`. Artifacts carry directory/file hashes and
+byte counts, and next actions give exact native `tidas validate` commands for
+the published targets. Source data findings, malformed input, and `.zolca`
+return `data-issues`; nested output and invalid limits are usage errors;
+required path/publication failures use I/O; cancellation uses 130.
+`--fail-on-warning` converts an otherwise successful import with warnings to
+`data-issues` without discarding the published, validated artifacts.
+
+Adapters write to a disk-backed canonical store; exchanges and issues stream
+to bounded spools. Requested TIDAS/ILCD outputs, process bundles, mapping CSV,
+and reports are assembled in a sibling staging directory and become visible
+only through one atomic commit.
 
 ## Native validation and ruleset surfaces
 

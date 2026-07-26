@@ -8,6 +8,8 @@ use tidas_contracts::{CommandNameV1, LogLevelV1, ProgressModeV1};
 
 pub const DEFAULT_MEMORY_BUDGET_MIB: u64 = 512;
 pub const DEFAULT_QUEUE_CAPACITY: usize = 256;
+pub const DEFAULT_IMPORT_MAX_ENTRY_MIB: u64 = 128;
+pub const DEFAULT_IMPORT_MAX_ISSUE_KIB: u64 = 64;
 
 #[derive(Debug, Parser)]
 #[command(
@@ -107,8 +109,14 @@ impl Cli {
                         "--memory-budget-mib is too large to represent in bytes",
                     )
                 })?;
-                if let Some(Commands::Validate(arguments)) = &self.command {
-                    arguments.validate(&Self::command())?;
+                match &self.command {
+                    Some(Commands::Import(arguments)) => {
+                        arguments.validate(&Self::command())?;
+                    }
+                    Some(Commands::Validate(arguments)) => {
+                        arguments.validate(&Self::command())?;
+                    }
+                    _ => {}
                 }
                 Ok(())
             }
@@ -170,7 +178,7 @@ pub enum Commands {
     /// Convert between TIDAS JSON and eILCD XML.
     Convert(ConvertArgs),
     /// Import supported external LCA formats into TIDAS.
-    Import,
+    Import(ImportArgs),
     /// Export database records and external documents as a package.
     Export,
     /// Validate TIDAS JSON or eILCD/ILCD XML.
@@ -188,7 +196,7 @@ impl Commands {
     pub const fn name(&self) -> CommandNameV1 {
         match self {
             Self::Convert(_) => CommandNameV1::Convert,
-            Self::Import => CommandNameV1::Import,
+            Self::Import(_) => CommandNameV1::Import,
             Self::Export => CommandNameV1::Export,
             Self::Validate(_) => CommandNameV1::Validate,
             Self::Release => CommandNameV1::Release,
@@ -221,6 +229,83 @@ pub struct ConvertArgs {
 pub enum ConversionTarget {
     Ilcd,
     Tidas,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, clap::Args)]
+#[command(
+    long_about = "Import one external LCA source into a deterministic, schema-validated TIDAS package and optionally an eILCD package. Supported inputs are EcoSpold 1, EcoSpold 2, SimaPro CSV, openLCA JSON-LD, openLCA process XLSX, and ILCD/eILCD. A .zolca database is intentionally rejected; export it to a supported exchange format first. Publication is atomic and all large outputs are written below OUTPUT.",
+    after_help = "Examples:\n  tidas import ./database.zip --output ./imported\n  tidas import ./processes.csv --from-format simapro-csv --output ./imported --target both --write-mapping\n  tidas import ./database.jsonld --output ./imported --no-process-bundles --format json\n\nA .zolca database is intentionally rejected; export it to a supported exchange format first.\n\nOutputs:\n  OUTPUT/import-report.json and OUTPUT/issues.jsonl\n  OUTPUT/tidas when --target is tidas or both\n  OUTPUT/ilcd when --target is ilcd or both\n  OUTPUT/process-bundles by default\n  OUTPUT/mapping.csv.gz when --write-mapping is used\n\nNext: run `tidas validate OUTPUT/tidas --input-format tidas-json` or validate OUTPUT/ilcd with --input-format ilcd-xml."
+)]
+pub struct ImportArgs {
+    /// Source file, directory, ZIP package, or XLSX workbook to import.
+    #[arg(value_name = "INPUT")]
+    pub input: PathBuf,
+
+    /// Target directory to publish atomically.
+    #[arg(long, value_name = "DIR")]
+    pub output: PathBuf,
+
+    /// Explicit source format; omit to use bounded signature detection.
+    #[arg(long, value_enum, value_name = "FORMAT")]
+    pub from_format: Option<ImportSourceFormat>,
+
+    /// Generated package representation.
+    #[arg(long, value_enum, default_value_t = ImportTargetArg::Tidas)]
+    pub target: ImportTargetArg,
+
+    /// Write the deterministic expert mapping artifact to OUTPUT/mapping.csv.gz.
+    #[arg(long)]
+    pub write_mapping: bool,
+
+    /// Skip per-process dependency bundles, which are written by default.
+    #[arg(long)]
+    pub no_process_bundles: bool,
+
+    /// Return data-issues (2) when the import completes with warnings.
+    #[arg(long)]
+    pub fail_on_warning: bool,
+
+    /// Reject any individual source entry larger than this many MiB.
+    #[arg(
+        long,
+        default_value_t = DEFAULT_IMPORT_MAX_ENTRY_MIB,
+        value_parser = parse_positive_u64
+    )]
+    pub max_entry_mib: u64,
+}
+
+impl ImportArgs {
+    fn validate(&self, command: &clap::Command) -> Result<(), clap::Error> {
+        self.max_entry_mib.checked_mul(1024 * 1024).ok_or_else(|| {
+            command.clone().error(
+                ErrorKind::InvalidValue,
+                "--max-entry-mib is too large to represent in bytes",
+            )
+        })?;
+        Ok(())
+    }
+
+    #[must_use]
+    pub const fn max_entry_bytes(&self) -> u64 {
+        self.max_entry_mib * 1024 * 1024
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
+pub enum ImportSourceFormat {
+    Ecospold1,
+    Ecospold2,
+    SimaproCsv,
+    OpenlcaJsonld,
+    OpenlcaProcessXlsx,
+    Ilcd,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
+pub enum ImportTargetArg {
+    Tidas,
+    Ilcd,
+    Both,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, clap::Args)]

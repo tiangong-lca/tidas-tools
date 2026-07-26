@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiangong.earth/contracts/import-package-report.v1.schema.json",
+  "title": "TIDAS import package report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "output_format",
+    "object_counts",
+    "output_bytes",
+    "output_tree_sha256",
+    "asset_fingerprint",
+    "peak_accounted_memory_bytes"
+  ],
+  "properties": {
+    "schema_version": {"const": "tidas.import-package-report.v1"},
+    "output_format": {"enum": ["tidas-json"]},
+    "object_counts": {
+      "type": "object",
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "output_bytes": {"type": "integer", "minimum": 0},
+    "output_tree_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "asset_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "peak_accounted_memory_bytes": {"type": "integer", "minimum": 0}
+  }
+}

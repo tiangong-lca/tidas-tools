@@ -209,7 +209,7 @@ fn completion_scripts_are_deterministic_and_do_not_add_a_product_command() {
 
 #[test]
 fn unavailable_commands_return_a_machine_report_without_python_fallback() {
-    for command in ["import", "export", "release"] {
+    for command in ["export", "release"] {
         let (output, payload) = json_output(&[command, "--format", "json"]);
         assert_eq!(output.status.code(), Some(69), "{command}");
         assert!(output.stderr.is_empty(), "{command}");
@@ -218,6 +218,168 @@ fn unavailable_commands_return_a_machine_report_without_python_fallback() {
         assert_eq!(payload["completeness"], "not-started");
         assert_eq!(payload["diagnostics"][0]["code"], "feature_not_migrated");
     }
+}
+
+#[test]
+fn import_help_exposes_supported_formats_outputs_and_recovery() {
+    let output = tidas().args(["import", "--help"]).output().unwrap();
+    assert!(output.status.success());
+    assert!(output.stderr.is_empty());
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    for value in [
+        "ecospold1",
+        "ecospold2",
+        "simapro-csv",
+        "openlca-jsonld",
+        "openlca-process-xlsx",
+        "ilcd",
+        "--output",
+        "--target",
+        "--write-mapping",
+        "--no-process-bundles",
+        "--fail-on-warning",
+        "--max-entry-mib",
+        ".zolca",
+        "tidas validate",
+    ] {
+        assert!(stdout.contains(value), "{value} missing from:\n{stdout}");
+    }
+}
+
+#[test]
+fn import_is_native_atomic_validated_and_actionable() {
+    let directory = tempfile::tempdir().unwrap();
+    let input = directory.path().join("input.csv");
+    let output = directory.path().join("output");
+    fs::write(
+        &input,
+        b"{SimaPro 9.5}\n\nProcess\n\nProcess name\nSteel\n\nProducts\nSteel;kg;1\n\nEnd\n",
+    )
+    .unwrap();
+    let run = || {
+        tidas()
+            .args([
+                "import",
+                input.to_str().unwrap(),
+                "--output",
+                output.to_str().unwrap(),
+                "--write-mapping",
+                "--format",
+                "json",
+            ])
+            .output()
+            .unwrap()
+    };
+    let first = run();
+    let second = run();
+    assert!(
+        first.status.success(),
+        "first import failed: status={:?}, stdout={}, stderr={}",
+        first.status.code(),
+        String::from_utf8_lossy(&first.stdout),
+        String::from_utf8_lossy(&first.stderr)
+    );
+    assert!(
+        second.status.success(),
+        "second import failed: status={:?}, stdout={}, stderr={}",
+        second.status.code(),
+        String::from_utf8_lossy(&second.stdout),
+        String::from_utf8_lossy(&second.stderr)
+    );
+    assert!(first.stderr.is_empty());
+    assert_eq!(first.stdout, second.stdout);
+    let report: OperationReportV1 = serde_json::from_slice(&first.stdout).unwrap();
+    assert_eq!(report.command, CommandNameV1::Import);
+    assert_eq!(report.summary["import"]["detected_format"], "simapro-csv");
+    assert_eq!(report.summary["import"]["target"], "tidas");
+    assert_eq!(report.summary["import"]["tidas_validation_issue_count"], 0);
+    assert_eq!(
+        report.artifacts[3].sha256.as_deref(),
+        report.summary["import"]["tidas_package"]["output_tree_sha256"].as_str()
+    );
+    assert!(report.next_actions[0].contains("tidas validate"));
+    assert!(output.join("tidas/processes").is_dir());
+    assert!(output.join("process-bundles/index.json").is_file());
+    assert!(output.join("mapping.csv.gz").is_file());
+}
+
+#[test]
+fn import_warning_policy_and_invalid_sources_have_stable_exit_classes() {
+    let directory = tempfile::tempdir().unwrap();
+    let source = directory.path().join("input.csv");
+    let output = directory.path().join("output");
+    fs::write(
+        &source,
+        b"{SimaPro 9.5}\n\nProcess\n\nProcess name\nSteel\n\nProducts\nSteel;kg;1\n\nEnd\n",
+    )
+    .unwrap();
+    let (warning_output, warning_report) = json_output(&[
+        "import",
+        source.to_str().unwrap(),
+        "--output",
+        output.to_str().unwrap(),
+        "--fail-on-warning",
+        "--format",
+        "json",
+    ]);
+    assert_eq!(
+        warning_output.status.code(),
+        Some(2),
+        "warning import returned: stdout={}, stderr={}",
+        String::from_utf8_lossy(&warning_output.stdout),
+        String::from_utf8_lossy(&warning_output.stderr)
+    );
+    assert_eq!(warning_report["status"], "completed-with-issues");
+    assert_eq!(warning_report["exit_class"], "data-issues");
+    assert!(output.join("tidas").is_dir());
+
+    let zolca = directory.path().join("database.zolca");
+    fs::write(&zolca, b"SQLite format 3").unwrap();
+    let zolca_output = directory.path().join("zolca-output");
+    let (invalid_output, invalid_report) = json_output(&[
+        "import",
+        zolca.to_str().unwrap(),
+        "--output",
+        zolca_output.to_str().unwrap(),
+        "--format",
+        "json",
+    ]);
+    assert_eq!(invalid_output.status.code(), Some(2));
+    assert_eq!(invalid_report["exit_class"], "data-issues");
+    assert_eq!(
+        invalid_report["diagnostics"][0]["code"],
+        "import_source_invalid"
+    );
+    assert!(!zolca_output.exists());
+
+    let missing = directory.path().join("missing.zip");
+    let missing_output = directory.path().join("missing-output");
+    let (missing_result, missing_report) = json_output(&[
+        "import",
+        missing.to_str().unwrap(),
+        "--output",
+        missing_output.to_str().unwrap(),
+        "--format",
+        "json",
+    ]);
+    assert_eq!(missing_result.status.code(), Some(2));
+    assert_eq!(missing_report["exit_class"], "data-issues");
+    assert!(!missing_output.exists());
+
+    let malformed = directory.path().join("malformed.csv");
+    fs::write(&malformed, b"{SimaPro 9.5}\n").unwrap();
+    let malformed_output = directory.path().join("malformed-output");
+    let (malformed_result, malformed_report) = json_output(&[
+        "import",
+        malformed.to_str().unwrap(),
+        "--output",
+        malformed_output.to_str().unwrap(),
+        "--format",
+        "json",
+    ]);
+    assert_eq!(malformed_result.status.code(), Some(2));
+    assert_eq!(malformed_report["exit_class"], "data-issues");
+    assert!(!malformed_output.exists());
 }
 
 #[test]

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecoSpold xmlns="http://www.EcoInvent.org/EcoSpold01">
+  <dataset>
+    <metaInformation>
+      <processInformation>
+        <referenceFunction name="market for enriched steel" generalComment="Reference function note" category="metals" subCategory="steel" localCategory="local metals" localSubCategory="local steel" includedProcesses="gate to gate"/>
+        <geography location="CH" text="Swiss market boundary"/>
+        <technology text="Electric arc furnace route"/>
+        <timePeriod startDate="2020-01-01" endDate="2023-12-31" dataValidForEntirePeriod="true">survey period</timePeriod>
+      </processInformation>
+      <modellingAndValidation>
+        <representativeness productionVolume="123 kg" samplingProcedure="supplier survey" uncertaintyAdjustments="pedigree adjusted" extrapolations="use only for Swiss market"/>
+      </modellingAndValidation>
+      <sources>
+        <source sourceNumber="10" firstAuthor="A. Author" year="2021" title="Steel source" text="Primary source note"/>
+      </sources>
+    </metaInformation>
+    <flowData>
+      <exchange number="1" name="enriched steel" unit="kg" amount="1" outputGroup="0"/>
+      <exchange number="2" name="carbon dioxide" CASNumber="124-38-9" formula="CO2" unit="kg" amount="2.5000000000000001" outputGroup="4" category="air" subCategory="unspecified" localCategory="local air" localSubCategory="local stack" minValue="1.2" maxValue="3.4" uncertaintyType="1" standardDeviation95="12.3456" generalComment="measured stack emissions" localName="CO2 local"/>
+    </flowData>
+  </dataset>
+</ecoSpold>

@@ -1,0 +1,13 @@
+{
+  "schema_version": "tidas.import-python-oracle.v1",
+  "oracle": "Python tidas_tools.import_lca captured before the feature freeze",
+  "source_format": "ecospold1",
+  "source": "ecospold1_64e926e8-dd48-3704-b902-daaf546087c4.xml",
+  "assertions": [
+    {"category": "processes", "id": "64e926e8-dd48-3704-b902-daaf546087c4", "pointer": "/processDataSet/processInformation/time/common:dataSetValidUntil", "equals": 2023},
+    {"category": "processes", "id": "64e926e8-dd48-3704-b902-daaf546087c4", "pointer": "/processDataSet/processInformation/technology/technologyDescriptionAndIncludedProcesses/#text", "equals": "Electric arc furnace route"},
+    {"category": "processes", "id": "64e926e8-dd48-3704-b902-daaf546087c4", "pointer": "/processDataSet/modellingAndValidation/dataSourcesTreatmentAndRepresentativeness/annualSupplyOrProductionVolume/#text", "equals": "123 kg/year"},
+    {"category": "processes", "id": "64e926e8-dd48-3704-b902-daaf546087c4", "pointer": "/processDataSet/exchanges/exchange/1/meanAmount", "equals": "2.5000000000000001"},
+    {"category": "processes", "id": "64e926e8-dd48-3704-b902-daaf546087c4", "pointer": "/processDataSet/exchanges/exchange/1/uncertaintyDistributionType", "equals": "log-normal"}
+  ]
+}

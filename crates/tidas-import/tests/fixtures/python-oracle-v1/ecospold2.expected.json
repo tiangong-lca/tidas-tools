@@ -1,0 +1,12 @@
+{
+  "schema_version": "tidas.import-python-oracle.v1",
+  "oracle": "Python tidas_tools.import_lca captured before the feature freeze",
+  "source_format": "ecospold2",
+  "source": "ecospold2_22222222-2222-4222-8222-222222222222.spold",
+  "assertions": [
+    {"category": "processes", "id": "22222222-2222-4222-8222-222222222222", "pointer": "/processDataSet/processInformation/time/common:dataSetValidUntil", "equals": 2025},
+    {"category": "processes", "id": "22222222-2222-4222-8222-222222222222", "pointer": "/processDataSet/processInformation/geography/locationOfOperationSupplyOrProduction/descriptionOfRestrictions/#text", "equals": "Swiss geography note"},
+    {"category": "processes", "id": "22222222-2222-4222-8222-222222222222", "pointer": "/processDataSet/exchanges/exchange/1/dataDerivationTypeStatus", "equals": "Calculated"},
+    {"category": "processes", "id": "22222222-2222-4222-8222-222222222222", "pointer": "/processDataSet/exchanges/exchange/1/uncertaintyDistributionType", "equals": "log-normal"}
+  ]
+}

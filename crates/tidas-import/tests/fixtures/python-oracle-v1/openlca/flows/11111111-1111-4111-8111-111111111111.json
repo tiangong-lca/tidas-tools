@@ -1,0 +1,10 @@
+{
+  "@type": "Flow",
+  "@id": "11111111-1111-4111-8111-111111111111",
+  "name": "steel",
+  "flowType": "PRODUCT_FLOW",
+  "cas": "7439-89-6",
+  "formula": "Fe",
+  "refUnit": "kg",
+  "category": "Technosphere flows/Metals"
+}

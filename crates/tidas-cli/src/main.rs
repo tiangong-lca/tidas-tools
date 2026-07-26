@@ -5,8 +5,8 @@ mod output;
 use std::process::ExitCode;
 
 use args::{
-    Cli, Commands, ConversionTarget, ConvertArgs, RulesetArgs, ValidateArgs, ValidationInputFormat,
-    ValidationProtocol,
+    Cli, Commands, ConversionTarget, ConvertArgs, ImportArgs, ImportSourceFormat, ImportTargetArg,
+    RulesetArgs, ValidateArgs, ValidationInputFormat, ValidationProtocol,
 };
 use clap::error::ErrorKind;
 use context::ExecutionContext;
@@ -18,6 +18,10 @@ use tidas_contracts::{
 use tidas_conversion::{
     ConversionDirection, ConversionError, ConversionProgressReporter, ConversionRequest,
     convert_directory,
+};
+use tidas_import::{
+    ImportCoreError, ImportExecutionError, ImportRequest, ImportTarget, PackageWriteError,
+    SourceFormat, run_import,
 };
 use tidas_rulesets::{RulesetCatalog, RulesetError};
 use tidas_runtime::RuntimeError;
@@ -93,6 +97,7 @@ fn dispatch(command: Commands, execution: &ExecutionContext) -> OperationReportV
 
     match command {
         Commands::Convert(arguments) => conversion_report(&arguments, execution),
+        Commands::Import(arguments) => import_report(&arguments, execution),
         Commands::Validate(arguments) => validation_report(&arguments, execution),
         Commands::Ruleset(arguments) => ruleset_report(&arguments),
         Commands::Version => version_report(execution),
@@ -104,6 +109,246 @@ fn dispatch(command: Commands, execution: &ExecutionContext) -> OperationReportV
             ),
         ),
     }
+}
+
+fn import_report(arguments: &ImportArgs, execution: &ExecutionContext) -> OperationReportV1 {
+    let target = match arguments.target {
+        ImportTargetArg::Tidas => ImportTarget::Tidas,
+        ImportTargetArg::Ilcd => ImportTarget::Ilcd,
+        ImportTargetArg::Both => ImportTarget::Both,
+    };
+    let requested_format = arguments.from_format.map(|format| match format {
+        ImportSourceFormat::Ecospold1 => SourceFormat::Ecospold1,
+        ImportSourceFormat::Ecospold2 => SourceFormat::Ecospold2,
+        ImportSourceFormat::SimaproCsv => SourceFormat::SimaproCsv,
+        ImportSourceFormat::OpenlcaJsonld => SourceFormat::OpenlcaJsonld,
+        ImportSourceFormat::OpenlcaProcessXlsx => SourceFormat::OpenlcaProcessXlsx,
+        ImportSourceFormat::Ilcd => SourceFormat::Ilcd,
+    });
+    let request = ImportRequest {
+        source: arguments.input.clone(),
+        requested_format,
+        output_dir: arguments.output.clone(),
+        target,
+        write_mapping: arguments.write_mapping,
+        write_process_bundles: !arguments.no_process_bundles,
+        cancellation: execution.cancellation.clone(),
+        memory_budget: execution.memory_budget.clone(),
+        queue_capacity: execution.invocation.queue_capacity,
+        max_entry_bytes: arguments.max_entry_bytes(),
+        max_issue_bytes: usize::try_from(args::DEFAULT_IMPORT_MAX_ISSUE_KIB * 1024)
+            .expect("the built-in import issue limit fits usize"),
+    };
+    match run_import(&request) {
+        Ok(summary) => completed_import_report(arguments, &summary),
+        Err(error)
+            if matches!(
+                runtime_error_in_chain(&error),
+                Some(RuntimeError::Cancelled)
+            ) =>
+        {
+            OperationReportV1::cancelled(CommandNameV1::Import)
+        }
+        Err(error) => failed_import_report(&error),
+    }
+}
+
+fn completed_import_report(
+    arguments: &ImportArgs,
+    summary: &tidas_import::ImportExecutionReportV1,
+) -> OperationReportV1 {
+    let has_errors = summary.error_count > 0;
+    let has_failing_warnings = arguments.fail_on_warning && summary.warning_count > 0;
+    let mut report = if has_errors || has_failing_warnings {
+        let message = if has_errors {
+            format!(
+                "Import completed with {} error issue(s); inspect {}/issues.jsonl.",
+                summary.error_count,
+                arguments.output.display()
+            )
+        } else {
+            format!(
+                "Import completed with {} warning(s) and --fail-on-warning was requested; inspect {}/issues.jsonl.",
+                summary.warning_count,
+                arguments.output.display()
+            )
+        };
+        OperationReportV1::completed_with_issues(
+            CommandNameV1::Import,
+            DiagnosticV1::new("import_issues", message),
+        )
+    } else {
+        OperationReportV1::succeeded(CommandNameV1::Import)
+    };
+    let summary_value = match serde_json::to_value(summary) {
+        Ok(value) => value,
+        Err(error) => {
+            return OperationReportV1::failed(
+                CommandNameV1::Import,
+                ExitClass::Internal,
+                "import_summary_serialization_failed",
+                error.to_string(),
+            );
+        }
+    };
+    report.summary.insert("import".to_owned(), summary_value);
+    add_import_artifacts_and_actions(&mut report, arguments, summary);
+    report
+}
+
+fn add_import_artifacts_and_actions(
+    report: &mut OperationReportV1,
+    arguments: &ImportArgs,
+    summary: &tidas_import::ImportExecutionReportV1,
+) {
+    report.artifacts.push(ArtifactRefV1 {
+        path: arguments.output.to_string_lossy().into_owned(),
+        media_type: "application/vnd.tidas.import-directory".to_owned(),
+        sha256: None,
+        bytes: None,
+    });
+    report.artifacts.push(ArtifactRefV1 {
+        path: arguments
+            .output
+            .join("import-report.json")
+            .to_string_lossy()
+            .into_owned(),
+        media_type: "application/json".to_owned(),
+        sha256: None,
+        bytes: None,
+    });
+    report.artifacts.push(ArtifactRefV1 {
+        path: arguments
+            .output
+            .join("issues.jsonl")
+            .to_string_lossy()
+            .into_owned(),
+        media_type: "application/x-ndjson".to_owned(),
+        sha256: None,
+        bytes: None,
+    });
+    if matches!(
+        arguments.target,
+        ImportTargetArg::Tidas | ImportTargetArg::Both
+    ) {
+        report.artifacts.push(ArtifactRefV1 {
+            path: arguments
+                .output
+                .join("tidas")
+                .to_string_lossy()
+                .into_owned(),
+            media_type: "application/vnd.tidas.package-directory".to_owned(),
+            sha256: Some(summary.tidas_package.output_tree_sha256.clone()),
+            bytes: Some(summary.tidas_package.output_bytes),
+        });
+        report.next_actions.push(format!(
+            "tidas validate {} --input-format tidas-json",
+            arguments.output.join("tidas").display()
+        ));
+    }
+    if matches!(
+        arguments.target,
+        ImportTargetArg::Ilcd | ImportTargetArg::Both
+    ) {
+        if let Some(conversion) = &summary.ilcd_conversion {
+            report.artifacts.push(ArtifactRefV1 {
+                path: arguments.output.join("ilcd").to_string_lossy().into_owned(),
+                media_type: "application/vnd.ilcd.package-directory".to_owned(),
+                sha256: Some(conversion.output_tree_sha256.clone()),
+                bytes: Some(conversion.output_bytes),
+            });
+        }
+        report.next_actions.push(format!(
+            "tidas validate {} --input-format ilcd-xml",
+            arguments.output.join("ilcd").display()
+        ));
+    }
+    if let Some(mapping) = &summary.mapping {
+        report.artifacts.push(ArtifactRefV1 {
+            path: arguments
+                .output
+                .join("mapping.csv.gz")
+                .to_string_lossy()
+                .into_owned(),
+            media_type: "application/gzip".to_owned(),
+            sha256: Some(mapping.output_sha256.clone()),
+            bytes: Some(mapping.output_bytes),
+        });
+    }
+    if summary.process_bundles.is_some() {
+        report.artifacts.push(ArtifactRefV1 {
+            path: arguments
+                .output
+                .join("process-bundles")
+                .to_string_lossy()
+                .into_owned(),
+            media_type: "application/vnd.tidas.process-bundles-directory".to_owned(),
+            sha256: None,
+            bytes: None,
+        });
+    }
+}
+
+fn failed_import_report(error: &ImportExecutionError) -> OperationReportV1 {
+    if matches!(
+        runtime_error_in_chain(error),
+        Some(RuntimeError::BudgetExceeded { .. })
+    ) {
+        return OperationReportV1::failed(
+            CommandNameV1::Import,
+            ExitClass::Internal,
+            "memory_budget_exceeded",
+            error.to_string(),
+        );
+    }
+    let (exit_class, code) = match error {
+        ImportExecutionError::ZeroQueueCapacity | ImportExecutionError::OutputNestedInSource(_) => {
+            (ExitClass::Usage, "invalid_import_request")
+        }
+        ImportExecutionError::Core(
+            ImportCoreError::ZolcaUnsupported
+            | ImportCoreError::UnknownFormat
+            | ImportCoreError::AdapterUnavailable(_)
+            | ImportCoreError::Detection(_)
+            | ImportCoreError::Adapter(_),
+        )
+        | ImportExecutionError::SourceIssues { .. } => {
+            (ExitClass::DataIssues, "import_source_invalid")
+        }
+        ImportExecutionError::Package(
+            PackageWriteError::ReservedIdentifier { .. } | PackageWriteError::ProcessNoExchanges(_),
+        ) => (ExitClass::DataIssues, "import_source_invalid"),
+        ImportExecutionError::Io(_)
+        | ImportExecutionError::CommitRollback { .. }
+        | ImportExecutionError::Core(ImportCoreError::Store(_))
+        | ImportExecutionError::Mapping(_)
+        | ImportExecutionError::Bundles(_) => (ExitClass::Io, "import_io_failed"),
+        ImportExecutionError::Runtime(_)
+        | ImportExecutionError::Core(
+            ImportCoreError::Runtime(_)
+            | ImportCoreError::Issue(_)
+            | ImportCoreError::ZeroIssueLimit,
+        )
+        | ImportExecutionError::GeneratedPackageInvalid { .. }
+        | ImportExecutionError::Json(_)
+        | ImportExecutionError::Package(_)
+        | ImportExecutionError::Conversion(_)
+        | ImportExecutionError::Validation(_) => (ExitClass::Internal, "import_runtime_failed"),
+    };
+    OperationReportV1::failed(CommandNameV1::Import, exit_class, code, error.to_string())
+}
+
+fn runtime_error_in_chain<'a>(
+    error: &'a (dyn std::error::Error + 'static),
+) -> Option<&'a RuntimeError> {
+    let mut current = Some(error);
+    while let Some(candidate) = current {
+        if let Some(runtime) = candidate.downcast_ref::<RuntimeError>() {
+            return Some(runtime);
+        }
+        current = candidate.source();
+    }
+    None
 }
 
 fn conversion_report(arguments: &ConvertArgs, execution: &ExecutionContext) -> OperationReportV1 {

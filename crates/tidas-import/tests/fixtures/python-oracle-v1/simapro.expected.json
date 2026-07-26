@@ -1,0 +1,44 @@
+{
+  "schema_version": "tidas.import-python-oracle.v1",
+  "oracle": "Python tidas_tools.import_lca captured before the feature freeze",
+  "source_format": "simapro-csv",
+  "process": {
+    "name": "Test process",
+    "functional_unit": "0.5 kg my product",
+    "exchanges": [
+      {
+        "flow": "my product",
+        "direction": "Output",
+        "amount": "0.5"
+      },
+      {
+        "flow": "Soy oil, refined, at plant/kg/RNA",
+        "direction": "Input",
+        "amount": "0.2"
+      },
+      {
+        "flow": "carbon dioxide",
+        "direction": "Output",
+        "amount": "1.5"
+      }
+    ]
+  },
+  "generated_unit": {
+    "name": "kg",
+    "unit_group_id": "d831c535-6737-5243-aec2-a243d2bb9d42",
+    "flow_property_id": "830ce814-9f17-5bd1-aea0-832e93f08ea9"
+  },
+  "fixed_dependencies": {
+    "contact_id": "a6db11f5-1cb4-579a-b503-bd17c361b8c2",
+    "format_source_id": "16938856-0a35-5654-8aff-56c17e61da4d",
+    "compliance_source_id": "82bc2e49-63fc-500f-b52f-69867cd8c91a"
+  },
+  "object_counts": {
+    "flowproperties": 1,
+    "flows": 3,
+    "processes": 1,
+    "unitgroups": 1
+  },
+  "warning_count": 1,
+  "error_count": 0
+}

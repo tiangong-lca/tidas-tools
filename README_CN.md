@@ -23,8 +23,8 @@ checkPaths:
   - pyproject.toml
   - src/tidas_tools/**
   - .github/workflows/**
-lastReviewedAt: 2026-07-25
-lastReviewedCommit: 3c51461
+lastReviewedAt: 2026-07-26
+lastReviewedCommit: a43f761
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -49,8 +49,8 @@ Rust 可执行文件 `tidas`。
 
 当前 Rust 实现已经建立 Cargo workspace、稳定机器与 invocation 契约、有界运行时
 基础设施、可执行资产完整性锁、XML/XSD/XSLT 跨平台边界、最终统一 CLI 适配层，
-以及原生 TIDAS/ILCD 校验、引用提取、batch 证据、ruleset 检查与双向
-TIDAS/eILCD 转换：
+以及原生 TIDAS/ILCD 校验、引用提取、batch 证据、ruleset 检查、双向
+TIDAS/eILCD 转换与外部格式导入：
 
 ```bash
 cargo build --workspace
@@ -60,6 +60,8 @@ cargo run -p tidas-cli --bin tidas -- convert <TIDAS数据包目录> \
   --output <eILCD数据包目录> --to ilcd --format json
 cargo run -p tidas-cli --bin tidas -- convert <eILCD数据目录> \
   --output <TIDAS数据包目录> --to tidas --format json
+cargo run -p tidas-cli --bin tidas -- import <源文件或目录> \
+  --output <导入输出目录> --target both --write-mapping --format json
 cargo run -p tidas-cli --bin tidas -- validate <数据包目录> \
   --issues <issues.jsonl> --format json
 cargo run -p tidas-cli --bin tidas -- validate <ILCD目录> \
@@ -70,9 +72,17 @@ cargo run -p tidas-assets --bin tidas-asset-lock -- check
 ```
 
 最终命令树固定为 `convert`、`import`、`export`、`validate`、`release`、
-`ruleset` 和 `version`。`convert`、`version`、`validate` 与 `ruleset` 已可用；
-尚未迁移的 `import`、`export` 与 `release` 会明确返回 `unavailable`（退出码
+`ruleset` 和 `version`。`convert`、`import`、`version`、`validate` 与
+`ruleset` 已可用；尚未迁移的 `export` 与 `release` 会明确返回 `unavailable`（退出码
 `69`），绝不调用 Python 回退。
+
+原生导入支持 EcoSpold 1/2、SimaPro CSV、openLCA JSON-LD、openLCA process
+XLSX 与 ILCD 文件、目录或 ZIP 包。默认通过有界签名检测源格式，也可使用
+`--from-format` 处理歧义输入。命令始终在内部写出并校验 TIDAS，可通过
+`--target ilcd|both` 发布 ILCD，默认写出每个 process 的依赖 bundle，并通过
+`--write-mapping` 启用确定性的 `mapping.csv.gz`。`.zolca` 会被明确拒绝。
+解析、exchange 与 issue 报告均使用可取消、有内存预算且落盘的有界流；失败时不会
+发布部分输出。
 
 原生转换把输入镜像到 `OUTPUT/data`，保留数据包元数据，写入经过完整性锁验证的
 目标 schemas/stylesheets/methodologies，并原子发布整个输出目录。含顶层扩展元数据

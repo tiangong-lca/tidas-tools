@@ -1,0 +1,13 @@
+{
+  "schema_version": "tidas.import-python-oracle.v1",
+  "oracle": "Python tidas_tools.import_lca captured before the feature freeze",
+  "source_format": "openlca-process-xlsx",
+  "source": "generated:openlca-process-xlsx",
+  "assertions": [
+    {"category": "processes", "id": "22222222-2222-4222-8222-222222222222", "pointer": "/processDataSet/processInformation/dataSetInformation/name/baseName/#text", "equals": "XLSX test process"},
+    {"category": "processes", "id": "22222222-2222-4222-8222-222222222222", "pointer": "/processDataSet/processInformation/quantitativeReference/functionalUnitOrOther/#text", "equals": "1 kg test product"},
+    {"category": "processes", "id": "22222222-2222-4222-8222-222222222222", "pointer": "/processDataSet/exchanges/exchange/0/meanAmount", "equals": "1"},
+    {"category": "processes", "id": "22222222-2222-4222-8222-222222222222", "pointer": "/processDataSet/exchanges/exchange/1/meanAmount", "equals": "1.5"},
+    {"category": "processes", "id": "22222222-2222-4222-8222-222222222222", "pointer": "/processDataSet/exchanges/exchange/2/exchangeDirection", "equals": "Input"}
+  ]
+}
