@@ -2,6 +2,7 @@ mod ecospold;
 mod generated_units;
 mod ilcd;
 mod openlca_jsonld;
+mod openlca_normalize;
 mod openlca_xlsx;
 mod simapro_csv;
 mod xml_node;

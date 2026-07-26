@@ -38,8 +38,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: a43f761
-lastReviewedNote: "Issue #122 activates native external-format import, deterministic package/mapping/bundle outputs, frozen Python oracle parity, and bounded execution."
+lastReviewedCommit: bf30bc2
+lastReviewedNote: "Reviewed for Issue #122 deep adapter/writer parity: all six native import adapters retain bounded execution and replay the frozen Python semantic matrix."
 related:
   - .docpact/config.yaml
   - docs/agents/cli-contract.md

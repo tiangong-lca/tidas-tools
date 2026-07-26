@@ -5,7 +5,7 @@ use serde_json::{Map, Value, json};
 use crate::model::CanonicalEntity;
 
 use super::common::{
-    CONTACT_NAME, DEFAULT_VERSION, administrative, compliance_declarations, contact_id,
+    CONTACT_NAME, DEFAULT_VERSION, administrative_for_entity, compliance_declarations, contact_id,
     dataset_ref, import_trace, localized, name_parts,
 };
 
@@ -60,7 +60,7 @@ pub fn lifecycle_model(entity: &CanonicalEntity) -> Value {
     if let Some(trace) = entity.raw.get("sourceTrace") {
         dataset_information.insert("common:other".to_owned(), import_trace(trace));
     }
-    let administrative = administrative("lifecyclemodels", &entity.internal_id, true);
+    let administrative = administrative_for_entity("lifecyclemodels", entity, true);
     json!({
         "lifeCycleModelDataSet": {
             "@xmlns": "http://eplca.jrc.ec.europa.eu/ILCD/LifeCycleModel/2017",

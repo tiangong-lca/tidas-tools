@@ -1,0 +1,12 @@
+{
+  "schema_version": "tidas.import-python-oracle.v1",
+  "oracle": "Python tidas_tools.import_lca captured before the feature freeze",
+  "source_format": "ilcd",
+  "source": "ilcd",
+  "assertions": [
+    {"category": "flows", "id": "44444444-4444-4444-8444-444444444444", "pointer": "/flowDataSet/flowInformation/dataSetInformation/CASNumber", "equals": "014255-04-0"},
+    {"category": "flows", "id": "44444444-4444-4444-8444-444444444444", "pointer": "/flowDataSet/flowInformation/dataSetInformation/classificationInformation/common:elementaryFlowCategorization/common:category/2/#text", "equals": "Emissions to fresh water"},
+    {"category": "flows", "id": "44444444-4444-4444-8444-444444444444", "pointer": "/flowDataSet/administrativeInformation/publicationAndOwnership/common:dataSetVersion", "equals": "20.25.001"},
+    {"category": "processes", "id": "55555555-5555-4555-8555-555555555555", "pointer": "/processDataSet/exchanges/exchange/0/dataDerivationTypeStatus", "equals": "Calculated"}
+  ]
+}

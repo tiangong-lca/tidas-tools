@@ -102,6 +102,30 @@ impl CanonicalStore {
         &self.counts
     }
 
+    pub fn remove_type(&mut self, entity_type: &str) -> Result<(), StoreError> {
+        validate_file_key("entity_type", entity_type)?;
+        for directory in [
+            self.root
+                .path()
+                .join("entities")
+                .join(key_hash(entity_type)),
+            self.root
+                .path()
+                .join("external")
+                .join(key_hash(entity_type)),
+        ] {
+            if directory.exists() {
+                fs::remove_dir_all(directory)?;
+            }
+        }
+        let order = self.order_path(entity_type);
+        if order.exists() {
+            fs::remove_file(order)?;
+        }
+        self.counts.remove(entity_type);
+        Ok(())
+    }
+
     pub fn iter_type(&self, entity_type: &str) -> Result<EntityIter<'_>, StoreError> {
         validate_file_key("entity_type", entity_type)?;
         let order_path = self.order_path(entity_type);
@@ -145,6 +169,40 @@ impl CanonicalStore {
             None
         };
         Ok(ExchangeIter { lines })
+    }
+
+    pub fn rewrite_process_exchanges<E>(
+        &self,
+        process_id: &str,
+        mut transform: impl FnMut(&mut Map<String, Value>) -> Result<(), E>,
+    ) -> Result<(), E>
+    where
+        E: From<StoreError>,
+    {
+        validate_file_key("process_id", process_id).map_err(E::from)?;
+        let path = self.exchange_path(process_id);
+        let temporary = path.with_extension("jsonl.tmp");
+        let mut writer = BufWriter::new(
+            File::create(&temporary)
+                .map_err(StoreError::from)
+                .map_err(E::from)?,
+        );
+        for exchange in self.iter_process_exchanges(process_id).map_err(E::from)? {
+            let mut exchange = exchange.map_err(E::from)?;
+            transform(&mut exchange)?;
+            serde_json::to_writer(&mut writer, &exchange)
+                .map_err(StoreError::from)
+                .map_err(E::from)?;
+            writer
+                .write_all(b"\n")
+                .map_err(StoreError::from)
+                .map_err(E::from)?;
+        }
+        writer.flush().map_err(StoreError::from).map_err(E::from)?;
+        fs::rename(temporary, path)
+            .map_err(StoreError::from)
+            .map_err(E::from)?;
+        Ok(())
     }
 
     fn entity_path(&self, entity_type: &str, internal_id: &str) -> PathBuf {
@@ -428,5 +486,49 @@ mod tests {
             .map(|item| item.unwrap()["id"].as_i64().unwrap())
             .collect::<Vec<_>>();
         assert_eq!(ids, [1, 2]);
+    }
+
+    #[test]
+    fn process_exchanges_can_be_rewritten_without_collecting_the_spool() {
+        let store = CanonicalStore::create(None).unwrap();
+        store.begin_process_exchanges("process").unwrap();
+        for amount in ["1", "2"] {
+            store
+                .add_process_exchange(
+                    "process",
+                    &Map::from_iter([("amount".to_owned(), Value::String(amount.to_owned()))]),
+                )
+                .unwrap();
+        }
+        store
+            .rewrite_process_exchanges::<StoreError>("process", |exchange| {
+                exchange.insert("normalized".to_owned(), Value::Bool(true));
+                Ok(())
+            })
+            .unwrap();
+        let exchanges = store
+            .iter_process_exchanges("process")
+            .unwrap()
+            .collect::<Result<Vec<_>, _>>()
+            .unwrap();
+        assert_eq!(exchanges.len(), 2);
+        assert!(exchanges.iter().all(|value| value["normalized"] == true));
+    }
+
+    #[test]
+    fn auxiliary_entity_types_can_be_removed_after_resolution() {
+        let mut store = CanonicalStore::create(None).unwrap();
+        store.add(&entity("a", Some("external-a"))).unwrap();
+        assert_eq!(store.counts()["flows"], 1);
+        store.remove_type("flows").unwrap();
+        assert!(!store.counts().contains_key("flows"));
+        assert!(store.get("flows", "a").unwrap().is_none());
+        assert!(
+            store
+                .get_by_external_id("flows", "external-a")
+                .unwrap()
+                .is_none()
+        );
+        assert_eq!(store.iter_type("flows").unwrap().count(), 0);
     }
 }

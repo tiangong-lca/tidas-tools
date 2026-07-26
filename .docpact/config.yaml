@@ -1,11 +1,11 @@
 version: 1
 layout: repo
 lastReviewedAt: "2026-07-26"
-lastReviewedCommit: "a43f761"
+lastReviewedCommit: "bf30bc2"
 # Issue #122 owns native external-format detection and import, disk-backed
 # canonical storage, stable reports, deterministic mapping/process bundles,
-# TIDAS/ILCD writers, and bounded execution while Python remains a frozen
-# semantic oracle.
+# TIDAS/ILCD writers, deep adapter semantics, and bounded execution. Frozen
+# Python fixtures cover all six native adapters and both output writers.
 
 catalog:
   repos:

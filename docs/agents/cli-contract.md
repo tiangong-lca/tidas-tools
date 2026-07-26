@@ -25,8 +25,8 @@ checkPaths:
   - README.md
   - README_CN.md
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: a43f761
-lastReviewedNote: "Issue #122 activates native import with bounded detection/adapters, atomic validated outputs, deterministic mapping/bundles, and stable import reports."
+lastReviewedCommit: bf30bc2
+lastReviewedNote: "Reviewed for Issue #122 deep import parity; the public command, report, output, warning, and exit-class contracts remain unchanged."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml

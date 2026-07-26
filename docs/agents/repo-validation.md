@@ -34,8 +34,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: a43f761
-lastReviewedNote: "Issue #122 adds native import adapter parity, deterministic package/mapping/bundle proof, atomic failure coverage, and local large-data RSS requirements."
+lastReviewedCommit: bf30bc2
+lastReviewedNote: "Issue #122 now replays frozen Python semantics for all six adapters against both writers with repeated hashes; existing malformed, exit-class, atomicity, and benchmark gates remain authoritative."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml

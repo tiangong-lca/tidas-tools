@@ -1,6 +1,8 @@
 use serde_json::{Value, json};
 use uuid::Uuid;
 
+use crate::model::CanonicalEntity;
+
 pub const DEFAULT_VERSION: &str = "00.00.001";
 pub const PLACEHOLDER_TIMESTAMP: &str = "1900-01-01T00:00:00Z";
 pub const CONTACT_NAME: &str = "TianGong LCA import tooling";
@@ -68,6 +70,20 @@ pub fn compliance_declarations(process: bool) -> Value {
 }
 
 pub fn administrative(category: &str, id: &str, process: bool) -> Value {
+    administrative_version(category, id, process, DEFAULT_VERSION)
+}
+
+pub fn administrative_for_entity(category: &str, entity: &CanonicalEntity, process: bool) -> Value {
+    let version = entity
+        .raw
+        .get("version")
+        .and_then(Value::as_str)
+        .filter(|value| !value.trim().is_empty())
+        .unwrap_or(DEFAULT_VERSION);
+    administrative_version(category, &entity.internal_id, process, version)
+}
+
+fn administrative_version(category: &str, id: &str, process: bool, version: &str) -> Value {
     let owner = dataset_ref("contact data set", &contact_id(), CONTACT_NAME, "contacts");
     let mut data_entry = serde_json::Map::from_iter([
         (
@@ -100,16 +116,16 @@ pub fn administrative(category: &str, id: &str, process: bool) -> Value {
         _ => "source",
     };
     let uri = if category == "unitgroups" {
-        format!("https://lcdn.tiangong.earth/unitgroups/{id}?version={DEFAULT_VERSION}")
+        format!("https://lcdn.tiangong.earth/unitgroups/{id}?version={version}")
     } else {
         format!(
-            "https://lcdn.tiangong.earth/datasetdetail/{page}.xhtml?uuid={id}&version={DEFAULT_VERSION}"
+            "https://lcdn.tiangong.earth/datasetdetail/{page}.xhtml?uuid={id}&version={version}"
         )
     };
     let mut publication = serde_json::Map::from_iter([
         (
             "common:dataSetVersion".to_owned(),
-            Value::String(DEFAULT_VERSION.to_owned()),
+            Value::String(version.to_owned()),
         ),
         ("common:permanentDataSetURI".to_owned(), Value::String(uri)),
         ("common:referenceToOwnershipOfDataSet".to_owned(), owner),
@@ -139,6 +155,8 @@ pub fn name_parts(name: &str, location: &str) -> Value {
 }
 
 pub fn import_trace(payload: &Value) -> Value {
+    let mut payload = payload.clone();
+    prune_empty(&mut payload);
     json!({
         "@xmlns:tidasimport": "https://tiangong.earth/tidas/import-trace/1.0",
         "tidasimport:sourceTrace": {
@@ -146,4 +164,19 @@ pub fn import_trace(payload: &Value) -> Value {
             "payload": payload,
         }
     })
+}
+
+fn prune_empty(value: &mut Value) -> bool {
+    match value {
+        Value::Object(object) => {
+            object.retain(|_, value| !prune_empty(value));
+            object.is_empty()
+        }
+        Value::Array(items) => {
+            items.retain_mut(|value| !prune_empty(value));
+            items.is_empty()
+        }
+        Value::Null => true,
+        _ => false,
+    }
 }

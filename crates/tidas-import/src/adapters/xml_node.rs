@@ -3,6 +3,7 @@ use std::collections::BTreeMap;
 use quick_xml::XmlVersion;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::reader::Reader;
+use serde_json::{Map, Value};
 use thiserror::Error;
 
 #[derive(Clone, Debug)]
@@ -99,6 +100,35 @@ impl XmlNode {
 
     pub fn first_descendant(&self, name: &str) -> Option<&Self> {
         self.descendants_named(name).next()
+    }
+
+    pub fn trace(&self, excluded_children: &[&str]) -> Value {
+        let mut trace = Map::new();
+        trace.insert("name".to_owned(), Value::String(self.name.clone()));
+        if !self.attributes.is_empty() {
+            trace.insert(
+                "attributes".to_owned(),
+                Value::Object(
+                    self.attributes
+                        .iter()
+                        .map(|(key, value)| (key.clone(), Value::String(value.clone())))
+                        .collect(),
+                ),
+            );
+        }
+        if let Some(text) = self.trimmed_text() {
+            trace.insert("text".to_owned(), Value::String(text.to_owned()));
+        }
+        let children = self
+            .children
+            .iter()
+            .filter(|child| !excluded_children.contains(&child.name.as_str()))
+            .map(|child| child.trace(excluded_children))
+            .collect::<Vec<_>>();
+        if !children.is_empty() {
+            trace.insert("children".to_owned(), Value::Array(children));
+        }
+        Value::Object(trace)
     }
 }
 

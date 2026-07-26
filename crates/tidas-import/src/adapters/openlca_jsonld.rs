@@ -1,5 +1,7 @@
 use std::collections::BTreeMap;
+use std::str::FromStr;
 
+use bigdecimal::{BigDecimal, RoundingMode};
 use serde_json::{Map, Value, json};
 use uuid::Uuid;
 
@@ -69,12 +71,17 @@ impl SourceAdapter for OpenLcaJsonLdAdapter {
                         }
                     }
                 }
+                let auxiliary = entity.entity_type == "dqsystems";
                 store.add(&entity)?;
-                supported = supported.saturating_add(1);
+                if !auxiliary {
+                    supported = supported.saturating_add(1);
+                }
             }
             Ok::<(), AdapterError>(())
         })?;
         resolve_process_locations(store)?;
+        resolve_process_data_quality(store)?;
+        super::openlca_normalize::normalize_exchange_amounts(context, store, issues)?;
         if let Some(model) = provider_graph_lifecycle_model(store)? {
             store.add(&model)?;
             supported = supported.saturating_add(1);
@@ -131,6 +138,7 @@ fn to_entity(object: &Map<String, Value>, source: &str) -> Option<CanonicalEntit
             "locations",
             copy_fields(object, &["code", "category", "description"]),
         ),
+        "DQSystem" => ("dqsystems", copy_fields(object, &["indicators", "source"])),
         _ => return None,
     };
     Some(CanonicalEntity {
@@ -178,6 +186,9 @@ fn flow_raw(object: &Map<String, Value>) -> Map<String, Value> {
             raw.insert(target.to_owned(), value);
         }
     }
+    if let Some(properties) = object.get("flowProperties").cloned() {
+        raw.insert("flowProperties".to_owned(), properties);
+    }
     if let Some(property) = object
         .get("flowProperties")
         .and_then(Value::as_array)
@@ -203,7 +214,7 @@ fn flow_raw(object: &Map<String, Value>) -> Map<String, Value> {
 }
 
 fn process_raw(object: &Map<String, Value>) -> Map<String, Value> {
-    let exchanges = object
+    let mut exchanges = object
         .get("exchanges")
         .and_then(Value::as_array)
         .map(|items| {
@@ -214,6 +225,7 @@ fn process_raw(object: &Map<String, Value>) -> Map<String, Value> {
                 .collect::<Vec<_>>()
         })
         .unwrap_or_default();
+    apply_allocations(object, &mut exchanges);
     let mut raw = Map::from_iter([
         (
             "description".to_owned(),
@@ -224,6 +236,10 @@ fn process_raw(object: &Map<String, Value>) -> Map<String, Value> {
             ),
         ),
         ("exchanges".to_owned(), Value::Array(exchanges)),
+        (
+            "sourceTrace".to_owned(),
+            json!({"format": "openlca-jsonld", "process": object}),
+        ),
     ]);
     if let Some(process_type) = text(object.get("processType")) {
         raw.insert(
@@ -231,15 +247,85 @@ fn process_raw(object: &Map<String, Value>) -> Map<String, Value> {
             Value::String(process_type.to_owned()),
         );
     }
-    if let Some(location) = object.get("location").and_then(Value::as_object) {
-        if let Some(code) = text(location.get("code")) {
-            raw.insert("location".to_owned(), Value::String(code.to_owned()));
-        }
-        if let Some(id) = text(location.get("@id")) {
-            raw.insert("locationRefId".to_owned(), Value::String(id.to_owned()));
+    for (source, target) in [
+        ("defaultAllocationMethod", "sourceDefaultAllocationMethod"),
+        ("version", "version"),
+        ("lastChange", "lastChange"),
+        ("allocationFactors", "allocationFactors"),
+        ("dqEntry", "dqEntry"),
+        ("dqSystem", "dqSystem"),
+    ] {
+        if let Some(value) = object.get(source).cloned() {
+            raw.insert(target.to_owned(), value);
         }
     }
+    apply_process_documentation(object, &mut raw);
+    apply_process_location(object, &mut raw);
     raw
+}
+
+fn apply_process_documentation(object: &Map<String, Value>, raw: &mut Map<String, Value>) {
+    let Some(documentation) = object
+        .get("processDocumentation")
+        .and_then(Value::as_object)
+    else {
+        return;
+    };
+    for (source, target) in [
+        ("validUntil", "dataSetValidUntil"),
+        ("timeDescription", "timeDescription"),
+        ("geographyDescription", "locationDescription"),
+        ("technologyDescription", "technologyDescription"),
+        ("samplingDescription", "samplingProcedure"),
+        ("dataCollectionDescription", "dataCollectionPeriod"),
+        (
+            "dataSelectionDescription",
+            "dataSelectionAndCombinationPrinciples",
+        ),
+        (
+            "dataTreatmentDescription",
+            "dataTreatmentAndExtrapolationsPrinciples",
+        ),
+        (
+            "completenessDescription",
+            "dataCutOffAndCompletenessPrinciples",
+        ),
+        ("uncertaintyAdjustments", "uncertaintyAdjustments"),
+        ("useAdvice", "useAdviceForDataSet"),
+        ("intendedApplication", "intendedApplications"),
+        ("projectDescription", "project"),
+        ("modelingConstantsDescription", "modellingConstants"),
+        (
+            "inventoryMethodDescription",
+            "deviationsFromLCIMethodPrinciple",
+        ),
+        ("restrictionsDescription", "accessRestrictions"),
+        ("creationDate", "creationDate"),
+        ("sources", "sourceRefs"),
+        ("reviews", "sourceReviews"),
+    ] {
+        if let Some(value) = documentation.get(source).cloned() {
+            raw.insert(target.to_owned(), value);
+        }
+    }
+    let year_source = documentation
+        .get("validFrom")
+        .or_else(|| documentation.get("creationDate"));
+    if let Some(year) = year_source.and_then(year) {
+        raw.insert("referenceYear".to_owned(), json!(year));
+    }
+}
+
+fn apply_process_location(object: &Map<String, Value>, raw: &mut Map<String, Value>) {
+    let Some(location) = object.get("location").and_then(Value::as_object) else {
+        return;
+    };
+    if let Some(code) = text(location.get("code")) {
+        raw.insert("location".to_owned(), Value::String(code.to_owned()));
+    }
+    if let Some(id) = text(location.get("@id")) {
+        raw.insert("locationRefId".to_owned(), Value::String(id.to_owned()));
+    }
 }
 
 fn exchange(object: &Map<String, Value>, index: usize) -> Option<Value> {
@@ -259,10 +345,7 @@ fn exchange(object: &Map<String, Value>, index: usize) -> Option<Value> {
         ),
         ("flowRefId".to_owned(), Value::String(flow_id.to_owned())),
         ("flowName".to_owned(), Value::String(flow_name.to_owned())),
-        (
-            "flow".to_owned(),
-            json!({"@id": flow_id, "name": flow_name}),
-        ),
+        ("flow".to_owned(), Value::Object(flow.clone())),
         (
             "isInput".to_owned(),
             Value::Bool(
@@ -277,13 +360,33 @@ fn exchange(object: &Map<String, Value>, index: usize) -> Option<Value> {
     if let Some(reference) = object.get("isQuantitativeReference").cloned() {
         exchange.insert("isQuantitativeReference".to_owned(), reference);
     }
-    if let Some(unit) = object
-        .get("unit")
-        .and_then(Value::as_object)
-        .and_then(|unit| text(unit.get("name")))
-        .or_else(|| text(flow.get("refUnit")))
-    {
+    for field in [
+        "amountFormula",
+        "isAvoidedProduct",
+        "dqEntry",
+        "description",
+    ] {
+        if let Some(value) = object.get(field).cloned() {
+            let target = if field == "description" {
+                "generalComment"
+            } else {
+                field
+            };
+            exchange.insert(target.to_owned(), value);
+        }
+    }
+    if let Some(unit) = object.get("unit").and_then(Value::as_object) {
+        copy_ref(unit, &mut exchange, "unitId", "unitName");
+    } else if let Some(unit) = text(flow.get("refUnit")) {
         exchange.insert("unitName".to_owned(), Value::String(unit.to_owned()));
+    }
+    if let Some(property) = object.get("flowProperty").and_then(Value::as_object) {
+        copy_ref(
+            property,
+            &mut exchange,
+            "flowPropertyRefId",
+            "flowPropertyName",
+        );
     }
     if let Some(provider) = object.get("defaultProvider").and_then(Value::as_object)
         && let Some(provider_id) = text(provider.get("@id"))
@@ -293,7 +396,170 @@ fn exchange(object: &Map<String, Value>, index: usize) -> Option<Value> {
             Value::String(provider_id.to_owned()),
         );
     }
+    if let Some(location) = object.get("location").and_then(Value::as_object) {
+        if let Some(code) = text(location.get("code")) {
+            exchange.insert("location".to_owned(), Value::String(code.to_owned()));
+        }
+        exchange.insert("sourceLocation".to_owned(), Value::Object(location.clone()));
+    }
+    add_uncertainty(&mut exchange, object.get("uncertainty"));
+    exchange.insert(
+        "sourceTrace".to_owned(),
+        json!({"format": "openlca-jsonld", "exchange": object}),
+    );
     Some(Value::Object(exchange))
+}
+
+fn add_uncertainty(exchange: &mut Map<String, Value>, value: Option<&Value>) {
+    let Some(uncertainty) = value.and_then(Value::as_object) else {
+        return;
+    };
+    if let Some(kind) = uncertainty
+        .get("distributionType")
+        .and_then(Value::as_str)
+        .and_then(uncertainty_type)
+    {
+        exchange.insert(
+            "uncertaintyDistributionType".to_owned(),
+            Value::String(kind.to_owned()),
+        );
+    }
+    for (source, target) in [("minimum", "minimumAmount"), ("maximum", "maximumAmount")] {
+        if let Some(value) = uncertainty.get(source) {
+            exchange.insert(target.to_owned(), Value::String(number_text(value)));
+        }
+    }
+    if let Some(dispersion) = uncertainty_dispersion(uncertainty) {
+        exchange.insert(
+            "relativeStandardDeviation95In".to_owned(),
+            Value::String(dispersion),
+        );
+    }
+}
+
+fn uncertainty_type(value: &str) -> Option<&'static str> {
+    match value {
+        "LOG_NORMAL_DISTRIBUTION" => Some("log-normal"),
+        "NORMAL_DISTRIBUTION" => Some("normal"),
+        "TRIANGLE_DISTRIBUTION" | "TRIANGULAR_DISTRIBUTION" => Some("triangular"),
+        "UNIFORM_DISTRIBUTION" => Some("uniform"),
+        _ => None,
+    }
+}
+
+fn uncertainty_dispersion(uncertainty: &Map<String, Value>) -> Option<String> {
+    let distribution = text(uncertainty.get("distributionType"))?;
+    let value = match distribution {
+        "LOG_NORMAL_DISTRIBUTION" => {
+            let value = decimal(uncertainty.get("geomSd"))?;
+            &value * &value
+        }
+        "NORMAL_DISTRIBUTION" => decimal(uncertainty.get("sd"))? * BigDecimal::from(2),
+        _ => return None,
+    };
+    let rounded = value.with_scale_round(3, RoundingMode::HalfEven);
+    (BigDecimal::from(0)..=BigDecimal::from(100))
+        .contains(&rounded)
+        .then(|| rounded.to_string())
+}
+
+fn apply_allocations(process: &Map<String, Value>, exchanges: &mut [Value]) {
+    let Some(factors) = process.get("allocationFactors").and_then(Value::as_array) else {
+        return;
+    };
+    let mut exchange_indexes = BTreeMap::new();
+    let mut output_flow_indexes = BTreeMap::new();
+    for (index, exchange) in exchanges.iter().filter_map(Value::as_object).enumerate() {
+        let emitted_id = index.saturating_add(1).to_string();
+        if let Some(internal_id) = exchange.get("internalId") {
+            exchange_indexes.insert(value_key(internal_id), index);
+        }
+        if !exchange
+            .get("isInput")
+            .and_then(Value::as_bool)
+            .unwrap_or(false)
+            && let Some(flow_id) = text(exchange.get("flowRefId"))
+        {
+            output_flow_indexes
+                .entry(flow_id.to_owned())
+                .or_insert(emitted_id);
+        }
+    }
+    let mut allocations: BTreeMap<usize, Vec<Value>> = BTreeMap::new();
+    for factor in factors.iter().filter_map(Value::as_object) {
+        let Some(exchange_id) = factor
+            .get("exchange")
+            .and_then(Value::as_object)
+            .and_then(|exchange| exchange.get("internalId"))
+            .map(value_key)
+        else {
+            continue;
+        };
+        let Some(target_index) = exchange_indexes.get(&exchange_id).copied() else {
+            continue;
+        };
+        let Some(product_id) = factor
+            .get("product")
+            .and_then(Value::as_object)
+            .and_then(|product| text(product.get("@id")))
+        else {
+            continue;
+        };
+        let Some(coproduct) = output_flow_indexes.get(product_id) else {
+            continue;
+        };
+        let Some(fraction) = allocation_percentage(factor.get("value")) else {
+            continue;
+        };
+        if fraction == "0" {
+            continue;
+        }
+        allocations.entry(target_index).or_default().push(json!({
+            "internalReferenceToCoProduct": coproduct,
+            "allocatedFraction": fraction,
+        }));
+    }
+    for (index, entries) in allocations {
+        if let Some(exchange) = exchanges.get_mut(index).and_then(Value::as_object_mut) {
+            exchange.insert("allocations".to_owned(), Value::Array(entries));
+        }
+    }
+}
+
+fn allocation_percentage(value: Option<&Value>) -> Option<String> {
+    let percentage = decimal(value)? * BigDecimal::from(100);
+    Some(
+        percentage
+            .with_scale_round(3, RoundingMode::HalfEven)
+            .normalized()
+            .to_string(),
+    )
+}
+
+fn decimal(value: Option<&Value>) -> Option<BigDecimal> {
+    match value? {
+        Value::String(value) => BigDecimal::from_str(value.trim()).ok(),
+        Value::Number(value) => BigDecimal::from_str(&value.to_string()).ok(),
+        _ => None,
+    }
+}
+
+fn value_key(value: &Value) -> String {
+    match value {
+        Value::String(value) => value.clone(),
+        other => other.to_string(),
+    }
+}
+
+fn year(value: &Value) -> Option<u64> {
+    let text = match value {
+        Value::String(value) => value.as_str(),
+        Value::Number(value) => return value.as_u64(),
+        _ => return None,
+    };
+    text.split(|character: char| !character.is_ascii_digit())
+        .find(|token| token.len() == 4)
+        .and_then(|token| token.parse().ok())
 }
 
 fn copy_fields(object: &Map<String, Value>, fields: &[&str]) -> Map<String, Value> {
@@ -376,6 +642,105 @@ fn resolve_process_locations(store: &mut CanonicalStore) -> Result<(), AdapterEr
         }
     }
     Ok(())
+}
+
+fn resolve_process_data_quality(store: &mut CanonicalStore) -> Result<(), AdapterError> {
+    let processes = store
+        .iter_type("processes")?
+        .collect::<Result<Vec<_>, _>>()?;
+    for mut process in processes {
+        let Some(entry) = process.raw.get("dqEntry").and_then(Value::as_str) else {
+            continue;
+        };
+        let Some(system_id) = process
+            .raw
+            .get("dqSystem")
+            .and_then(Value::as_object)
+            .and_then(|system| text(system.get("@id")))
+        else {
+            continue;
+        };
+        let Some(system) = store.get_by_external_id("dqsystems", system_id)? else {
+            continue;
+        };
+        let indicators = data_quality_indicators(entry, &system.raw);
+        if !indicators.is_empty() {
+            process
+                .raw
+                .insert("dataQualityIndicators".to_owned(), Value::Array(indicators));
+            store.add(&process)?;
+        }
+    }
+    store.remove_type("dqsystems")?;
+    Ok(())
+}
+
+fn data_quality_indicators(entry: &str, system: &Map<String, Value>) -> Vec<Value> {
+    let scores = entry
+        .trim()
+        .trim_matches(|character| matches!(character, '(' | ')'))
+        .split(';')
+        .map(str::trim)
+        .filter_map(|score| score.parse::<u8>().ok())
+        .collect::<Vec<_>>();
+    let mut names = BTreeMap::new();
+    if let Some(indicators) = system.get("indicators").and_then(Value::as_array) {
+        for indicator in indicators.iter().filter_map(Value::as_object) {
+            if let (Some(position), Some(name)) = (
+                indicator.get("position").and_then(Value::as_u64),
+                text(indicator.get("name")),
+            ) {
+                names.insert(position, name);
+            }
+        }
+    }
+    let mut used = std::collections::BTreeSet::new();
+    scores
+        .into_iter()
+        .enumerate()
+        .filter_map(|(index, score)| {
+            let name = names.get(&u64::try_from(index).ok()?.saturating_add(1))?;
+            let mapped_name = quality_indicator_name(name)?;
+            let level = quality_level(score)?;
+            used.insert(mapped_name).then(|| {
+                json!({
+                    "@name": mapped_name,
+                    "@value": level,
+                })
+            })
+        })
+        .collect()
+}
+
+fn quality_indicator_name(name: &str) -> Option<&'static str> {
+    let name = name.to_ascii_lowercase();
+    [
+        ("complete", "Completeness"),
+        ("temporal", "Time representativeness"),
+        ("time", "Time representativeness"),
+        ("geograph", "Geographical representativeness"),
+        ("technolog", "Technological representativeness"),
+        ("reliab", "Precision"),
+        ("review", "Methodological appropriateness and consistency"),
+        (
+            "data collection",
+            "Methodological appropriateness and consistency",
+        ),
+        ("method", "Methodological appropriateness and consistency"),
+    ]
+    .into_iter()
+    .find_map(|(keyword, mapped)| name.contains(keyword).then_some(mapped))
+}
+
+fn quality_level(score: u8) -> Option<&'static str> {
+    match score {
+        1 => Some("Very good"),
+        2 => Some("Good"),
+        3 => Some("Fair"),
+        4 => Some("Poor"),
+        5 => Some("Very poor"),
+        _ => None,
+    }
 }
 
 fn provider_graph_lifecycle_model(
@@ -554,6 +919,91 @@ mod tests {
         })
         .unwrap();
         assert!(validation.summary.ok, "{:?}", validation.summary);
+    }
+
+    #[test]
+    fn uncertainty_and_allocation_match_the_frozen_python_rules() {
+        assert_eq!(
+            uncertainty_dispersion(
+                json!({
+                    "distributionType": "LOG_NORMAL_DISTRIBUTION",
+                    "geomSd": "1.05"
+                })
+                .as_object()
+                .unwrap()
+            ),
+            Some("1.102".to_owned())
+        );
+        assert_eq!(
+            uncertainty_dispersion(
+                json!({
+                    "distributionType": "NORMAL_DISTRIBUTION",
+                    "sd": 3
+                })
+                .as_object()
+                .unwrap()
+            ),
+            Some("6.000".to_owned())
+        );
+        assert_eq!(
+            uncertainty_dispersion(
+                json!({
+                    "distributionType": "LOG_NORMAL_DISTRIBUTION",
+                    "geomSd": 11
+                })
+                .as_object()
+                .unwrap()
+            ),
+            None
+        );
+
+        let raw = process_raw(
+            json!({
+                "@type": "Process",
+                "@id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+                "name": "allocation fixture",
+                "exchanges": [
+                    {"internalId": 7, "isInput": true, "flow": {"@id": "in-x", "name": "input"}, "amount": 5},
+                    {"internalId": 1, "isInput": false, "flow": {"@id": "prod-a", "name": "A"}, "amount": 1},
+                    {"internalId": 2, "isInput": false, "flow": {"@id": "prod-b", "name": "B"}, "amount": 1}
+                ],
+                "allocationFactors": [
+                    {"exchange": {"internalId": 7}, "product": {"@id": "prod-a"}, "value": 0.6},
+                    {"exchange": {"internalId": 7}, "product": {"@id": "prod-b"}, "value": 0.4},
+                    {"exchange": {"internalId": 7}, "product": {"@id": "prod-a"}, "value": 0}
+                ]
+            })
+            .as_object()
+            .unwrap(),
+        );
+        let allocations = &raw["exchanges"][0]["allocations"];
+        assert_eq!(
+            allocations,
+            &json!([
+                {"internalReferenceToCoProduct": "2", "allocatedFraction": "60"},
+                {"internalReferenceToCoProduct": "3", "allocatedFraction": "40"}
+            ])
+        );
+        assert!(raw["exchanges"][1].get("allocations").is_none());
+
+        let indicators = data_quality_indicators(
+            "(2;1)",
+            json!({
+                "indicators": [
+                    {"position": 1, "name": "Process Review"},
+                    {"position": 2, "name": "Process Completeness"}
+                ]
+            })
+            .as_object()
+            .unwrap(),
+        );
+        assert_eq!(
+            indicators,
+            vec![
+                json!({"@name": "Methodological appropriateness and consistency", "@value": "Good"}),
+                json!({"@name": "Completeness", "@value": "Very good"})
+            ]
+        );
     }
 
     #[test]

@@ -123,8 +123,26 @@ fn entity_from_document(document: &Value, label: &str) -> Option<CanonicalEntity
         "flows" => flow_raw(dataset),
         "processes" => process_raw(dataset),
         "sources" => source_raw(information),
+        "contacts" => contact_raw(information),
         _ => Map::new(),
     };
+    let mut raw = raw;
+    if let Some(version) = value_at(
+        dataset,
+        &[
+            "administrativeInformation",
+            "publicationAndOwnership",
+            "common:dataSetVersion",
+        ],
+    )
+    .and_then(scalar_text)
+    {
+        raw.insert("version".to_owned(), Value::String(version.to_owned()));
+    }
+    raw.insert(
+        "sourceTrace".to_owned(),
+        json!({"format": "ilcd", "sourceObject": root_name, "file": label}),
+    );
     Some(CanonicalEntity {
         entity_type: entity_type.to_owned(),
         internal_id: id.clone(),
@@ -199,11 +217,31 @@ fn flow_raw(dataset: &Map<String, Value>) -> Map<String, Value> {
         "flowType".to_owned(),
         Value::String(flow_type.to_ascii_uppercase().replace(' ', "_")),
     );
+    for (source, target) in [("CASNumber", "CASNumber"), ("sumFormula", "sumFormula")] {
+        if let Some(value) = value_at(dataset, &["flowInformation", "dataSetInformation", source])
+            .and_then(scalar_text)
+        {
+            raw.insert(target.to_owned(), Value::String(value.to_owned()));
+        }
+    }
+    let reference_internal = value_at(
+        dataset,
+        &[
+            "flowInformation",
+            "quantitativeReference",
+            "referenceToReferenceFlowProperty",
+        ],
+    )
+    .and_then(scalar_text);
     let property = value_at(dataset, &["flowProperties", "flowProperty"])
         .map(items)
         .unwrap_or_default()
         .into_iter()
-        .find_map(Value::as_object)
+        .filter_map(Value::as_object)
+        .find(|item| {
+            reference_internal.is_none()
+                || field_text(item, "@dataSetInternalID") == reference_internal
+        })
         .and_then(|item| item.get("referenceToFlowPropertyDataSet"))
         .and_then(Value::as_object);
     if let Some(property) = property {
@@ -220,6 +258,32 @@ fn flow_raw(dataset: &Map<String, Value>) -> Map<String, Value> {
             );
         }
     }
+    let categories = value_at(
+        dataset,
+        &[
+            "flowInformation",
+            "dataSetInformation",
+            "classificationInformation",
+            "common:elementaryFlowCategorization",
+            "common:category",
+        ],
+    )
+    .map(items)
+    .unwrap_or_default()
+    .into_iter()
+    .filter_map(|category| {
+        Some(json!({
+            "level": category.get("@level").and_then(scalar_text)?,
+            "text": localized_text(category)?
+        }))
+    })
+    .collect::<Vec<_>>();
+    if !categories.is_empty() {
+        raw.insert(
+            "elementaryCategorization".to_owned(),
+            Value::Array(categories),
+        );
+    }
     raw
 }
 
@@ -234,13 +298,22 @@ fn process_raw(dataset: &Map<String, Value>) -> Map<String, Value> {
     )
     .and_then(localized_text)
     .unwrap_or("Imported from ILCD.");
+    let reference_exchange = value_at(
+        dataset,
+        &[
+            "processInformation",
+            "quantitativeReference",
+            "referenceToReferenceFlow",
+        ],
+    )
+    .and_then(scalar_text);
     let exchanges = value_at(dataset, &["exchanges", "exchange"])
         .map(items)
         .unwrap_or_default()
         .into_iter()
         .filter_map(Value::as_object)
         .enumerate()
-        .filter_map(|(index, exchange)| process_exchange(exchange, index))
+        .filter_map(|(index, exchange)| process_exchange(exchange, index, reference_exchange))
         .collect();
     let mut raw = Map::from_iter([
         (
@@ -274,7 +347,11 @@ fn process_raw(dataset: &Map<String, Value>) -> Map<String, Value> {
     raw
 }
 
-fn process_exchange(exchange: &Map<String, Value>, index: usize) -> Option<Value> {
+fn process_exchange(
+    exchange: &Map<String, Value>,
+    index: usize,
+    reference_exchange: Option<&str>,
+) -> Option<Value> {
     let reference = exchange.get("referenceToFlowDataSet")?.as_object()?;
     let flow_id = field_text(reference, "@refObjectId")?;
     let flow_name = reference
@@ -285,24 +362,101 @@ fn process_exchange(exchange: &Map<String, Value>, index: usize) -> Option<Value
         .or_else(|| field_text(exchange, "resultingAmount"))
         .unwrap_or("0");
     let direction = field_text(exchange, "exchangeDirection").unwrap_or("Output");
-    Some(json!({
-        "internalId": field_text(exchange, "@dataSetInternalID")
-            .map_or_else(|| index.saturating_add(1).to_string(), ToOwned::to_owned),
-        "flow": {"@id": flow_id, "name": flow_name},
-        "flowRefId": flow_id,
-        "flowName": flow_name,
-        "isInput": direction.eq_ignore_ascii_case("input"),
-        "amount": amount,
-    }))
+    let internal_id = field_text(exchange, "@dataSetInternalID")
+        .map_or_else(|| index.saturating_add(1).to_string(), ToOwned::to_owned);
+    let mut value = Map::from_iter([
+        ("internalId".to_owned(), Value::String(internal_id.clone())),
+        (
+            "flow".to_owned(),
+            json!({"@id": flow_id, "name": flow_name}),
+        ),
+        ("flowRefId".to_owned(), Value::String(flow_id.to_owned())),
+        ("flowName".to_owned(), Value::String(flow_name.to_owned())),
+        (
+            "isInput".to_owned(),
+            Value::Bool(direction.eq_ignore_ascii_case("input")),
+        ),
+        ("amount".to_owned(), Value::String(amount.to_owned())),
+        (
+            "isQuantitativeReference".to_owned(),
+            Value::Bool(reference_exchange == Some(internal_id.as_str())),
+        ),
+    ]);
+    for field in [
+        "location",
+        "minimumAmount",
+        "maximumAmount",
+        "uncertaintyDistributionType",
+        "relativeStandardDeviation95In",
+        "dataDerivationTypeStatus",
+        "generalComment",
+    ] {
+        if let Some(field_value) = exchange.get(field).and_then(text_value) {
+            value.insert(field.to_owned(), Value::String(field_value.to_owned()));
+        }
+    }
+    Some(Value::Object(value))
 }
 
 fn source_raw(information: &Value) -> Map<String, Value> {
     let mut raw = Map::new();
+    if let Some(short_name) = information.get("common:shortName").and_then(localized_text) {
+        raw.insert("shortName".to_owned(), Value::String(short_name.to_owned()));
+    }
     if let Some(citation) = information.get("sourceCitation").and_then(scalar_text) {
         raw.insert(
-            "textReference".to_owned(),
+            "sourceCitation".to_owned(),
             Value::String(citation.to_owned()),
         );
+    }
+    for (source, target) in [
+        ("publicationType", "publicationType"),
+        ("sourceDescriptionOrComment", "description"),
+    ] {
+        if let Some(value) = information.get(source).and_then(text_value) {
+            raw.insert(target.to_owned(), Value::String(value.to_owned()));
+        }
+    }
+    let mut digital_files = Vec::new();
+    for reference in information
+        .get("referenceToDigitalFile")
+        .map(items)
+        .unwrap_or_default()
+    {
+        let Some(uri) = reference.get("@uri").and_then(scalar_text) else {
+            continue;
+        };
+        if uri.to_ascii_lowercase().starts_with("http://")
+            || uri.to_ascii_lowercase().starts_with("https://")
+        {
+            raw.entry("url".to_owned())
+                .or_insert_with(|| Value::String(uri.to_owned()));
+        } else {
+            digital_files.push(Value::String(uri.to_owned()));
+        }
+    }
+    if !digital_files.is_empty() {
+        raw.insert(
+            "referenceToDigitalFile".to_owned(),
+            Value::Array(digital_files),
+        );
+    }
+    raw
+}
+
+fn contact_raw(information: &Value) -> Map<String, Value> {
+    let mut raw = Map::new();
+    for (source, target) in [
+        ("common:shortName", "shortName"),
+        ("email", "email"),
+        ("telephone", "telephone"),
+        ("WWWAddress", "website"),
+        ("contactAddress", "address"),
+        ("contactDescriptionOrComment", "description"),
+    ] {
+        if let Some(value) = information.get(source).and_then(text_value) {
+            raw.insert(target.to_owned(), Value::String(value.to_owned()));
+        }
     }
     raw
 }
@@ -370,6 +524,10 @@ fn localized_text(value: &Value) -> Option<&str> {
         .or_else(|| value.get("#text").and_then(Value::as_str))
 }
 
+fn text_value(value: &Value) -> Option<&str> {
+    scalar_text(value).or_else(|| localized_text(value))
+}
+
 fn items(value: &Value) -> Vec<&Value> {
     value
         .as_array()
@@ -382,6 +540,8 @@ fn stable_id(seed: &str) -> String {
 
 #[cfg(test)]
 mod tests {
+    use std::path::Path;
+
     use tempfile::tempdir;
     use tidas_runtime::{CancellationToken, MemoryBudget};
     use tidas_validation::{ValidationRequest, validate_tidas_package};
@@ -390,13 +550,65 @@ mod tests {
     use crate::report::IssueSpool;
     use crate::writers::{TidasWriteRequest, write_tidas_package};
 
+    fn write_support_entities(root: &Path) {
+        std::fs::write(
+            root.join("contacts/contact.xml"),
+            r#"<contactDataSet xmlns:common="http://lca.jrc.it/ILCD/Common"><contactInformation><dataSetInformation><common:UUID>66666666-6666-4666-8666-666666666666</common:UUID><common:shortName xml:lang="en">Steel team</common:shortName><common:name xml:lang="en">Steel team</common:name><contactAddress xml:lang="en">Zurich</contactAddress><telephone>+41</telephone><email>team@example.org</email><WWWAddress>https://example.org</WWWAddress><contactDescriptionOrComment xml:lang="en">Owner</contactDescriptionOrComment></dataSetInformation></contactInformation><administrativeInformation><publicationAndOwnership><common:dataSetVersion>20.20.002</common:dataSetVersion></publicationAndOwnership></administrativeInformation></contactDataSet>"#,
+        )
+        .unwrap();
+        std::fs::write(
+            root.join("sources/source.xml"),
+            r#"<sourceDataSet xmlns:common="http://lca.jrc.it/ILCD/Common"><sourceInformation><dataSetInformation><common:UUID>77777777-7777-4777-8777-777777777777</common:UUID><common:shortName xml:lang="en">Steel source</common:shortName><sourceCitation>Citation</sourceCitation><sourceDescriptionOrComment xml:lang="en">Description</sourceDescriptionOrComment><referenceToDigitalFile uri="../external_docs/steel.png"/><referenceToDigitalFile uri="https://example.org/source"/></dataSetInformation></sourceInformation><administrativeInformation><publicationAndOwnership><common:dataSetVersion>20.20.002</common:dataSetVersion></publicationAndOwnership></administrativeInformation></sourceDataSet>"#,
+        )
+        .unwrap();
+    }
+
+    fn assert_valid_package(
+        store: &CanonicalStore,
+        output: &Path,
+        cancellation: CancellationToken,
+        memory_budget: MemoryBudget,
+    ) {
+        write_tidas_package(&TidasWriteRequest {
+            store,
+            output_dir: output,
+            cancellation: &cancellation,
+            memory_budget: &memory_budget,
+        })
+        .unwrap();
+        let issues = output.with_extension("validation-issues.jsonl");
+        let validation = validate_tidas_package(&ValidationRequest {
+            input_dir: output.to_path_buf(),
+            issue_spool: Some(issues.clone()),
+            cancellation,
+            memory_budget,
+            queue_capacity: 2,
+            progress: None,
+        })
+        .unwrap();
+        assert!(
+            validation.summary.ok,
+            "{:?}\n{}",
+            validation.summary,
+            std::fs::read_to_string(issues).unwrap()
+        );
+    }
+
     #[test]
     fn ilcd_identifiers_relations_and_values_survive_native_import() {
         let directory = tempdir().unwrap();
         let root = directory.path().join("ilcd");
-        for category in ["unitgroups", "flowproperties", "flows", "processes"] {
+        for category in [
+            "contacts",
+            "sources",
+            "unitgroups",
+            "flowproperties",
+            "flows",
+            "processes",
+        ] {
             std::fs::create_dir_all(root.join(category)).unwrap();
         }
+        write_support_entities(&root);
         let unit_id = "22222222-2222-4222-8222-222222222222";
         let property_id = "33333333-3333-4333-8333-333333333333";
         let flow_id = "44444444-4444-4444-8444-444444444444";
@@ -418,14 +630,14 @@ mod tests {
         std::fs::write(
             root.join("flows/f.xml"),
             format!(
-                r#"<flowDataSet xmlns:common="http://lca.jrc.it/ILCD/Common"><flowInformation><dataSetInformation><common:UUID>{flow_id}</common:UUID><name><baseName xml:lang="en">Steel</baseName></name></dataSetInformation></flowInformation><modellingAndValidation><LCIMethod><typeOfDataSet>Product flow</typeOfDataSet></LCIMethod></modellingAndValidation><flowProperties><flowProperty><referenceToFlowPropertyDataSet refObjectId="{property_id}"><common:shortDescription xml:lang="en">Mass</common:shortDescription></referenceToFlowPropertyDataSet></flowProperty></flowProperties></flowDataSet>"#
+                r#"<flowDataSet xmlns:common="http://lca.jrc.it/ILCD/Common"><flowInformation><dataSetInformation><common:UUID>{flow_id}</common:UUID><name><baseName xml:lang="en">Steel</baseName></name><CASNumber>7439-89-6</CASNumber><sumFormula>Fe</sumFormula></dataSetInformation><quantitativeReference><referenceToReferenceFlowProperty>0</referenceToReferenceFlowProperty></quantitativeReference></flowInformation><modellingAndValidation><LCIMethod><typeOfDataSet>Product flow</typeOfDataSet></LCIMethod></modellingAndValidation><administrativeInformation><publicationAndOwnership><common:dataSetVersion>20.25.001</common:dataSetVersion></publicationAndOwnership></administrativeInformation><flowProperties><flowProperty dataSetInternalID="0"><referenceToFlowPropertyDataSet refObjectId="{property_id}"><common:shortDescription xml:lang="en">Mass</common:shortDescription></referenceToFlowPropertyDataSet></flowProperty></flowProperties></flowDataSet>"#
             ),
         )
         .unwrap();
         std::fs::write(
             root.join("processes/x.xml"),
             format!(
-                r#"<processDataSet xmlns:common="http://lca.jrc.it/ILCD/Common"><processInformation><dataSetInformation><common:UUID>{process_id}</common:UUID><name><baseName xml:lang="en">Steel process</baseName></name></dataSetInformation><time><common:referenceYear>2022</common:referenceYear></time><geography><locationOfOperationSupplyOrProduction location="GLO"/></geography></processInformation><exchanges><exchange dataSetInternalID="1"><referenceToFlowDataSet refObjectId="{flow_id}"><common:shortDescription xml:lang="en">Steel</common:shortDescription></referenceToFlowDataSet><exchangeDirection>Output</exchangeDirection><meanAmount>1</meanAmount></exchange></exchanges></processDataSet>"#
+                r#"<processDataSet xmlns:common="http://lca.jrc.it/ILCD/Common"><processInformation><dataSetInformation><common:UUID>{process_id}</common:UUID><name><baseName xml:lang="en">Steel process</baseName></name></dataSetInformation><quantitativeReference><referenceToReferenceFlow>1</referenceToReferenceFlow></quantitativeReference><time><common:referenceYear>2022</common:referenceYear></time><geography><locationOfOperationSupplyOrProduction location="GLO"/></geography></processInformation><administrativeInformation><publicationAndOwnership><common:dataSetVersion>20.25.001</common:dataSetVersion></publicationAndOwnership></administrativeInformation><exchanges><exchange dataSetInternalID="1"><referenceToFlowDataSet refObjectId="{flow_id}"><common:shortDescription xml:lang="en">Steel</common:shortDescription></referenceToFlowDataSet><exchangeDirection>Output</exchangeDirection><meanAmount>1</meanAmount><relativeStandardDeviation95In>12.3</relativeStandardDeviation95In><dataDerivationTypeStatus>Calculated</dataDerivationTypeStatus><generalComment xml:lang="en">measured batch</generalComment></exchange></exchanges></processDataSet>"#
             ),
         )
         .unwrap();
@@ -451,26 +663,29 @@ mod tests {
             property_id
         );
         assert_eq!(
+            store.get("flows", flow_id).unwrap().unwrap().raw["version"],
+            "20.25.001"
+        );
+        assert_eq!(
+            store.get("flows", flow_id).unwrap().unwrap().raw["CASNumber"],
+            "7439-89-6"
+        );
+        assert_eq!(
             store.get("processes", process_id).unwrap().unwrap().raw["referenceYear"],
             2022
         );
+        let process = store.get("processes", process_id).unwrap().unwrap();
+        let exchange = store
+            .iter_process_exchanges(&process.internal_id)
+            .unwrap()
+            .next()
+            .unwrap()
+            .unwrap();
+        assert_eq!(exchange["isQuantitativeReference"], true);
+        assert_eq!(exchange["dataDerivationTypeStatus"], "Calculated");
+        assert_eq!(store.counts()["contacts"], 1);
+        assert_eq!(store.counts()["sources"], 1);
         let output = directory.path().join("tidas");
-        write_tidas_package(&TidasWriteRequest {
-            store: &store,
-            output_dir: &output,
-            cancellation: &cancellation,
-            memory_budget: &memory_budget,
-        })
-        .unwrap();
-        let validation = validate_tidas_package(&ValidationRequest {
-            input_dir: output,
-            issue_spool: None,
-            cancellation,
-            memory_budget,
-            queue_capacity: 2,
-            progress: None,
-        })
-        .unwrap();
-        assert!(validation.summary.ok, "{:?}", validation.summary);
+        assert_valid_package(&store, &output, cancellation, memory_budget);
     }
 }

@@ -1,10 +1,11 @@
-use serde_json::{Value, json};
+use serde_json::{Map, Value, json};
 
 use crate::model::CanonicalEntity;
 
 use super::common::{COMPLIANCE_SOURCE_NAME, compliance_source_id};
 use super::common::{
-    CONTACT_NAME, FORMAT_SOURCE_NAME, administrative, contact_id, format_source_id, localized,
+    CONTACT_NAME, FORMAT_SOURCE_NAME, administrative, administrative_for_entity, contact_id,
+    format_source_id, import_trace, localized,
 };
 
 pub fn contact() -> (String, Value) {
@@ -86,6 +87,47 @@ fn source(id: String, name: &str, class_id: &str, class_name: &str) -> (String, 
 
 pub fn canonical_contact(entity: &CanonicalEntity) -> Value {
     let name = entity.name.as_deref().unwrap_or("Imported contact");
+    let mut information = Map::from_iter([
+        (
+            "common:UUID".to_owned(),
+            Value::String(entity.internal_id.clone()),
+        ),
+        ("common:shortName".to_owned(), localized(name)),
+        ("common:name".to_owned(), localized(name)),
+        (
+            "classificationInformation".to_owned(),
+            json!({
+                "common:classification": {
+                    "common:class": {
+                        "@level": "0",
+                        "@classId": "5",
+                        "#text": "Other"
+                    }
+                }
+            }),
+        ),
+    ]);
+    for (source, target, localized_value) in [
+        ("address", "contactAddress", true),
+        ("telephone", "telephone", false),
+        ("email", "email", false),
+        ("website", "WWWAddress", false),
+        ("description", "contactDescriptionOrComment", true),
+    ] {
+        if let Some(value) = entity.raw.get(source).and_then(Value::as_str) {
+            information.insert(
+                target.to_owned(),
+                if localized_value {
+                    localized(value)
+                } else {
+                    Value::String(value.to_owned())
+                },
+            );
+        }
+    }
+    if let Some(trace) = entity.raw.get("sourceTrace") {
+        information.insert("common:other".to_owned(), import_trace(trace));
+    }
     json!({
         "contactDataSet": {
             "@xmlns:common": "http://lca.jrc.it/ILCD/Common",
@@ -94,26 +136,9 @@ pub fn canonical_contact(entity: &CanonicalEntity) -> Value {
             "@version": "1.1",
             "@xsi:schemaLocation": "http://lca.jrc.it/ILCD/Contact ../../schemas/ILCD_ContactDataSet.xsd",
             "contactInformation": {
-                "dataSetInformation": {
-                    "common:UUID": entity.internal_id,
-                    "common:shortName": localized(name),
-                    "common:name": localized(name),
-                    "classificationInformation": {
-                        "common:classification": {
-                            "common:class": {
-                                "@level": "0",
-                                "@classId": "5",
-                                "#text": "Other"
-                            }
-                        }
-                    }
-                }
+                "dataSetInformation": information
             },
-            "administrativeInformation": administrative(
-                "contacts",
-                &entity.internal_id,
-                false
-            )
+            "administrativeInformation": administrative_for_entity("contacts", entity, false)
         }
     })
 }
@@ -133,7 +158,7 @@ pub fn canonical_source(entity: &CanonicalEntity) -> Value {
                     "common:class": {
                         "@level": "0",
                         "@classId": "6",
-                        "#text": "Other"
+                        "#text": "Other source types"
                     }
                 }
             }),
@@ -145,6 +170,61 @@ pub fn canonical_source(entity: &CanonicalEntity) -> Value {
             Value::String(citation.to_owned()),
         );
     }
+    if let Some(citation) = entity.raw.get("sourceCitation").and_then(Value::as_str) {
+        information.insert(
+            "sourceCitation".to_owned(),
+            Value::String(citation.to_owned()),
+        );
+    }
+    if let Some(publication_type) = entity.raw.get("publicationType").and_then(Value::as_str) {
+        information.insert(
+            "publicationType".to_owned(),
+            Value::String(publication_type.to_owned()),
+        );
+    }
+    let mut description = entity
+        .raw
+        .get("description")
+        .and_then(Value::as_str)
+        .map(ToOwned::to_owned)
+        .unwrap_or_default();
+    if let Some(url) = entity.raw.get("url").and_then(Value::as_str) {
+        if !description.is_empty() {
+            description.push(' ');
+        }
+        description.push_str("External source URL: ");
+        description.push_str(url);
+    }
+    if !description.is_empty() {
+        information.insert(
+            "sourceDescriptionOrComment".to_owned(),
+            localized(description),
+        );
+    }
+    if let Some(files) = entity.raw.get("referenceToDigitalFile") {
+        let references = match files {
+            Value::Array(files) => files
+                .iter()
+                .filter_map(Value::as_str)
+                .map(|uri| json!({"@uri": digital_file_uri(uri)}))
+                .collect::<Vec<_>>(),
+            Value::String(uri) => vec![json!({"@uri": digital_file_uri(uri)})],
+            _ => Vec::new(),
+        };
+        if !references.is_empty() {
+            information.insert(
+                "referenceToDigitalFile".to_owned(),
+                if references.len() == 1 {
+                    references.into_iter().next().unwrap()
+                } else {
+                    Value::Array(references)
+                },
+            );
+        }
+    }
+    if let Some(trace) = entity.raw.get("sourceTrace") {
+        information.insert("common:other".to_owned(), import_trace(trace));
+    }
     json!({
         "sourceDataSet": {
             "@xmlns:common": "http://lca.jrc.it/ILCD/Common",
@@ -153,11 +233,15 @@ pub fn canonical_source(entity: &CanonicalEntity) -> Value {
             "@version": "1.1",
             "@xsi:schemaLocation": "http://lca.jrc.it/ILCD/Source ../../schemas/ILCD_SourceDataSet.xsd",
             "sourceInformation": {"dataSetInformation": information},
-            "administrativeInformation": administrative(
-                "sources",
-                &entity.internal_id,
-                false
-            )
+            "administrativeInformation": administrative_for_entity("sources", entity, false)
         }
     })
+}
+
+fn digital_file_uri(uri: &str) -> String {
+    if uri.contains(':') {
+        uri.to_owned()
+    } else {
+        format!("file:{uri}")
+    }
 }

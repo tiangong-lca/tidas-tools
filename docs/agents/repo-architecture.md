@@ -32,8 +32,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: a43f761
-lastReviewedNote: "Issue #122 adds the native import crate, disk-backed canonical pipeline, deterministic package/mapping/bundle outputs, and stable import reports."
+lastReviewedCommit: bf30bc2
+lastReviewedNote: "Issue #122 completes deep native adapter/writer semantics and a frozen Python matrix covering every supported import adapter and both outputs."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -146,6 +146,14 @@ atomic directory commit. Per-process dependency bundles are enabled by
 default; deterministic gzip mapping CSV is opt-in. Generated identifiers use
 portable source-relative keys, so equivalent inputs under different checkout
 roots produce the same package, mapping, and bundle hashes.
+
+The retained semantic layer includes openLCA unit/property normalization,
+allocation, uncertainty, pedigree/data quality, and documentation fields;
+EcoSpold 1/2 time, geography, technology, classification, source, and exchange
+trace fields; and ILCD versions, contacts, sources, digital-file provenance,
+reference properties/exchanges, and elementary compartment categories. Frozen
+Python fixtures cover all six adapters, and each Rust replay validates both
+TIDAS and ILCD output plus repeated output-tree hashes.
 
 `tidas.import-execution-report.v1` records detection evidence, object and issue
 counts, artifact reports, native validation counts, and accounted peak memory.
