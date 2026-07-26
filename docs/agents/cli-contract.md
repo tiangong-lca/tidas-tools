@@ -27,8 +27,8 @@ checkPaths:
   - README.md
   - README_CN.md
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: 9908cab
-lastReviewedNote: "Reviewed for Issue #124 native release: added the action tree, bounded release report, atomic four-package publication, and exit classification."
+lastReviewedCommit: 84dc90f
+lastReviewedNote: "Reviewed for Issue #125 native distribution: the packaged executable preserves the existing seven-command, output, and exit contract without adding an installer command."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml

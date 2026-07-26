@@ -19,13 +19,15 @@ checkPaths:
   - crates/**
   - contracts/**
   - assets/**
+  - packaging/**
   - migration/**
   - pyproject.toml
   - src/tidas_tools/**
   - .github/workflows/**
+  - scripts/install.*
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: 9908cab
-lastReviewedNote: "Issue #124 将原生 release action tree、精确闭包、语义 round-trip 与原子四包发布写入当前用户指南。"
+lastReviewedCommit: 84dc90f
+lastReviewedNote: "Issue #125 将五平台原生制品、可复现归档、校验和、SBOM/attestation、安装器与包管理元数据写入当前用户指南。"
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -51,7 +53,8 @@ Rust 可执行文件 `tidas`。
 当前 Rust 实现已经建立 Cargo workspace、稳定机器与 invocation 契约、有界运行时
 基础设施、可执行资产完整性锁、XML/XSD/XSLT 跨平台边界、最终统一 CLI 适配层，
 以及原生 TIDAS/ILCD 校验、引用提取、batch 证据、ruleset 检查、双向
-TIDAS/eILCD 转换、外部格式导入、数据库导出与确定性 release control：
+TIDAS/eILCD 转换、外部格式导入、数据库导出、确定性 release control 与可复现
+原生分发：
 
 ```bash
 cargo build --workspace
@@ -76,6 +79,7 @@ cargo run -p tidas-cli --bin tidas -- release build-packages \
 cargo run -p tidas-cli --bin tidas -- ruleset --format json
 cargo run -p tidas-cli --bin tidas -- --completion bash > tidas.bash
 cargo run -p tidas-assets --bin tidas-asset-lock -- check
+cargo run -p tidas-dist -- version
 ```
 
 最终命令树固定为 `convert`、`import`、`export`、`validate`、`release`、
@@ -113,6 +117,31 @@ final evidence hash。
 日志、进度、诊断与报告落盘确认写入 stderr。使用 `--report <PATH>` 可在不占用
 stdout 的情况下持久化报告。默认计入内存预算为 512 MiB，有界队列容量为 256。
 规范契约见 [docs/agents/cli-contract.md](docs/agents/cli-contract.md)。
+
+## 原生分发
+
+原生 release workflow 从同一个精确的 `tidas` binary 构建并验证 Linux
+x86_64/ARM64、macOS Intel/Apple Silicon 与 Windows x86_64 制品。每个平台均
+重复构建归档并逐字节比较，验证 SHA-256，执行打包后的 `version`、help、JSON
+`version` 与 `ruleset` 探针，并生成 SPDX SBOM 和 GitHub OIDC
+provenance/SBOM attestation。固定版本且静态链接的 libxml2/libxslt 使运行时
+不依赖 Homebrew、vcpkg、Python、Java、Node.js 或开发工具链。
+
+原生版本发布后，可安装明确且不可变的版本：
+
+```bash
+curl --proto '=https' --tlsv1.2 -fsSLO \
+  https://raw.githubusercontent.com/tiangong-lca/tidas-tools/main/scripts/install.sh
+sh install.sh --version 0.1.0 --prefix "$HOME/.local"
+```
+
+```powershell
+.\scripts\install.ps1 -Version 0.1.0
+```
+
+每个 GitHub Release 同时携带由相同归档哈希生成的 Homebrew formula 与 Winget
+manifests。创建外部 tap 或提交 Winget community 需要单独批准，且这些路径绝不
+重新构建 executable。Windows ARM64 是明确跟踪的第二阶段目标。
 
 下文记录的 Python 包已经 feature freeze，只在迁移期间作为内部 golden/parity
 oracle。它不是最终产品，旧可执行文件名和参数布局不会保留。只有 Rust 功能语义、

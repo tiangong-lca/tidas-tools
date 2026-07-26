@@ -1,3 +1,36 @@
+---
+title: tidas-tools README
+docType: guide
+scope: repo
+status: active
+authoritative: false
+owner: tidas-tools
+language: en
+whenToUse:
+  - when you need English user-facing CLI examples, native installation, or basic development commands
+whenToUpdate:
+  - when English CLI examples, installation, development commands, or release notes change
+checkPaths:
+  - README.md
+  - AGENTS.md
+  - .docpact/config.yaml
+  - docs/agents/**
+  - Cargo.toml
+  - crates/**
+  - packaging/**
+  - scripts/install.*
+  - .github/workflows/**
+lastReviewedAt: 2026-07-26
+lastReviewedCommit: 84dc90f
+lastReviewedNote: "Issue #125 documents five-platform native artifacts, reproducible archives, checksums, SBOM/attestation, installers, and package-manager metadata."
+related:
+  - AGENTS.md
+  - .docpact/config.yaml
+  - docs/agents/repo-validation.md
+  - docs/agents/repo-architecture.md
+  - README_CN.md
+---
+
 # TianGong TIDAS Tools User Guide
 
 [![PyPI](https://img.shields.io/pypi/v/tidas-tools.svg)][pypi status]
@@ -18,7 +51,8 @@ machine and invocation contracts, bounded runtime primitives, executable-asset
 integrity lock, XML/XSD/XSLT portability boundary, the unified CLI adapter,
 and native TIDAS/ILCD validation, reference extraction, batch evidence,
 ruleset inspection, bidirectional TIDAS/eILCD conversion, external-format
-import, database export, and deterministic release control:
+import, database export, deterministic release control, and reproducible native
+distribution:
 
 ```bash
 cargo build --workspace
@@ -43,6 +77,7 @@ cargo run -p tidas-cli --bin tidas -- release build-packages \
 cargo run -p tidas-cli --bin tidas -- ruleset --format json
 cargo run -p tidas-cli --bin tidas -- --completion bash > tidas.bash
 cargo run -p tidas-assets --bin tidas-asset-lock -- check
+cargo run -p tidas-dist -- version
 ```
 
 The final command tree is `convert`, `import`, `export`, `validate`, `release`,
@@ -91,6 +126,33 @@ diagnostics, and report-file confirmations use stderr. Use `--report <PATH>`
 to persist the report without occupying stdout. The default accounted memory
 budget is 512 MiB and the default bounded queue capacity is 256. The normative
 contract is [docs/agents/cli-contract.md](docs/agents/cli-contract.md).
+
+## Native distribution
+
+The native release workflow qualifies one exact `tidas` binary for Linux
+x86_64/ARM64, macOS Intel/Apple Silicon, and Windows x86_64. It builds every
+archive twice, compares the bytes, verifies SHA-256, runs packaged `version`,
+help, JSON `version`, and `ruleset` probes, generates an SPDX SBOM, and creates
+GitHub OIDC provenance/SBOM attestations. Pinned static libxml2/libxslt inputs
+keep the archives independent of Homebrew, vcpkg, Python, Java, Node.js, or a
+development toolchain at runtime.
+
+After a native version is published, install an explicit immutable version:
+
+```bash
+curl --proto '=https' --tlsv1.2 -fsSLO \
+  https://raw.githubusercontent.com/tiangong-lca/tidas-tools/main/scripts/install.sh
+sh install.sh --version 0.1.0 --prefix "$HOME/.local"
+```
+
+```powershell
+.\scripts\install.ps1 -Version 0.1.0
+```
+
+Every GitHub Release also carries generated Homebrew formula and Winget
+manifests that reference the same archive hashes. External tap creation or a
+Winget community submission is a separate publication approval; those paths
+never rebuild the executable. Windows ARM64 is a tracked second-phase target.
 
 The Python package described below is feature-frozen and remains temporarily
 available as an internal golden/parity oracle. It is not the final product and

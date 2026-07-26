@@ -1,0 +1,30 @@
+{
+  "schema_version": "tidas.distribution-migration.v1",
+  "python_oracle": {
+    "role": "semantic golden oracle only",
+    "distribution": "wheel and source distribution",
+    "legacy_executables": [
+      "tidas-convert",
+      "tidas-import",
+      "tidas-export",
+      "tidas-validate",
+      "tidas-release-tool"
+    ]
+  },
+  "rust_product": {
+    "distribution": "native archive",
+    "executables": [
+      "tidas"
+    ],
+    "runtime_languages": [],
+    "success_exit_code": 0,
+    "malformed_distribution_exit_code": 1,
+    "warning_exit_code": null
+  },
+  "decisions": {
+    "legacy_entrypoint_compatibility": false,
+    "python_wrapper": false,
+    "warning_policy": "distribution verification is fail-closed; no warning completion class exists",
+    "semantic_parity_evidence": "the repository-wide frozen Python suite remains mandatory while packaged Rust smoke compares source-built and extracted behavior"
+  }
+}

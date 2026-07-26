@@ -4,6 +4,7 @@ members = [
   "crates/tidas-cli",
   "crates/tidas-conversion",
   "crates/tidas-contracts",
+  "crates/tidas-dist",
   "crates/tidas-export",
   "crates/tidas-import",
   "crates/tidas-references",
@@ -42,6 +43,7 @@ regex = "1.12.3"
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.149"
 sha2 = "0.11.0"
+tar = "0.4.44"
 tempfile = "3.27.0"
 thiserror = "2.0.19"
 tokio = { version = "1.49.0", features = ["fs", "io-util", "macros", "rt-multi-thread", "sync", "time"] }
@@ -60,3 +62,7 @@ pedantic = { level = "deny", priority = -1 }
 module_name_repetitions = "allow"
 missing_errors_doc = "allow"
 missing_panics_doc = "allow"
+
+[profile.release]
+lto = "thin"
+strip = "symbols"

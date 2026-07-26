@@ -1,7 +1,7 @@
 version: 1
 layout: repo
 lastReviewedAt: "2026-07-26"
-lastReviewedCommit: "9908cab"
+lastReviewedCommit: "84dc90f"
 # Native Rust domain ownership includes bounded conversion, import, export,
 # release packaging, validation, references, rulesets, assets, runtime, and
 # the thin unified CLI.
@@ -55,6 +55,16 @@ ownership:
           - src/tidas_tools/package_versions.py
           - src/tidas_tools/release.py
       ownerRepo: tidas-tools
+    - id: native-distribution
+      paths:
+        include:
+          - LICENSE
+          - crates/tidas-dist/**
+          - packaging/**
+          - scripts/install.sh
+          - scripts/install.ps1
+          - .github/workflows/rust-release.yml
+      ownerRepo: tidas-tools
     - id: packaged-assets
       paths:
         include:
@@ -92,6 +102,7 @@ coverage:
     - AGENTS.md
     - README.md
     - README_CN.md
+    - LICENSE
     - .gitattributes
     - .docpact/config.yaml
     - docs/agents/cli-contract.md
@@ -100,6 +111,7 @@ coverage:
     - Cargo.toml
     - Cargo.lock
     - crates/**
+    - packaging/**
     - contracts/**
     - assets/**
     - pyproject.toml
@@ -116,10 +128,13 @@ coverage:
     - src/tidas_tools/tidas/**
     - src/tidas_tools/eilcd/**
     - scripts/schema_lock.py
+    - scripts/install.sh
+    - scripts/install.ps1
     - tests/**
     - test_data/**
     - .github/workflows/ci.yml
     - .github/workflows/rust-ci.yml
+    - .github/workflows/rust-release.yml
     - .github/workflows/ai-doc-lint.yml
     - .github/workflows/dispatch-tidas-sdk-sync.yml
     - .github/workflows/python-package-deploy.yml
@@ -235,6 +250,14 @@ routing:
         - src/tidas_tools/validate.py
         - src/tidas_tools/tidas/**
         - src/tidas_tools/eilcd/**
+    native-distribution:
+      paths:
+        - LICENSE
+        - crates/tidas-dist/**
+        - packaging/**
+        - scripts/install.sh
+        - scripts/install.ps1
+        - .github/workflows/rust-release.yml
     packaged-assets:
       paths:
         - assets/**
@@ -252,6 +275,11 @@ routing:
         - Cargo.toml
         - Cargo.lock
         - .github/workflows/rust-ci.yml
+        - .github/workflows/rust-release.yml
+        - crates/tidas-dist/**
+        - packaging/**
+        - scripts/install.sh
+        - scripts/install.ps1
         - pyproject.toml
         - .github/workflows/python-package-deploy.yml
     proof:
@@ -266,11 +294,14 @@ routing:
         - migration/**
         - pyproject.toml
         - scripts/schema_lock.py
+        - scripts/install.sh
+        - scripts/install.ps1
         - src/tidas_tools/**
         - tests/**
         - test_data/**
         - .github/workflows/ci.yml
         - .github/workflows/rust-ci.yml
+        - .github/workflows/rust-release.yml
         - .github/workflows/dispatch-tidas-sdk-sync.yml
         - .github/workflows/python-package-deploy.yml
     repo-docs:
@@ -282,6 +313,7 @@ routing:
         - .docpact/config.yaml
         - docs/agents/cli-contract.md
         - docs/agents/**
+        - packaging/README.md
         - migration/**
     root-integration:
       paths:
@@ -296,6 +328,7 @@ docInventory:
     - docs/agents/cli-contract.md
     - docs/agents/repo-validation.md
     - docs/agents/repo-architecture.md
+    - packaging/README.md
     - migration/python-to-rust-owners.md
 
 repo:
@@ -431,6 +464,8 @@ rules:
         kind: automation
       - path: .github/workflows/rust-ci.yml
         kind: automation
+      - path: .github/workflows/rust-release.yml
+        kind: release-automation
       - path: .github/workflows/dispatch-tidas-sdk-sync.yml
         kind: automation
       - path: .github/workflows/python-package-deploy.yml
@@ -445,6 +480,36 @@ rules:
       - path: docs/agents/repo-architecture.md
         mode: review_or_update
     reason: Test, fixture, release, and downstream dispatch changes affect future tooling validation and SDK refresh routing.
+  - id: tidas-tools-native-distribution-contract
+    scope: repo
+    repo: tidas-tools
+    triggers:
+      - path: LICENSE
+        kind: release-license
+      - path: crates/tidas-dist/**
+        kind: distribution-tooling
+      - path: packaging/**
+        kind: package-manager
+      - path: scripts/install.sh
+        kind: installer
+      - path: scripts/install.ps1
+        kind: installer
+      - path: .github/workflows/rust-release.yml
+        kind: release-automation
+    requiredDocs:
+      - path: AGENTS.md
+        mode: review_or_update
+      - path: .docpact/config.yaml
+        mode: review_or_update
+      - path: docs/agents/repo-validation.md
+        mode: review_or_update
+      - path: docs/agents/repo-architecture.md
+        mode: review_or_update
+      - path: README.md
+        mode: review_or_update
+      - path: README_CN.md
+        mode: review_or_update
+    reason: Native release artifacts, installers, and package-manager metadata must preserve one cross-platform, checksum-bound product distribution contract.
   - id: tidas-tools-doc-maintenance-contract
     scope: repo
     repo: tidas-tools
