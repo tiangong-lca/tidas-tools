@@ -1,11 +1,11 @@
 version: 1
 layout: repo
-lastReviewedAt: "2026-07-25"
-lastReviewedCommit: "3c51461"
-# Issue #120 owns native TIDAS/ILCD validation, semantic indexes, ruleset
-# inspection, stable reference extraction and batch contracts, explicit memory
-# accounting, and deterministic issue/event spooling while Python remains a
-# frozen oracle.
+lastReviewedAt: "2026-07-26"
+lastReviewedCommit: "a43f761"
+# Issue #122 owns native external-format detection and import, disk-backed
+# canonical storage, stable reports, deterministic mapping/process bundles,
+# TIDAS/ILCD writers, and bounded execution while Python remains a frozen
+# semantic oracle.
 
 catalog:
   repos:
@@ -175,6 +175,19 @@ routing:
         - crates/tidas-runtime/**
         - crates/tidas-xml/**
         - src/tidas_tools/convert.py
+        - src/tidas_tools/import_lca/**
+        - src/tidas_tools/eilcd/**
+        - src/tidas_tools/tidas/**
+    import:
+      paths:
+        - crates/tidas-cli/**
+        - crates/tidas-contracts/**
+        - crates/tidas-conversion/**
+        - crates/tidas-import/**
+        - crates/tidas-references/**
+        - crates/tidas-runtime/**
+        - crates/tidas-validation/**
+        - contracts/import-*.schema.json
         - src/tidas_tools/import_lca/**
         - src/tidas_tools/eilcd/**
         - src/tidas_tools/tidas/**

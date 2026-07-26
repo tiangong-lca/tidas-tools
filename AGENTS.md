@@ -37,9 +37,9 @@ checkPaths:
   - scripts/schema_lock.py
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-07-25
-lastReviewedCommit: 3c51461
-lastReviewedNote: "Issue #121 activates native bidirectional conversion, deterministic envelope sidecars, atomic publication, and bounded package-scale proof."
+lastReviewedAt: 2026-07-26
+lastReviewedCommit: a43f761
+lastReviewedNote: "Issue #122 activates native external-format import, deterministic package/mapping/bundle outputs, frozen Python oracle parity, and bounded execution."
 related:
   - .docpact/config.yaml
   - docs/agents/cli-contract.md
@@ -99,6 +99,7 @@ Keep these entry-level facts in `AGENTS.md`. Use `README.md`, `README_CN.md`, an
 - final product entry point: `cargo run -p tidas-cli --bin tidas -- <subcommand>`
 - final command tree: `convert`, `import`, `export`, `validate`, `release`, `ruleset`, `version`
 - native package conversion: `cargo run -p tidas-cli --bin tidas -- convert <input-dir> --output <output-dir> --to ilcd|tidas --format json`
+- native external import: `cargo run -p tidas-cli --bin tidas -- import <input-file-or-dir> --output <output-dir> [--target tidas|ilcd|both] [--write-mapping] --format json`
 - native package validation: `cargo run -p tidas-cli --bin tidas -- validate <package-dir> --input-format tidas-json|ilcd-xml --issues <issues.jsonl> --format json`
 - native batch validation: `cargo run -p tidas-cli --bin tidas -- validate <batch-dir> --protocol document-validation-batch.v1 --input-manifest <manifest.jsonl> --events <events.jsonl> --format json`
 - native ruleset inspection: `cargo run -p tidas-cli --bin tidas -- ruleset [--id <ruleset-id>] --format json`
@@ -131,6 +132,7 @@ At a human-readable level, this repo owns:
 
 - the Cargo workspace and final `tidas` binary under `Cargo.toml` and `crates/**`
 - native bidirectional conversion, deterministic envelope sidecars, atomic publication, and `tidas.conversion-report.v1` under `crates/tidas-conversion`, `contracts/conversion-report.v1.schema.json`, and `tests/fixtures/conversion_v1/**`
+- native external-format detection/import, disk-backed canonicalization, deterministic TIDAS/ILCD publication, process bundles, mapping CSV, and import reports under `crates/tidas-import` and `contracts/import-*.v1.schema.json`
 - stable machine contracts under `contracts/**`
 - the complete executable asset inventory in `assets/asset-lock.v1.json`
 - the Python-to-Rust owner inventory under `migration/**`

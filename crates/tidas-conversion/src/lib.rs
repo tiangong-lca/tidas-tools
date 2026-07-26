@@ -888,6 +888,18 @@ mod tests {
     }
 
     #[test]
+    fn attribute_only_elements_are_serialized_without_character_content() {
+        let xml = convert_json_to_xml(
+            br#"{"root":{"child":{"@id":"1","@version":"00.00.001"}}}"#,
+            &CancellationToken::default(),
+        )
+        .unwrap();
+        let text = String::from_utf8(xml).unwrap();
+        assert!(text.contains(r#"<child id="1" version="00.00.001"/>"#));
+        assert!(!text.contains("<child id=\"1\" version=\"00.00.001\">\n"));
+    }
+
+    #[test]
     fn representative_datasets_roundtrip_with_assets_and_stable_hashes() {
         let directory = tempdir().unwrap();
         let input = directory.path().join("tidas");

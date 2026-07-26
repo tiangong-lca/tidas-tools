@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiangong.earth/contracts/import-execution-report.v1.schema.json",
+  "title": "TIDAS import execution report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_path",
+    "detected_format",
+    "detection_evidence",
+    "target",
+    "object_counts",
+    "warning_count",
+    "error_count",
+    "issues_spooled",
+    "issues_file",
+    "tidas_package",
+    "ilcd_conversion",
+    "mapping",
+    "process_bundles",
+    "tidas_validation_issue_count",
+    "ilcd_validation_issue_count",
+    "peak_accounted_memory_bytes"
+  ],
+  "properties": {
+    "schema_version": {"const": "tidas.import-execution-report.v1"},
+    "source_path": {"type": "string"},
+    "detected_format": {
+      "enum": ["ecospold1", "ecospold2", "simapro-csv", "openlca-jsonld", "openlca-process-xlsx", "ilcd"]
+    },
+    "detection_evidence": {"type": "array", "items": {"type": "string"}},
+    "target": {"enum": ["tidas", "ilcd", "both"]},
+    "object_counts": {
+      "type": "object",
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "warning_count": {"type": "integer", "minimum": 0},
+    "error_count": {"type": "integer", "minimum": 0},
+    "issues_spooled": {"type": "integer", "minimum": 0},
+    "issues_file": {"const": "issues.jsonl"},
+    "tidas_package": {"type": "object"},
+    "ilcd_conversion": {"type": ["object", "null"]},
+    "mapping": {"type": ["object", "null"]},
+    "process_bundles": {"type": ["object", "null"]},
+    "tidas_validation_issue_count": {"type": "integer", "minimum": 0},
+    "ilcd_validation_issue_count": {"type": ["integer", "null"], "minimum": 0},
+    "peak_accounted_memory_bytes": {"type": "integer", "minimum": 0}
+  }
+}

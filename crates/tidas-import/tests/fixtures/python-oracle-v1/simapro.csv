@@ -1,0 +1,20 @@
+{SimaPro 8.0}
+{processes}
+{CSV separator: Semicolon}
+{Decimal separator: ,}
+
+Process
+
+Process name
+Test process
+
+Products
+my product;kg;0,5;100;not defined;Agricultural;
+
+Materials/fuels
+Soy oil, refined, at plant/kg/RNA;kg;0,2;Undefined;0;0;0;
+
+Emissions to air
+carbon dioxide;low. pop.;kg;1,5;Undefined;0;0;0;
+
+End
