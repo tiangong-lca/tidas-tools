@@ -22,6 +22,7 @@ tidas-conversion = { path = "../tidas-conversion" }
 tidas-contracts = { path = "../tidas-contracts" }
 tidas-export = { path = "../tidas-export" }
 tidas-import = { path = "../tidas-import" }
+tidas-release = { path = "../tidas-release" }
 tidas-runtime = { path = "../tidas-runtime" }
 tidas-rulesets = { path = "../tidas-rulesets" }
 tidas-validation = { path = "../tidas-validation" }

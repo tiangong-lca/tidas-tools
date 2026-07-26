@@ -2459,6 +2459,7 @@ dependencies = [
  "tidas-conversion",
  "tidas-export",
  "tidas-import",
+ "tidas-release",
  "tidas-rulesets",
  "tidas-runtime",
  "tidas-validation",
@@ -2544,6 +2545,25 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror",
+]
+
+[[package]]
+name = "tidas-release"
+version = "0.1.0"
+dependencies = [
+ "jsonschema",
+ "serde",
+ "serde_json",
+ "sha2",
+ "tempfile",
+ "thiserror",
+ "tidas-assets",
+ "tidas-conversion",
+ "tidas-import",
+ "tidas-runtime",
+ "tidas-validation",
+ "walkdir",
+ "zip",
 ]
 
 [[package]]

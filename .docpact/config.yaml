@@ -1,9 +1,10 @@
 version: 1
 layout: repo
 lastReviewedAt: "2026-07-26"
-lastReviewedCommit: "d5cd7fd"
+lastReviewedCommit: "9908cab"
 # Native Rust domain ownership includes bounded conversion, import, export,
-# validation, references, rulesets, assets, runtime, and the thin unified CLI.
+# release packaging, validation, references, rulesets, assets, runtime, and
+# the thin unified CLI.
 # Export owns repeatable-read PostgreSQL extraction, version normalization,
 # S3-compatible streaming, and deterministic atomic ZIP publication. Frozen
 # Python remains a parity oracle until the final cutover.
@@ -224,8 +225,11 @@ routing:
       paths:
         - crates/tidas-cli/**
         - crates/tidas-contracts/**
+        - crates/tidas-release/**
         - crates/tidas-runtime/**
+        - crates/tidas-validation/**
         - crates/tidas-xml/**
+        - contracts/release-report.v1.schema.json
         - src/tidas_tools/release.py
         - src/tidas_tools/convert.py
         - src/tidas_tools/validate.py

@@ -19,12 +19,12 @@
       "expected_completeness": "complete"
     },
     {
-      "name": "known release function not yet migrated",
-      "python_oracle": "A known tool family is distinguishable from malformed invocation; migration never silently falls back to Python.",
-      "rust_args": ["release", "--format", "json"],
-      "expected_exit_code": 69,
-      "expected_exit_class": "unavailable",
-      "expected_completeness": "not-started"
+      "name": "native release validation preserves the frozen gate semantics",
+      "python_oracle": "The Python release oracle treated a structurally empty package as a complete validation run while keeping release control distinct from malformed invocation.",
+      "rust_args": ["release", "validate-tidas", "--input-dir", ".", "--format", "json"],
+      "expected_exit_code": 0,
+      "expected_exit_class": "success",
+      "expected_completeness": "complete"
     },
     {
       "name": "malformed invocation",

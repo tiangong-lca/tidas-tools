@@ -18,7 +18,7 @@ pub const DEFAULT_IMPORT_MAX_ISSUE_KIB: u64 = 64;
     disable_help_subcommand = true,
     about = "Cross-platform TIDAS conversion, import, export, validation, and release tooling",
     long_about = "The unified TIDAS executable. Domain behavior lives in reusable Rust crates; this binary only parses inputs, supplies bounded runtime controls, and renders stable human or JSON reports.",
-    after_help = "Examples:\n  tidas version --format json\n  tidas --completion bash > tidas.bash\n\nPrecedence: command-line options override TIDAS_* environment variables, which override documented built-in defaults. No configuration file is loaded implicitly from the current directory.\n\nStdout contains only the requested report or completion script. Logs, progress, diagnostics, and file-write confirmations use stderr. During migration, incomplete Rust commands return unavailable (69) and never invoke Python."
+    after_help = "Examples:\n  tidas version --format json\n  tidas --completion bash > tidas.bash\n\nPrecedence: command-line options override TIDAS_* environment variables, which override documented built-in defaults. No configuration file is loaded implicitly from the current directory.\n\nStdout contains only the requested report or completion script. Logs, progress, diagnostics, and file-write confirmations use stderr. Product commands dispatch only to Rust domain crates and never invoke Python."
 )]
 pub struct Cli {
     /// Reading-oriented human output or stable machine-readable JSON.
@@ -187,7 +187,7 @@ pub enum Commands {
     /// Validate TIDAS JSON or eILCD/ILCD XML.
     Validate(ValidateArgs),
     /// Build and verify deterministic release packages.
-    Release,
+    Release(ReleaseArgs),
     /// Inspect and validate packaged methodology rulesets.
     Ruleset(RulesetArgs),
     /// Print binary, contract, asset, XML engine, and runtime fingerprints.
@@ -202,7 +202,7 @@ impl Commands {
             Self::Import(_) => CommandNameV1::Import,
             Self::Export(_) => CommandNameV1::Export,
             Self::Validate(_) => CommandNameV1::Validate,
-            Self::Release => CommandNameV1::Release,
+            Self::Release(_) => CommandNameV1::Release,
             Self::Ruleset(_) => CommandNameV1::Ruleset,
             Self::Version => CommandNameV1::Version,
         }
@@ -375,6 +375,93 @@ impl ExportArgs {
 pub enum ExportTargetArg {
     Tidas,
     Ilcd,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, clap::Args)]
+#[command(
+    long_about = "Run native release-control operations over a finalized canonical TIDAS tree. The release layer never assigns UUIDs or versions. End-to-end builds validate TIDAS, resolve exact reference closure, derive and validate eILCD, prove normalized semantic round-trip, and atomically publish four byte-stable ZIPs.",
+    after_help = "Examples:\n  tidas release build-packages --tidas-dir ./canonical --dataset-index ./canonical-dataset-index.json --output-dir ./release\n  tidas release validate-closure --input-dir ./canonical --dataset-index ./canonical-dataset-index.json --profile unit-process-full-closure.v1 --format json\n  tidas release semantic-roundtrip --tidas-dir ./canonical --ilcd-dir ./derived-ilcd\n\nAll actions use the global memory budget, bounded runtime controls, and cancellation token. Build publication is atomic and never invokes Python."
+)]
+pub struct ReleaseArgs {
+    #[command(subcommand)]
+    pub action: ReleaseCommand,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Subcommand)]
+pub enum ReleaseCommand {
+    /// Validate, convert, prove closure/round-trip, and publish four ZIPs.
+    BuildPackages(ReleaseBuildArgs),
+    /// Convert canonical TIDAS JSON to a schema-ordered eILCD tree.
+    ConvertIlcd(ReleaseConvertArgs),
+    /// Compare normalized canonical JSON with derived eILCD XML.
+    SemanticRoundtrip(ReleaseRoundtripArgs),
+    /// Resolve one exact UUID/version transitive closure.
+    ValidateClosure(ReleaseClosureArgs),
+    /// Run native eILCD validation as a release gate.
+    ValidateIlcd(ReleaseValidateArgs),
+    /// Run native TIDAS validation as a release gate.
+    ValidateTidas(ReleaseValidateArgs),
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, clap::Args)]
+pub struct ReleaseBuildArgs {
+    /// Finalized canonical TIDAS dataset tree.
+    #[arg(long, value_name = "DIR")]
+    pub tidas_dir: PathBuf,
+    /// Canonical dataset identity/hash index.
+    #[arg(long, value_name = "JSON")]
+    pub dataset_index: PathBuf,
+    /// Directory containing exactly four published ZIPs after success.
+    #[arg(long, value_name = "DIR")]
+    pub output_dir: PathBuf,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, clap::Args)]
+pub struct ReleaseConvertArgs {
+    /// Finalized canonical TIDAS dataset tree.
+    #[arg(long, value_name = "DIR")]
+    pub input_dir: PathBuf,
+    /// Derived eILCD package directory to publish atomically.
+    #[arg(long, value_name = "DIR")]
+    pub output_dir: PathBuf,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, clap::Args)]
+pub struct ReleaseRoundtripArgs {
+    /// Canonical TIDAS dataset tree.
+    #[arg(long, value_name = "DIR")]
+    pub tidas_dir: PathBuf,
+    /// Derived eILCD package tree.
+    #[arg(long, value_name = "DIR")]
+    pub ilcd_dir: PathBuf,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, clap::Args)]
+pub struct ReleaseClosureArgs {
+    /// Finalized canonical TIDAS dataset tree.
+    #[arg(long, value_name = "DIR")]
+    pub input_dir: PathBuf,
+    /// Canonical dataset identity/hash index.
+    #[arg(long, value_name = "JSON")]
+    pub dataset_index: PathBuf,
+    /// Required release closure profile.
+    #[arg(long, value_enum)]
+    pub profile: ReleaseProfileArg,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
+pub enum ReleaseProfileArg {
+    #[value(name = "unit-process-full-closure.v1")]
+    UnitProcess,
+    #[value(name = "standalone-lifecyclemodel-result-full-closure.v1")]
+    StandaloneResult,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, clap::Args)]
+pub struct ReleaseValidateArgs {
+    /// TIDAS or eILCD package directory.
+    #[arg(long, value_name = "DIR")]
+    pub input_dir: PathBuf,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, clap::Args)]

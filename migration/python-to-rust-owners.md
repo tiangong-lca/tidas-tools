@@ -21,6 +21,10 @@ later design extracts a more stable domain.
 
 No legacy executable name is registered by the Rust workspace. During the
 migration the Python commands remain internal golden/parity oracles only.
+Issue #124 completes the active `release.py` ownership transfer:
+`crates/tidas-release` and `tidas release` now own release behavior, while the
+Python entry point remains frozen evidence until #126 removes the active
+Python tree.
 
 ## Module and public-symbol inventory
 

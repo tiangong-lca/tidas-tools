@@ -8,8 +8,8 @@ use std::time::Duration;
 
 use args::{
     Cli, Commands, ConversionTarget, ConvertArgs, ExportArgs, ExportTargetArg, ImportArgs,
-    ImportSourceFormat, ImportTargetArg, RulesetArgs, ValidateArgs, ValidationInputFormat,
-    ValidationProtocol,
+    ImportSourceFormat, ImportTargetArg, ReleaseArgs, ReleaseCommand, ReleaseProfileArg,
+    RulesetArgs, ValidateArgs, ValidationInputFormat, ValidationProtocol,
 };
 use clap::error::ErrorKind;
 use context::ExecutionContext;
@@ -26,6 +26,10 @@ use tidas_export::{ExportError, ExportFormat, ExportRequest, S3Config, SecretStr
 use tidas_import::{
     ImportCoreError, ImportExecutionError, ImportRequest, ImportTarget, PackageWriteError,
     SourceFormat, run_import,
+};
+use tidas_release::{
+    RELEASE_REPORT_SCHEMA_V1, ReleaseError, ReleaseProfile, ReleaseRequest, ReleaseRuntime,
+    run_release,
 };
 use tidas_rulesets::{RulesetCatalog, RulesetError};
 use tidas_runtime::RuntimeError;
@@ -104,15 +108,191 @@ fn dispatch(command: Commands, execution: &ExecutionContext) -> OperationReportV
         Commands::Import(arguments) => import_report(&arguments, execution),
         Commands::Export(arguments) => export_report(&arguments, execution),
         Commands::Validate(arguments) => validation_report(&arguments, execution),
+        Commands::Release(arguments) => release_report(&arguments, execution),
         Commands::Ruleset(arguments) => ruleset_report(&arguments),
         Commands::Version => version_report(execution),
-        release @ Commands::Release => OperationReportV1::unavailable(
-            release.name(),
-            format!(
-                "Follow the `{}` Rust migration child Issue linked from tidas-tools#117.",
-                release.name().as_str()
+    }
+}
+
+fn release_report(arguments: &ReleaseArgs, execution: &ExecutionContext) -> OperationReportV1 {
+    let request = match &arguments.action {
+        ReleaseCommand::BuildPackages(arguments) => ReleaseRequest::BuildPackages {
+            tidas_dir: arguments.tidas_dir.clone(),
+            dataset_index: arguments.dataset_index.clone(),
+            output_dir: arguments.output_dir.clone(),
+        },
+        ReleaseCommand::ConvertIlcd(arguments) => ReleaseRequest::ConvertIlcd {
+            input_dir: arguments.input_dir.clone(),
+            output_dir: arguments.output_dir.clone(),
+        },
+        ReleaseCommand::SemanticRoundtrip(arguments) => ReleaseRequest::SemanticRoundtrip {
+            tidas_dir: arguments.tidas_dir.clone(),
+            ilcd_dir: arguments.ilcd_dir.clone(),
+        },
+        ReleaseCommand::ValidateClosure(arguments) => ReleaseRequest::ValidateClosure {
+            input_dir: arguments.input_dir.clone(),
+            dataset_index: arguments.dataset_index.clone(),
+            profile: match arguments.profile {
+                ReleaseProfileArg::UnitProcess => ReleaseProfile::UnitProcess,
+                ReleaseProfileArg::StandaloneResult => ReleaseProfile::StandaloneResult,
+            },
+        },
+        ReleaseCommand::ValidateIlcd(arguments) => ReleaseRequest::ValidateIlcd {
+            input_dir: arguments.input_dir.clone(),
+        },
+        ReleaseCommand::ValidateTidas(arguments) => ReleaseRequest::ValidateTidas {
+            input_dir: arguments.input_dir.clone(),
+        },
+    };
+    let runtime = ReleaseRuntime {
+        cancellation: execution.cancellation.clone(),
+        memory_budget: execution.memory_budget.clone(),
+        queue_capacity: execution.invocation.queue_capacity,
+    };
+    match run_release(&request, &runtime) {
+        Ok(release) => completed_release_report(release),
+        Err(error)
+            if matches!(
+                runtime_error_in_chain(&error),
+                Some(RuntimeError::Cancelled)
+            ) =>
+        {
+            OperationReportV1::cancelled(CommandNameV1::Release)
+        }
+        Err(error) => failed_release_report(&error),
+    }
+}
+
+fn completed_release_report(release: tidas_release::ReleaseReportV1) -> OperationReportV1 {
+    let has_issues = !release.ok;
+    let artifacts = release
+        .build
+        .as_ref()
+        .map(|build| build.packages.clone())
+        .unwrap_or_default();
+    let value = match serde_json::to_value(release) {
+        Ok(value) => value,
+        Err(error) => {
+            return OperationReportV1::failed(
+                CommandNameV1::Release,
+                ExitClass::Internal,
+                "release_summary_serialization_failed",
+                error.to_string(),
+            );
+        }
+    };
+    let mut report = if has_issues {
+        OperationReportV1::completed_with_issues(
+            CommandNameV1::Release,
+            DiagnosticV1::new(
+                "release_data_issues",
+                "The native release action completed and found data issues.",
             ),
-        ),
+        )
+    } else {
+        OperationReportV1::succeeded(CommandNameV1::Release)
+    };
+    report.summary.insert("release".to_owned(), value);
+    report
+        .artifacts
+        .extend(artifacts.into_iter().map(|package| ArtifactRefV1 {
+            path: package.artifact.path,
+            media_type: package.artifact.media_type,
+            sha256: Some(package.artifact.sha256),
+            bytes: Some(package.artifact.bytes),
+        }));
+    report
+}
+
+fn failed_release_report(error: &ReleaseError) -> OperationReportV1 {
+    let (exit_class, code) = match error {
+        ReleaseError::ZeroQueueCapacity | ReleaseError::OutputInsideInput(_) => {
+            (ExitClass::Usage, "invalid_release_request")
+        }
+        ReleaseError::DatasetIndexInvalid(_)
+        | ReleaseError::DatasetIndexSchemaUnsupported(_)
+        | ReleaseError::DatasetIndexEmpty
+        | ReleaseError::DuplicateDatasetIdentity(_)
+        | ReleaseError::DuplicateDatasetPath(_)
+        | ReleaseError::DatasetFileMissing(_)
+        | ReleaseError::DatasetFileHashMismatch(_)
+        | ReleaseError::ProfileRootsMissing(_)
+        | ReleaseError::ReferenceVersionMissing(_)
+        | ReleaseError::ReferenceClosureMissing(_)
+        | ReleaseError::StandaloneMissingUnitClosure(_)
+        | ReleaseError::DatasetJson { .. }
+        | ReleaseError::ValidationIssues(_)
+        | ReleaseError::SemanticRoundtripIssues { .. } => {
+            (ExitClass::DataIssues, "release_input_invalid")
+        }
+        ReleaseError::InputNotDirectory(_)
+        | ReleaseError::OutputNotDirectory(_)
+        | ReleaseError::CommitRollback { .. }
+        | ReleaseError::Zip(_)
+        | ReleaseError::Walk(_)
+        | ReleaseError::Io(_) => (ExitClass::Io, "release_io_failed"),
+        ReleaseError::Runtime(RuntimeError::BudgetExceeded { .. }) => {
+            (ExitClass::Internal, "memory_budget_exceeded")
+        }
+        ReleaseError::Runtime(_)
+        | ReleaseError::DuplicateArchiveMember(_)
+        | ReleaseError::OrderingSchemaMissing(_)
+        | ReleaseError::OrderingSchemaReference(_)
+        | ReleaseError::OrderingSchemaCycle(_)
+        | ReleaseError::InvalidGeneratedPath
+        | ReleaseError::SizeOverflow
+        | ReleaseError::Validation(_)
+        | ReleaseError::Asset(_)
+        | ReleaseError::Json(_) => (ExitClass::Internal, "release_runtime_failed"),
+        ReleaseError::Conversion(error) => classify_release_conversion_error(error),
+        ReleaseError::UnsafePath(_)
+        | ReleaseError::PathOutsideRoot(_)
+        | ReleaseError::Symlink(_) => (ExitClass::DataIssues, "release_input_invalid"),
+    };
+    OperationReportV1::failed(CommandNameV1::Release, exit_class, code, error.to_string())
+}
+
+fn classify_release_conversion_error(error: &ConversionError) -> (ExitClass, &'static str) {
+    match error {
+        ConversionError::OutputInsideInput(_) | ConversionError::ZeroQueueCapacity => {
+            (ExitClass::Usage, "invalid_release_request")
+        }
+        ConversionError::InputNotDirectory(_)
+        | ConversionError::OutputNotDirectory(_)
+        | ConversionError::InvalidOutput(_)
+        | ConversionError::SourceChanged(_)
+        | ConversionError::CommitRollback { .. }
+        | ConversionError::Io(_)
+        | ConversionError::Walk(_) => (ExitClass::Io, "release_io_failed"),
+        ConversionError::JsonRootNotObject
+        | ConversionError::JsonRootCount(_)
+        | ConversionError::MissingDatasetRoot { .. }
+        | ConversionError::InvalidEnvelope(_)
+        | ConversionError::OrphanEnvelopeSidecar(_)
+        | ConversionError::EnvelopeKeyCollision { .. }
+        | ConversionError::InvalidXmlName(_)
+        | ConversionError::InvalidXmlCharacter(_)
+        | ConversionError::NonScalarText
+        | ConversionError::TextOutsideRoot
+        | ConversionError::MultipleRoots
+        | ConversionError::MissingRoot
+        | ConversionError::UnmatchedEnd
+        | ConversionError::UnclosedElements
+        | ConversionError::DoctypeForbidden
+        | ConversionError::Symlink(_)
+        | ConversionError::Json(_)
+        | ConversionError::Xml(_)
+        | ConversionError::Attribute(_)
+        | ConversionError::Encoding(_)
+        | ConversionError::Escape(_) => (ExitClass::DataIssues, "release_input_invalid"),
+        ConversionError::Runtime(RuntimeError::BudgetExceeded { .. }) => {
+            (ExitClass::Internal, "memory_budget_exceeded")
+        }
+        ConversionError::Runtime(_)
+        | ConversionError::PathOutsideInput(_)
+        | ConversionError::NonPortablePath(_)
+        | ConversionError::SizeOverflow
+        | ConversionError::Asset(_) => (ExitClass::Internal, "release_runtime_failed"),
     }
 }
 
@@ -860,6 +1040,10 @@ fn version_report(execution: &ExecutionContext) -> OperationReportV1 {
     report.summary.insert(
         "invocation_context_schema".to_owned(),
         serde_json::json!(INVOCATION_CONTEXT_SCHEMA_V1),
+    );
+    report.summary.insert(
+        "release_report_schema".to_owned(),
+        serde_json::json!(RELEASE_REPORT_SCHEMA_V1),
     );
     report
         .summary

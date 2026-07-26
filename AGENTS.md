@@ -38,8 +38,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: d5cd7fd
-lastReviewedNote: "Reviewed for Issue #123: native export remains inside tidas-tools, uses reusable Rust domain logic plus the thin unified CLI, and does not change asset, SDK-dispatch, or workspace ownership boundaries."
+lastReviewedCommit: 9908cab
+lastReviewedNote: "Reviewed for Issue #124: native release control is owned by tidas-release behind the thin unified CLI; frozen Python remains parity evidence only."
 related:
   - .docpact/config.yaml
   - docs/agents/cli-contract.md
@@ -133,13 +133,14 @@ At a human-readable level, this repo owns:
 - the Cargo workspace and final `tidas` binary under `Cargo.toml` and `crates/**`
 - native bidirectional conversion, deterministic envelope sidecars, atomic publication, and `tidas.conversion-report.v1` under `crates/tidas-conversion`, `contracts/conversion-report.v1.schema.json`, and `tests/fixtures/conversion_v1/**`
 - native external-format detection/import, disk-backed canonicalization, deterministic TIDAS/ILCD publication, process bundles, mapping CSV, and import reports under `crates/tidas-import` and `contracts/import-*.v1.schema.json`
+- native exact release closure, schema-ordered ILCD derivation, validation and semantic round-trip gates, and four deterministic package publication under `crates/tidas-release` and `contracts/release-report.v1.schema.json`
 - stable machine contracts under `contracts/**`
 - the complete executable asset inventory in `assets/asset-lock.v1.json`
 - the Python-to-Rust owner inventory under `migration/**`
 - standalone CLI behavior in `src/tidas_tools/convert.py`, `src/tidas_tools/import_lca/**`, `src/tidas_tools/validate.py`, and `src/tidas_tools/export.py`
 - deterministic `document-validation-batch.v1` streaming validation and reproducibility handshake in `src/tidas_tools/validation_batch.py`
 - the active pure `ReferenceExtractionResultV1` / `ReferenceEdgeV1` contract in `crates/tidas-references`, checked-in machine schema under `contracts/**`, and frozen Python golden oracle in `src/tidas_tools/reference_extraction.py` plus `tests/fixtures/reference_extraction_v1/**`
-- deterministic release-profile closure, TIDAS/ILCD conversion, semantic round-trip, and byte-stable ZIP behavior in `src/tidas_tools/release.py`
+- the frozen release parity oracle in `src/tidas_tools/release.py`; active release behavior belongs to `crates/tidas-release`
 - validation report and version/export helpers in `src/tidas_tools/validation_report.py` and `src/tidas_tools/package_versions.py`
 - validator-private projection indexes under `src/tidas_tools/validation_indexes/**`
 - packaged TIDAS schemas and methodologies under `src/tidas_tools/tidas/**`

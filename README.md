@@ -16,9 +16,9 @@ release, and ruleset behavior to one cross-platform Rust executable named
 The current Rust implementation establishes the Cargo workspace, stable
 machine and invocation contracts, bounded runtime primitives, executable-asset
 integrity lock, XML/XSD/XSLT portability boundary, the unified CLI adapter,
-and native TIDAS/ILCD validation, reference extraction, batch evidence, and
-ruleset inspection, bidirectional TIDAS/eILCD conversion, and external-format
-import:
+and native TIDAS/ILCD validation, reference extraction, batch evidence,
+ruleset inspection, bidirectional TIDAS/eILCD conversion, external-format
+import, database export, and deterministic release control:
 
 ```bash
 cargo build --workspace
@@ -36,14 +36,17 @@ cargo run -p tidas-cli --bin tidas -- validate <package-dir> \
   --issues <issues.jsonl> --format json
 cargo run -p tidas-cli --bin tidas -- validate <ilcd-dir> \
   --input-format ilcd-xml --issues <issues.jsonl> --format json
+cargo run -p tidas-cli --bin tidas -- release build-packages \
+  --tidas-dir <canonical-tidas-dir> \
+  --dataset-index <canonical-dataset-index.json> \
+  --output-dir <release-dir> --format json
 cargo run -p tidas-cli --bin tidas -- ruleset --format json
 cargo run -p tidas-cli --bin tidas -- --completion bash > tidas.bash
 cargo run -p tidas-assets --bin tidas-asset-lock -- check
 ```
 
 The final command tree is `convert`, `import`, `export`, `validate`, `release`,
-`ruleset`, and `version`. Every path except `release` is functional.
-`release` fails explicitly with exit class `unavailable`/code `69` and never
+`ruleset`, and `version`. All seven commands are implemented in Rust and none
 invokes Python.
 
 Native import accepts EcoSpold 1/2, SimaPro CSV, openLCA JSON-LD, openLCA
@@ -203,21 +206,25 @@ tidas-import --input <source_file_or_dir> --output-dir <output_directory> --writ
 
 ## 4. Deterministic TIDAS/ILCD Release Packaging
 
-`tidas-release-tool` consumes a finalized canonical TIDAS dataset tree plus its `tiangong.release.canonical-dataset-index.v1`. It never assigns UUIDs or versions. The tool validates exact transitive references, converts and validates ILCD, checks normalized semantic round-trip, and builds the two self-contained release profiles with byte-stable ZIP metadata.
+`tidas release` consumes a finalized canonical TIDAS dataset tree plus its `tiangong.release.canonical-dataset-index.v1`. It never assigns UUIDs or versions. The reusable Rust release domain validates exact transitive references, derives and validates schema-ordered ILCD, checks normalized semantic round-trip, and builds the two self-contained release profiles with byte-stable ZIP metadata.
 
 ```bash
-tidas-release-tool validate-tidas --input-dir <canonical-tidas-dir>
-tidas-release-tool convert-ilcd --input-dir <canonical-tidas-dir> --output-dir <ilcd-dir>
-tidas-release-tool validate-ilcd --input-dir <ilcd-dir>
-tidas-release-tool semantic-roundtrip --tidas-dir <canonical-tidas-dir> --ilcd-dir <ilcd-dir>
-tidas-release-tool build-packages \
-  --tidas-dir <canonical-tidas-dir> \
-  --ilcd-dir <ilcd-dir> \
+tidas release validate-tidas --input-dir <canonical-tidas-dir>
+tidas release convert-ilcd --input-dir <canonical-tidas-dir> --output-dir <ilcd-dir>
+tidas release validate-ilcd --input-dir <ilcd-dir>
+tidas release semantic-roundtrip --tidas-dir <canonical-tidas-dir> --ilcd-dir <ilcd-dir>
+tidas release validate-closure \
+  --input-dir <canonical-tidas-dir> \
   --dataset-index <canonical-dataset-index.json> \
-  --output-dir <package-dir>
+  --profile unit-process-full-closure.v1
+tidas release build-packages \
+  --tidas-dir <canonical-tidas-dir> \
+  --dataset-index <canonical-dataset-index.json> \
+  --output-dir <package-dir> \
+  --format json
 ```
 
-The package command emits canonical TIDAS and derived ILCD variants for `unit-process-full-closure.v1` and `standalone-lifecyclemodel-result-full-closure.v1`. Missing UUID/version references fail closed. JSON stdout is stable machine output; `--report <path>` also persists the same result.
+The package command runs all native validation, conversion, closure, containment, and round-trip gates before atomically publishing exactly four archives: canonical TIDAS and derived ILCD variants for `unit-process-full-closure.v1` and `standalone-lifecyclemodel-result-full-closure.v1`. Missing UUID/version references fail closed. Members are sorted with fixed timestamps and permissions. JSON stdout conforms to `tidas.release-report.v1`; `--report <path>` atomically persists the same operation report instead.
 
 ---
 

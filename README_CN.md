@@ -24,8 +24,8 @@ checkPaths:
   - src/tidas_tools/**
   - .github/workflows/**
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: d5cd7fd
-lastReviewedNote: "Issue #123 将原生数据库/S3 导出、确定性 ZIP、凭据脱敏与本地验证命令写入当前用户指南。"
+lastReviewedCommit: 9908cab
+lastReviewedNote: "Issue #124 将原生 release action tree、精确闭包、语义 round-trip 与原子四包发布写入当前用户指南。"
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -51,7 +51,7 @@ Rust 可执行文件 `tidas`。
 当前 Rust 实现已经建立 Cargo workspace、稳定机器与 invocation 契约、有界运行时
 基础设施、可执行资产完整性锁、XML/XSD/XSLT 跨平台边界、最终统一 CLI 适配层，
 以及原生 TIDAS/ILCD 校验、引用提取、batch 证据、ruleset 检查、双向
-TIDAS/eILCD 转换与外部格式导入：
+TIDAS/eILCD 转换、外部格式导入、数据库导出与确定性 release control：
 
 ```bash
 cargo build --workspace
@@ -69,14 +69,17 @@ cargo run -p tidas-cli --bin tidas -- validate <数据包目录> \
   --issues <issues.jsonl> --format json
 cargo run -p tidas-cli --bin tidas -- validate <ILCD目录> \
   --input-format ilcd-xml --issues <issues.jsonl> --format json
+cargo run -p tidas-cli --bin tidas -- release build-packages \
+  --tidas-dir <canonical-TIDAS目录> \
+  --dataset-index <canonical-dataset-index.json> \
+  --output-dir <release目录> --format json
 cargo run -p tidas-cli --bin tidas -- ruleset --format json
 cargo run -p tidas-cli --bin tidas -- --completion bash > tidas.bash
 cargo run -p tidas-assets --bin tidas-asset-lock -- check
 ```
 
 最终命令树固定为 `convert`、`import`、`export`、`validate`、`release`、
-`ruleset` 和 `version`。除 `release` 外均已可用；`release` 会明确返回
-`unavailable`（退出码 `69`），绝不调用 Python 回退。
+`ruleset` 和 `version`。七个命令均已由 Rust 实现，且都不会调用 Python。
 
 原生导入支持 EcoSpold 1/2、SimaPro CSV、openLCA JSON-LD、openLCA process
 XLSX 与 ILCD 文件、目录或 ZIP 包。默认通过有界签名检测源格式，也可使用
@@ -217,21 +220,25 @@ tidas-import --input <源文件或目录> --output-dir <输出目录> --write-ma
 
 ## 四、确定性 TIDAS/ILCD Release 打包
 
-`tidas-release-tool` 消费已经完成 UUID/version 决策的 canonical TIDAS 数据树和 `tiangong.release.canonical-dataset-index.v1`，自身不分配 UUID 或版本。它负责精确引用闭包、ILCD 转换与验证、归一化语义 round-trip，以及固定 ZIP 成员顺序、时间和权限的确定性打包。
+`tidas release` 消费已经完成 UUID/version 决策的 canonical TIDAS 数据树和 `tiangong.release.canonical-dataset-index.v1`，自身不分配 UUID 或版本。可复用的 Rust release domain 负责精确引用闭包、schema-order ILCD 派生与验证、归一化语义 round-trip，以及固定 ZIP 成员顺序、时间和权限的确定性打包。
 
 ```bash
-tidas-release-tool validate-tidas --input-dir <canonical-tidas目录>
-tidas-release-tool convert-ilcd --input-dir <canonical-tidas目录> --output-dir <ilcd目录>
-tidas-release-tool validate-ilcd --input-dir <ilcd目录>
-tidas-release-tool semantic-roundtrip --tidas-dir <canonical-tidas目录> --ilcd-dir <ilcd目录>
-tidas-release-tool build-packages \
-  --tidas-dir <canonical-tidas目录> \
-  --ilcd-dir <ilcd目录> \
+tidas release validate-tidas --input-dir <canonical-tidas目录>
+tidas release convert-ilcd --input-dir <canonical-tidas目录> --output-dir <ilcd目录>
+tidas release validate-ilcd --input-dir <ilcd目录>
+tidas release semantic-roundtrip --tidas-dir <canonical-tidas目录> --ilcd-dir <ilcd目录>
+tidas release validate-closure \
+  --input-dir <canonical-tidas目录> \
   --dataset-index <canonical-dataset-index.json> \
-  --output-dir <发布包目录>
+  --profile unit-process-full-closure.v1
+tidas release build-packages \
+  --tidas-dir <canonical-tidas目录> \
+  --dataset-index <canonical-dataset-index.json> \
+  --output-dir <发布包目录> \
+  --format json
 ```
 
-打包命令分别为 `unit-process-full-closure.v1` 与 `standalone-lifecyclemodel-result-full-closure.v1` 生成 canonical TIDAS 和派生 ILCD 变体。缺少精确 UUID/version 引用时会 fail closed。stdout 为稳定 JSON；可用 `--report <路径>` 同时保存报告。
+打包命令先完成全部原生校验、转换、闭包包含关系和 round-trip 门禁，再原子发布恰好四个 archive：分别为 `unit-process-full-closure.v1` 与 `standalone-lifecyclemodel-result-full-closure.v1` 的 canonical TIDAS 和派生 ILCD 变体。缺少精确 UUID/version 引用时会 fail closed；ZIP 成员按固定顺序、时间和权限写入。stdout JSON 符合 `tidas.release-report.v1`；可用 `--report <路径>` 原子保存同一 operation report。
 
 ---
 
