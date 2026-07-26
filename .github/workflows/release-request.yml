@@ -1,0 +1,160 @@
+name: Release Request
+
+on:
+  pull_request:
+    paths:
+      - .github/releases/**
+      - scripts/test-release-request.sh
+      - scripts/validate-release-request.sh
+      - .github/workflows/release-request.yml
+  push:
+    branches:
+      - main
+    paths:
+      - .github/releases/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-request-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate immutable release request
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    outputs:
+      request_present: ${{ steps.request.outputs.request_present }}
+      release_tag: ${{ steps.request.outputs.release_tag }}
+      target_sha: ${{ steps.request.outputs.target_sha }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Validate request diff and exact target
+        id: request
+        shell: bash
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            base="$PR_BASE_SHA"
+            head="$PR_HEAD_SHA"
+            required=false
+          else
+            base="$BEFORE_SHA"
+            head="$GITHUB_SHA"
+            required=true
+          fi
+
+          changes=()
+          mapfile -t changes < <(
+            git diff --name-status "$base" "$head" -- .github/releases/
+          )
+          if (( ${#changes[@]} == 0 )); then
+            if [[ "$required" == "true" ]]; then
+              echo "::error::a release-triggering main push must add one request"
+              exit 1
+            fi
+            echo "request_present=false" >> "$GITHUB_OUTPUT"
+            echo "No release request changed; workflow-only validation is complete."
+            exit 0
+          fi
+          if (( ${#changes[@]} != 1 )); then
+            echo "::error::a release change must add exactly one immutable request file"
+            printf '%s\n' "${changes[@]}"
+            exit 1
+          fi
+
+          IFS=$'\t' read -r status path extra <<<"${changes[0]}"
+          if [[ "$status" != "A" || -n "${extra:-}" ]]; then
+            echo "::error::release requests are append-only and cannot be modified, renamed, or deleted"
+            exit 1
+          fi
+          if [[ ! "$path" =~ ^\.github/releases/v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?\.json$ ]]; then
+            echo "::error::invalid release request path: $path"
+            exit 1
+          fi
+
+          context="$(./scripts/validate-release-request.sh "$path" "$head")"
+          {
+            echo "request_present=true"
+            echo "release_tag=$(jq -r '.tag' <<<"$context")"
+            echo "target_sha=$(jq -r '.target' <<<"$context")"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Exercise tamper rejection
+        run: ./scripts/test-release-request.sh
+
+  authorize:
+    name: Authorize tag and dispatch exact release
+    needs: validate
+    if: >-
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main' &&
+      needs.validate.outputs.request_present == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: write
+      contents: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Refuse an already-published release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.validate.outputs.release_tag }}
+        run: |
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "::error::release $RELEASE_TAG already exists and is immutable"
+            exit 1
+          fi
+
+      - name: Create or verify the lightweight tag
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ needs.validate.outputs.release_tag }}
+          TARGET_SHA: ${{ needs.validate.outputs.target_sha }}
+        run: |
+          set -euo pipefail
+          remote_tag="$(
+            git ls-remote --refs --tags origin "refs/tags/$RELEASE_TAG" |
+              awk 'NR == 1 { print $1 }'
+          )"
+          if [[ -n "$remote_tag" ]]; then
+            git fetch --force origin "refs/tags/$RELEASE_TAG:refs/tags/$RELEASE_TAG"
+            existing="$(git rev-parse "refs/tags/$RELEASE_TAG^{commit}")"
+            if [[ "$existing" != "$TARGET_SHA" ]]; then
+              echo "::error::existing $RELEASE_TAG points to $existing, expected $TARGET_SHA"
+              exit 1
+            fi
+            echo "$RELEASE_TAG already points to the requested target."
+          else
+            git push origin "$TARGET_SHA:refs/tags/$RELEASE_TAG"
+          fi
+
+      - name: Dispatch the release workflow at the tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.validate.outputs.release_tag }}
+        run: |
+          gh workflow run rust-release.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref "$RELEASE_TAG"
+          {
+            echo "### Release dispatched"
+            echo
+            echo "The native release workflow was dispatched at \`$RELEASE_TAG\`."
+            echo "Its workflow context is therefore bound to the tagged source commit."
+          } >> "$GITHUB_STEP_SUMMARY"

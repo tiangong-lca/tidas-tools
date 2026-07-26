@@ -26,10 +26,12 @@ checkPaths:
   - .github/workflows/**
   - scripts/install.*
   - scripts/publish-crates.sh
+  - scripts/test-release-request.sh
+  - scripts/validate-release-request.sh
   - scripts/sync-rust-package-assets.sh
 lastReviewedAt: 2026-07-26
 lastReviewedCommit: eed5ed2
-lastReviewedNote: "Issue #136 增加 cargo install tidas 源码安装渠道，并在不可变 GitHub Release 前协调发布完整 crates.io crate 集合。"
+lastReviewedNote: "Issue #138 将经过评审、只追加的 Release Request PR 设为精确 native tag 与 release dispatch 的授权入口。"
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -143,7 +145,13 @@ cargo install tidas --version 0.1.0 --locked
 全部公开 workspace crates 使用完全相同的精确版本，避免 Cargo 混用不兼容的领域
 release；`tidas-dist` 始终是仓库内部 release tooling，不会发布。Pull request 会在
 无凭据条件下执行完整 multi-package `cargo package` 验证与 crates.io dry-run；
-只有 tag 发布 job 能读取 `CARGO_REGISTRY_TOKEN`。
+只有 tag context 下的 release workflow 能读取 `CARGO_REGISTRY_TOKEN`。
+
+原生版本通过评审并合并一个只追加的
+`.github/releases/v<version>.json` 来授权；该请求把版本绑定到完整 commit SHA。
+Pull request 阶段只有只读、无 secret 的校验。合并 job 创建或验证精确 lightweight
+tag，再显式从该 tag dispatch 原生 release workflow，使 artifact provenance
+绑定到实际发布的源码 commit，而不是请求 PR 的 merge commit。
 
 原生版本发布后，可安装明确且不可变的版本：
 
@@ -476,20 +484,12 @@ uv run python src/tidas_tools/validate.py -i <eILCD数据目录> --data-format i
 
 ---
 
-## 十、自动构建构建并发布（CI/CD）
+## 十、Release 授权与 SDK Dispatch
 
-本项目支持自动构建和发布，当您向 git 仓库推送以 `v版本号` 命名的 tag 时，会自动触发。例如：
-
-```bash
-# 列出已有的 tag
-git tag
-
-# 创建新 tag（例如版本 v0.0.1）
-git tag v0.0.1
-
-# 将新创建的 tag 推送到远程仓库，触发自动构建和发布
-git push origin v0.0.1
-```
+维护者通过经过评审的 Release Request PR 发布原生版本。只追加的请求文件声明版本
+并固定完整源码 commit；合并该 PR 就是不可逆的发布授权。自动化随后创建匹配 tag，
+并从该 tag dispatch 完整 crates.io 与五平台 GitHub Release workflow。手工向
+canonical 仓库推 tag 只保留为恢复路径，不是普通贡献者的发布方式。
 
 当 `main` 上的 schema 或 methodology 路径变化时，`.github/workflows/dispatch-tidas-sdk-sync.yml` 也可以触发 `tiangong-lca/tidas-sdk` 的下游 SDK 同步。
 
