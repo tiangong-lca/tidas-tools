@@ -34,8 +34,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: a081878
-lastReviewedNote: "Issue #122 adds Windows proof for canonical file replacement while retaining the frozen six-adapter matrix, exit-class, atomicity, and benchmark gates."
+lastReviewedCommit: 812f9f4
+lastReviewedNote: "Issue #122 adds Windows proof for canonical replacement and bundle handle closure while retaining the frozen six-adapter matrix, exit-class, atomicity, and benchmark gates."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml

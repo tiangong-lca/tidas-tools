@@ -70,6 +70,7 @@ pub fn write_process_bundles(
             &mut aggregate_writer,
         )?;
         unresolved.flush()?;
+        drop(unresolved);
         unresolved_count = unresolved_count
             .checked_add(process_unresolved)
             .ok_or(ProcessBundleError::SizeOverflow)?;
@@ -99,10 +100,12 @@ pub fn write_process_bundles(
             .ok_or(ProcessBundleError::SizeOverflow)?;
     }
     aggregate_writer.flush()?;
+    drop(aggregate_writer);
     index.write_all(br#"],"unresolved_references":["#)?;
     stream_jsonl_array(&mut index, &aggregate_unresolved)?;
     index.write_all(b"]}\n")?;
     index.flush()?;
+    drop(index);
     fs::remove_file(aggregate_unresolved)?;
     request.cancellation.check()?;
     staging.commit()?;

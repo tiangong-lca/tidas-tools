@@ -32,8 +32,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: a081878
-lastReviewedNote: "Issue #122 keeps canonical import spools disk-backed and makes file replacement rollback-safe across Unix and Windows."
+lastReviewedCommit: 812f9f4
+lastReviewedNote: "Issue #122 keeps canonical import spools disk-backed, makes replacement rollback-safe, and closes bundle writers before atomic publication across Unix and Windows."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml

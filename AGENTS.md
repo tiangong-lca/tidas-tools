@@ -38,8 +38,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: a081878
-lastReviewedNote: "Reviewed for Issue #122 Windows import CI hardening: canonical spool replacement is rollback-safe without relying on rename-over-existing semantics; product and CLI contracts are unchanged."
+lastReviewedCommit: 812f9f4
+lastReviewedNote: "Reviewed for Issue #122 Windows import CI hardening: canonical replacement is rollback-safe and bundle writers close handles before atomic publication; product and CLI contracts are unchanged."
 related:
   - .docpact/config.yaml
   - docs/agents/cli-contract.md
