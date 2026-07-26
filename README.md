@@ -30,6 +30,8 @@ cargo run -p tidas-cli --bin tidas -- convert <eilcd-data-dir> \
   --output <tidas-package-dir> --to tidas --format json
 cargo run -p tidas-cli --bin tidas -- import <source-file-or-dir> \
   --output <import-output-dir> --target both --write-mapping --format json
+cargo run -p tidas-cli --bin tidas -- export \
+  --output <package.zip> --skip-external-docs --format json
 cargo run -p tidas-cli --bin tidas -- validate <package-dir> \
   --issues <issues.jsonl> --format json
 cargo run -p tidas-cli --bin tidas -- validate <ilcd-dir> \
@@ -40,10 +42,9 @@ cargo run -p tidas-assets --bin tidas-asset-lock -- check
 ```
 
 The final command tree is `convert`, `import`, `export`, `validate`, `release`,
-`ruleset`, and `version`. `convert`, `import`, `version`, `validate`, and
-`ruleset` are functional. The remaining `export` and `release` paths fail
-explicitly with exit class
-`unavailable`/code `69` and never invoke Python.
+`ruleset`, and `version`. Every path except `release` is functional.
+`release` fails explicitly with exit class `unavailable`/code `69` and never
+invokes Python.
 
 Native import accepts EcoSpold 1/2, SimaPro CSV, openLCA JSON-LD, openLCA
 process XLSX, and ILCD files, directories, or ZIP packages. It detects the
@@ -62,6 +63,14 @@ top-level extension metadata use deterministic `.tidas-envelope.json`
 sidecars so eILCD remains single-root XML and the reverse conversion restores
 the original envelope. Traversal rejects symlinks and XML 1.0-invalid
 characters; repeated successful runs report the same output-tree SHA-256.
+
+Native export reads active PostgreSQL records from one repeatable-read,
+read-only snapshot, streams them through a bounded queue, normalizes TIDAS
+package versions, optionally streams S3-compatible external documents, and
+publishes one deterministic ZIP atomically. Set `TIDAS_DATABASE_URL`; storage
+credentials are accepted only through `TIDAS_S3_ACCESS_KEY_ID`,
+`TIDAS_S3_SECRET_ACCESS_KEY`, and optional `TIDAS_S3_SESSION_TOKEN`. Credential
+values never appear in reports or diagnostics.
 
 Native validation resolves only embedded integrity-locked schemas. Complete
 issues can be written atomically as deterministic JSONL with `--issues`; the

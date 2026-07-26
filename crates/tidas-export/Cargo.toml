@@ -1,0 +1,32 @@
+[package]
+name = "tidas-export"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+futures-util.workspace = true
+object_store.workspace = true
+regex.workspace = true
+serde.workspace = true
+serde_json = { workspace = true, features = ["preserve_order"] }
+sha2.workspace = true
+tempfile.workspace = true
+thiserror.workspace = true
+tidas-conversion = { path = "../tidas-conversion" }
+tidas-runtime = { path = "../tidas-runtime" }
+tokio.workspace = true
+tokio-postgres.workspace = true
+tokio-postgres-rustls.workspace = true
+uuid.workspace = true
+walkdir.workspace = true
+zip.workspace = true
+
+[dev-dependencies]
+jsonschema.workspace = true
+
+[lints]
+workspace = true
