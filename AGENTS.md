@@ -41,10 +41,12 @@ checkPaths:
   - scripts/install.sh
   - scripts/install.ps1
   - scripts/publish-crates.sh
+  - scripts/test-release-request.sh
+  - scripts/validate-release-request.sh
   - scripts/sync-rust-package-assets.sh
 lastReviewedAt: 2026-07-26
 lastReviewedCommit: eed5ed2
-lastReviewedNote: "Reviewed for Issue #136: package tidas and reusable domain crates publish together to crates.io; tidas-dist remains internal and GitHub Release waits for registry success."
+lastReviewedNote: "Reviewed for Issue #138: an append-only Release Request PR authorizes the exact native tag, then explicitly dispatches the existing release workflow at that tag."
 related:
   - .docpact/config.yaml
   - docs/agents/cli-contract.md
@@ -134,8 +136,17 @@ Keep these entry-level facts in `AGENTS.md`. Use `README.md`, `README_CN.md`, an
   - `uv run python src/tidas_tools/export.py --help`
   - `uv run python -m tidas_tools.release --help`
 - release tag pattern: `v<version>`
+- native release request pattern: `.github/releases/v<version>.json`, containing
+  exactly the release schema, workspace version, and full target commit
+- pull requests validate release requests without write permissions or secrets;
+  merging an append-only request to `main` creates or verifies the exact
+  lightweight tag and explicitly dispatches `.github/workflows/rust-release.yml`
+  at that tag so provenance is bound to the released commit
+- request validation rejects version, target, ancestry, filename, request-diff,
+  existing-tag, and existing-release mismatches before external publication
 - canonical `main` branch pushes whose `pyproject.toml` project version changed create the matching `v<version>` tag when missing, run the release gate, test on the release matrix, and publish to PyPI in the same workflow run
-- manual `v*` tag pushes and `workflow_dispatch` runs for an existing `v*` tag whose target commit is already on `main` remain supported for recovery/backfill releases
+- manual `v*` tag pushes and `workflow_dispatch` at an existing `v*` tag whose
+  target commit is already on `main` remain native recovery/backfill paths
 
 ## Ownership Boundaries
 
@@ -198,7 +209,7 @@ Route those tasks to:
 - native libxml2/libxslt access is serialized until thread-safety is independently proved; production XSLT must fail closed on external resource resolution
 - native release archives must derive from one exact binary, use pinned static libxml2/libxslt inputs, carry fixed archive metadata and SHA-256, and pass packaged-binary smoke probes without a development toolchain
 - GitHub Release publication must be tag/version exact and refuse mutation of an existing release; Homebrew and Winget metadata must use the same archive checksums and must not rebuild the binary
-- public crates must be self-contained, exact-versioned as one release set, and package/dry-run clean; the tag job alone may read `CARGO_REGISTRY_TOKEN`
+- public crates must be self-contained, exact-versioned as one release set, and package/dry-run clean; only the tag-context release workflow may read `CARGO_REGISTRY_TOKEN`
 - crates.io publication must verify an existing version's archive checksum before a retry skips it, and the immutable GitHub Release must wait for the complete registry set
 - Python remains frozen until functional parity, deterministic contracts, local performance/RSS targets, cross-platform artifacts, and downstream cutovers all pass; then #126 removes every active Python implementation/install/invocation path
 - do not treat the public docs site as the executable upstream for packaged schemas and methodologies

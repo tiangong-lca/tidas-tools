@@ -20,11 +20,13 @@ checkPaths:
   - packaging/**
   - scripts/install.*
   - scripts/publish-crates.sh
+  - scripts/test-release-request.sh
+  - scripts/validate-release-request.sh
   - scripts/sync-rust-package-assets.sh
   - .github/workflows/**
 lastReviewedAt: 2026-07-26
 lastReviewedCommit: eed5ed2
-lastReviewedNote: "Issue #136 adds the cargo install tidas source channel and coordinated crates.io publication before the immutable GitHub Release."
+lastReviewedNote: "Issue #138 makes a reviewed append-only Release Request PR the authorization for an exact native tag and release dispatch."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -155,8 +157,15 @@ cargo install tidas --version 0.1.0 --locked
 All public workspace crates use the exact same version so Cargo cannot combine
 incompatible domain releases. `tidas-dist` remains repository-internal release
 tooling and is never published. Pull requests run a complete multi-package
-`cargo package` verification plus crates.io dry-run without credentials; tag
-publication alone receives `CARGO_REGISTRY_TOKEN`.
+`cargo package` verification plus crates.io dry-run without credentials; only
+the tag-context release workflow receives `CARGO_REGISTRY_TOKEN`.
+
+A native release is authorized by reviewing and merging one append-only
+`.github/releases/v<version>.json` request that binds the version to a full
+commit SHA. Pull-request validation is read-only and secret-free. The merge
+job creates or verifies that exact lightweight tag, then explicitly dispatches
+the native release workflow at the tag. This keeps artifact provenance bound
+to the released source commit rather than the request merge commit.
 
 After a native version is published, install an explicit immutable version:
 
@@ -500,20 +509,14 @@ uv run python src/tidas_tools/validate.py -i <eILCD_data_directory> --data-forma
 
 ---
 
-## 10. Automatic Building and Publishing (CI/CD)
+## 10. Release Authorization and SDK Dispatch
 
-This project supports automatic building and publishing. When you push a git tag named with the `v<version>` format to the repository, it will trigger the workflow automatically. For example:
-
-```bash
-# List existing tags
-git tag
-
-# Create a new tag (e.g., version v0.0.1)
-git tag v0.0.1
-
-# Push the newly created tag to the remote repository to trigger automatic workflow
-git push origin v0.0.1
-```
+Maintainers publish a native version through a reviewed Release Request PR.
+The request file is append-only, names the version, and pins the full source
+commit. Merging that PR is the irreversible release authorization: automation
+creates the matching tag and dispatches the complete crates.io and five-platform
+GitHub Release workflow at the tag. Manual canonical tag pushes remain a
+recovery path, not the normal contributor flow.
 
 Schema and methodology updates on `main` can also trigger a cross-repository SDK sync into `tiangong-lca/tidas-sdk` through `.github/workflows/dispatch-tidas-sdk-sync.yml`.
 

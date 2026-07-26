@@ -27,8 +27,8 @@ checkPaths:
   - README.md
   - README_CN.md
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: eed5ed2
-lastReviewedNote: "Reviewed for Issue #136 crates.io publication: package tidas installs the same single binary and does not change the seven-command, output, or exit contract."
+lastReviewedCommit: 9053f3bcdd1aa692c3ae56fbcda8566d373fccdc
+lastReviewedNote: "Reviewed for Issue #138 merge-gated v0.1.0 release authorization: release automation does not change the seven-command, output, or exit contract."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml

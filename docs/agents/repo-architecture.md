@@ -35,10 +35,12 @@ checkPaths:
   - scripts/install.sh
   - scripts/install.ps1
   - scripts/publish-crates.sh
+  - scripts/test-release-request.sh
+  - scripts/validate-release-request.sh
   - scripts/sync-rust-package-assets.sh
 lastReviewedAt: 2026-07-26
 lastReviewedCommit: eed5ed2
-lastReviewedNote: "Issue #136 makes package tidas and every reusable domain crate self-contained and adds checksum-safe coordinated crates.io publication ahead of GitHub Release."
+lastReviewedNote: "Issue #138 makes an append-only Release Request PR the reviewed authorization for an exact tag and tag-context release dispatch."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -269,6 +271,7 @@ Review note, 2026-07-17: Issue #112 remains inside the existing validation and r
 | `.github/workflows/ci.yml` | manual-dispatch remote reproduction of schema-lock and local tests |
 | `.github/workflows/dispatch-tidas-sdk-sync.yml` | downstream SDK refresh dispatch contract |
 | `.github/workflows/python-package-deploy.yml` | `main` version-bump and tag-driven PyPI publish workflow with a release test gate |
+| `.github/workflows/release-request.yml` | secret-free request review plus merge-only exact-tag creation and tag-context release dispatch |
 | `.github/workflows/rust-release.yml` | five-platform native artifact qualification, SPDX SBOM, GitHub OIDC attestations, clean runtime smoke, metadata validation, and immutable tag publication |
 
 ## Frozen Python oracle families
@@ -330,6 +333,13 @@ Foundry gates without moving gate execution logic into this repository.
 - `.github/workflows/rust-release.yml` builds Linux x86_64/ARM64, macOS
   Intel/Apple Silicon, and Windows x86_64 from one tag/commit and one pinned
   native dependency baseline
+- `.github/releases/v<version>.json` is an append-only release authorization:
+  it fixes the exact workspace version and full target commit; its pull request
+  has read-only validation and no publication credentials
+- merging a valid request to `main` creates or verifies its lightweight tag,
+  then uses the allowed `workflow_dispatch` exception at that tag; the native
+  release run therefore has the tagged commit as `GITHUB_SHA` and the tag as
+  `GITHUB_REF`, including its provenance claims
 - every platform archive is built twice and compared byte-for-byte, verified
   by its SHA-256 sidecar, smoke-tested after extraction, scanned into an SPDX
   SBOM, and attested through GitHub OIDC/Sigstore
@@ -338,8 +348,8 @@ Foundry gates without moving gate execution logic into this repository.
 - package `tidas` and all reusable domain crates publish as one exact-version
   crates.io set; `tidas-dist` remains unpublished repository tooling
 - pull requests verify every generated crate from its packaged contents and
-  perform a multi-package dry-run without credentials; tag publication alone
-  reads `CARGO_REGISTRY_TOKEN`
+  perform a multi-package dry-run without credentials; only the tag-context
+  release workflow reads `CARGO_REGISTRY_TOKEN`
 - partial tag reruns skip only an existing byte-identical crate version; any
   crates.io checksum mismatch fails closed, and GitHub Release publication
   waits for the complete registry set

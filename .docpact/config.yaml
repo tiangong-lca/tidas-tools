@@ -8,6 +8,9 @@ lastReviewedCommit: "eed5ed2"
 # Export owns repeatable-read PostgreSQL extraction, version normalization,
 # S3-compatible streaming, and deterministic atomic ZIP publication. Frozen
 # Python remains a parity oracle until the final cutover.
+# Native publication is authorized by an append-only, exact-SHA Release Request;
+# pull requests validate it without secrets and merge dispatches the qualified
+# release workflow at the created tag.
 
 catalog:
   repos:
@@ -61,10 +64,14 @@ ownership:
           - LICENSE
           - crates/tidas-dist/**
           - packaging/**
+          - .github/releases/**
           - scripts/install.sh
           - scripts/install.ps1
           - scripts/publish-crates.sh
+          - scripts/test-release-request.sh
+          - scripts/validate-release-request.sh
           - scripts/sync-rust-package-assets.sh
+          - .github/workflows/release-request.yml
           - .github/workflows/rust-release.yml
       ownerRepo: tidas-tools
     - id: packaged-assets
@@ -114,6 +121,7 @@ coverage:
     - Cargo.lock
     - crates/**
     - packaging/**
+    - .github/releases/**
     - contracts/**
     - assets/**
     - pyproject.toml
@@ -133,11 +141,14 @@ coverage:
     - scripts/install.sh
     - scripts/install.ps1
     - scripts/publish-crates.sh
+    - scripts/test-release-request.sh
+    - scripts/validate-release-request.sh
     - scripts/sync-rust-package-assets.sh
     - tests/**
     - test_data/**
     - .github/workflows/ci.yml
     - .github/workflows/rust-ci.yml
+    - .github/workflows/release-request.yml
     - .github/workflows/rust-release.yml
     - .github/workflows/ai-doc-lint.yml
     - .github/workflows/dispatch-tidas-sdk-sync.yml
@@ -259,10 +270,14 @@ routing:
         - LICENSE
         - crates/tidas-dist/**
         - packaging/**
+        - .github/releases/**
         - scripts/install.sh
         - scripts/install.ps1
         - scripts/publish-crates.sh
+        - scripts/test-release-request.sh
+        - scripts/validate-release-request.sh
         - scripts/sync-rust-package-assets.sh
+        - .github/workflows/release-request.yml
         - .github/workflows/rust-release.yml
     packaged-assets:
       paths:
@@ -281,12 +296,16 @@ routing:
         - Cargo.toml
         - Cargo.lock
         - .github/workflows/rust-ci.yml
+        - .github/workflows/release-request.yml
         - .github/workflows/rust-release.yml
         - crates/tidas-dist/**
         - packaging/**
+        - .github/releases/**
         - scripts/install.sh
         - scripts/install.ps1
         - scripts/publish-crates.sh
+        - scripts/test-release-request.sh
+        - scripts/validate-release-request.sh
         - scripts/sync-rust-package-assets.sh
         - pyproject.toml
         - .github/workflows/python-package-deploy.yml
@@ -305,12 +324,15 @@ routing:
         - scripts/install.sh
         - scripts/install.ps1
         - scripts/publish-crates.sh
+        - scripts/test-release-request.sh
+        - scripts/validate-release-request.sh
         - scripts/sync-rust-package-assets.sh
         - src/tidas_tools/**
         - tests/**
         - test_data/**
         - .github/workflows/ci.yml
         - .github/workflows/rust-ci.yml
+        - .github/workflows/release-request.yml
         - .github/workflows/rust-release.yml
         - .github/workflows/dispatch-tidas-sdk-sync.yml
         - .github/workflows/python-package-deploy.yml
@@ -474,6 +496,8 @@ rules:
         kind: automation
       - path: .github/workflows/rust-ci.yml
         kind: automation
+      - path: .github/workflows/release-request.yml
+        kind: release-authorization
       - path: .github/workflows/rust-release.yml
         kind: release-automation
       - path: .github/workflows/dispatch-tidas-sdk-sync.yml
@@ -500,14 +524,22 @@ rules:
         kind: distribution-tooling
       - path: packaging/**
         kind: package-manager
+      - path: .github/releases/**
+        kind: release-request
       - path: scripts/install.sh
         kind: installer
       - path: scripts/install.ps1
         kind: installer
       - path: scripts/publish-crates.sh
         kind: release-automation
+      - path: scripts/test-release-request.sh
+        kind: release-request-test
+      - path: scripts/validate-release-request.sh
+        kind: release-request-validation
       - path: scripts/sync-rust-package-assets.sh
         kind: package-asset-sync
+      - path: .github/workflows/release-request.yml
+        kind: release-authorization
       - path: .github/workflows/rust-release.yml
         kind: release-automation
     requiredDocs:
