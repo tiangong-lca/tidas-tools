@@ -22,6 +22,7 @@ checkPaths:
   - crates/**
   - contracts/**
   - assets/**
+  - packaging/**
   - migration/**
   - pyproject.toml
   - src/tidas_tools/**
@@ -31,9 +32,11 @@ checkPaths:
   - scripts/schema_lock.py
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
+  - scripts/install.sh
+  - scripts/install.ps1
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: 9908cab
-lastReviewedNote: "Issue #124 adds the native release owner for exact closure, schema-ordered ILCD derivation, semantic round-trip, and atomic four-package publication."
+lastReviewedCommit: 84dc90f
+lastReviewedNote: "Issue #125 adds deterministic executable distribution, pinned static XML dependencies, five-platform qualification, attestations, installers, and package-manager metadata."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -60,6 +63,7 @@ until all #117 exit gates pass.
 | `crates/tidas-import` | bounded external-format detection/parsing, disk-backed canonical storage, deterministic TIDAS/ILCD publication, process bundles, expert mapping CSV, and import reports |
 | `crates/tidas-export` | repeatable-read PostgreSQL extraction, TIDAS/eILCD serialization, version normalization, S3-compatible streaming, and deterministic atomic ZIP publication |
 | `crates/tidas-release` | exact UUID/version release closure, schema-ordered ILCD derivation, native validation and semantic round-trip gates, and four deterministic ZIPs |
+| `crates/tidas-dist` | deterministic native executable archives, SHA-256 verification, packaged smoke probes, and Homebrew/Winget metadata rendered from the same artifact set |
 | `crates/tidas-references` | side-effect-free, version-preserving reference extraction, role classification, and malformed-reference contracts |
 | `crates/tidas-rulesets` | schema-validated methodology/ruleset catalog, referential integrity, selection, and deterministic fingerprinting |
 | `crates/tidas-validation` | offline TIDAS JSON and ILCD/XSD validation, semantic indexes, batch protocol, deterministic traversal, and bounded issue/event spooling |
@@ -76,8 +80,9 @@ import lives in `tidas-import`; native database/package export lives in
 `tidas-export`; and the complete validation domain lives in
 `tidas-validation`, with packaged methodology metadata isolated in
 `tidas-rulesets` and reusable reference extraction isolated in
-`tidas-references`. Native release control lives in `tidas-release`. The CLI
-crate must not absorb domain logic.
+`tidas-references`. Native data-release control lives in `tidas-release`;
+executable distribution lives in `tidas-dist`. The CLI crate must not absorb
+domain or distribution logic.
 
 The command tree is fixed to `convert`, `import`, `export`, `validate`,
 `release`, `ruleset`, and `version`. No old executable alias or Python fallback
@@ -217,7 +222,8 @@ the logical issue-stream hash, and the asset/engine handshake.
 - native XSD/XSLT calls are serialized behind one process-wide lock because the
   Rust wrapper does not establish safe concurrent schema use.
 - development builds dynamically resolve system libraries; release packaging
-  must use controlled, pinned native libraries and record their versions.
+  uses the pinned vcpkg baseline with static libxml2/libxslt and rejects
+  build-machine runtime library paths before packaging.
 - production transforms must install a fail-closed resolver before untrusted
   input is accepted; network and arbitrary filesystem resolution are not part
   of the product contract.
@@ -233,6 +239,7 @@ Review note, 2026-07-17: Issue #112 remains inside the existing validation and r
 | Path group | Role |
 | --- | --- |
 | `Cargo.toml`, `Cargo.lock`, `crates/**` | Rust workspace and final product implementation |
+| `crates/tidas-dist`, `packaging/**`, `scripts/install.*` | deterministic executable archives, checksum-first installers, and generated Homebrew/Winget metadata |
 | `contracts/**` | stable machine-readable Rust report, invocation, conversion, import, export, release, asset-lock, and spool contract schemas |
 | `assets/asset-lock.v1.json` | deterministic executable-asset ownership and integrity lock |
 | `.gitattributes` | cross-platform LF checkout normalization for hashed inputs |
@@ -258,6 +265,7 @@ Review note, 2026-07-17: Issue #112 remains inside the existing validation and r
 | `.github/workflows/ci.yml` | manual-dispatch remote reproduction of schema-lock and local tests |
 | `.github/workflows/dispatch-tidas-sdk-sync.yml` | downstream SDK refresh dispatch contract |
 | `.github/workflows/python-package-deploy.yml` | `main` version-bump and tag-driven PyPI publish workflow with a release test gate |
+| `.github/workflows/rust-release.yml` | five-platform native artifact qualification, SPDX SBOM, GitHub OIDC attestations, clean runtime smoke, metadata validation, and immutable tag publication |
 
 ## Frozen Python oracle families
 
@@ -315,8 +323,19 @@ Foundry gates without moving gate execution logic into this repository.
 
 ## Release And Dispatch Architecture
 
-- `main` pushes whose `pyproject.toml` project version changes create the matching `v<version>` tag and publish `tidas-tools`
-- manual `v<version>` tag pushes and workflow-dispatch runs for existing release tags remain recovery/backfill paths
+- `.github/workflows/rust-release.yml` builds Linux x86_64/ARM64, macOS
+  Intel/Apple Silicon, and Windows x86_64 from one tag/commit and one pinned
+  native dependency baseline
+- every platform archive is built twice and compared byte-for-byte, verified
+  by its SHA-256 sidecar, smoke-tested after extraction, scanned into an SPDX
+  SBOM, and attested through GitHub OIDC/Sigstore
+- tag publication requires `v<workspace-version>`, refuses to modify an
+  existing GitHub Release, and publishes only the already-qualified archives
+- `tidas-dist metadata` renders Homebrew and Winget manifests from those exact
+  checksum sidecars; external tap creation and Winget community submission
+  remain separately approved publication actions
+- the transitional Python workflow remains active only until #126 removes the
+  frozen oracle and PyPI release path
 - changes under packaged English schema, Chinese schema, and methodology paths can dispatch downstream SDK refresh workflows
 - `.github/workflows/rust-ci.yml` exercises Linux x86_64/ARM64, macOS
   Intel/Apple Silicon, and Windows x86_64; Windows ARM64 is a tracked

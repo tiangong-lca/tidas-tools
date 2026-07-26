@@ -1,0 +1,378 @@
+name: Native Rust Release
+
+on:
+  pull_request:
+    paths:
+      - Cargo.toml
+      - Cargo.lock
+      - crates/**
+      - assets/**
+      - LICENSE
+      - packaging/**
+      - scripts/install.sh
+      - scripts/install.ps1
+      - .github/workflows/rust-release.yml
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  VCPKG_COMMIT: 40f3c709db80acf154ac4b17a1f83c564ebd022e
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux x86_64
+            runner: ubuntu-24.04
+            family: linux
+            target: x86_64-unknown-linux-gnu
+            vcpkg-triplet: x64-linux
+            executable: target/release/tidas
+          - name: Linux ARM64
+            runner: ubuntu-24.04-arm
+            family: linux
+            target: aarch64-unknown-linux-gnu
+            vcpkg-triplet: arm64-linux
+            executable: target/release/tidas
+          - name: macOS Intel
+            runner: macos-15-intel
+            family: macos
+            target: x86_64-apple-darwin
+            vcpkg-triplet: x64-osx
+            executable: target/release/tidas
+          - name: macOS Apple Silicon
+            runner: macos-15
+            family: macos
+            target: aarch64-apple-darwin
+            vcpkg-triplet: arm64-osx
+            executable: target/release/tidas
+          - name: Windows x86_64
+            runner: windows-2025
+            family: windows
+            target: x86_64-pc-windows-msvc
+            vcpkg-triplet: x64-windows-static-md
+            executable: target/release/tidas.exe
+
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - uses: dtolnay/rust-toolchain@39b0b3842c7e8bbf6904c0bfc3d9006fdd4dc4e0
+
+      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
+        with:
+          key: native-release-${{ matrix.target }}
+
+      - name: Install pinned native XML dependencies
+        if: matrix.family != 'windows'
+        shell: bash
+        env:
+          TRIPLET: ${{ matrix.vcpkg-triplet }}
+        run: |
+          if [ "${{ matrix.family }}" = "linux" ]; then
+            sudo apt-get update
+            sudo apt-get install --yes pkg-config
+          else
+            brew install pkg-config
+          fi
+          git clone --filter=blob:none https://github.com/microsoft/vcpkg.git "$RUNNER_TEMP/vcpkg"
+          git -C "$RUNNER_TEMP/vcpkg" checkout "$VCPKG_COMMIT"
+          "$RUNNER_TEMP/vcpkg/bootstrap-vcpkg.sh" -disableMetrics
+          "$RUNNER_TEMP/vcpkg/vcpkg" install \
+            --triplet "$TRIPLET" \
+            --x-manifest-root="$GITHUB_WORKSPACE/packaging/vcpkg" \
+            --x-install-root="$RUNNER_TEMP/vcpkg/installed"
+          {
+            echo "PKG_CONFIG_PATH=$RUNNER_TEMP/vcpkg/installed/$TRIPLET/lib/pkgconfig"
+            echo "LIBXML2_STATIC=1"
+            echo "LIBXSLT_STATIC=1"
+          } >> "$GITHUB_ENV"
+
+      - name: Install pinned native XML dependencies
+        if: matrix.family == 'windows'
+        shell: pwsh
+        env:
+          TRIPLET: ${{ matrix.vcpkg-triplet }}
+        run: |
+          git clone --filter=blob:none https://github.com/microsoft/vcpkg.git "$env:RUNNER_TEMP\vcpkg"
+          git -C "$env:RUNNER_TEMP\vcpkg" checkout $env:VCPKG_COMMIT
+          & "$env:RUNNER_TEMP\vcpkg\bootstrap-vcpkg.bat" -disableMetrics
+          & "$env:RUNNER_TEMP\vcpkg\vcpkg.exe" install `
+            --triplet $env:TRIPLET `
+            --x-manifest-root="$env:GITHUB_WORKSPACE\packaging\vcpkg" `
+            --x-install-root="$env:RUNNER_TEMP\vcpkg\installed"
+          "VCPKG_ROOT=$env:RUNNER_TEMP\vcpkg" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "VCPKGRS_TRIPLET=$env:TRIPLET" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Build exact native binary
+        shell: bash
+        run: |
+          SOURCE_DATE_EPOCH="$(git show -s --format=%ct HEAD)"
+          export SOURCE_DATE_EPOCH
+          echo "SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH" >> "$GITHUB_ENV"
+          cargo build --locked --release -p tidas-cli --bin tidas
+
+      - name: Reject non-system runtime libraries
+        if: matrix.family == 'linux'
+        shell: bash
+        env:
+          EXECUTABLE: ${{ matrix.executable }}
+        run: |
+          dependencies="$(ldd "$EXECUTABLE")"
+          printf '%s\n' "$dependencies"
+          if printf '%s\n' "$dependencies" | grep -E 'libxml2|libxslt|libexslt|vcpkg|/home/runner'; then
+            echo "::error::release executable retains a build-machine native dependency"
+            exit 1
+          fi
+
+      - name: Reject non-system runtime libraries
+        if: matrix.family == 'macos'
+        shell: bash
+        env:
+          EXECUTABLE: ${{ matrix.executable }}
+        run: |
+          dependencies="$(otool -L "$EXECUTABLE")"
+          printf '%s\n' "$dependencies"
+          if printf '%s\n' "$dependencies" | grep -E 'libxml2|libxslt|libexslt'; then
+            echo "::error::release executable did not statically link the pinned XML toolchain"
+            exit 1
+          fi
+          if printf '%s\n' "$dependencies" | tail -n +2 | grep -Ev '^[[:space:]]+(/usr/lib/|/System/Library/)'; then
+            echo "::error::release executable retains a non-system native dependency"
+            exit 1
+          fi
+
+      - name: Package twice and verify exact bytes
+        id: package-unix
+        if: matrix.family != 'windows'
+        shell: bash
+        env:
+          EXECUTABLE: ${{ matrix.executable }}
+          TARGET: ${{ matrix.target }}
+        run: |
+          version="$(cargo run --locked --release -p tidas-dist -- version)"
+          cargo run --locked --release -p tidas-dist -- package \
+            --binary "$EXECUTABLE" --license LICENSE --target "$TARGET" --output-dir dist/first
+          cargo run --locked --release -p tidas-dist -- package \
+            --binary "$EXECUTABLE" --license LICENSE --target "$TARGET" --output-dir dist/second
+          archive="tidas-v${version}-${TARGET}.tar.gz"
+          cmp "dist/first/$archive" "dist/second/$archive"
+          cmp "dist/first/$archive.sha256" "dist/second/$archive.sha256"
+          cargo run --locked --release -p tidas-dist -- verify \
+            --archive "dist/first/$archive" \
+            --checksum "dist/first/$archive.sha256" \
+            --target "$TARGET" --smoke
+          mkdir -p dist/upload
+          cp "dist/first/$archive" "dist/first/$archive.sha256" dist/upload/
+          echo "archive=dist/upload/$archive" >> "$GITHUB_OUTPUT"
+          echo "archive-name=$archive" >> "$GITHUB_OUTPUT"
+
+      - name: Package twice and verify exact bytes
+        id: package-windows
+        if: matrix.family == 'windows'
+        shell: pwsh
+        env:
+          EXECUTABLE: ${{ matrix.executable }}
+          TARGET: ${{ matrix.target }}
+        run: |
+          $Version = cargo run --locked --release -p tidas-dist -- version
+          cargo run --locked --release -p tidas-dist -- package `
+            --binary $env:EXECUTABLE --license LICENSE --target $env:TARGET --output-dir dist/first
+          cargo run --locked --release -p tidas-dist -- package `
+            --binary $env:EXECUTABLE --license LICENSE --target $env:TARGET --output-dir dist/second
+          $Archive = "tidas-v$Version-$env:TARGET.zip"
+          $FirstHash = (Get-FileHash -Algorithm SHA256 "dist/first/$Archive").Hash
+          $SecondHash = (Get-FileHash -Algorithm SHA256 "dist/second/$Archive").Hash
+          if ($FirstHash -ne $SecondHash) { throw "Repeated archive bytes differ." }
+          if ((Get-Content -Raw "dist/first/$Archive.sha256") -ne (Get-Content -Raw "dist/second/$Archive.sha256")) {
+            throw "Repeated checksum sidecars differ."
+          }
+          cargo run --locked --release -p tidas-dist -- verify `
+            --archive "dist/first/$Archive" `
+            --checksum "dist/first/$Archive.sha256" `
+            --target $env:TARGET --smoke
+          New-Item -ItemType Directory -Force dist/upload | Out-Null
+          Copy-Item "dist/first/$Archive", "dist/first/$Archive.sha256" -Destination dist/upload
+          "archive=dist/upload/$Archive" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "archive-name=$Archive" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Smoke in a clean Linux container
+        if: matrix.family == 'linux'
+        shell: bash
+        env:
+          ARCHIVE_NAME: ${{ steps.package-unix.outputs.archive-name }}
+          TARGET: ${{ matrix.target }}
+        run: |
+          version="$(cargo run --locked --release -p tidas-dist -- version)"
+          docker run --rm \
+            --volume "$PWD/dist/upload:/release:ro" \
+            ubuntu:24.04 \
+            bash -c "mkdir /tmp/tidas && tar -xzf /release/$ARCHIVE_NAME -C /tmp/tidas && /tmp/tidas/tidas-v$version-$TARGET/bin/tidas --format json version && /tmp/tidas/tidas-v$version-$TARGET/bin/tidas --format json ruleset"
+
+      - name: Generate SPDX SBOM
+        uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
+        with:
+          file: ${{ steps.package-unix.outputs.archive || steps.package-windows.outputs.archive }}
+          format: spdx-json
+          output-file: dist/upload/${{ steps.package-unix.outputs.archive-name || steps.package-windows.outputs.archive-name }}.spdx.json
+          upload-artifact: false
+          upload-release-assets: false
+          dependency-snapshot: false
+
+      - name: Attest build provenance
+        if: github.event_name != 'pull_request'
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
+        with:
+          subject-path: ${{ steps.package-unix.outputs.archive || steps.package-windows.outputs.archive }}
+
+      - name: Attest SPDX SBOM
+        if: github.event_name != 'pull_request'
+        uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
+        with:
+          subject-path: ${{ steps.package-unix.outputs.archive || steps.package-windows.outputs.archive }}
+          sbom-path: dist/upload/${{ steps.package-unix.outputs.archive-name || steps.package-windows.outputs.archive-name }}.spdx.json
+
+      - name: Upload qualified artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: tidas-${{ matrix.target }}
+          path: dist/upload/*
+          if-no-files-found: error
+          retention-days: 14
+
+  aggregate:
+    name: Aggregate release set
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - uses: dtolnay/rust-toolchain@39b0b3842c7e8bbf6904c0bfc3d9006fdd4dc4e0
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: tidas-*
+          path: dist/artifacts
+          merge-multiple: true
+
+      - name: Verify complete immutable artifact set
+        shell: bash
+        run: |
+          find dist/artifacts -maxdepth 1 -name '*.sha256' -type f -print0 \
+            | sort -z \
+            | xargs -0 cat > dist/artifacts/SHA256SUMS
+          checksum_count="$(wc -l < dist/artifacts/SHA256SUMS | tr -d ' ')"
+          if [ "$checksum_count" -ne 5 ]; then
+            echo "::error::expected five release checksums, found $checksum_count"
+            exit 1
+          fi
+          cd dist/artifacts
+          sha256sum --check SHA256SUMS
+
+      - name: Validate release tag against Cargo version
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          version="$(cargo run --locked --release -p tidas-dist -- version)"
+          if [ "$GITHUB_REF_NAME" != "v$version" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match Cargo workspace version $version"
+            exit 1
+          fi
+
+      - name: Generate package-manager metadata from the same checksums
+        shell: bash
+        run: |
+          version="$(cargo run --locked --release -p tidas-dist -- version)"
+          cargo run --locked --release -p tidas-dist -- metadata \
+            --release-base-url "https://github.com/${GITHUB_REPOSITORY}/releases/download/v${version}" \
+            --artifacts-dir dist/artifacts \
+            --output-dir dist/package-metadata
+          ruby -c dist/package-metadata/homebrew/tidas.rb
+
+      - name: Assemble release set
+        shell: bash
+        run: |
+          mkdir -p dist/release
+          cp dist/artifacts/* dist/release/
+          cp scripts/install.sh scripts/install.ps1 dist/release/
+          cp -R dist/package-metadata dist/release/
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: tidas-release-set
+          path: dist/release/**
+          if-no-files-found: error
+          retention-days: 14
+
+  validate-winget:
+    name: Validate Winget metadata
+    needs: aggregate
+    runs-on: windows-2025
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: tidas-release-set
+          path: dist/release
+      - name: Validate manifests
+        shell: pwsh
+        run: winget validate dist/release/package-metadata/winget
+
+  publish:
+    name: Publish immutable GitHub Release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs:
+      - aggregate
+      - validate-winget
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: tidas-release-set
+          path: dist/release
+
+      - name: Refuse to mutate an existing release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "::error::release $GITHUB_REF_NAME already exists and is immutable"
+            exit 1
+          fi
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          prerelease=()
+          if printf '%s' "$GITHUB_REF_NAME" | grep -q -- '-'; then
+            prerelease=(--prerelease)
+          fi
+          mapfile -d '' assets < <(find dist/release -type f -print0 | sort -z)
+          gh release create "$GITHUB_REF_NAME" \
+            "${assets[@]}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --verify-tag \
+            --generate-notes \
+            --title "tidas $GITHUB_REF_NAME" \
+            "${prerelease[@]}"

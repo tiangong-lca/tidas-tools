@@ -22,6 +22,7 @@ checkPaths:
   - crates/**
   - contracts/**
   - assets/**
+  - packaging/**
   - migration/**
   - pyproject.toml
   - src/tidas_tools/**
@@ -33,9 +34,11 @@ checkPaths:
   - scripts/schema_lock.py
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
+  - scripts/install.sh
+  - scripts/install.ps1
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: 9908cab
-lastReviewedNote: "Issue #124 adds native release closure, conversion, round-trip, deterministic four-package, cancellation, contract, and bounded-memory proof requirements."
+lastReviewedCommit: 84dc90f
+lastReviewedNote: "Issue #125 adds native executable archive reproducibility, static dependency, SBOM/attestation, installer, package-manager, and clean-runtime proof requirements."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -78,6 +81,7 @@ be removed only by the final #126 cutover.
 | `tidas-import` or `tidas import` | detect and import EcoSpold 1/2, SimaPro CSV, openLCA JSON-LD, openLCA process XLSX, and ILCD; replay frozen Python semantic fixtures; validate TIDAS and requested ILCD; compare package, mapping, and process-bundle hashes across repeated runs and different source roots; prove malformed input, `.zolca`, cancellation, memory-budget, exit-class, and atomic-publication behavior | exercise large exchange streams and issue spools locally; record wall time and peak RSS; confirm source-relative identifiers and gzip bytes are cross-platform deterministic | Canonical entities and exchanges stay disk-backed; issues stream to JSONL; requested outputs are validated before one atomic commit. |
 | `tidas-export` or `tidas export` | replay Python package-version golden cases; focused crate and CLI tests; validate `tidas.export-report.v1`; prove secret redaction, unsafe-path failure, cancellation, memory budget, skipped-document warning, full version suffixes, deterministic ZIP bytes, and atomic replacement | run disposable local PostgreSQL and S3-compatible fixtures twice; compare archive membership/hash/bytes; run a large local record set with wall time and peak RSS | Database reads use a repeatable-read snapshot and bounded queue; object bodies stream by chunk; never begin connector or scale tests on a Worker server. |
 | `tidas-release` or `tidas release` | replay the frozen Python closure/order/round-trip cases; validate `tidas.release-report.v1`; prove missing/inexact references fail closed, standalone contains unit closure, native TIDAS/ILCD validation, four stored ZIPs, fixed metadata, repeatable bytes, cancellation, memory budget, bounded report samples, and atomic whole-directory publication | run the local 237 MiB package twice; record wall time and peak RSS; compare all four archive hashes and membership; keep this local until the target is met | The release layer consumes finalized UUID/version decisions, never assigns them, and never invokes Python. |
+| `tidas-dist`, native installers, package metadata, or Rust release automation | focused `tidas-dist` fmt/clippy/tests; package the local release binary twice and compare archive/checksum bytes; verify and run packaged `version`, help, JSON `version`, and `ruleset`; `bash -n scripts/install.sh`; actionlint; strict docpact | all five release jobs; Linux clean-container execution; macOS runtime dependency inspection; Windows packaged smoke and `winget validate`; SPDX SBOM generation; provenance/SBOM attestation on canonical dispatch/tag | Archives must derive from the supplied binary, pinned static XML libraries, fixed metadata, and the same SHA-256 values used by installers, Homebrew, and Winget. No public tag or external package-manager submission is required to review the pipeline. |
 | `tidas-validation` native package paths | focused crate and CLI tests; compile all eight JSON schemas and all used ILCD roots offline; compare frozen Python parity fixtures; validate issue, summary, describe, and batch payloads against checked-in schemas | run the local 237 MiB benchmark twice with wall time and peak RSS; prove cancellation, XSD import resolution, semantic index parity, and deterministic spool bytes/hash | Issue details must stream or be discarded, never accumulate in the operation report. |
 | `tidas-rulesets` or `tidas ruleset` | schema validation, unique id/reference tests, warning/blocker preservation, catalog and selected-profile CLI probes | compare catalog fingerprint twice and confirm unknown ids use the usage exit class | Packaged methodology metadata remains executable, integrity-locked input; gate execution still belongs to its consumers. |
 | `tidas-references` pure extraction | replay the frozen Python golden cases byte-for-structure; validate every result/edge/issue against the checked-in schema; prove role vocabulary and input failures are closed | exercise repeated/cyclic occurrences, invalid UUID/version/type/id, URI aliases, and explicit-versus-omitted versions | Extraction preserves source constraints and defects but never performs target lookup, visibility, winner selection, or closure. |

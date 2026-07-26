@@ -26,6 +26,7 @@ checkPaths:
   - crates/**
   - contracts/**
   - assets/**
+  - packaging/**
   - migration/**
   - pyproject.toml
   - src/tidas_tools/**
@@ -37,9 +38,11 @@ checkPaths:
   - scripts/schema_lock.py
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
+  - scripts/install.sh
+  - scripts/install.ps1
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: 9908cab
-lastReviewedNote: "Reviewed for Issue #124: native release control is owned by tidas-release behind the thin unified CLI; frozen Python remains parity evidence only."
+lastReviewedCommit: 84dc90f
+lastReviewedNote: "Reviewed for Issue #125: native binary distribution is owned by tidas-dist and the five-platform release workflow; frozen Python remains parity evidence only."
 related:
   - .docpact/config.yaml
   - docs/agents/cli-contract.md
@@ -107,6 +110,8 @@ Keep these entry-level facts in `AGENTS.md`. Use `README.md`, `README_CN.md`, an
 - stdout is reserved for one report or completion script; logs, progress, and file-write confirmations use stderr
 - canonical Rust checks: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings`, and `cargo test --workspace --all-targets`
 - executable asset lock: `cargo run -p tidas-assets --bin tidas-asset-lock -- check`
+- deterministic native distribution: `cargo run --locked -p tidas-dist -- package --binary <tidas-binary> --license LICENSE --target <target-triple> --output-dir <dir>`
+- initial native artifact matrix: Linux x86_64/ARM64, macOS Intel/Apple Silicon, and Windows x86_64; Windows ARM64 is a separately tracked second phase
 - migration-oracle package manager and runner: `uv`
 - routine branch base: `main`
 - routine PR base: `main`
@@ -134,6 +139,7 @@ At a human-readable level, this repo owns:
 - native bidirectional conversion, deterministic envelope sidecars, atomic publication, and `tidas.conversion-report.v1` under `crates/tidas-conversion`, `contracts/conversion-report.v1.schema.json`, and `tests/fixtures/conversion_v1/**`
 - native external-format detection/import, disk-backed canonicalization, deterministic TIDAS/ILCD publication, process bundles, mapping CSV, and import reports under `crates/tidas-import` and `contracts/import-*.v1.schema.json`
 - native exact release closure, schema-ordered ILCD derivation, validation and semantic round-trip gates, and four deterministic package publication under `crates/tidas-release` and `contracts/release-report.v1.schema.json`
+- deterministic executable archives, checksum verification, package-manager metadata, and packaged smoke proof under `crates/tidas-dist`, `packaging/**`, `scripts/install.*`, and `.github/workflows/rust-release.yml`
 - stable machine contracts under `contracts/**`
 - the complete executable asset inventory in `assets/asset-lock.v1.json`
 - the Python-to-Rust owner inventory under `migration/**`
@@ -145,7 +151,7 @@ At a human-readable level, this repo owns:
 - validator-private projection indexes under `src/tidas_tools/validation_indexes/**`
 - packaged TIDAS schemas and methodologies under `src/tidas_tools/tidas/**`
 - packaged eILCD schemas and stylesheets under `src/tidas_tools/eilcd/**`
-- tests and automation under `tests/**`, `scripts/schema_lock.py`, `.github/workflows/ci.yml`, `.github/workflows/dispatch-tidas-sdk-sync.yml`, and `.github/workflows/python-package-deploy.yml`
+- tests and automation under `tests/**`, `scripts/**`, `.github/workflows/ci.yml`, `.github/workflows/rust-release.yml`, `.github/workflows/dispatch-tidas-sdk-sync.yml`, and `.github/workflows/python-package-deploy.yml`
 - `README.md`, `README_CN.md`, `docs/agents/**`, `.docpact/**`, and `.github/workflows/ai-doc-lint.yml` for repo-local governance and retained docs
 
 This repo does not own:
@@ -182,6 +188,8 @@ Route those tasks to:
 - `assets/asset-lock.v1.json` is the integrity authority for executable schemas, methodologies, rulesets, indexes, XSD, XSLT, and XML reference assets
 - `.gitattributes` forces executable assets, machine contracts, source, and governed docs to LF so byte hashes are identical on Windows, macOS, and Linux
 - native libxml2/libxslt access is serialized until thread-safety is independently proved; production XSLT must fail closed on external resource resolution
+- native release archives must derive from one exact binary, use pinned static libxml2/libxslt inputs, carry fixed archive metadata and SHA-256, and pass packaged-binary smoke probes without a development toolchain
+- GitHub Release publication must be tag/version exact and refuse mutation of an existing release; Homebrew and Winget metadata must use the same archive checksums and must not rebuild the binary
 - Python remains frozen until functional parity, deterministic contracts, local performance/RSS targets, cross-platform artifacts, and downstream cutovers all pass; then #126 removes every active Python implementation/install/invocation path
 - do not treat the public docs site as the executable upstream for packaged schemas and methodologies
 - packaged assets under `src/tidas_tools/**` are executable tooling inputs, not just reference docs
