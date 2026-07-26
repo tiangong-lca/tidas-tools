@@ -1,0 +1,11 @@
+{
+  "schema_version": "tidas.ilcd-validation-parity.v1",
+  "python_oracle": "The frozen Python validator accepts the packaged ILCD Locations reference, reports an ilcd_schema_error for an empty Locations document, reports invalid_xml for malformed XML, completes the scan, and classifies findings as data issues.",
+  "input_format": "ilcd-xml",
+  "document_count": 3,
+  "issue_codes": [
+    "ilcd_schema_error",
+    "invalid_xml"
+  ],
+  "expected_exit_code": 2
+}

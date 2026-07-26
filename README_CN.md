@@ -24,7 +24,7 @@ checkPaths:
   - src/tidas_tools/**
   - .github/workflows/**
 lastReviewedAt: 2026-07-25
-lastReviewedCommit: 1dd24944f3f076864121b7cb3eda7f3e184099e5
+lastReviewedCommit: 75d11c1aeec5e0973005eaadc1acb5a26931f894
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -47,21 +47,33 @@ Rust 可执行文件 `tidas`。
 
 ## Rust 迁移预览
 
-当前 Rust 切片已经建立 Cargo workspace、稳定机器与 invocation 契约、有界运行时
-基础设施、可执行资产完整性锁、XML/XSD/XSLT 跨平台边界，以及最终统一 CLI
-适配层：
+当前 Rust 实现已经建立 Cargo workspace、稳定机器与 invocation 契约、有界运行时
+基础设施、可执行资产完整性锁、XML/XSD/XSLT 跨平台边界、最终统一 CLI 适配层，
+以及原生 TIDAS/ILCD 校验、引用提取、batch 证据与 ruleset 检查：
 
 ```bash
 cargo build --workspace
 cargo run -p tidas-cli --bin tidas -- --help
 cargo run -p tidas-cli --bin tidas -- --format json version
+cargo run -p tidas-cli --bin tidas -- validate <数据包目录> \
+  --issues <issues.jsonl> --format json
+cargo run -p tidas-cli --bin tidas -- validate <ILCD目录> \
+  --input-format ilcd-xml --issues <issues.jsonl> --format json
+cargo run -p tidas-cli --bin tidas -- ruleset --format json
 cargo run -p tidas-cli --bin tidas -- --completion bash > tidas.bash
 cargo run -p tidas-assets --bin tidas-asset-lock -- check
 ```
 
 最终命令树固定为 `convert`、`import`、`export`、`validate`、`release`、
-`ruleset` 和 `version`。本基础切片只有 `version` 已可用；其他 Rust 命令会明确
-返回 `unavailable`（退出码 `69`），绝不调用 Python 回退。
+`ruleset` 和 `version`。`version`、`validate` 与 `ruleset` 已可用；其余尚未
+迁移的 Rust 路径会明确返回 `unavailable`（退出码 `69`），绝不调用 Python 回退。
+
+原生校验只解析内嵌且经过完整性锁验证的 schemas。通过 `--issues` 可把全部问题
+按确定顺序原子写入 JSONL；operation report 只保留有界计数与 spool hash，不在
+内存中累计问题数组。ILCD XML 使用离线复用的 XSD context 和相同有界报告契约；
+`document-validation-batch.v1` 提供 manifest 预检、漂移防护 issue 事件和确定性
+final evidence hash。
+校验进度按有界频率只写入 stderr；非交互运行可使用 `--progress always`。
 
 全局运行参数遵循“命令行 > `TIDAS_*` 环境变量 > 内置默认值”的优先级，不会隐式
 读取当前目录中的配置文件。stdout 只包含一次 human/JSON 报告或 completion 脚本；
@@ -199,38 +211,41 @@ tidas-release-tool build-packages \
 
 本工具用于验证 TIDAS JSON 数据或 eILCD/ILCD XML 数据是否符合随包提供的 schema 规范要求。TIDAS JSON 校验会先使用编译型 schema 快速路径，发现 schema 问题时再回退到完整错误收集。
 
-### （二）命令行参数说明
+### （二）统一 CLI 参数说明
 
 | 参数 | 缩写 | 参数说明 |
 |------|------|----------|
 | `--help` | `-h` | 显示帮助信息 |
-| `--input-dir` | `-i` | 待验证数据所在目录 |
-| `--verbose` | `-v` | 开启详细日志模式 |
-| `--data-format` | | 待验证的数据格式：`tidas`、`ilcd` 或 `eilcd`（默认：`tidas`） |
-| `--jobs` | | 并行校验进程数；使用 `0` 表示使用全部 CPU 核心 |
+| `<INPUT>` | | 待验证的 package 或 batch 文档目录 |
+| `--input-format` | | 输入格式：`tidas-json`（默认）或 `ilcd-xml` |
+| `--issues` | | 将确定性的 package issue 事件保存为 JSONL |
 | `--describe --format json` | | 输出支持的校验协议以及 package/engine/Schema-lock 指纹 |
 | `--protocol document-validation-batch.v1` | | 只校验 JSONL manifest 明确列出的文档，并流式输出 issue/final 事件 |
 | `--input-manifest` | | Batch JSONL manifest，包含 opaque document key、安全相对路径、精确身份和 SHA-256 |
+| `--events` | | 将确定性的 batch issue/final 事件保存为 JSONL |
 
 ### （三）使用示例
 
 ```bash
 # 验证 TIDAS 数据格式
-tidas-validate --input-dir <TIDAS数据目录> --data-format tidas
+tidas validate <TIDAS数据目录> --input-format tidas-json --format json
 
 # 验证 eILCD/ILCD XML 数据格式
-tidas-validate --input-dir <eILCD数据目录> --data-format ilcd
-
-# 使用全部 CPU 核心校验大型数据包
-tidas-validate --input-dir <TIDAS数据目录> --data-format tidas --jobs 0
+tidas validate <eILCD数据目录> --input-format ilcd-xml --format json
 
 # 查看闭包预检 Worker 使用的可复现握手信息
-tidas-validate --describe --format json
+tidas validate --describe --format json
 
 # 对 manifest 中明确列出的文档流式生成确定性校验证据
-tidas-validate --protocol document-validation-batch.v1 \
-  --input-dir <batch根目录> \
-  --input-manifest <document-validation-batch.v1.jsonl>
+tidas validate <batch根目录> \
+  --protocol document-validation-batch.v1 \
+  --input-manifest <document-validation-batch.v1.jsonl> \
+  --events <validation-events.jsonl> \
+  --format json
+
+# 查看或选择 integrity-locked 的原生 ruleset catalog
+tidas ruleset --format json
+tidas ruleset --id process-authoring/strict --format json
 ```
 
 Batch 协议把数据问题视为一次正常完成的扫描：逐条输出 `issue`，最后输出摘要和逻辑 hash，并以 0 退出。路径越界、重复 key/path、符号链接、内容 hash 漂移、manifest 非法或执行完成证据缺失属于协议/系统故障。引用目标是否存在及数据库可见性不属于文档校验层。

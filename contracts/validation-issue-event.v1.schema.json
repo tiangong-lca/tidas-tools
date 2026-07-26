@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiangong.earth/contracts/tidas/validation-issue-event.v1.schema.json",
+  "title": "TIDAS validation issue event v1",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/packageEvent"
+    },
+    {
+      "$ref": "#/$defs/batchEvent"
+    }
+  ],
+  "$defs": {
+    "packageEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "schema_version", "issue_ordinal", "issue"],
+      "properties": {
+        "type": {
+          "const": "issue"
+        },
+        "schema_version": {
+          "const": "tidas.validation-issue-event.v1"
+        },
+        "issue_ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "issue": {
+          "$ref": "#/$defs/issue"
+        }
+      }
+    },
+    "batchEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "schema_version",
+        "protocol",
+        "profile",
+        "document_key",
+        "document_ordinal",
+        "issue_ordinal",
+        "identity",
+        "issue"
+      ],
+      "properties": {
+        "type": {
+          "const": "issue"
+        },
+        "schema_version": {
+          "const": "tidas.validation-issue-event.v1"
+        },
+        "protocol": {
+          "const": "document-validation-batch.v1"
+        },
+        "profile": {
+          "const": "tidas-document-conformance.v1"
+        },
+        "document_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "document_ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "issue_ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "identity": {
+          "$ref": "#/$defs/identity"
+        },
+        "issue": {
+          "$ref": "#/$defs/issue"
+        }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dataset_type",
+        "dataset_id",
+        "dataset_version",
+        "content_sha256"
+      ],
+      "properties": {
+        "dataset_type": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "dataset_id": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "dataset_version": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "content_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issue_code",
+        "severity",
+        "category",
+        "file_path",
+        "location",
+        "message",
+        "context"
+      ],
+      "properties": {
+        "issue_code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "severity": {
+          "enum": ["error", "warning", "info"]
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1
+        },
+        "file_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "location": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "context": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

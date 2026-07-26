@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiangong.earth/contracts/ruleset-description.v1.schema.json",
+  "title": "TIDAS ruleset description v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "ruleset_version",
+    "catalog_sha256",
+    "ruleset_count",
+    "rule_count",
+    "ruleset_ids",
+    "methodology_file_count",
+    "methodology_warning_count"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "tidas.ruleset-description.v1"
+    },
+    "ruleset_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "catalog_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "ruleset_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "rule_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "ruleset_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "methodology_file_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "methodology_warning_count": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

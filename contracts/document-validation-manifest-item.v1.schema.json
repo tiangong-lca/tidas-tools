@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiangong.earth/contracts/tidas/document-validation-manifest-item.v1.schema.json",
+  "title": "TIDAS document validation manifest item v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "document_key",
+    "category",
+    "relative_path",
+    "content_sha256"
+  ],
+  "properties": {
+    "document_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "category": {
+      "enum": [
+        "contacts",
+        "flowproperties",
+        "flows",
+        "lciamethods",
+        "lifecyclemodels",
+        "processes",
+        "sources",
+        "unitgroups"
+      ]
+    },
+    "relative_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "content_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$"
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "dataset_type": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "dataset_id": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "dataset_version": {
+          "type": ["string", "null"],
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

@@ -23,8 +23,8 @@ checkPaths:
   - README.md
   - README_CN.md
 lastReviewedAt: 2026-07-25
-lastReviewedCommit: 8e0a5e39342403c8b38da530ff3c776fd729765e
-lastReviewedNote: "Issue #119 defines the unified command, invocation, output, completion, cancellation, and bounded-runtime contract."
+lastReviewedCommit: 75d11c1aeec5e0973005eaadc1acb5a26931f894
+lastReviewedNote: "Issue #120 activates native TIDAS/ILCD validation with progress, ruleset inspection, and document-validation-batch.v1."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -103,7 +103,10 @@ Zero memory budgets and queue capacities are usage errors.
 - JSON mode never mixes logs, banners, or progress with stdout.
 
 `--progress auto` enables progress only for human output attached to a terminal.
-No current placeholder command emits progress.
+Native package and batch validation emit bounded start, periodic document/issue
+count, and completion updates on stderr. `--progress always` enables the same
+updates in JSON mode without contaminating stdout; `--progress never` disables
+them.
 
 ## Machine contracts
 
@@ -127,6 +130,50 @@ change requires a new schema version.
 
 Canonical JSON is UTF-8, LF-terminated, deterministic for identical inputs,
 and contains no implicit timestamps, locale values, or unordered collections.
+
+## Native validation and ruleset surfaces
+
+The first production domain path is:
+
+```bash
+tidas validate <PACKAGE_DIR> \
+  --input-format tidas-json \
+  --issues <ISSUES.jsonl> \
+  --format json
+```
+
+`--input-format` is `tidas-json` by default; `ilcd-xml` selects native
+namespace-aware XSD validation. `--issues` is optional. When present, every complete issue is written
+in deterministic order to an atomically persisted
+`tidas.validation-issue-event.v1` JSONL artifact. Without it, issues are
+counted and discarded after validation so report memory remains bounded.
+
+The operation report summary contains one `validation` member conforming to
+`tidas.validation-summary.v1`. Data issues produce `completed-with-issues`
+and exit 2. Missing input/spool paths use the I/O exit class; cancellation uses
+130. The summary records category/document/issue counts, the locked asset
+fingerprint, accounted peak memory, and the optional spool count/bytes/hash.
+
+Worker-facing document batches use:
+
+```bash
+tidas validate <BATCH_DIR> \
+  --protocol document-validation-batch.v1 \
+  --input-manifest <MANIFEST.jsonl> \
+  --events <EVENTS.jsonl> \
+  --format json
+```
+
+The manifest is fully preflighted before evidence is emitted. Data findings
+are a successful protocol run (exit 0) whose final event proves counts,
+logical issue-stream hash, and validation fingerprints. Unsafe paths,
+symlinks, missing files, hash drift, or malformed protocol input fail without
+a final event. `tidas validate --describe --format json` returns the supported
+protocol/profile and engine/asset handshake.
+
+`tidas ruleset --format json` validates and returns the packaged methodology
+catalog. `tidas ruleset --id <RULESET_ID> --format json` returns its ordered
+rules; unknown ids use the usage exit class.
 
 ## Exit classes
 

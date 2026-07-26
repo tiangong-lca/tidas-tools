@@ -1,5 +1,5 @@
 [package]
-name = "tidas-cli"
+name = "tidas-validation"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -7,25 +7,19 @@ license.workspace = true
 repository.workspace = true
 publish = false
 
-[[bin]]
-name = "tidas"
-path = "src/main.rs"
-
 [dependencies]
-clap.workspace = true
-clap_complete.workspace = true
-ctrlc.workspace = true
+jsonschema.workspace = true
+quick-xml.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+sha2.workspace = true
+tempfile.workspace = true
+thiserror.workspace = true
 tidas-assets = { path = "../tidas-assets" }
-tidas-contracts = { path = "../tidas-contracts" }
 tidas-runtime = { path = "../tidas-runtime" }
 tidas-rulesets = { path = "../tidas-rulesets" }
-tidas-validation = { path = "../tidas-validation" }
 tidas-xml = { path = "../tidas-xml" }
-
-[dev-dependencies]
-tempfile.workspace = true
+walkdir.workspace = true
 
 [lints]
 workspace = true

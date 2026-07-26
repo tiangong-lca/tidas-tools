@@ -4,13 +4,21 @@ mod output;
 
 use std::process::ExitCode;
 
-use args::{Cli, Commands};
+use args::{Cli, Commands, RulesetArgs, ValidateArgs, ValidationInputFormat, ValidationProtocol};
 use clap::error::ErrorKind;
 use context::ExecutionContext;
 use tidas_assets::{asset_fingerprint, bundled_assets};
 use tidas_contracts::{
-    CommandNameV1, ExitClass, INVOCATION_CONTEXT_SCHEMA_V1, OPERATION_REPORT_SCHEMA_V1,
-    OperationReportV1,
+    ArtifactRefV1, CommandNameV1, DiagnosticV1, ExitClass, INVOCATION_CONTEXT_SCHEMA_V1,
+    OPERATION_REPORT_SCHEMA_V1, OperationReportV1,
+};
+use tidas_rulesets::{RulesetCatalog, RulesetError};
+use tidas_runtime::RuntimeError;
+use tidas_validation::{
+    BatchValidationOutput, BatchValidationRequest, DOCUMENT_VALIDATION_PROFILE, ValidationError,
+    ValidationProgressReporter, ValidationRequest, ValidationSummaryV1,
+    describe_document_validation, run_document_validation_batch, validate_ilcd_package,
+    validate_tidas_package,
 };
 use tidas_xml::engine_decision;
 
@@ -30,14 +38,16 @@ fn main() -> ExitCode {
         };
     }
 
+    let execution = ExecutionContext::from_cli(&cli);
     let command = cli
         .command
+        .clone()
         .expect("checked CLI always has a command unless completion was requested");
-    let execution = ExecutionContext::from_cli(&cli);
+    let command_name = command.name();
     let report = match execution.install_cancellation_handler() {
         Ok(()) => dispatch(command, &execution),
         Err(error) => OperationReportV1::failed(
-            command.name(),
+            command_name,
             ExitClass::Internal,
             "cancellation_handler_unavailable",
             format!("Failed to install the process cancellation handler: {error}"),
@@ -75,6 +85,8 @@ fn dispatch(command: Commands, execution: &ExecutionContext) -> OperationReportV
     }
 
     match command {
+        Commands::Validate(arguments) => validation_report(&arguments, execution),
+        Commands::Ruleset(arguments) => ruleset_report(&arguments),
         Commands::Version => version_report(execution),
         other => OperationReportV1::unavailable(
             other.name(),
@@ -84,6 +96,267 @@ fn dispatch(command: Commands, execution: &ExecutionContext) -> OperationReportV
             ),
         ),
     }
+}
+
+fn ruleset_report(arguments: &RulesetArgs) -> OperationReportV1 {
+    let catalog = match RulesetCatalog::load() {
+        Ok(catalog) => catalog,
+        Err(error) => {
+            return OperationReportV1::failed(
+                CommandNameV1::Ruleset,
+                ExitClass::Internal,
+                "ruleset_catalog_invalid",
+                error.to_string(),
+            );
+        }
+    };
+    let mut report = OperationReportV1::succeeded(CommandNameV1::Ruleset);
+    report.summary.insert(
+        "ruleset_description".to_owned(),
+        serde_json::to_value(catalog.description())
+            .expect("ruleset description contract is serializable"),
+    );
+    report.summary.insert(
+        "methodology_validation".to_owned(),
+        serde_json::to_value(catalog.methodology_report())
+            .expect("methodology validation contract is serializable"),
+    );
+    if let Some(id) = &arguments.id {
+        match catalog.rules_for(id) {
+            Ok(rules) => {
+                report
+                    .summary
+                    .insert("ruleset_id".to_owned(), serde_json::json!(id));
+                report.summary.insert(
+                    "rules".to_owned(),
+                    serde_json::to_value(rules).expect("packaged rules are serializable"),
+                );
+            }
+            Err(RulesetError::UnknownRuleset(_)) => {
+                return OperationReportV1::failed(
+                    CommandNameV1::Ruleset,
+                    ExitClass::Usage,
+                    "unknown_ruleset",
+                    error_message_for_unknown_ruleset(
+                        id,
+                        catalog.description().ruleset_ids.as_slice(),
+                    ),
+                );
+            }
+            Err(error) => {
+                return OperationReportV1::failed(
+                    CommandNameV1::Ruleset,
+                    ExitClass::Internal,
+                    "ruleset_resolution_failed",
+                    error.to_string(),
+                );
+            }
+        }
+    } else {
+        report
+            .summary
+            .insert("catalog".to_owned(), catalog.metadata().clone());
+    }
+    report
+}
+
+fn error_message_for_unknown_ruleset(id: &str, available: &[String]) -> String {
+    format!(
+        "Unknown ruleset id '{id}'. Available ids: {}",
+        available.join(", ")
+    )
+}
+
+fn validation_report(arguments: &ValidateArgs, execution: &ExecutionContext) -> OperationReportV1 {
+    if arguments.describe {
+        return validation_describe_report();
+    }
+    let input = arguments
+        .input
+        .clone()
+        .expect("checked validate arguments require an input");
+    let request = ValidationRequest {
+        input_dir: input,
+        issue_spool: arguments.issues.clone(),
+        cancellation: execution.cancellation.clone(),
+        memory_budget: execution.memory_budget.clone(),
+        queue_capacity: execution.invocation.queue_capacity,
+        progress: execution
+            .invocation
+            .progress_enabled
+            .then(validation_progress_reporter),
+    };
+    if arguments.protocol == ValidationProtocol::DocumentValidationBatchV1 {
+        return batch_validation_report(arguments, request);
+    }
+    let result = match arguments.input_format {
+        ValidationInputFormat::TidasJson => validate_tidas_package(&request),
+        ValidationInputFormat::IlcdXml => validate_ilcd_package(&request),
+    };
+    match result {
+        Ok(output) => completed_validation_report(output.summary, output.issue_spool_path),
+        Err(ValidationError::Runtime(RuntimeError::Cancelled)) => {
+            OperationReportV1::cancelled(CommandNameV1::Validate)
+        }
+        Err(error) => failed_validation_report(&error),
+    }
+}
+
+fn validation_progress_reporter() -> ValidationProgressReporter {
+    ValidationProgressReporter::new(|progress| {
+        let total = progress
+            .documents_total
+            .map_or_else(|| "?".to_owned(), |value| value.to_string());
+        let category = progress.category.as_deref().unwrap_or("-");
+        eprintln!(
+            "tidas progress: validate phase={} format={} category={} documents={}/{} issues={}",
+            progress.phase,
+            progress.input_format,
+            category,
+            progress.documents_processed,
+            total,
+            progress.issues_found,
+        );
+    })
+}
+
+fn validation_describe_report() -> OperationReportV1 {
+    match asset_fingerprint() {
+        Ok(fingerprint) => {
+            let mut report = OperationReportV1::succeeded(CommandNameV1::Validate);
+            report.summary.insert(
+                "validation_describe".to_owned(),
+                serde_json::to_value(match describe_document_validation(fingerprint) {
+                    Ok(description) => description,
+                    Err(error) => {
+                        return OperationReportV1::failed(
+                            CommandNameV1::Validate,
+                            ExitClass::Internal,
+                            "validation_describe_failed",
+                            error.to_string(),
+                        );
+                    }
+                })
+                .expect("validation describe contract is serializable"),
+            );
+            report
+        }
+        Err(error) => OperationReportV1::failed(
+            CommandNameV1::Validate,
+            ExitClass::Internal,
+            "validation_describe_failed",
+            error.to_string(),
+        ),
+    }
+}
+
+fn batch_validation_report(
+    arguments: &ValidateArgs,
+    validation: ValidationRequest,
+) -> OperationReportV1 {
+    let request = BatchValidationRequest {
+        validation,
+        input_manifest: arguments
+            .input_manifest
+            .clone()
+            .expect("checked batch arguments require a manifest"),
+        event_spool: arguments.events.clone(),
+        profile: DOCUMENT_VALIDATION_PROFILE.to_owned(),
+    };
+    match run_document_validation_batch(&request) {
+        Ok(output) => completed_batch_validation_report(output),
+        Err(ValidationError::Runtime(RuntimeError::Cancelled)) => {
+            OperationReportV1::cancelled(CommandNameV1::Validate)
+        }
+        Err(error) => failed_validation_report(&error),
+    }
+}
+
+fn completed_batch_validation_report(output: BatchValidationOutput) -> OperationReportV1 {
+    let mut report = OperationReportV1::succeeded(CommandNameV1::Validate);
+    report.summary.insert(
+        "validation_batch_final".to_owned(),
+        serde_json::to_value(output.final_event)
+            .expect("validation final event contract is serializable"),
+    );
+    if let (Some(path), Some(spool)) = (output.event_spool_path, output.event_spool) {
+        report.artifacts.push(ArtifactRefV1 {
+            path: path.to_string_lossy().into_owned(),
+            media_type: "application/x-ndjson".to_owned(),
+            sha256: Some(spool.sha256),
+            bytes: Some(spool.bytes),
+        });
+    }
+    report
+}
+
+fn completed_validation_report(
+    summary: ValidationSummaryV1,
+    issue_spool_path: Option<std::path::PathBuf>,
+) -> OperationReportV1 {
+    let has_issues = !summary.ok;
+    let issue_spool = summary.issue_spool.clone();
+    let summary_value = match serde_json::to_value(summary) {
+        Ok(value) => value,
+        Err(error) => {
+            return OperationReportV1::failed(
+                CommandNameV1::Validate,
+                ExitClass::Internal,
+                "validation_summary_serialization_failed",
+                error.to_string(),
+            );
+        }
+    };
+    let mut report = if has_issues {
+        OperationReportV1::completed_with_issues(
+            CommandNameV1::Validate,
+            DiagnosticV1::new(
+                "validation_issues",
+                "Validation completed and found data issues.",
+            ),
+        )
+    } else {
+        OperationReportV1::succeeded(CommandNameV1::Validate)
+    };
+    report
+        .summary
+        .insert("validation".to_owned(), summary_value);
+    if let (Some(path), Some(spool)) = (issue_spool_path, issue_spool) {
+        report.artifacts.push(ArtifactRefV1 {
+            path: path.to_string_lossy().into_owned(),
+            media_type: "application/x-ndjson".to_owned(),
+            sha256: Some(spool.sha256),
+            bytes: Some(spool.bytes),
+        });
+    }
+    report
+}
+
+fn failed_validation_report(error: &ValidationError) -> OperationReportV1 {
+    let (exit_class, code) = match &error {
+        ValidationError::InputNotDirectory(_)
+        | ValidationError::SpoolParentMissing(_)
+        | ValidationError::PersistSpool { .. }
+        | ValidationError::Io(_) => (ExitClass::Io, "validation_io_failed"),
+        ValidationError::BatchProtocol(_) => (ExitClass::DataIssues, "batch_protocol_failed"),
+        ValidationError::Runtime(RuntimeError::BudgetExceeded { .. }) => {
+            (ExitClass::Internal, "memory_budget_exceeded")
+        }
+        ValidationError::Runtime(_) => (ExitClass::Internal, "validation_runtime_failed"),
+        ValidationError::ZeroQueueCapacity => (ExitClass::Usage, "invalid_queue_capacity"),
+        ValidationError::PathOutsideInput(_)
+        | ValidationError::SizeOverflow
+        | ValidationError::UnexpectedXsdAsset(_)
+        | ValidationError::Walk(_)
+        | ValidationError::InvalidXml(_)
+        | ValidationError::Json(_)
+        | ValidationError::Asset(_)
+        | ValidationError::Schema(_)
+        | ValidationError::Semantic(_)
+        | ValidationError::Ruleset(_)
+        | ValidationError::Xml(_) => (ExitClass::Internal, "validation_setup_failed"),
+    };
+    OperationReportV1::failed(CommandNameV1::Validate, exit_class, code, error.to_string())
 }
 
 fn version_report(execution: &ExecutionContext) -> OperationReportV1 {
@@ -136,6 +409,23 @@ fn version_report(execution: &ExecutionContext) -> OperationReportV1 {
                 CommandNameV1::Version,
                 ExitClass::Internal,
                 "xml_engine_contract_failed",
+                error.to_string(),
+            );
+        }
+    }
+    match RulesetCatalog::load() {
+        Ok(catalog) => {
+            report.summary.insert(
+                "ruleset_catalog".to_owned(),
+                serde_json::to_value(catalog.description())
+                    .expect("ruleset description contract is serializable"),
+            );
+        }
+        Err(error) => {
+            return OperationReportV1::failed(
+                CommandNameV1::Version,
+                ExitClass::Internal,
+                "ruleset_fingerprint_failed",
                 error.to_string(),
             );
         }
