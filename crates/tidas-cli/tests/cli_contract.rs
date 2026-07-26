@@ -122,6 +122,10 @@ fn version_json_is_stable_parseable_and_context_complete() {
     assert_eq!(payload["invocation"]["report_destination"], "stdout");
     assert_eq!(payload["invocation"]["diagnostic_destination"], "stderr");
     assert!(payload["summary"]["asset_count"].as_u64().unwrap() >= 79);
+    assert_eq!(
+        payload["summary"]["release_report_schema"],
+        "tidas.release-report.v1"
+    );
 }
 
 #[test]
@@ -216,15 +220,76 @@ fn completion_scripts_are_deterministic_and_do_not_add_a_product_command() {
 }
 
 #[test]
-fn unavailable_commands_return_a_machine_report_without_python_fallback() {
-    let command = "release";
-    let (output, payload) = json_output(&[command, "--format", "json"]);
-    assert_eq!(output.status.code(), Some(69), "{command}");
-    assert!(output.stderr.is_empty(), "{command}");
-    assert_eq!(payload["command"], command);
-    assert_eq!(payload["exit_class"], "unavailable");
-    assert_eq!(payload["completeness"], "not-started");
-    assert_eq!(payload["diagnostics"][0]["code"], "feature_not_migrated");
+fn release_is_native_and_requires_a_discoverable_action() {
+    let output = tidas()
+        .args(["release", "--format", "json"])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(64));
+    let stderr = String::from_utf8(output.stderr).unwrap();
+    assert!(stderr.contains("requires a subcommand"), "{stderr}");
+    assert!(!stderr.contains("python"), "{stderr}");
+
+    let help = tidas().args(["release", "--help"]).output().unwrap();
+    assert!(help.status.success());
+    let stdout = String::from_utf8(help.stdout).unwrap();
+    for action in [
+        "build-packages",
+        "convert-ilcd",
+        "semantic-roundtrip",
+        "validate-closure",
+        "validate-ilcd",
+        "validate-tidas",
+    ] {
+        assert!(stdout.contains(action), "{action} missing from:\n{stdout}");
+    }
+    assert!(stdout.contains("publish four ZIPs"));
+    assert!(!stdout.contains("tidas-release-tool"));
+}
+
+#[test]
+fn release_action_dispatches_to_the_native_versioned_domain_report() {
+    let directory = tempfile::tempdir().unwrap();
+    let (output, payload) = json_output(&[
+        "release",
+        "validate-tidas",
+        "--input-dir",
+        directory.path().to_str().unwrap(),
+        "--format",
+        "json",
+    ]);
+    assert!(output.status.success());
+    assert!(output.stderr.is_empty());
+    assert_eq!(payload["command"], "release");
+    assert_eq!(
+        payload["summary"]["release"]["schema_version"],
+        "tidas.release-report.v1"
+    );
+    assert_eq!(payload["summary"]["release"]["action"], "validate-tidas");
+    assert_eq!(payload["summary"]["release"]["ok"], true);
+}
+
+#[test]
+fn release_validation_data_findings_use_the_data_issues_exit_class() {
+    let directory = tempfile::tempdir().unwrap();
+    fs::create_dir(directory.path().join("sources")).unwrap();
+    fs::write(directory.path().join("sources/bad.json"), b"{not-json").unwrap();
+    let (output, payload) = json_output(&[
+        "release",
+        "validate-tidas",
+        "--input-dir",
+        directory.path().to_str().unwrap(),
+        "--format",
+        "json",
+    ]);
+    assert_eq!(output.status.code(), Some(2));
+    assert!(output.stderr.is_empty());
+    assert_eq!(payload["exit_class"], "data-issues");
+    assert_eq!(payload["summary"]["release"]["ok"], false);
+    assert_eq!(
+        payload["summary"]["release"]["validation"]["summary"]["issue_count"],
+        1
+    );
 }
 
 #[test]

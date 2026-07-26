@@ -7,6 +7,7 @@ members = [
   "crates/tidas-export",
   "crates/tidas-import",
   "crates/tidas-references",
+  "crates/tidas-release",
   "crates/tidas-runtime",
   "crates/tidas-rulesets",
   "crates/tidas-validation",

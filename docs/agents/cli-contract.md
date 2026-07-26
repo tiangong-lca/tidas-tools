@@ -20,14 +20,15 @@ checkPaths:
   - crates/tidas-conversion/**
   - crates/tidas-import/**
   - crates/tidas-export/**
+  - crates/tidas-release/**
   - crates/tidas-contracts/**
   - crates/tidas-runtime/**
   - contracts/**
   - README.md
   - README_CN.md
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: d5cd7fd
-lastReviewedNote: "Reviewed for Issue #123 native export: added the credential-safe PostgreSQL/S3 surface, deterministic archive report, warning behavior, and exit classification."
+lastReviewedCommit: 9908cab
+lastReviewedNote: "Reviewed for Issue #124 native release: added the action tree, bounded release report, atomic four-package publication, and exit classification."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -35,6 +36,7 @@ related:
   - ./repo-validation.md
   - ../../contracts/operation-report.v1.schema.json
   - ../../contracts/export-report.v1.schema.json
+  - ../../contracts/release-report.v1.schema.json
 ---
 
 # Unified `tidas` CLI Contract
@@ -58,8 +60,10 @@ Shell completion generation is a global action, not an eighth command:
 tidas --completion bash > tidas.bash
 ```
 
-The old Python executable names are not aliases. An incomplete Rust functional
-slice returns `unavailable` (69) and never invokes Python.
+The old Python executable names are not aliases. All seven commands dispatch
+to Rust domain crates and never invoke Python. `unavailable` (69) remains a
+reserved stable exit class for a known future Rust capability that is exposed
+before implementation.
 
 ## Adapter boundary
 
@@ -244,6 +248,55 @@ configuration or using `--skip-external-docs` completes successfully with an
 `external_documents_skipped` diagnostic. Missing storage credentials are
 usage errors; unsafe source data is `data-issues`; database, storage, ZIP, and
 publication failures use I/O; cancellation uses 130.
+
+## Native release surface
+
+Release control uses native subcommands under the single product executable:
+
+```bash
+tidas release build-packages \
+  --tidas-dir <CANONICAL_DIR> \
+  --dataset-index <CANONICAL_INDEX.json> \
+  --output-dir <RELEASE_DIR> \
+  --format json
+
+tidas release validate-closure \
+  --input-dir <CANONICAL_DIR> \
+  --dataset-index <CANONICAL_INDEX.json> \
+  --profile unit-process-full-closure.v1 \
+  --format json
+
+tidas release convert-ilcd --input-dir <CANONICAL_DIR> \
+  --output-dir <ILCD_DIR> --format json
+tidas release validate-tidas --input-dir <CANONICAL_DIR> --format json
+tidas release validate-ilcd --input-dir <ILCD_DIR> --format json
+tidas release semantic-roundtrip \
+  --tidas-dir <CANONICAL_DIR> --ilcd-dir <ILCD_DIR> --format json
+```
+
+The domain consumes a finalized
+`tiangong.release.canonical-dataset-index.v1`; it does not assign UUIDs or
+versions. Exact references require UUID and version. The two fixed profiles
+are `unit-process-full-closure.v1` and
+`standalone-lifecyclemodel-result-full-closure.v1`, and the standalone closure
+must contain the complete unit closure.
+
+`build-packages` is the end-to-end product action. Before any output becomes
+visible it runs native TIDAS validation, exact closure, schema-ordered eILCD
+derivation, native eILCD validation, normalized semantic round-trip, and the
+profile-containment proof. Success atomically replaces `RELEASE_DIR` with
+exactly four stored ZIPs: TIDAS and eILCD for each profile. Members are sorted
+and use the DOS epoch timestamp and Unix `0644` mode. Failure or cancellation
+preserves an existing output directory.
+
+The operation summary contains one `release` member conforming to
+`tidas.release-report.v1`. Full result sets are represented by deterministic
+counts and hashes; inline closure keys and mismatches are capped at 256 and
+carry explicit truncation flags. Package artifacts include final paths,
+media type, bytes, member counts, and SHA-256 values. Malformed indexes,
+hash drift, missing exact references, validation findings, and round-trip
+mismatches use `data-issues`; any output/input path overlap is usage; path,
+publication, and ZIP failures use I/O; cancellation uses 130.
 
 ## Native validation and ruleset surfaces
 
