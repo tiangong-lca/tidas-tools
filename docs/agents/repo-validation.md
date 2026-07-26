@@ -34,8 +34,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: bf30bc2
-lastReviewedNote: "Issue #122 now replays frozen Python semantics for all six adapters against both writers with repeated hashes; existing malformed, exit-class, atomicity, and benchmark gates remain authoritative."
+lastReviewedCommit: a081878
+lastReviewedNote: "Issue #122 adds Windows proof for canonical file replacement while retaining the frozen six-adapter matrix, exit-class, atomicity, and benchmark gates."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml

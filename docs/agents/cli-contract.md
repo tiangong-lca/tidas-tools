@@ -25,8 +25,8 @@ checkPaths:
   - README.md
   - README_CN.md
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: bf30bc2
-lastReviewedNote: "Reviewed for Issue #122 deep import parity; the public command, report, output, warning, and exit-class contracts remain unchanged."
+lastReviewedCommit: a081878
+lastReviewedNote: "Reviewed for Issue #122 Windows import CI hardening; the public command, report, output, warning, and exit-class contracts remain unchanged."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml

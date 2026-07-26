@@ -1,11 +1,12 @@
 version: 1
 layout: repo
 lastReviewedAt: "2026-07-26"
-lastReviewedCommit: "bf30bc2"
+lastReviewedCommit: "a081878"
 # Issue #122 owns native external-format detection and import, disk-backed
 # canonical storage, stable reports, deterministic mapping/process bundles,
 # TIDAS/ILCD writers, deep adapter semantics, and bounded execution. Frozen
-# Python fixtures cover all six native adapters and both output writers.
+# Python fixtures cover all six native adapters and both output writers. Native
+# spool replacement uses rollback-safe filesystem operations on Windows too.
 
 catalog:
   repos:

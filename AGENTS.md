@@ -38,8 +38,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: bf30bc2
-lastReviewedNote: "Reviewed for Issue #122 deep adapter/writer parity: all six native import adapters retain bounded execution and replay the frozen Python semantic matrix."
+lastReviewedCommit: a081878
+lastReviewedNote: "Reviewed for Issue #122 Windows import CI hardening: canonical spool replacement is rollback-safe without relying on rename-over-existing semantics; product and CLI contracts are unchanged."
 related:
   - .docpact/config.yaml
   - docs/agents/cli-contract.md

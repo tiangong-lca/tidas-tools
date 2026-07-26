@@ -199,7 +199,7 @@ impl CanonicalStore {
                 .map_err(E::from)?;
         }
         writer.flush().map_err(StoreError::from).map_err(E::from)?;
-        fs::rename(temporary, path)
+        replace_file(&temporary, &path)
             .map_err(StoreError::from)
             .map_err(E::from)?;
         Ok(())
@@ -328,7 +328,35 @@ fn write_json_atomic<T: Serialize>(path: &Path, value: &T) -> Result<(), StoreEr
         writer.write_all(b"\n")?;
         writer.flush()?;
     }
-    fs::rename(temporary, path)?;
+    replace_file(&temporary, path)?;
+    Ok(())
+}
+
+fn replace_file(source: &Path, target: &Path) -> std::io::Result<()> {
+    if !target.exists() {
+        return fs::rename(source, target);
+    }
+
+    let parent = target.parent().ok_or_else(|| {
+        std::io::Error::new(
+            std::io::ErrorKind::InvalidInput,
+            "canonical store target has no parent",
+        )
+    })?;
+    let backup = tempfile::Builder::new()
+        .prefix(".tidas-import-store-backup-")
+        .tempdir_in(parent)?;
+    let previous = backup.path().join("previous");
+    fs::rename(target, &previous)?;
+    if let Err(commit_error) = fs::rename(source, target) {
+        return match fs::rename(&previous, target) {
+            Ok(()) => Err(commit_error),
+            Err(restore_error) => Err(std::io::Error::other(format!(
+                "failed to replace canonical store file and restore the previous file: \
+                 commit={commit_error}; restore={restore_error}"
+            ))),
+        };
+    }
     Ok(())
 }
 

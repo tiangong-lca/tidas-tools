@@ -272,8 +272,20 @@ fn import_is_native_atomic_validated_and_actionable() {
     };
     let first = run();
     let second = run();
-    assert!(first.status.success());
-    assert!(second.status.success());
+    assert!(
+        first.status.success(),
+        "first import failed: status={:?}, stdout={}, stderr={}",
+        first.status.code(),
+        String::from_utf8_lossy(&first.stdout),
+        String::from_utf8_lossy(&first.stderr)
+    );
+    assert!(
+        second.status.success(),
+        "second import failed: status={:?}, stdout={}, stderr={}",
+        second.status.code(),
+        String::from_utf8_lossy(&second.stdout),
+        String::from_utf8_lossy(&second.stderr)
+    );
     assert!(first.stderr.is_empty());
     assert_eq!(first.stdout, second.stdout);
     let report: OperationReportV1 = serde_json::from_slice(&first.stdout).unwrap();
@@ -310,7 +322,13 @@ fn import_warning_policy_and_invalid_sources_have_stable_exit_classes() {
         "--format",
         "json",
     ]);
-    assert_eq!(warning_output.status.code(), Some(2));
+    assert_eq!(
+        warning_output.status.code(),
+        Some(2),
+        "warning import returned: stdout={}, stderr={}",
+        String::from_utf8_lossy(&warning_output.stdout),
+        String::from_utf8_lossy(&warning_output.stderr)
+    );
     assert_eq!(warning_report["status"], "completed-with-issues");
     assert_eq!(warning_report["exit_class"], "data-issues");
     assert!(output.join("tidas").is_dir());

@@ -32,8 +32,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: bf30bc2
-lastReviewedNote: "Issue #122 completes deep native adapter/writer semantics and a frozen Python matrix covering every supported import adapter and both outputs."
+lastReviewedCommit: a081878
+lastReviewedNote: "Issue #122 keeps canonical import spools disk-backed and makes file replacement rollback-safe across Unix and Windows."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
