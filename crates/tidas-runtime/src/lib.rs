@@ -13,8 +13,10 @@ use thiserror::Error;
 
 const QUEUE_POLL_INTERVAL: Duration = Duration::from_millis(25);
 pub const SPOOL_SUMMARY_SCHEMA_V1: &str = "tidas.spool-summary.v1";
-pub const SPOOL_SUMMARY_JSON_SCHEMA_V1: &str =
-    include_str!("../../../contracts/spool-summary.v1.schema.json");
+pub const SPOOL_SUMMARY_JSON_SCHEMA_V1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/contracts/spool-summary.v1.schema.json"
+));
 
 #[derive(Clone, Debug, Default)]
 pub struct CancellationToken {

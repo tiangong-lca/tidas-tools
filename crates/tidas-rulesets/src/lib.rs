@@ -14,10 +14,14 @@ const RUNTIME_RULESETS_SCHEMA_PATH: &str =
     "src/tidas_tools/tidas/methodologies/runtime_rulesets.schema.json";
 pub const RULESET_DESCRIPTION_SCHEMA_V1: &str = "tidas.ruleset-description.v1";
 pub const METHODOLOGY_VALIDATION_REPORT_SCHEMA_V1: &str = "tidas.methodology-validation-report.v1";
-pub const RULESET_DESCRIPTION_JSON_SCHEMA_V1: &str =
-    include_str!("../../../contracts/ruleset-description.v1.schema.json");
-pub const METHODOLOGY_VALIDATION_REPORT_JSON_SCHEMA_V1: &str =
-    include_str!("../../../contracts/methodology-validation-report.v1.schema.json");
+pub const RULESET_DESCRIPTION_JSON_SCHEMA_V1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/contracts/ruleset-description.v1.schema.json"
+));
+pub const METHODOLOGY_VALIDATION_REPORT_JSON_SCHEMA_V1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/contracts/methodology-validation-report.v1.schema.json"
+));
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields)]

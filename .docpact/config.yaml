@@ -1,7 +1,7 @@
 version: 1
 layout: repo
 lastReviewedAt: "2026-07-26"
-lastReviewedCommit: "84dc90f"
+lastReviewedCommit: "eed5ed2"
 # Native Rust domain ownership includes bounded conversion, import, export,
 # release packaging, validation, references, rulesets, assets, runtime, and
 # the thin unified CLI.
@@ -63,6 +63,8 @@ ownership:
           - packaging/**
           - scripts/install.sh
           - scripts/install.ps1
+          - scripts/publish-crates.sh
+          - scripts/sync-rust-package-assets.sh
           - .github/workflows/rust-release.yml
       ownerRepo: tidas-tools
     - id: packaged-assets
@@ -130,6 +132,8 @@ coverage:
     - scripts/schema_lock.py
     - scripts/install.sh
     - scripts/install.ps1
+    - scripts/publish-crates.sh
+    - scripts/sync-rust-package-assets.sh
     - tests/**
     - test_data/**
     - .github/workflows/ci.yml
@@ -257,6 +261,8 @@ routing:
         - packaging/**
         - scripts/install.sh
         - scripts/install.ps1
+        - scripts/publish-crates.sh
+        - scripts/sync-rust-package-assets.sh
         - .github/workflows/rust-release.yml
     packaged-assets:
       paths:
@@ -280,6 +286,8 @@ routing:
         - packaging/**
         - scripts/install.sh
         - scripts/install.ps1
+        - scripts/publish-crates.sh
+        - scripts/sync-rust-package-assets.sh
         - pyproject.toml
         - .github/workflows/python-package-deploy.yml
     proof:
@@ -296,6 +304,8 @@ routing:
         - scripts/schema_lock.py
         - scripts/install.sh
         - scripts/install.ps1
+        - scripts/publish-crates.sh
+        - scripts/sync-rust-package-assets.sh
         - src/tidas_tools/**
         - tests/**
         - test_data/**
@@ -494,6 +504,10 @@ rules:
         kind: installer
       - path: scripts/install.ps1
         kind: installer
+      - path: scripts/publish-crates.sh
+        kind: release-automation
+      - path: scripts/sync-rust-package-assets.sh
+        kind: package-asset-sync
       - path: .github/workflows/rust-release.yml
         kind: release-automation
     requiredDocs:

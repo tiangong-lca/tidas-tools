@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiangong.earth/contracts/methodology-validation-report.v1.schema.json",
+  "title": "TIDAS methodology validation report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "ok",
+    "file_count",
+    "error_count",
+    "warning_count",
+    "files"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "tidas.methodology-validation-report.v1"
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "file_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "error_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "warning_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/file"
+      }
+    }
+  },
+  "$defs": {
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "methodology_file",
+        "schema_file",
+        "status",
+        "errors",
+        "warnings"
+      ],
+      "properties": {
+        "methodology_file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schema_file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "ok",
+            "warning",
+            "error"
+          ]
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

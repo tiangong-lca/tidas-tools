@@ -5,7 +5,12 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+homepage.workspace = true
+readme.workspace = true
+description = "Version-preserving TIDAS reference extraction contracts"
+keywords = ["tidas", "lca", "references", "serde"]
+categories = ["science", "data-structures"]
+publish = ["crates-io"]
 
 [dependencies]
 serde.workspace = true

@@ -13,14 +13,21 @@ use walkdir::WalkDir;
 
 pub const ASSET_LOCK_SCHEMA_V1: &str = "tidas.asset-lock.v1";
 pub const ASSET_LOCK_PATH: &str = "assets/asset-lock.v1.json";
-pub const ASSET_LOCK_JSON_SCHEMA_V1: &str =
-    include_str!("../../../contracts/asset-lock.v1.schema.json");
+pub const ASSET_LOCK_JSON_SCHEMA_V1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/contracts/asset-lock.v1.schema.json"
+));
 
-static TIDAS_ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../../src/tidas_tools/tidas");
-static EILCD_ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../../src/tidas_tools/eilcd");
-const PRODUCT_FLOW_CATEGORY_INDEX: &[u8] =
-    include_bytes!("../../../src/tidas_tools/validation_indexes/product_flow_category_index.json");
-const EMBEDDED_LOCK: &str = include_str!("../../../assets/asset-lock.v1.json");
+static TIDAS_ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/src/tidas_tools/tidas");
+static EILCD_ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/src/tidas_tools/eilcd");
+const PRODUCT_FLOW_CATEGORY_INDEX: &[u8] = include_bytes!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/src/tidas_tools/validation_indexes/product_flow_category_index.json"
+));
+const EMBEDDED_LOCK: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/assets/asset-lock.v1.json"
+));
 
 pub const SOURCE_ROOTS: [&str; 3] = [
     "src/tidas_tools/eilcd",

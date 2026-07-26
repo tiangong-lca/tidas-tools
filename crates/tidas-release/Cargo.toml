@@ -5,7 +5,12 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+homepage.workspace = true
+readme.workspace = true
+description = "Deterministic TIDAS and eILCD release closure and package construction"
+keywords = ["tidas", "lca", "release", "archives"]
+categories = ["science"]
+publish = ["crates-io"]
 
 [dependencies]
 serde.workspace = true
@@ -13,16 +18,16 @@ serde_json = { workspace = true, features = ["preserve_order"] }
 sha2.workspace = true
 tempfile.workspace = true
 thiserror.workspace = true
-tidas-assets = { path = "../tidas-assets" }
-tidas-conversion = { path = "../tidas-conversion" }
-tidas-runtime = { path = "../tidas-runtime" }
-tidas-validation = { path = "../tidas-validation" }
+tidas-assets = { version = "=0.1.0", path = "../.." }
+tidas-conversion = { version = "=0.1.0", path = "../tidas-conversion" }
+tidas-runtime = { version = "=0.1.0", path = "../tidas-runtime" }
+tidas-validation = { version = "=0.1.0", path = "../tidas-validation" }
 walkdir.workspace = true
 zip.workspace = true
 
 [dev-dependencies]
 jsonschema.workspace = true
-tidas-import = { path = "../tidas-import" }
+tidas-import = { version = "=0.1.0", path = "../tidas-import" }
 
 [lints]
 workspace = true

@@ -5,7 +5,12 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+homepage.workspace = true
+readme.workspace = true
+description = "Offline streaming TIDAS JSON and eILCD XML validation"
+keywords = ["tidas", "lca", "validation", "json-schema"]
+categories = ["science"]
+publish = ["crates-io"]
 
 [dependencies]
 jsonschema.workspace = true
@@ -15,10 +20,10 @@ serde_json.workspace = true
 sha2.workspace = true
 tempfile.workspace = true
 thiserror.workspace = true
-tidas-assets = { path = "../tidas-assets" }
-tidas-runtime = { path = "../tidas-runtime" }
-tidas-rulesets = { path = "../tidas-rulesets" }
-tidas-xml = { path = "../tidas-xml" }
+tidas-assets = { version = "=0.1.0", path = "../.." }
+tidas-runtime = { version = "=0.1.0", path = "../tidas-runtime" }
+tidas-rulesets = { version = "=0.1.0", path = "../tidas-rulesets" }
+tidas-xml = { version = "=0.1.0", path = "../tidas-xml" }
 walkdir.workspace = true
 
 [lints]

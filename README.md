@@ -19,10 +19,12 @@ checkPaths:
   - crates/**
   - packaging/**
   - scripts/install.*
+  - scripts/publish-crates.sh
+  - scripts/sync-rust-package-assets.sh
   - .github/workflows/**
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: 84dc90f
-lastReviewedNote: "Issue #125 documents five-platform native artifacts, reproducible archives, checksums, SBOM/attestation, installers, and package-manager metadata."
+lastReviewedCommit: eed5ed2
+lastReviewedNote: "Issue #136 adds the cargo install tidas source channel and coordinated crates.io publication before the immutable GitHub Release."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -33,10 +35,11 @@ related:
 
 # TianGong TIDAS Tools User Guide
 
-[![PyPI](https://img.shields.io/pypi/v/tidas-tools.svg)][pypi status]
-[![Python Version](https://img.shields.io/pypi/pyversions/tidas-tools)][pypi status]
+[![crates.io](https://img.shields.io/crates/v/tidas.svg)][crates.io]
+[![GitHub Release](https://img.shields.io/github/v/release/tiangong-lca/tidas-tools)][releases]
 
-[pypi status]: https://pypi.org/project/tidas-tools/
+[crates.io]: https://crates.io/crates/tidas
+[releases]: https://github.com/tiangong-lca/tidas-tools/releases
 
 [English](https://github.com/tiangong-lca/tidas-tools/blob/main/README.md) | [中文](https://github.com/tiangong-lca/tidas-tools/blob/main/README_CN.md)
 
@@ -56,26 +59,26 @@ distribution:
 
 ```bash
 cargo build --workspace
-cargo run -p tidas-cli --bin tidas -- --help
-cargo run -p tidas-cli --bin tidas -- --format json version
-cargo run -p tidas-cli --bin tidas -- convert <tidas-package-dir> \
+cargo run -p tidas --bin tidas -- --help
+cargo run -p tidas --bin tidas -- --format json version
+cargo run -p tidas --bin tidas -- convert <tidas-package-dir> \
   --output <eilcd-package-dir> --to ilcd --format json
-cargo run -p tidas-cli --bin tidas -- convert <eilcd-data-dir> \
+cargo run -p tidas --bin tidas -- convert <eilcd-data-dir> \
   --output <tidas-package-dir> --to tidas --format json
-cargo run -p tidas-cli --bin tidas -- import <source-file-or-dir> \
+cargo run -p tidas --bin tidas -- import <source-file-or-dir> \
   --output <import-output-dir> --target both --write-mapping --format json
-cargo run -p tidas-cli --bin tidas -- export \
+cargo run -p tidas --bin tidas -- export \
   --output <package.zip> --skip-external-docs --format json
-cargo run -p tidas-cli --bin tidas -- validate <package-dir> \
+cargo run -p tidas --bin tidas -- validate <package-dir> \
   --issues <issues.jsonl> --format json
-cargo run -p tidas-cli --bin tidas -- validate <ilcd-dir> \
+cargo run -p tidas --bin tidas -- validate <ilcd-dir> \
   --input-format ilcd-xml --issues <issues.jsonl> --format json
-cargo run -p tidas-cli --bin tidas -- release build-packages \
+cargo run -p tidas --bin tidas -- release build-packages \
   --tidas-dir <canonical-tidas-dir> \
   --dataset-index <canonical-dataset-index.json> \
   --output-dir <release-dir> --format json
-cargo run -p tidas-cli --bin tidas -- ruleset --format json
-cargo run -p tidas-cli --bin tidas -- --completion bash > tidas.bash
+cargo run -p tidas --bin tidas -- ruleset --format json
+cargo run -p tidas --bin tidas -- --completion bash > tidas.bash
 cargo run -p tidas-assets --bin tidas-asset-lock -- check
 cargo run -p tidas-dist -- version
 ```
@@ -129,6 +132,8 @@ contract is [docs/agents/cli-contract.md](docs/agents/cli-contract.md).
 
 ## Native distribution
 
+Prebuilt GitHub archives are the primary end-user channel. They include the
+native XML dependencies and do not require Rust or a development toolchain.
 The native release workflow qualifies one exact `tidas` binary for Linux
 x86_64/ARM64, macOS Intel/Apple Silicon, and Windows x86_64. It builds every
 archive twice, compares the bytes, verifies SHA-256, runs packaged `version`,
@@ -136,6 +141,22 @@ help, JSON `version`, and `ruleset` probes, generates an SPDX SBOM, and creates
 GitHub OIDC provenance/SBOM attestations. Pinned static libxml2/libxslt inputs
 keep the archives independent of Homebrew, vcpkg, Python, Java, Node.js, or a
 development toolchain at runtime.
+
+The same `v<version>` release publishes the `tidas` source package and all
+reusable domain crates to crates.io before the immutable GitHub Release is
+created. Developers who already have Rust 1.88+ and the platform libxml2 /
+libxslt development dependencies can install the unified executable from
+source:
+
+```bash
+cargo install tidas --version 0.1.0 --locked
+```
+
+All public workspace crates use the exact same version so Cargo cannot combine
+incompatible domain releases. `tidas-dist` remains repository-internal release
+tooling and is never published. Pull requests run a complete multi-package
+`cargo package` verification plus crates.io dry-run without credentials; tag
+publication alone receives `CARGO_REGISTRY_TOKEN`.
 
 After a native version is published, install an explicit immutable version:
 

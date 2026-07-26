@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiangong.earth/contracts/tidas/validation-summary.v1.schema.json",
+  "title": "TIDAS validation summary v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "input_format",
+    "ok",
+    "category_count",
+    "document_count",
+    "issue_count",
+    "error_count",
+    "warning_count",
+    "info_count",
+    "categories",
+    "asset_fingerprint",
+    "issue_spool",
+    "peak_accounted_memory_bytes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "tidas.validation-summary.v1"
+    },
+    "input_format": {
+      "enum": ["tidas-json", "ilcd-xml"]
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "category_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "document_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "issue_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "error_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "warning_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "info_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/category"
+      }
+    },
+    "asset_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "issue_spool": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/spool"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "peak_accounted_memory_bytes": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "$defs": {
+    "category": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "category",
+        "document_count",
+        "issue_count",
+        "error_count",
+        "warning_count",
+        "info_count"
+      ],
+      "properties": {
+        "category": {
+          "type": "string",
+          "minLength": 1
+        },
+        "document_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "issue_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "error_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "warning_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "info_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "spool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "event_count", "bytes", "sha256"],
+      "properties": {
+        "schema_version": {
+          "const": "tidas.spool-summary.v1"
+        },
+        "event_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    }
+  }
+}

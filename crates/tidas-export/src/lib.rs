@@ -19,8 +19,10 @@ use tidas_runtime::{CancellationToken, MemoryBudget, RuntimeError};
 pub use versioning::{VersionNormalizationV1, normalize_package_versions};
 
 pub const EXPORT_REPORT_SCHEMA_V1: &str = "tidas.export-report.v1";
-pub const EXPORT_REPORT_JSON_SCHEMA_V1: &str =
-    include_str!("../../../contracts/export-report.v1.schema.json");
+pub const EXPORT_REPORT_JSON_SCHEMA_V1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/contracts/export-report.v1.schema.json"
+));
 const DEFAULT_NETWORK_TIMEOUT: Duration = Duration::from_secs(60);
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]

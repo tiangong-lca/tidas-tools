@@ -5,7 +5,12 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+homepage.workspace = true
+readme.workspace = true
+description = "Strict streaming XML plus controlled XSD and XSLT compatibility for TIDAS"
+keywords = ["tidas", "lca", "xml", "xsd", "xslt"]
+categories = ["science", "parser-implementations"]
+publish = ["crates-io"]
 
 [dependencies]
 libxml.workspace = true

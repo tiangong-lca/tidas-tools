@@ -5,7 +5,12 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+homepage.workspace = true
+readme.workspace = true
+description = "Deterministic bidirectional TIDAS JSON and eILCD XML conversion"
+keywords = ["tidas", "lca", "xml", "conversion"]
+categories = ["science", "encoding"]
+publish = ["crates-io"]
 
 [dependencies]
 quick-xml.workspace = true
@@ -14,8 +19,8 @@ serde_json = { workspace = true, features = ["arbitrary_precision"] }
 sha2.workspace = true
 tempfile.workspace = true
 thiserror.workspace = true
-tidas-assets = { path = "../tidas-assets" }
-tidas-runtime = { path = "../tidas-runtime" }
+tidas-assets = { version = "=0.1.0", path = "../.." }
+tidas-runtime = { version = "=0.1.0", path = "../tidas-runtime" }
 walkdir.workspace = true
 
 [dev-dependencies]

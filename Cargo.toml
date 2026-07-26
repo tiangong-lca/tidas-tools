@@ -1,6 +1,47 @@
+[package]
+name = "tidas-assets"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme.workspace = true
+description = "Integrity-locked offline schemas, methodologies, XSD, and XSLT assets for TIDAS"
+keywords = ["tidas", "lca", "schemas", "validation"]
+categories = ["science", "data-structures"]
+publish = ["crates-io"]
+include = [
+  "/assets/asset-lock.v1.json",
+  "/contracts/asset-lock.v1.schema.json",
+  "/crates/tidas-assets/src/**",
+  "/src/tidas_tools/eilcd/**",
+  "/src/tidas_tools/tidas/**",
+  "/src/tidas_tools/validation_indexes/product_flow_category_index.json",
+  "/LICENSE",
+  "/README.md",
+]
+
+[lib]
+path = "crates/tidas-assets/src/lib.rs"
+
+[[bin]]
+name = "tidas-asset-lock"
+path = "crates/tidas-assets/src/bin/asset_lock.rs"
+
+[dependencies]
+include_dir.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+walkdir.workspace = true
+
+[lints]
+workspace = true
+
 [workspace]
 members = [
-  "crates/tidas-assets",
   "crates/tidas-cli",
   "crates/tidas-conversion",
   "crates/tidas-contracts",
@@ -22,6 +63,8 @@ edition = "2024"
 rust-version = "1.88"
 license = "MIT"
 repository = "https://github.com/tiangong-lca/tidas-tools"
+homepage = "https://github.com/tiangong-lca/tidas-tools"
+readme = "README.md"
 
 [workspace.dependencies]
 bigdecimal = "0.4.9"

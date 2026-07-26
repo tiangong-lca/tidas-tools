@@ -40,9 +40,11 @@ checkPaths:
   - scripts/install-git-hooks.sh
   - scripts/install.sh
   - scripts/install.ps1
+  - scripts/publish-crates.sh
+  - scripts/sync-rust-package-assets.sh
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: 84dc90f
-lastReviewedNote: "Reviewed for Issue #125: native binary distribution is owned by tidas-dist and the five-platform release workflow; frozen Python remains parity evidence only."
+lastReviewedCommit: eed5ed2
+lastReviewedNote: "Reviewed for Issue #136: package tidas and reusable domain crates publish together to crates.io; tidas-dist remains internal and GitHub Release waits for registry success."
 related:
   - .docpact/config.yaml
   - docs/agents/cli-contract.md
@@ -99,18 +101,24 @@ Read in this order:
 Keep these entry-level facts in `AGENTS.md`. Use `README.md`, `README_CN.md`, and `docs/agents/repo-validation.md` for fuller command detail.
 
 - Rust workspace toolchain: Rust 1.88 or newer, Cargo resolver 3
-- final product entry point: `cargo run -p tidas-cli --bin tidas -- <subcommand>`
+- crates.io qualification/publication toolchain: Cargo 1.94.0, pinned separately
+  from the Rust 1.88 product MSRV because coordinated workspace publication
+  requires Cargo's stable multi-package publishing support
+- final product entry point: `cargo run -p tidas --bin tidas -- <subcommand>`
 - final command tree: `convert`, `import`, `export`, `validate`, `release`, `ruleset`, `version`
-- native package conversion: `cargo run -p tidas-cli --bin tidas -- convert <input-dir> --output <output-dir> --to ilcd|tidas --format json`
-- native external import: `cargo run -p tidas-cli --bin tidas -- import <input-file-or-dir> --output <output-dir> [--target tidas|ilcd|both] [--write-mapping] --format json`
-- native package validation: `cargo run -p tidas-cli --bin tidas -- validate <package-dir> --input-format tidas-json|ilcd-xml --issues <issues.jsonl> --format json`
-- native batch validation: `cargo run -p tidas-cli --bin tidas -- validate <batch-dir> --protocol document-validation-batch.v1 --input-manifest <manifest.jsonl> --events <events.jsonl> --format json`
-- native ruleset inspection: `cargo run -p tidas-cli --bin tidas -- ruleset [--id <ruleset-id>] --format json`
+- native package conversion: `cargo run -p tidas --bin tidas -- convert <input-dir> --output <output-dir> --to ilcd|tidas --format json`
+- native external import: `cargo run -p tidas --bin tidas -- import <input-file-or-dir> --output <output-dir> [--target tidas|ilcd|both] [--write-mapping] --format json`
+- native package validation: `cargo run -p tidas --bin tidas -- validate <package-dir> --input-format tidas-json|ilcd-xml --issues <issues.jsonl> --format json`
+- native batch validation: `cargo run -p tidas --bin tidas -- validate <batch-dir> --protocol document-validation-batch.v1 --input-manifest <manifest.jsonl> --events <events.jsonl> --format json`
+- native ruleset inspection: `cargo run -p tidas --bin tidas -- ruleset [--id <ruleset-id>] --format json`
 - configuration precedence: explicit CLI option, then matching `TIDAS_*` environment variable, then the documented built-in default; no implicit current-directory config
 - stdout is reserved for one report or completion script; logs, progress, and file-write confirmations use stderr
 - canonical Rust checks: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings`, and `cargo test --workspace --all-targets`
 - executable asset lock: `cargo run -p tidas-assets --bin tidas-asset-lock -- check`
 - deterministic native distribution: `cargo run --locked -p tidas-dist -- package --binary <tidas-binary> --license LICENSE --target <target-triple> --output-dir <dir>`
+- crates.io package gate: `scripts/publish-crates.sh check`
+- source installation package: `cargo install tidas --version <version> --locked`
+- all public Rust crates use the same exact workspace version; `tidas-dist` is never published
 - initial native artifact matrix: Linux x86_64/ARM64, macOS Intel/Apple Silicon, and Windows x86_64; Windows ARM64 is a separately tracked second phase
 - migration-oracle package manager and runner: `uv`
 - routine branch base: `main`
@@ -139,7 +147,7 @@ At a human-readable level, this repo owns:
 - native bidirectional conversion, deterministic envelope sidecars, atomic publication, and `tidas.conversion-report.v1` under `crates/tidas-conversion`, `contracts/conversion-report.v1.schema.json`, and `tests/fixtures/conversion_v1/**`
 - native external-format detection/import, disk-backed canonicalization, deterministic TIDAS/ILCD publication, process bundles, mapping CSV, and import reports under `crates/tidas-import` and `contracts/import-*.v1.schema.json`
 - native exact release closure, schema-ordered ILCD derivation, validation and semantic round-trip gates, and four deterministic package publication under `crates/tidas-release` and `contracts/release-report.v1.schema.json`
-- deterministic executable archives, checksum verification, package-manager metadata, and packaged smoke proof under `crates/tidas-dist`, `packaging/**`, `scripts/install.*`, and `.github/workflows/rust-release.yml`
+- deterministic executable archives, checksum verification, package-manager metadata, packaged smoke proof, self-contained crate inputs, and coordinated crates.io publication under the root `tidas-assets` package allowlist, `crates/tidas-dist`, `crates/*/contracts`, `packaging/**`, `scripts/install.*`, `scripts/publish-crates.sh`, `scripts/sync-rust-package-assets.sh`, and `.github/workflows/rust-release.yml`
 - stable machine contracts under `contracts/**`
 - the complete executable asset inventory in `assets/asset-lock.v1.json`
 - the Python-to-Rust owner inventory under `migration/**`
@@ -190,6 +198,8 @@ Route those tasks to:
 - native libxml2/libxslt access is serialized until thread-safety is independently proved; production XSLT must fail closed on external resource resolution
 - native release archives must derive from one exact binary, use pinned static libxml2/libxslt inputs, carry fixed archive metadata and SHA-256, and pass packaged-binary smoke probes without a development toolchain
 - GitHub Release publication must be tag/version exact and refuse mutation of an existing release; Homebrew and Winget metadata must use the same archive checksums and must not rebuild the binary
+- public crates must be self-contained, exact-versioned as one release set, and package/dry-run clean; the tag job alone may read `CARGO_REGISTRY_TOKEN`
+- crates.io publication must verify an existing version's archive checksum before a retry skips it, and the immutable GitHub Release must wait for the complete registry set
 - Python remains frozen until functional parity, deterministic contracts, local performance/RSS targets, cross-platform artifacts, and downstream cutovers all pass; then #126 removes every active Python implementation/install/invocation path
 - do not treat the public docs site as the executable upstream for packaged schemas and methodologies
 - packaged assets under `src/tidas_tools/**` are executable tooling inputs, not just reference docs

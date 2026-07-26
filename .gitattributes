@@ -7,6 +7,10 @@
 *.xsd text eol=lf
 *.xsl text eol=lf
 
+# This upstream ILCD schema is intentionally locked with CRLF bytes. Treat it
+# as an opaque executable asset so checkout never rewrites the locked payload.
+src/tidas_tools/eilcd/schemas/ILCD_LifeCycleModelDataSet.xsd -text
+
 # Source, manifests, scripts, and governed documentation also use the repo's LF
 # determinism contract.
 *.rs text eol=lf

@@ -17,8 +17,10 @@ use tidas_validation::{ValidationError, ValidationSummaryV1};
 pub use closure::{RESULT_PROFILE, ReleaseProfile, UNIT_PROFILE};
 
 pub const RELEASE_REPORT_SCHEMA_V1: &str = "tidas.release-report.v1";
-pub const RELEASE_REPORT_JSON_SCHEMA_V1: &str =
-    include_str!("../../../contracts/release-report.v1.schema.json");
+pub const RELEASE_REPORT_JSON_SCHEMA_V1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/contracts/release-report.v1.schema.json"
+));
 
 const INLINE_ITEM_LIMIT: usize = 256;
 

@@ -21,12 +21,18 @@ pub const DOCUMENT_VALIDATION_PROFILE: &str = "tidas-document-conformance.v1";
 pub const VALIDATION_DESCRIBE_SCHEMA_V1: &str = "tidas.validation-describe.v1";
 pub const VALIDATION_FINAL_EVENT_SCHEMA_V1: &str = "tidas.validation-final-event.v1";
 pub const VALIDATION_REPORT_SCHEMA_V1: &str = "tidas.validation-report.v1";
-pub const DOCUMENT_VALIDATION_MANIFEST_ITEM_JSON_SCHEMA_V1: &str =
-    include_str!("../../../contracts/document-validation-manifest-item.v1.schema.json");
-pub const VALIDATION_DESCRIBE_JSON_SCHEMA_V1: &str =
-    include_str!("../../../contracts/validation-describe.v1.schema.json");
-pub const VALIDATION_FINAL_EVENT_JSON_SCHEMA_V1: &str =
-    include_str!("../../../contracts/validation-final-event.v1.schema.json");
+pub const DOCUMENT_VALIDATION_MANIFEST_ITEM_JSON_SCHEMA_V1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/contracts/document-validation-manifest-item.v1.schema.json"
+));
+pub const VALIDATION_DESCRIBE_JSON_SCHEMA_V1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/contracts/validation-describe.v1.schema.json"
+));
+pub const VALIDATION_FINAL_EVENT_JSON_SCHEMA_V1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/contracts/validation-final-event.v1.schema.json"
+));
 const VALIDATION_ISSUE_EVENT_SCHEMA_V1: &str = "tidas.validation-issue-event.v1";
 const MAX_EVENT_BYTES: usize = 1024 * 1024;
 const JSON_MEMORY_MULTIPLIER: u64 = 8;

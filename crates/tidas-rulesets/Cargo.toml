@@ -5,7 +5,12 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+homepage.workspace = true
+readme.workspace = true
+description = "Integrity-checked methodology and runtime ruleset catalogs for TIDAS"
+keywords = ["tidas", "lca", "rules", "validation"]
+categories = ["science"]
+publish = ["crates-io"]
 
 [dependencies]
 jsonschema.workspace = true
@@ -14,7 +19,7 @@ serde.workspace = true
 serde_json.workspace = true
 sha2.workspace = true
 thiserror.workspace = true
-tidas-assets = { path = "../tidas-assets" }
+tidas-assets = { version = "=0.1.0", path = "../.." }
 
 [lints]
 workspace = true

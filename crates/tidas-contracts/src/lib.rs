@@ -8,8 +8,10 @@ use thiserror::Error;
 pub const OPERATION_REPORT_SCHEMA_V1: &str = "tidas.operation-report.v1";
 pub const DIAGNOSTIC_SCHEMA_V1: &str = "tidas.diagnostic.v1";
 pub const INVOCATION_CONTEXT_SCHEMA_V1: &str = "tidas.invocation-context.v1";
-pub const OPERATION_REPORT_JSON_SCHEMA_V1: &str =
-    include_str!("../../../contracts/operation-report.v1.schema.json");
+pub const OPERATION_REPORT_JSON_SCHEMA_V1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/contracts/operation-report.v1.schema.json"
+));
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "kebab-case")]

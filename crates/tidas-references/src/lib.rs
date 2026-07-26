@@ -13,8 +13,10 @@ use thiserror::Error;
 pub const REFERENCE_EXTRACTION_SCHEMA_VERSION: &str = "tidas.reference-extraction-result.v1";
 pub const REFERENCE_EDGE_SCHEMA_VERSION: &str = "tidas.reference-edge.v1";
 pub const REFERENCE_ISSUE_SCHEMA_VERSION: &str = "tidas.reference-extraction-issue.v1";
-pub const REFERENCE_EXTRACTION_JSON_SCHEMA_V1: &str =
-    include_str!("../../../contracts/reference-extraction-result.v1.schema.json");
+pub const REFERENCE_EXTRACTION_JSON_SCHEMA_V1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/contracts/reference-extraction-result.v1.schema.json"
+));
 
 pub const REFERENCE_ROLE_PROCESS_EXCHANGE_FLOW: &str = "process_exchange_flow";
 pub const REFERENCE_ROLE_LCIA_FACTOR_FLOW: &str = "lcia_factor_flow";

@@ -2454,19 +2454,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "tidas-assets"
-version = "0.1.0"
-dependencies = [
- "include_dir",
- "serde",
- "serde_json",
- "sha2",
- "thiserror",
- "walkdir",
-]
-
-[[package]]
-name = "tidas-cli"
+name = "tidas"
 version = "0.1.0"
 dependencies = [
  "clap",
@@ -2485,6 +2473,18 @@ dependencies = [
  "tidas-runtime",
  "tidas-validation",
  "tidas-xml",
+]
+
+[[package]]
+name = "tidas-assets"
+version = "0.1.0"
+dependencies = [
+ "include_dir",
+ "serde",
+ "serde_json",
+ "sha2",
+ "thiserror",
+ "walkdir",
 ]
 
 [[package]]
