@@ -63,8 +63,7 @@ pub async fn download_external_documents(
             break;
         };
         let meta = meta.map_err(ExportError::Storage)?;
-        let relative = PathBuf::from(meta.location.as_ref());
-        validate_relative_path(&relative)?;
+        let relative = object_key_path(meta.location.as_ref())?;
         let target = output_dir.join(&relative);
         if let Some(parent) = target.parent() {
             tokio::fs::create_dir_all(parent).await?;
@@ -99,4 +98,29 @@ pub async fn download_external_documents(
         counts.documents += 1;
     }
     Ok(counts)
+}
+
+fn object_key_path(key: &str) -> Result<PathBuf, ExportError> {
+    // S3 keys always use `/` as their hierarchy delimiter. Reject `\` before
+    // converting to a platform path so Windows cannot reinterpret an unsafe key
+    // as an otherwise-valid path.
+    if key.contains('\\') {
+        return Err(ExportError::UnsafePath(PathBuf::from(key)));
+    }
+    let path = PathBuf::from(key);
+    validate_relative_path(&path)?;
+    Ok(path)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn object_keys_with_backslashes_are_rejected_before_platform_path_parsing() {
+        assert!(matches!(
+            object_key_path("external_docs/a\\b.txt"),
+            Err(ExportError::UnsafePath(_))
+        ));
+    }
 }

@@ -356,8 +356,8 @@ mod tests {
     }
 
     #[test]
-    fn paths_rejected_by_windows_are_rejected_on_every_platform() {
-        for path in ["external_docs/a\\b.txt", "external_docs/CON.txt", "a:b"] {
+    fn path_components_rejected_by_windows_are_rejected_on_every_platform() {
+        for path in ["external_docs/CON.txt", "a:b"] {
             assert!(matches!(
                 validate_relative_path(Path::new(path)),
                 Err(ExportError::UnsafePath(_))
