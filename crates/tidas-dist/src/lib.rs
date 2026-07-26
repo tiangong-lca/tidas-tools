@@ -561,6 +561,8 @@ end
 fn winget_version_manifest(version: &str) -> String {
     format!(
         r"# Generated from the exact tidas release archive; do not hand-edit.
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.version.1.10.0.schema.json
+
 PackageIdentifier: TianGong.Tidas
 PackageVersion: {version}
 DefaultLocale: en-US
@@ -573,6 +575,8 @@ ManifestVersion: 1.10.0
 fn winget_installer_manifest(version: &str, url: &str, sha256: &str) -> String {
     format!(
         r"# Generated from the exact tidas release archive; do not hand-edit.
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.10.0.schema.json
+
 PackageIdentifier: TianGong.Tidas
 PackageVersion: {version}
 InstallerType: zip
@@ -593,6 +597,8 @@ ManifestVersion: 1.10.0
 fn winget_locale_manifest(version: &str) -> String {
     format!(
         r"# Generated from the exact tidas release archive; do not hand-edit.
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.10.0.schema.json
+
 PackageIdentifier: TianGong.Tidas
 PackageVersion: {version}
 PackageLocale: en-US
@@ -713,13 +719,28 @@ mod tests {
         let formula = fs::read_to_string(output.join("homebrew/tidas.rb")).unwrap();
         assert!(formula.contains("aarch64-apple-darwin"));
         assert!(formula.contains(&format!("{:064x}", 1)));
+        let winget_version = fs::read_to_string(output.join("winget/TianGong.Tidas.yaml")).unwrap();
+        assert!(
+            winget_version
+                .contains("$schema=https://aka.ms/winget-manifest.version.1.10.0.schema.json")
+        );
         let winget =
             fs::read_to_string(output.join("winget/TianGong.Tidas.installer.yaml")).unwrap();
+        assert!(
+            winget.contains("$schema=https://aka.ms/winget-manifest.installer.1.10.0.schema.json")
+        );
         assert!(winget.contains("Architecture: x64"));
         assert!(
             winget
                 .contains("RelativeFilePath: tidas-v0.1.0-x86_64-pc-windows-msvc\\bin\\tidas.exe")
         );
         assert!(winget.contains(&format!("{:064x}", 5)));
+        let winget_locale =
+            fs::read_to_string(output.join("winget/TianGong.Tidas.locale.en-US.yaml")).unwrap();
+        assert!(
+            winget_locale.contains(
+                "$schema=https://aka.ms/winget-manifest.defaultLocale.1.10.0.schema.json"
+            )
+        );
     }
 }
