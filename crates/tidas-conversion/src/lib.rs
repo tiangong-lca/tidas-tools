@@ -21,8 +21,10 @@ use walkdir::WalkDir;
 use transaction::StagedDirectory;
 
 pub const CONVERSION_REPORT_SCHEMA_V1: &str = "tidas.conversion-report.v1";
-pub const CONVERSION_REPORT_JSON_SCHEMA_V1: &str =
-    include_str!("../../../contracts/conversion-report.v1.schema.json");
+pub const CONVERSION_REPORT_JSON_SCHEMA_V1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/contracts/conversion-report.v1.schema.json"
+));
 const FILE_MEMORY_MULTIPLIER: u64 = 8;
 const FILE_MEMORY_OVERHEAD: u64 = 4096;
 const HASH_BUFFER_BYTES: usize = 1024 * 1024;

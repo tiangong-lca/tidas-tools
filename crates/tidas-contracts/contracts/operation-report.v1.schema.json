@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiangong.earth/contracts/tidas/operation-report.v1.schema.json",
+  "title": "TIDAS operation report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "command",
+    "status",
+    "exit_class",
+    "completeness",
+    "summary",
+    "diagnostics",
+    "artifacts",
+    "next_actions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "tidas.operation-report.v1"
+    },
+    "status": {
+      "enum": ["succeeded", "completed-with-issues", "failed", "cancelled"]
+    },
+    "command": {
+      "enum": ["convert", "import", "export", "validate", "release", "ruleset", "version"]
+    },
+    "exit_class": {
+      "enum": ["success", "data-issues", "usage", "unavailable", "internal", "io", "cancelled"]
+    },
+    "completeness": {
+      "enum": ["complete", "partial", "not-started"]
+    },
+    "invocation": {
+      "$ref": "#/$defs/invocation"
+    },
+    "summary": {
+      "type": "object"
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/diagnostic"
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "invocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "config_source",
+        "config_path",
+        "log_level",
+        "progress_mode",
+        "progress_enabled",
+        "memory_budget_bytes",
+        "queue_capacity",
+        "input_policy",
+        "report_destination",
+        "diagnostic_destination"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "tidas.invocation-context.v1"
+        },
+        "config_source": {
+          "enum": ["none", "environment", "cli"]
+        },
+        "config_path": {
+          "type": ["string", "null"]
+        },
+        "log_level": {
+          "enum": ["error", "warn", "info", "debug", "trace"]
+        },
+        "progress_mode": {
+          "enum": ["auto", "never", "always"]
+        },
+        "progress_enabled": {
+          "type": "boolean"
+        },
+        "memory_budget_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "queue_capacity": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "input_policy": {
+          "const": "explicit-path-or-dash"
+        },
+        "report_destination": {
+          "enum": ["stdout", "file"]
+        },
+        "diagnostic_destination": {
+          "const": "stderr"
+        }
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "code", "message", "path", "details"],
+      "properties": {
+        "schema_version": {
+          "const": "tidas.diagnostic.v1"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": ["string", "null"]
+        },
+        "details": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "media_type", "sha256", "bytes"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "media_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bytes": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

@@ -27,8 +27,10 @@ use crate::writers::{
 };
 
 pub const IMPORT_EXECUTION_REPORT_SCHEMA_V1: &str = "tidas.import-execution-report.v1";
-pub const IMPORT_EXECUTION_REPORT_JSON_SCHEMA_V1: &str =
-    include_str!("../../../contracts/import-execution-report.v1.schema.json");
+pub const IMPORT_EXECUTION_REPORT_JSON_SCHEMA_V1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/contracts/import-execution-report.v1.schema.json"
+));
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "lowercase")]

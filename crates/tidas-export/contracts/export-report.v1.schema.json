@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tidas.tiangong.earth/contracts/export-report.v1.schema.json",
+  "title": "TIDAS export report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "format",
+    "database_record_count",
+    "common_record_count",
+    "category_record_count",
+    "external_document_count",
+    "external_document_bytes",
+    "external_documents_skipped",
+    "version_normalization",
+    "archive_member_count",
+    "archive_bytes",
+    "archive_sha256",
+    "peak_accounted_memory_bytes",
+    "warnings"
+  ],
+  "properties": {
+    "schema_version": { "const": "tidas.export-report.v1" },
+    "format": { "enum": ["tidas", "ilcd"] },
+    "database_record_count": { "type": "integer", "minimum": 0 },
+    "common_record_count": { "type": "integer", "minimum": 0 },
+    "category_record_count": { "type": "integer", "minimum": 0 },
+    "external_document_count": { "type": "integer", "minimum": 0 },
+    "external_document_bytes": { "type": "integer", "minimum": 0 },
+    "external_documents_skipped": { "type": "boolean" },
+    "version_normalization": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": [
+        "scanned_records",
+        "dataset_count",
+        "duplicate_dataset_count",
+        "kept_records",
+        "removed_records",
+        "rewritten_files",
+        "updated_references",
+        "removed_preceding_references"
+      ],
+      "properties": {
+        "scanned_records": { "type": "integer", "minimum": 0 },
+        "dataset_count": { "type": "integer", "minimum": 0 },
+        "duplicate_dataset_count": { "type": "integer", "minimum": 0 },
+        "kept_records": { "type": "integer", "minimum": 0 },
+        "removed_records": { "type": "integer", "minimum": 0 },
+        "rewritten_files": { "type": "integer", "minimum": 0 },
+        "updated_references": { "type": "integer", "minimum": 0 },
+        "removed_preceding_references": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "archive_member_count": { "type": "integer", "minimum": 0 },
+    "archive_bytes": { "type": "integer", "minimum": 0 },
+    "archive_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "peak_accounted_memory_bytes": { "type": "integer", "minimum": 0 },
+    "warnings": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiangong.earth/contracts/reference-extraction-result.v1.schema.json",
+  "title": "TIDAS reference extraction result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "document_key",
+    "source_category",
+    "edges",
+    "issues"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "tidas.reference-extraction-result.v1"
+    },
+    "document_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_category": {
+      "type": "string",
+      "minLength": 1
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/issue"
+      }
+    }
+  },
+  "$defs": {
+    "role": {
+      "enum": [
+        "lcia_factor_flow",
+        "lifecycle_model_process",
+        "process_exchange_flow",
+        "support_document"
+      ]
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_key",
+        "source_category",
+        "target_category",
+        "target_uuid",
+        "requested_version_state",
+        "requested_version",
+        "requested_version_raw",
+        "reference_role",
+        "json_path",
+        "raw_type",
+        "uri"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "tidas.reference-edge.v1"
+        },
+        "document_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_category": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target_category": {
+          "enum": [
+            "contacts",
+            "flowproperties",
+            "flows",
+            "lciamethods",
+            "lifecyclemodels",
+            "processes",
+            "sources",
+            "unitgroups"
+          ]
+        },
+        "target_uuid": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requested_version_state": {
+          "enum": [
+            "omitted",
+            "explicit",
+            "invalid"
+          ]
+        },
+        "requested_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "requested_version_raw": true,
+        "reference_role": {
+          "$ref": "#/$defs/role"
+        },
+        "json_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "raw_type": true,
+        "uri": true
+      }
+    },
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "issue_code",
+        "severity",
+        "document_key",
+        "source_category",
+        "json_path",
+        "reference_role",
+        "message",
+        "details"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "tidas.reference-extraction-issue.v1"
+        },
+        "issue_code": {
+          "enum": [
+            "reference_object_id_missing",
+            "reference_type_unresolved",
+            "reference_uuid_invalid",
+            "reference_version_invalid"
+          ]
+        },
+        "severity": {
+          "const": "error"
+        },
+        "document_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_category": {
+          "type": "string",
+          "minLength": 1
+        },
+        "json_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reference_role": {
+          "$ref": "#/$defs/role"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "details": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

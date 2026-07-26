@@ -34,9 +34,11 @@ checkPaths:
   - scripts/install-git-hooks.sh
   - scripts/install.sh
   - scripts/install.ps1
+  - scripts/publish-crates.sh
+  - scripts/sync-rust-package-assets.sh
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: 84dc90f
-lastReviewedNote: "Issue #125 adds deterministic executable distribution, pinned static XML dependencies, five-platform qualification, attestations, installers, and package-manager metadata."
+lastReviewedCommit: eed5ed2
+lastReviewedNote: "Issue #136 makes package tidas and every reusable domain crate self-contained and adds checksum-safe coordinated crates.io publication ahead of GitHub Release."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -58,7 +60,7 @@ until all #117 exit gates pass.
 | --- | --- |
 | `crates/tidas-contracts` | versioned operation reports, diagnostics, artifact references, completeness, and exit-code classes |
 | `crates/tidas-runtime` | cancellation, explicit memory reservations, bounded queues, and streaming JSONL spooling |
-| `crates/tidas-assets` | offline executable-asset embedding, classification, integrity checking, and fingerprinting |
+| root package `tidas-assets`, source in `crates/tidas-assets` | offline executable-asset embedding, classification, integrity checking, and fingerprinting; the package include allowlist carries the authoritative root assets directly |
 | `crates/tidas-conversion` | deterministic bidirectional TIDAS JSON/eILCD XML transformation, envelope sidecars, atomic directory publication, and conversion reports |
 | `crates/tidas-import` | bounded external-format detection/parsing, disk-backed canonical storage, deterministic TIDAS/ILCD publication, process bundles, expert mapping CSV, and import reports |
 | `crates/tidas-export` | repeatable-read PostgreSQL extraction, TIDAS/eILCD serialization, version normalization, S3-compatible streaming, and deterministic atomic ZIP publication |
@@ -68,9 +70,10 @@ until all #117 exit gates pass.
 | `crates/tidas-rulesets` | schema-validated methodology/ruleset catalog, referential integrity, selection, and deterministic fingerprinting |
 | `crates/tidas-validation` | offline TIDAS JSON and ILCD/XSD validation, semantic indexes, batch protocol, deterministic traversal, and bounded issue/event spooling |
 | `crates/tidas-xml` | strict streaming XML inspection plus the compatibility boundary to XSD/XSLT engines |
-| `crates/tidas-cli` | the single `tidas` binary, final command tree, output routing, and thin domain dispatch |
+| `crates/tidas-cli` | crates.io package `tidas`, the single `tidas` binary, final command tree, output routing, and thin domain dispatch |
 | `docs/agents/cli-contract.md` | authoritative command, configuration precedence, stream, completion, invocation-context, and exit behavior |
 | `contracts/**` | checked-in JSON Schema for stable machine contracts |
+| `crates/*/contracts` | generated, checked contract copies that make each non-root published crate self-contained; sync checks keep root `contracts/**` authoritative |
 | `assets/asset-lock.v1.json` | exact path, kind, byte length, and SHA-256 ownership lock for every executable asset |
 | `.gitattributes` | LF checkout contract for byte-identical assets and machine contracts on every platform |
 | `migration/python-to-rust-owners.md` | frozen Python public-symbol inventory and dependency-ordered Rust owner map |
@@ -240,6 +243,7 @@ Review note, 2026-07-17: Issue #112 remains inside the existing validation and r
 | --- | --- |
 | `Cargo.toml`, `Cargo.lock`, `crates/**` | Rust workspace and final product implementation |
 | `crates/tidas-dist`, `packaging/**`, `scripts/install.*` | deterministic executable archives, checksum-first installers, and generated Homebrew/Winget metadata |
+| `scripts/publish-crates.sh`, `scripts/sync-rust-package-assets.sh` | public crate-set qualification, exact-version publication, checksum-safe retries, and packaged-contract parity |
 | `contracts/**` | stable machine-readable Rust report, invocation, conversion, import, export, release, asset-lock, and spool contract schemas |
 | `assets/asset-lock.v1.json` | deterministic executable-asset ownership and integrity lock |
 | `.gitattributes` | cross-platform LF checkout normalization for hashed inputs |
@@ -331,6 +335,14 @@ Foundry gates without moving gate execution logic into this repository.
   SBOM, and attested through GitHub OIDC/Sigstore
 - tag publication requires `v<workspace-version>`, refuses to modify an
   existing GitHub Release, and publishes only the already-qualified archives
+- package `tidas` and all reusable domain crates publish as one exact-version
+  crates.io set; `tidas-dist` remains unpublished repository tooling
+- pull requests verify every generated crate from its packaged contents and
+  perform a multi-package dry-run without credentials; tag publication alone
+  reads `CARGO_REGISTRY_TOKEN`
+- partial tag reruns skip only an existing byte-identical crate version; any
+  crates.io checksum mismatch fails closed, and GitHub Release publication
+  waits for the complete registry set
 - `tidas-dist metadata` renders Homebrew and Winget manifests from those exact
   checksum sidecars; external tap creation and Winget community submission
   remain separately approved publication actions

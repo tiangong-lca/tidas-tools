@@ -5,7 +5,12 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+homepage.workspace = true
+readme.workspace = true
+description = "Stable machine-report and exit contracts for the TIDAS Rust toolchain"
+keywords = ["tidas", "lca", "contracts", "serde"]
+categories = ["science", "data-structures"]
+publish = ["crates-io"]
 
 [dependencies]
 serde.workspace = true

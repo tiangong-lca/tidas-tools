@@ -5,10 +5,14 @@ use tidas_runtime::SpoolSummaryV1;
 
 pub const VALIDATION_ISSUE_EVENT_SCHEMA_V1: &str = "tidas.validation-issue-event.v1";
 pub const VALIDATION_SUMMARY_SCHEMA_V1: &str = "tidas.validation-summary.v1";
-pub const VALIDATION_ISSUE_EVENT_JSON_SCHEMA_V1: &str =
-    include_str!("../../../contracts/validation-issue-event.v1.schema.json");
-pub const VALIDATION_SUMMARY_JSON_SCHEMA_V1: &str =
-    include_str!("../../../contracts/validation-summary.v1.schema.json");
+pub const VALIDATION_ISSUE_EVENT_JSON_SCHEMA_V1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/contracts/validation-issue-event.v1.schema.json"
+));
+pub const VALIDATION_SUMMARY_JSON_SCHEMA_V1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/contracts/validation-summary.v1.schema.json"
+));
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "kebab-case")]

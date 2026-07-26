@@ -5,7 +5,12 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+homepage.workspace = true
+readme.workspace = true
+description = "Bounded external LCA format import pipelines for TIDAS and eILCD"
+keywords = ["tidas", "lca", "import", "xml"]
+categories = ["science", "parser-implementations"]
+publish = ["crates-io"]
 
 [dependencies]
 bigdecimal.workspace = true
@@ -17,10 +22,10 @@ serde_json = { workspace = true, features = ["arbitrary_precision", "preserve_or
 sha2.workspace = true
 tempfile.workspace = true
 thiserror.workspace = true
-tidas-assets = { path = "../tidas-assets" }
-tidas-conversion = { path = "../tidas-conversion" }
-tidas-runtime = { path = "../tidas-runtime" }
-tidas-validation = { path = "../tidas-validation" }
+tidas-assets = { version = "=0.1.0", path = "../.." }
+tidas-conversion = { version = "=0.1.0", path = "../tidas-conversion" }
+tidas-runtime = { version = "=0.1.0", path = "../tidas-runtime" }
+tidas-validation = { version = "=0.1.0", path = "../tidas-validation" }
 uuid.workspace = true
 walkdir.workspace = true
 zip.workspace = true

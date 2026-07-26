@@ -25,9 +25,11 @@ checkPaths:
   - src/tidas_tools/**
   - .github/workflows/**
   - scripts/install.*
+  - scripts/publish-crates.sh
+  - scripts/sync-rust-package-assets.sh
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: 84dc90f
-lastReviewedNote: "Issue #125 将五平台原生制品、可复现归档、校验和、SBOM/attestation、安装器与包管理元数据写入当前用户指南。"
+lastReviewedCommit: eed5ed2
+lastReviewedNote: "Issue #136 增加 cargo install tidas 源码安装渠道，并在不可变 GitHub Release 前协调发布完整 crates.io crate 集合。"
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -38,10 +40,11 @@ related:
 
 # TianGong TIDAS Tools 使用说明
 
-[![PyPI](https://img.shields.io/pypi/v/tidas-tools.svg)][pypi status]
-[![Python Version](https://img.shields.io/pypi/pyversions/tidas-tools)][pypi status]
+[![crates.io](https://img.shields.io/crates/v/tidas.svg)][crates.io]
+[![GitHub Release](https://img.shields.io/github/v/release/tiangong-lca/tidas-tools)][releases]
 
-[pypi status]: https://pypi.org/project/tidas-tools/
+[crates.io]: https://crates.io/crates/tidas
+[releases]: https://github.com/tiangong-lca/tidas-tools/releases
 
 [English](https://github.com/tiangong-lca/tidas-tools/blob/main/README.md) | [中文](https://github.com/tiangong-lca/tidas-tools/blob/main/README_CN.md)
 
@@ -58,26 +61,26 @@ TIDAS/eILCD 转换、外部格式导入、数据库导出、确定性 release co
 
 ```bash
 cargo build --workspace
-cargo run -p tidas-cli --bin tidas -- --help
-cargo run -p tidas-cli --bin tidas -- --format json version
-cargo run -p tidas-cli --bin tidas -- convert <TIDAS数据包目录> \
+cargo run -p tidas --bin tidas -- --help
+cargo run -p tidas --bin tidas -- --format json version
+cargo run -p tidas --bin tidas -- convert <TIDAS数据包目录> \
   --output <eILCD数据包目录> --to ilcd --format json
-cargo run -p tidas-cli --bin tidas -- convert <eILCD数据目录> \
+cargo run -p tidas --bin tidas -- convert <eILCD数据目录> \
   --output <TIDAS数据包目录> --to tidas --format json
-cargo run -p tidas-cli --bin tidas -- import <源文件或目录> \
+cargo run -p tidas --bin tidas -- import <源文件或目录> \
   --output <导入输出目录> --target both --write-mapping --format json
-cargo run -p tidas-cli --bin tidas -- export \
+cargo run -p tidas --bin tidas -- export \
   --output <数据包.zip> --skip-external-docs --format json
-cargo run -p tidas-cli --bin tidas -- validate <数据包目录> \
+cargo run -p tidas --bin tidas -- validate <数据包目录> \
   --issues <issues.jsonl> --format json
-cargo run -p tidas-cli --bin tidas -- validate <ILCD目录> \
+cargo run -p tidas --bin tidas -- validate <ILCD目录> \
   --input-format ilcd-xml --issues <issues.jsonl> --format json
-cargo run -p tidas-cli --bin tidas -- release build-packages \
+cargo run -p tidas --bin tidas -- release build-packages \
   --tidas-dir <canonical-TIDAS目录> \
   --dataset-index <canonical-dataset-index.json> \
   --output-dir <release目录> --format json
-cargo run -p tidas-cli --bin tidas -- ruleset --format json
-cargo run -p tidas-cli --bin tidas -- --completion bash > tidas.bash
+cargo run -p tidas --bin tidas -- ruleset --format json
+cargo run -p tidas --bin tidas -- --completion bash > tidas.bash
 cargo run -p tidas-assets --bin tidas-asset-lock -- check
 cargo run -p tidas-dist -- version
 ```
@@ -120,12 +123,27 @@ stdout 的情况下持久化报告。默认计入内存预算为 512 MiB，有�
 
 ## 原生分发
 
+预构建的 GitHub 归档是面向最终用户的主要渠道；其中已包含原生 XML 依赖，运行时
+不需要 Rust 或开发工具链。
 原生 release workflow 从同一个精确的 `tidas` binary 构建并验证 Linux
 x86_64/ARM64、macOS Intel/Apple Silicon 与 Windows x86_64 制品。每个平台均
 重复构建归档并逐字节比较，验证 SHA-256，执行打包后的 `version`、help、JSON
 `version` 与 `ruleset` 探针，并生成 SPDX SBOM 和 GitHub OIDC
 provenance/SBOM attestation。固定版本且静态链接的 libxml2/libxslt 使运行时
 不依赖 Homebrew、vcpkg、Python、Java、Node.js 或开发工具链。
+
+同一个 `v<version>` release 会先把 `tidas` 源码包与全部可复用领域 crates
+发布到 crates.io，再创建不可变的 GitHub Release。已经安装 Rust 1.88+ 以及平台
+libxml2/libxslt 开发依赖的开发者，也可从源码安装唯一的统一 executable：
+
+```bash
+cargo install tidas --version 0.1.0 --locked
+```
+
+全部公开 workspace crates 使用完全相同的精确版本，避免 Cargo 混用不兼容的领域
+release；`tidas-dist` 始终是仓库内部 release tooling，不会发布。Pull request 会在
+无凭据条件下执行完整 multi-package `cargo package` 验证与 crates.io dry-run；
+只有 tag 发布 job 能读取 `CARGO_REGISTRY_TOKEN`。
 
 原生版本发布后，可安装明确且不可变的版本：
 

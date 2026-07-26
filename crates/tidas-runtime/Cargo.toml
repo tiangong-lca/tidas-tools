@@ -5,7 +5,12 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+homepage.workspace = true
+readme.workspace = true
+description = "Bounded queues, cancellation, memory budgets, and deterministic spooling for TIDAS"
+keywords = ["tidas", "lca", "streaming", "runtime"]
+categories = ["concurrency", "science"]
+publish = ["crates-io"]
 
 [dependencies]
 crossbeam-channel.workspace = true

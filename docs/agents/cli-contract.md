@@ -27,8 +27,8 @@ checkPaths:
   - README.md
   - README_CN.md
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: 84dc90f
-lastReviewedNote: "Reviewed for Issue #125 native distribution: the packaged executable preserves the existing seven-command, output, and exit contract without adding an installer command."
+lastReviewedCommit: eed5ed2
+lastReviewedNote: "Reviewed for Issue #136 crates.io publication: package tidas installs the same single binary and does not change the seven-command, output, or exit contract."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -60,6 +60,10 @@ Shell completion generation is a global action, not an eighth command:
 tidas --completion bash > tidas.bash
 ```
 
+The crates.io package name is also `tidas`; `cargo install tidas` installs this
+single executable. The source-install channel does not add another command or
+legacy alias.
+
 The old Python executable names are not aliases. All seven commands dispatch
 to Rust domain crates and never invoke Python. `unavailable` (69) remains a
 reserved stable exit class for a known future Rust capability that is exposed
@@ -67,7 +71,7 @@ before implementation.
 
 ## Adapter boundary
 
-`crates/tidas-cli` owns parsing, configuration selection, invocation context,
+Package `tidas` under `crates/tidas-cli` owns parsing, configuration selection, invocation context,
 process cancellation wiring, output routing, help, and completions. It does
 not own conversion, import, export, validation, release, or ruleset domain
 logic. Functional commands receive a cancellation token, an explicit memory

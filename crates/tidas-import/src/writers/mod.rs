@@ -38,8 +38,10 @@ pub(crate) fn compliance_source_id_for_import() -> String {
 }
 
 pub const IMPORT_PACKAGE_REPORT_SCHEMA_V1: &str = "tidas.import-package-report.v1";
-pub const IMPORT_PACKAGE_REPORT_JSON_SCHEMA_V1: &str =
-    include_str!("../../../../contracts/import-package-report.v1.schema.json");
+pub const IMPORT_PACKAGE_REPORT_JSON_SCHEMA_V1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/contracts/import-package-report.v1.schema.json"
+));
 const CATEGORY_ORDER: [&str; 8] = [
     "contacts",
     "sources",

@@ -2,7 +2,7 @@ use std::path::Path;
 
 use tidas_assets::{check_filesystem_lock, write_lock};
 
-const REPO_ROOT: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../..");
+const REPO_ROOT: &str = env!("CARGO_MANIFEST_DIR");
 
 fn main() {
     let action = std::env::args()

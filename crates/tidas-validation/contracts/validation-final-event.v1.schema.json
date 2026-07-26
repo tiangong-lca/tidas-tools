@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiangong.earth/contracts/tidas/validation-final-event.v1.schema.json",
+  "title": "TIDAS document validation final event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "schema_version",
+    "protocol",
+    "profile",
+    "completed",
+    "summary",
+    "logical_issue_stream_sha256",
+    "fingerprints"
+  ],
+  "properties": {
+    "type": {
+      "const": "final"
+    },
+    "schema_version": {
+      "const": "tidas.validation-final-event.v1"
+    },
+    "protocol": {
+      "const": "document-validation-batch.v1"
+    },
+    "profile": {
+      "const": "tidas-document-conformance.v1"
+    },
+    "completed": {
+      "const": true
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_count",
+        "issue_count",
+        "error_count",
+        "warning_count",
+        "info_count"
+      ],
+      "properties": {
+        "document_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "issue_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "error_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "warning_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "info_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "logical_issue_stream_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "fingerprints": {
+      "$ref": "validation-describe.v1.schema.json"
+    }
+  }
+}

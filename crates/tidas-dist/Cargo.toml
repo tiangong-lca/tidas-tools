@@ -5,6 +5,9 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
+homepage.workspace = true
+readme.workspace = true
+description = "Repository-internal deterministic native distribution tooling for tidas"
 publish = false
 
 [[bin]]

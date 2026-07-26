@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiangong.earth/schemas/tidas/conversion-report.v1.schema.json",
+  "title": "TIDAS conversion report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "direction",
+    "converted_file_count",
+    "copied_file_count",
+    "asset_file_count",
+    "envelope_sidecar_count",
+    "input_bytes",
+    "output_bytes",
+    "output_tree_sha256",
+    "asset_fingerprint",
+    "peak_accounted_memory_bytes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "tidas.conversion-report.v1"
+    },
+    "direction": {
+      "enum": ["tidas-to-ilcd", "ilcd-to-tidas"]
+    },
+    "converted_file_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "copied_file_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "asset_file_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "envelope_sidecar_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "input_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "output_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "output_tree_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "asset_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "peak_accounted_memory_bytes": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}
