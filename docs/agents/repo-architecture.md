@@ -32,8 +32,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: 812f9f4
-lastReviewedNote: "Issue #122 keeps canonical import spools disk-backed, makes replacement rollback-safe, and closes bundle writers before atomic publication across Unix and Windows."
+lastReviewedCommit: d5cd7fd
+lastReviewedNote: "Issue #123 adds the native export owner for repeatable-read PostgreSQL extraction, bounded S3 streaming, version normalization, and deterministic atomic ZIP publication."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -58,6 +58,7 @@ until all #117 exit gates pass.
 | `crates/tidas-assets` | offline executable-asset embedding, classification, integrity checking, and fingerprinting |
 | `crates/tidas-conversion` | deterministic bidirectional TIDAS JSON/eILCD XML transformation, envelope sidecars, atomic directory publication, and conversion reports |
 | `crates/tidas-import` | bounded external-format detection/parsing, disk-backed canonical storage, deterministic TIDAS/ILCD publication, process bundles, expert mapping CSV, and import reports |
+| `crates/tidas-export` | repeatable-read PostgreSQL extraction, TIDAS/eILCD serialization, version normalization, S3-compatible streaming, and deterministic atomic ZIP publication |
 | `crates/tidas-references` | side-effect-free, version-preserving reference extraction, role classification, and malformed-reference contracts |
 | `crates/tidas-rulesets` | schema-validated methodology/ruleset catalog, referential integrity, selection, and deterministic fingerprinting |
 | `crates/tidas-validation` | offline TIDAS JSON and ILCD/XSD validation, semantic indexes, batch protocol, deterministic traversal, and bounded issue/event spooling |
@@ -70,18 +71,21 @@ until all #117 exit gates pass.
 | `migration/python-to-rust-owners.md` | frozen Python public-symbol inventory and dependency-ordered Rust owner map |
 
 The complete conversion domain now lives in `tidas-conversion`; native external
-import lives in `tidas-import`; and the complete validation domain lives in
+import lives in `tidas-import`; native database/package export lives in
+`tidas-export`; and the complete validation domain lives in
 `tidas-validation`, with packaged methodology metadata isolated in
 `tidas-rulesets` and reusable reference extraction isolated in
-`tidas-references`. Later issues add export and release domain crates. The CLI
-crate must not absorb their logic.
+`tidas-references`. A later issue adds the release domain crate. The CLI crate
+must not absorb domain logic.
 
 The command tree is fixed to `convert`, `import`, `export`, `validate`,
 `release`, `ruleset`, and `version`. No old executable alias or Python fallback
 is present. Until a domain slice lands, its Rust command returns the stable
 `unavailable` exit class (69). `convert` atomically transforms TIDAS JSON and
 eILCD XML package trees; `import` detects and maps supported external LCA
-formats into validated TIDAS and optional ILCD outputs; `validate` accepts
+formats into validated TIDAS and optional ILCD outputs; `export` streams
+PostgreSQL records and optional S3-compatible documents into deterministic
+TIDAS/eILCD ZIPs; `validate` accepts
 native TIDAS JSON packages, ILCD XML packages, and
 `document-validation-batch.v1`; `ruleset` validates and inspects the
 integrity-locked methodology catalog. None invokes Python.
@@ -225,7 +229,7 @@ Review note, 2026-07-17: Issue #112 remains inside the existing validation and r
 | Path group | Role |
 | --- | --- |
 | `Cargo.toml`, `Cargo.lock`, `crates/**` | Rust workspace and final product implementation |
-| `contracts/**` | stable machine-readable Rust report, invocation, conversion, import, asset-lock, and spool contract schemas |
+| `contracts/**` | stable machine-readable Rust report, invocation, conversion, import, export, asset-lock, and spool contract schemas |
 | `assets/asset-lock.v1.json` | deterministic executable-asset ownership and integrity lock |
 | `.gitattributes` | cross-platform LF checkout normalization for hashed inputs |
 | `migration/**` | tracked migration inventory and ownership decisions |

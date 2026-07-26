@@ -24,7 +24,8 @@ checkPaths:
   - src/tidas_tools/**
   - .github/workflows/**
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: a43f761
+lastReviewedCommit: d5cd7fd
+lastReviewedNote: "Issue #123 将原生数据库/S3 导出、确定性 ZIP、凭据脱敏与本地验证命令写入当前用户指南。"
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -62,6 +63,8 @@ cargo run -p tidas-cli --bin tidas -- convert <eILCD数据目录> \
   --output <TIDAS数据包目录> --to tidas --format json
 cargo run -p tidas-cli --bin tidas -- import <源文件或目录> \
   --output <导入输出目录> --target both --write-mapping --format json
+cargo run -p tidas-cli --bin tidas -- export \
+  --output <数据包.zip> --skip-external-docs --format json
 cargo run -p tidas-cli --bin tidas -- validate <数据包目录> \
   --issues <issues.jsonl> --format json
 cargo run -p tidas-cli --bin tidas -- validate <ILCD目录> \
@@ -72,9 +75,8 @@ cargo run -p tidas-assets --bin tidas-asset-lock -- check
 ```
 
 最终命令树固定为 `convert`、`import`、`export`、`validate`、`release`、
-`ruleset` 和 `version`。`convert`、`import`、`version`、`validate` 与
-`ruleset` 已可用；尚未迁移的 `export` 与 `release` 会明确返回 `unavailable`（退出码
-`69`），绝不调用 Python 回退。
+`ruleset` 和 `version`。除 `release` 外均已可用；`release` 会明确返回
+`unavailable`（退出码 `69`），绝不调用 Python 回退。
 
 原生导入支持 EcoSpold 1/2、SimaPro CSV、openLCA JSON-LD、openLCA process
 XLSX 与 ILCD 文件、目录或 ZIP 包。默认通过有界签名检测源格式，也可使用
@@ -89,6 +91,12 @@ XLSX 与 ILCD 文件、目录或 ZIP 包。默认通过有界签名检测源格�
 的 TIDAS 文档使用确定性的 `.tidas-envelope.json` sidecar，使 eILCD XML 保持单根，
 反向转换时再无损恢复原包络。遍历拒绝符号链接和 XML 1.0 非法字符；相同输入的成功
 运行会返回相同的输出树 SHA-256。
+
+原生导出在单个 repeatable-read、只读 PostgreSQL 快照中读取 active records，
+通过有界队列流式处理，归一化 TIDAS 数据包版本，可选流式下载 S3-compatible
+附加文档，并原子发布一个确定性 ZIP。数据库使用 `TIDAS_DATABASE_URL`；对象存储
+凭据只接受 `TIDAS_S3_ACCESS_KEY_ID`、`TIDAS_S3_SECRET_ACCESS_KEY` 与可选的
+`TIDAS_S3_SESSION_TOKEN`，其值不会进入报告或诊断。
 
 原生校验只解析内嵌且经过完整性锁验证的 schemas。通过 `--issues` 可把全部问题
 按确定顺序原子写入 JSONL；operation report 只保留有界计数与 spool hash，不在

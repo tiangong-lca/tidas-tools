@@ -38,8 +38,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: 812f9f4
-lastReviewedNote: "Reviewed for Issue #122 Windows import CI hardening: canonical replacement is rollback-safe and bundle writers close handles before atomic publication; product and CLI contracts are unchanged."
+lastReviewedCommit: d5cd7fd
+lastReviewedNote: "Reviewed for Issue #123: native export remains inside tidas-tools, uses reusable Rust domain logic plus the thin unified CLI, and does not change asset, SDK-dispatch, or workspace ownership boundaries."
 related:
   - .docpact/config.yaml
   - docs/agents/cli-contract.md

@@ -113,6 +113,9 @@ impl Cli {
                     Some(Commands::Import(arguments)) => {
                         arguments.validate(&Self::command())?;
                     }
+                    Some(Commands::Export(arguments)) => {
+                        arguments.validate(&Self::command())?;
+                    }
                     Some(Commands::Validate(arguments)) => {
                         arguments.validate(&Self::command())?;
                     }
@@ -180,7 +183,7 @@ pub enum Commands {
     /// Import supported external LCA formats into TIDAS.
     Import(ImportArgs),
     /// Export database records and external documents as a package.
-    Export,
+    Export(ExportArgs),
     /// Validate TIDAS JSON or eILCD/ILCD XML.
     Validate(ValidateArgs),
     /// Build and verify deterministic release packages.
@@ -197,7 +200,7 @@ impl Commands {
         match self {
             Self::Convert(_) => CommandNameV1::Convert,
             Self::Import(_) => CommandNameV1::Import,
-            Self::Export => CommandNameV1::Export,
+            Self::Export(_) => CommandNameV1::Export,
             Self::Validate(_) => CommandNameV1::Validate,
             Self::Release => CommandNameV1::Release,
             Self::Ruleset(_) => CommandNameV1::Ruleset,
@@ -306,6 +309,72 @@ pub enum ImportTargetArg {
     Tidas,
     Ilcd,
     Both,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, clap::Args)]
+#[command(
+    long_about = "Export the active records in a PostgreSQL TIDAS database into one deterministic TIDAS JSON or eILCD XML ZIP. Database rows are read through a repeatable-read, read-only snapshot and a bounded queue. Optional S3-compatible external documents are streamed into the package. Publication is atomic: failure or cancellation leaves an existing ZIP unchanged.",
+    after_help = "Examples:\n  TIDAS_DATABASE_URL='postgresql://…' tidas export --output ./tidas.zip\n  TIDAS_DATABASE_URL='postgresql://…' TIDAS_S3_ACCESS_KEY_ID='…' TIDAS_S3_SECRET_ACCESS_KEY='…' tidas export --output ./tidas.zip --external-docs-bucket documents --s3-endpoint http://127.0.0.1:9000\n  TIDAS_DATABASE_URL='postgresql://…' tidas export --output ./eilcd.zip --target ilcd --skip-external-docs --format json\n\nCredentials are accepted only through TIDAS_DATABASE_URL, TIDAS_S3_ACCESS_KEY_ID, TIDAS_S3_SECRET_ACCESS_KEY, and optional TIDAS_S3_SESSION_TOKEN. Reports and diagnostics never include their values."
+)]
+pub struct ExportArgs {
+    /// Deterministic ZIP path to publish atomically.
+    #[arg(long, value_name = "ZIP")]
+    pub output: PathBuf,
+
+    /// Exported record representation.
+    #[arg(long, value_enum, default_value_t = ExportTargetArg::Tidas)]
+    pub target: ExportTargetArg,
+
+    /// S3-compatible bucket containing external documents.
+    #[arg(long, env = "TIDAS_S3_BUCKET", value_name = "BUCKET")]
+    pub external_docs_bucket: Option<String>,
+
+    /// S3-compatible service region.
+    #[arg(long, env = "TIDAS_S3_REGION", default_value = "us-east-1")]
+    pub s3_region: String,
+
+    /// Custom S3-compatible endpoint, such as a local `MinIO` service.
+    #[arg(long, env = "TIDAS_S3_ENDPOINT", value_name = "URL")]
+    pub s3_endpoint: Option<String>,
+
+    /// Optional object-key prefix to export.
+    #[arg(long, env = "TIDAS_S3_PREFIX", value_name = "PREFIX")]
+    pub s3_prefix: Option<String>,
+
+    /// Intentionally omit all external documents.
+    #[arg(long)]
+    pub skip_external_docs: bool,
+
+    /// Timeout for each object-storage list, get, or chunk operation.
+    #[arg(
+        long,
+        default_value_t = 60,
+        value_parser = parse_positive_u64,
+        value_name = "SECONDS"
+    )]
+    pub network_timeout_seconds: u64,
+}
+
+impl ExportArgs {
+    fn validate(&self, command: &clap::Command) -> Result<(), clap::Error> {
+        if self.skip_external_docs
+            && (self.external_docs_bucket.is_some()
+                || self.s3_endpoint.is_some()
+                || self.s3_prefix.is_some())
+        {
+            return Err(command.clone().error(
+                ErrorKind::ArgumentConflict,
+                "--skip-external-docs cannot be combined with S3 bucket, endpoint, or prefix options",
+            ));
+        }
+        Ok(())
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
+pub enum ExportTargetArg {
+    Tidas,
+    Ilcd,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, clap::Args)]

@@ -19,20 +19,22 @@ checkPaths:
   - crates/tidas-cli/**
   - crates/tidas-conversion/**
   - crates/tidas-import/**
+  - crates/tidas-export/**
   - crates/tidas-contracts/**
   - crates/tidas-runtime/**
   - contracts/**
   - README.md
   - README_CN.md
 lastReviewedAt: 2026-07-26
-lastReviewedCommit: 812f9f4
-lastReviewedNote: "Reviewed for Issue #122 Windows bundle-publication hardening; the public command, report, output, warning, and exit-class contracts remain unchanged."
+lastReviewedCommit: d5cd7fd
+lastReviewedNote: "Reviewed for Issue #123 native export: added the credential-safe PostgreSQL/S3 surface, deterministic archive report, warning behavior, and exit classification."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
   - ./repo-architecture.md
   - ./repo-validation.md
   - ../../contracts/operation-report.v1.schema.json
+  - ../../contracts/export-report.v1.schema.json
 ---
 
 # Unified `tidas` CLI Contract
@@ -87,6 +89,21 @@ Configuration selection is recorded in `tidas.invocation-context.v1`.
 | `--progress <MODE>` | `TIDAS_PROGRESS` | `auto` |
 | `--memory-budget-mib <MIB>` | `TIDAS_MEMORY_BUDGET_MIB` | `512` |
 | `--queue-capacity <COUNT>` | `TIDAS_QUEUE_CAPACITY` | `256` |
+
+Export additionally uses:
+
+| Option | Environment | Default |
+| --- | --- | --- |
+| Database URL | `TIDAS_DATABASE_URL` | required |
+| `--external-docs-bucket <BUCKET>` | `TIDAS_S3_BUCKET` | none |
+| `--s3-region <REGION>` | `TIDAS_S3_REGION` | `us-east-1` |
+| `--s3-endpoint <URL>` | `TIDAS_S3_ENDPOINT` | none |
+| `--s3-prefix <PREFIX>` | `TIDAS_S3_PREFIX` | none |
+
+Database and object-storage secrets are environment-only. The S3 access key,
+secret key, and optional session token use `TIDAS_S3_ACCESS_KEY_ID`,
+`TIDAS_S3_SECRET_ACCESS_KEY`, and `TIDAS_S3_SESSION_TOKEN`. Their values are
+never serialized or included in diagnostics.
 
 Zero memory budgets and queue capacities are usage errors.
 
@@ -190,6 +207,43 @@ Adapters write to a disk-backed canonical store; exchanges and issues stream
 to bounded spools. Requested TIDAS/ILCD outputs, process bundles, mapping CSV,
 and reports are assembled in a sibling staging directory and become visible
 only through one atomic commit.
+
+## Native export surface
+
+Database export uses:
+
+```bash
+TIDAS_DATABASE_URL='postgresql://…' \
+  tidas export --output <PACKAGE.zip> --skip-external-docs --format json
+
+TIDAS_DATABASE_URL='postgresql://…' \
+TIDAS_S3_ACCESS_KEY_ID='…' \
+TIDAS_S3_SECRET_ACCESS_KEY='…' \
+  tidas export --output <PACKAGE.zip> \
+  --external-docs-bucket <BUCKET> --s3-endpoint <URL> --format json
+```
+
+`--target tidas` is the default; `--target ilcd` serializes database JSON as
+eILCD XML. The database is read through one repeatable-read, read-only
+snapshot. Only `state_code = 100` category records are exported. TIDAS output
+keeps the lexicographically latest fixed-width version per dataset, rewrites
+versioned references to that winner, and removes preceding-version references
+when multiple exported versions exist.
+
+The database producer and serializer communicate through the global bounded
+queue. Object bodies stream chunk by chunk under the shared memory budget.
+Object keys and database-derived paths must remain safe relative paths.
+Members are sorted and carry fixed ZIP timestamps, compression, and Unix mode
+metadata. Publication uses a sibling temporary file and rollback-capable
+atomic replacement.
+
+The operation report summary contains one `export` member conforming to
+`tidas.export-report.v1`, including record/document counts, normalization
+counts, archive bytes/hash, and peak accounted memory. Omitting storage
+configuration or using `--skip-external-docs` completes successfully with an
+`external_documents_skipped` diagnostic. Missing storage credentials are
+usage errors; unsafe source data is `data-issues`; database, storage, ZIP, and
+publication failures use I/O; cancellation uses 130.
 
 ## Native validation and ruleset surfaces
 

@@ -9,6 +9,14 @@ const TIDAS_ENVIRONMENT: &[&str] = &[
     "TIDAS_PROGRESS",
     "TIDAS_MEMORY_BUDGET_MIB",
     "TIDAS_QUEUE_CAPACITY",
+    "TIDAS_DATABASE_URL",
+    "TIDAS_S3_ACCESS_KEY_ID",
+    "TIDAS_S3_SECRET_ACCESS_KEY",
+    "TIDAS_S3_SESSION_TOKEN",
+    "TIDAS_S3_BUCKET",
+    "TIDAS_S3_REGION",
+    "TIDAS_S3_ENDPOINT",
+    "TIDAS_S3_PREFIX",
 ];
 
 fn tidas() -> Command {
@@ -209,15 +217,113 @@ fn completion_scripts_are_deterministic_and_do_not_add_a_product_command() {
 
 #[test]
 fn unavailable_commands_return_a_machine_report_without_python_fallback() {
-    for command in ["export", "release"] {
-        let (output, payload) = json_output(&[command, "--format", "json"]);
-        assert_eq!(output.status.code(), Some(69), "{command}");
-        assert!(output.stderr.is_empty(), "{command}");
-        assert_eq!(payload["command"], command);
-        assert_eq!(payload["exit_class"], "unavailable");
-        assert_eq!(payload["completeness"], "not-started");
-        assert_eq!(payload["diagnostics"][0]["code"], "feature_not_migrated");
+    let command = "release";
+    let (output, payload) = json_output(&[command, "--format", "json"]);
+    assert_eq!(output.status.code(), Some(69), "{command}");
+    assert!(output.stderr.is_empty(), "{command}");
+    assert_eq!(payload["command"], command);
+    assert_eq!(payload["exit_class"], "unavailable");
+    assert_eq!(payload["completeness"], "not-started");
+    assert_eq!(payload["diagnostics"][0]["code"], "feature_not_migrated");
+}
+
+#[test]
+fn export_help_exposes_native_bounded_and_credential_safe_contract() {
+    let output = tidas().args(["export", "--help"]).output().unwrap();
+    assert!(output.status.success());
+    assert!(output.stderr.is_empty());
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    for value in [
+        "--output",
+        "--target",
+        "--external-docs-bucket",
+        "--s3-region",
+        "--s3-endpoint",
+        "--s3-prefix",
+        "--skip-external-docs",
+        "--network-timeout-seconds",
+        "TIDAS_S3_ACCESS_KEY_ID",
+        "bounded work queue",
+        "atomic",
+    ] {
+        assert!(stdout.contains(value), "{value} missing from:\n{stdout}");
     }
+    assert!(stdout.contains("TIDAS_DATABASE_URL"));
+    assert!(!stdout.contains("--database-url"));
+    assert!(!stdout.contains("DB_PASSWORD"));
+    assert!(!stdout.contains("--aws-secret-access-key"));
+}
+
+#[test]
+fn export_rejects_missing_storage_credentials_without_connecting_or_leaking_values() {
+    let directory = tempfile::tempdir().unwrap();
+    let output = tidas()
+        .env(
+            "TIDAS_DATABASE_URL",
+            "postgresql://fixture-user:super-secret@127.0.0.1:1/fixture",
+        )
+        .args([
+            "export",
+            "--output",
+            directory.path().join("fixture.zip").to_str().unwrap(),
+            "--external-docs-bucket",
+            "fixture",
+            "--format",
+            "json",
+        ])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(64));
+    assert!(output.stderr.is_empty());
+    let text = String::from_utf8(output.stdout).unwrap();
+    assert!(text.contains("missing_export_credentials"));
+    assert!(!text.contains("super-secret"));
+    assert!(!text.contains("fixture-user"));
+}
+
+#[test]
+fn export_requires_database_credentials_as_an_environment_only_secret() {
+    let directory = tempfile::tempdir().unwrap();
+    let (output, payload) = json_output(&[
+        "export",
+        "--output",
+        directory.path().join("fixture.zip").to_str().unwrap(),
+        "--skip-external-docs",
+        "--format",
+        "json",
+    ]);
+    assert_eq!(output.status.code(), Some(64));
+    assert_eq!(
+        payload["diagnostics"][0]["code"],
+        "missing_database_credentials"
+    );
+    assert!(!directory.path().join("fixture.zip").exists());
+}
+
+#[test]
+fn export_database_failures_use_io_and_never_echo_connection_secrets() {
+    let directory = tempfile::tempdir().unwrap();
+    let output = tidas()
+        .env(
+            "TIDAS_DATABASE_URL",
+            "postgresql://fixture-user:super-secret@127.0.0.1:1/fixture?sslmode=disable",
+        )
+        .args([
+            "export",
+            "--output",
+            directory.path().join("fixture.zip").to_str().unwrap(),
+            "--skip-external-docs",
+            "--format",
+            "json",
+        ])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(74));
+    assert!(output.stderr.is_empty());
+    let text = String::from_utf8(output.stdout).unwrap();
+    assert!(text.contains("export_io_failed"));
+    assert!(!text.contains("super-secret"));
+    assert!(!text.contains("fixture-user"));
 }
 
 #[test]

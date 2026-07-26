@@ -2,11 +2,14 @@ mod args;
 mod context;
 mod output;
 
+use std::env;
 use std::process::ExitCode;
+use std::time::Duration;
 
 use args::{
-    Cli, Commands, ConversionTarget, ConvertArgs, ImportArgs, ImportSourceFormat, ImportTargetArg,
-    RulesetArgs, ValidateArgs, ValidationInputFormat, ValidationProtocol,
+    Cli, Commands, ConversionTarget, ConvertArgs, ExportArgs, ExportTargetArg, ImportArgs,
+    ImportSourceFormat, ImportTargetArg, RulesetArgs, ValidateArgs, ValidationInputFormat,
+    ValidationProtocol,
 };
 use clap::error::ErrorKind;
 use context::ExecutionContext;
@@ -19,6 +22,7 @@ use tidas_conversion::{
     ConversionDirection, ConversionError, ConversionProgressReporter, ConversionRequest,
     convert_directory,
 };
+use tidas_export::{ExportError, ExportFormat, ExportRequest, S3Config, SecretString, run_export};
 use tidas_import::{
     ImportCoreError, ImportExecutionError, ImportRequest, ImportTarget, PackageWriteError,
     SourceFormat, run_import,
@@ -98,17 +102,142 @@ fn dispatch(command: Commands, execution: &ExecutionContext) -> OperationReportV
     match command {
         Commands::Convert(arguments) => conversion_report(&arguments, execution),
         Commands::Import(arguments) => import_report(&arguments, execution),
+        Commands::Export(arguments) => export_report(&arguments, execution),
         Commands::Validate(arguments) => validation_report(&arguments, execution),
         Commands::Ruleset(arguments) => ruleset_report(&arguments),
         Commands::Version => version_report(execution),
-        other => OperationReportV1::unavailable(
-            other.name(),
+        release @ Commands::Release => OperationReportV1::unavailable(
+            release.name(),
             format!(
                 "Follow the `{}` Rust migration child Issue linked from tidas-tools#117.",
-                other.name().as_str()
+                release.name().as_str()
             ),
         ),
     }
+}
+
+fn export_report(arguments: &ExportArgs, execution: &ExecutionContext) -> OperationReportV1 {
+    let Some(database_url) = secret_environment("TIDAS_DATABASE_URL") else {
+        return OperationReportV1::failed(
+            CommandNameV1::Export,
+            ExitClass::Usage,
+            "missing_database_credentials",
+            "TIDAS_DATABASE_URL is required for database export.",
+        );
+    };
+    let mut request = ExportRequest::new(
+        SecretString::new(database_url),
+        arguments.output.clone(),
+        match arguments.target {
+            ExportTargetArg::Tidas => ExportFormat::Tidas,
+            ExportTargetArg::Ilcd => ExportFormat::Ilcd,
+        },
+        execution.cancellation.clone(),
+        execution.memory_budget.clone(),
+        execution.invocation.queue_capacity,
+    );
+    request.skip_external_documents = arguments.skip_external_docs;
+    request.network_timeout = Duration::from_secs(arguments.network_timeout_seconds);
+    if let Some(bucket) = &arguments.external_docs_bucket {
+        let Some(access_key_id) = secret_environment("TIDAS_S3_ACCESS_KEY_ID") else {
+            return OperationReportV1::failed(
+                CommandNameV1::Export,
+                ExitClass::Usage,
+                "missing_export_credentials",
+                "TIDAS_S3_ACCESS_KEY_ID is required when --external-docs-bucket is used.",
+            );
+        };
+        let Some(secret_access_key) = secret_environment("TIDAS_S3_SECRET_ACCESS_KEY") else {
+            return OperationReportV1::failed(
+                CommandNameV1::Export,
+                ExitClass::Usage,
+                "missing_export_credentials",
+                "TIDAS_S3_SECRET_ACCESS_KEY is required when --external-docs-bucket is used.",
+            );
+        };
+        request.external_documents = Some(S3Config {
+            bucket: bucket.clone(),
+            region: arguments.s3_region.clone(),
+            endpoint: arguments.s3_endpoint.clone(),
+            prefix: arguments.s3_prefix.clone(),
+            access_key_id: SecretString::new(access_key_id),
+            secret_access_key: SecretString::new(secret_access_key),
+            session_token: secret_environment("TIDAS_S3_SESSION_TOKEN").map(SecretString::new),
+        });
+    }
+    match run_export(&request) {
+        Ok(summary) => {
+            let mut report = OperationReportV1::succeeded(CommandNameV1::Export);
+            if let Ok(value) = serde_json::to_value(&summary) {
+                report.summary.insert("export".to_owned(), value);
+            } else {
+                return OperationReportV1::failed(
+                    CommandNameV1::Export,
+                    ExitClass::Internal,
+                    "export_summary_serialization_failed",
+                    "The native export summary could not be serialized.",
+                );
+            }
+            report.artifacts.push(ArtifactRefV1 {
+                path: arguments.output.to_string_lossy().into_owned(),
+                media_type: "application/zip".to_owned(),
+                sha256: Some(summary.archive_sha256.clone()),
+                bytes: Some(summary.archive_bytes),
+            });
+            if summary.external_documents_skipped {
+                report.diagnostics.push(DiagnosticV1::new(
+                    "external_documents_skipped",
+                    "The database package completed without external documents.",
+                ));
+            }
+            for warning in &summary.warnings {
+                report
+                    .diagnostics
+                    .push(DiagnosticV1::new("export_warning", warning));
+            }
+            report.next_actions.push(format!(
+                "Extract {} and validate the resulting package with `tidas validate`.",
+                arguments.output.display()
+            ));
+            report
+        }
+        Err(error)
+            if matches!(
+                runtime_error_in_chain(&error),
+                Some(RuntimeError::Cancelled)
+            ) =>
+        {
+            OperationReportV1::cancelled(CommandNameV1::Export)
+        }
+        Err(error) => failed_export_report(&error),
+    }
+}
+
+fn secret_environment(name: &str) -> Option<String> {
+    env::var(name).ok().filter(|value| !value.is_empty())
+}
+
+fn failed_export_report(error: &ExportError) -> OperationReportV1 {
+    let (exit_class, code) = match error {
+        ExportError::ZeroQueueCapacity => (ExitClass::Usage, "invalid_export_request"),
+        ExportError::UnsafePath(_) | ExportError::Json(_) | ExportError::Conversion(_) => {
+            (ExitClass::DataIssues, "export_source_invalid")
+        }
+        ExportError::DatabaseConnect(_)
+        | ExportError::DatabaseTlsRoots
+        | ExportError::Database(_)
+        | ExportError::StorageConfiguration(_)
+        | ExportError::Storage(_)
+        | ExportError::StorageTimeout
+        | ExportError::Zip(_)
+        | ExportError::OutputNotRegularFile(_)
+        | ExportError::Io(_)
+        | ExportError::CommitRollback { .. } => (ExitClass::Io, "export_io_failed"),
+        ExportError::DatabaseTask(_) | ExportError::RuntimeCreate(_) | ExportError::Runtime(_) => {
+            (ExitClass::Internal, "export_runtime_failed")
+        }
+    };
+    OperationReportV1::failed(CommandNameV1::Export, exit_class, code, error.to_string())
 }
 
 fn import_report(arguments: &ImportArgs, execution: &ExecutionContext) -> OperationReportV1 {
