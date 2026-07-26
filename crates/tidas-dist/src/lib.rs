@@ -105,6 +105,7 @@ pub fn package(request: &PackageRequest<'_>) -> Result<DistributionArtifactV1, D
     let staged_binary = root.join("bin").join(binary_name);
     fs::create_dir_all(staged_binary.parent().expect("binary has parent"))?;
     fs::copy(request.binary, &staged_binary)?;
+    #[cfg(unix)]
     set_executable(&staged_binary)?;
 
     let license_dir = root.join("share").join("licenses").join("tidas");
@@ -276,11 +277,6 @@ fn executable_name(target: &str) -> &'static str {
 fn set_executable(path: &Path) -> Result<(), DistError> {
     use std::os::unix::fs::PermissionsExt;
     fs::set_permissions(path, fs::Permissions::from_mode(0o755))?;
-    Ok(())
-}
-
-#[cfg(not(unix))]
-fn set_executable(_path: &Path) -> Result<(), DistError> {
     Ok(())
 }
 
