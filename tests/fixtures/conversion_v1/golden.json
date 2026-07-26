@@ -1,0 +1,142 @@
+{
+  "schema_version": "tidas.conversion-golden.v1",
+  "oracle": {
+    "implementation": "Python xmltodict",
+    "version": "1.0.4",
+    "note": "Frozen migration oracle. Rust CLI arguments and XML formatting may differ; parsed JSON semantics must match."
+  },
+  "xml_to_json": [
+    {
+      "name": "empty element",
+      "input": "<root/>",
+      "expected": {
+        "root": null
+      }
+    },
+    {
+      "name": "attributes and trimmed text",
+      "input": "<root a=\"1\" enabled=\"true\"> value </root>",
+      "expected": {
+        "root": {
+          "@a": "1",
+          "@enabled": "true",
+          "#text": "value"
+        }
+      }
+    },
+    {
+      "name": "repeated children",
+      "input": "<root><item id=\"1\">A</item><item id=\"2\">B</item></root>",
+      "expected": {
+        "root": {
+          "item": [
+            {
+              "@id": "1",
+              "#text": "A"
+            },
+            {
+              "@id": "2",
+              "#text": "B"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "namespace prefixes",
+      "input": "<p:root xmlns:p=\"urn:root\" xmlns:q=\"urn:child\"><q:item q:id=\"7\">text</q:item></p:root>",
+      "expected": {
+        "p:root": {
+          "@xmlns:p": "urn:root",
+          "@xmlns:q": "urn:child",
+          "q:item": {
+            "@q:id": "7",
+            "#text": "text"
+          }
+        }
+      }
+    },
+    {
+      "name": "mixed content",
+      "input": "<root> before <item>A &amp; B</item> after </root>",
+      "expected": {
+        "root": {
+          "item": "A & B",
+          "#text": "before  after"
+        }
+      }
+    },
+    {
+      "name": "numeric character references",
+      "input": "<root>A &#32; B &#x4E2D;</root>",
+      "expected": {
+        "root": "A   B 中"
+      }
+    }
+  ],
+  "json_to_xml": [
+    {
+      "name": "empty element",
+      "input": {
+        "root": null
+      },
+      "expected_reparsed": {
+        "root": null
+      }
+    },
+    {
+      "name": "attributes children and scalar stringification",
+      "input": {
+        "root": {
+          "@id": "7",
+          "string": "value",
+          "number": 1.25,
+          "scientific": 1.16e-06,
+          "enabled": true,
+          "missing": null,
+          "item": [
+            "A",
+            "B"
+          ]
+        }
+      },
+      "expected_reparsed": {
+        "root": {
+          "@id": "7",
+          "string": "value",
+          "number": "1.25",
+          "scientific": "1.16e-06",
+          "enabled": "true",
+          "missing": null,
+          "item": [
+            "A",
+            "B"
+          ]
+        }
+      }
+    },
+    {
+      "name": "namespaced document",
+      "input": {
+        "p:root": {
+          "@xmlns:p": "urn:root",
+          "@xmlns:q": "urn:child",
+          "q:item": {
+            "@q:id": "7",
+            "#text": "text"
+          }
+        }
+      },
+      "expected_reparsed": {
+        "p:root": {
+          "@xmlns:p": "urn:root",
+          "@xmlns:q": "urn:child",
+          "q:item": {
+            "@q:id": "7",
+            "#text": "text"
+          }
+        }
+      }
+    }
+  ]
+}

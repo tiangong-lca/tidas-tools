@@ -17,14 +17,15 @@ checkPaths:
   - Cargo.toml
   - Cargo.lock
   - crates/tidas-cli/**
+  - crates/tidas-conversion/**
   - crates/tidas-contracts/**
   - crates/tidas-runtime/**
   - contracts/**
   - README.md
   - README_CN.md
 lastReviewedAt: 2026-07-25
-lastReviewedCommit: 75d11c1aeec5e0973005eaadc1acb5a26931f894
-lastReviewedNote: "Issue #120 activates native TIDAS/ILCD validation with progress, ruleset inspection, and document-validation-batch.v1."
+lastReviewedCommit: 3c51461
+lastReviewedNote: "Issue #121 activates native convert with atomic output, stable reports, deterministic envelope sidecars, progress, and actionable validation handoff."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -98,15 +99,15 @@ Zero memory budgets and queue capacities are usage errors.
   confirmations use stderr.
 - `--report <PATH>` writes the complete report to a temporary sibling and then
   renames it into place; stdout remains empty.
-- future command-owned large artifacts use command-specific `--output` options,
+- command-owned large artifacts use command-specific `--output` options,
   so the global report path intentionally uses `--report`.
 - JSON mode never mixes logs, banners, or progress with stdout.
 
 `--progress auto` enables progress only for human output attached to a terminal.
-Native package and batch validation emit bounded start, periodic document/issue
-count, and completion updates on stderr. `--progress always` enables the same
-updates in JSON mode without contaminating stdout; `--progress never` disables
-them.
+Native conversion and package/batch validation emit bounded start, periodic
+file/document counts, and completion updates on stderr. `--progress always`
+enables the same updates in JSON mode without contaminating stdout;
+`--progress never` disables them.
 
 ## Machine contracts
 
@@ -130,6 +131,30 @@ change requires a new schema version.
 
 Canonical JSON is UTF-8, LF-terminated, deterministic for identical inputs,
 and contains no implicit timestamps, locale values, or unordered collections.
+
+## Native conversion surface
+
+Bidirectional package conversion uses:
+
+```bash
+tidas convert <INPUT_DIR> --output <OUTPUT_DIR> --to ilcd --format json
+tidas convert <INPUT_DIR> --output <OUTPUT_DIR> --to tidas --format json
+```
+
+The command never infers direction. It mirrors input under `OUTPUT_DIR/data`,
+copies non-domain package metadata, materializes the locked target assets, and
+publishes the whole directory atomically. Symlinks, malformed JSON/XML,
+multiple unknown roots, XML 1.0-invalid text, and malformed envelope sidecars
+are data issues; nested output is a usage error; missing paths and commit
+failures use the I/O class; cancellation uses 130.
+
+The operation report summary contains one `conversion` member conforming to
+`tidas.conversion-report.v1`. Its artifact is the output directory with total
+bytes and a cross-platform tree SHA-256. A deterministic
+`.tidas-envelope.json` sidecar preserves top-level TIDAS extension fields that
+cannot appear beside the single eILCD XML root; reverse conversion consumes
+and merges it. The report next action gives the exact `tidas validate
+OUTPUT/data --input-format ...` command.
 
 ## Native validation and ruleset surfaces
 

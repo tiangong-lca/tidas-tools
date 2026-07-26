@@ -38,8 +38,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-07-25
-lastReviewedCommit: 75d11c1aeec5e0973005eaadc1acb5a26931f894
-lastReviewedNote: "Issue #120 completes native TIDAS/ILCD validation, semantic/ruleset/reference contracts, progress, and the bounded document-validation-batch.v1 protocol."
+lastReviewedCommit: 3c51461
+lastReviewedNote: "Issue #121 activates native bidirectional conversion, deterministic envelope sidecars, atomic publication, and bounded package-scale proof."
 related:
   - .docpact/config.yaml
   - docs/agents/cli-contract.md
@@ -98,6 +98,7 @@ Keep these entry-level facts in `AGENTS.md`. Use `README.md`, `README_CN.md`, an
 - Rust workspace toolchain: Rust 1.88 or newer, Cargo resolver 3
 - final product entry point: `cargo run -p tidas-cli --bin tidas -- <subcommand>`
 - final command tree: `convert`, `import`, `export`, `validate`, `release`, `ruleset`, `version`
+- native package conversion: `cargo run -p tidas-cli --bin tidas -- convert <input-dir> --output <output-dir> --to ilcd|tidas --format json`
 - native package validation: `cargo run -p tidas-cli --bin tidas -- validate <package-dir> --input-format tidas-json|ilcd-xml --issues <issues.jsonl> --format json`
 - native batch validation: `cargo run -p tidas-cli --bin tidas -- validate <batch-dir> --protocol document-validation-batch.v1 --input-manifest <manifest.jsonl> --events <events.jsonl> --format json`
 - native ruleset inspection: `cargo run -p tidas-cli --bin tidas -- ruleset [--id <ruleset-id>] --format json`
@@ -129,6 +130,7 @@ The authoritative path-level ownership map lives in `.docpact/config.yaml`.
 At a human-readable level, this repo owns:
 
 - the Cargo workspace and final `tidas` binary under `Cargo.toml` and `crates/**`
+- native bidirectional conversion, deterministic envelope sidecars, atomic publication, and `tidas.conversion-report.v1` under `crates/tidas-conversion`, `contracts/conversion-report.v1.schema.json`, and `tests/fixtures/conversion_v1/**`
 - stable machine contracts under `contracts/**`
 - the complete executable asset inventory in `assets/asset-lock.v1.json`
 - the Python-to-Rust owner inventory under `migration/**`
@@ -172,6 +174,7 @@ Route those tasks to:
 - do not add legacy Rust executable aliases or a PyPI Rust wrapper
 - do not invoke Python from Rust; incomplete Rust commands must fail with the stable unavailable exit class
 - large-data paths must stream through bounded queues, explicit memory budgets, and cancellation-aware boundaries
+- conversion must reject symlinks and XML 1.0-invalid characters, preserve package metadata, and consume deterministic envelope sidecars on reverse conversion
 - native JSON Schema resolution is offline and may resolve only the embedded, integrity-locked TIDAS schema catalog
 - `assets/asset-lock.v1.json` is the integrity authority for executable schemas, methodologies, rulesets, indexes, XSD, XSLT, and XML reference assets
 - `.gitattributes` forces executable assets, machine contracts, source, and governed docs to LF so byte hashes are identical on Windows, macOS, and Linux

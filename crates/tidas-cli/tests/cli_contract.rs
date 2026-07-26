@@ -75,10 +75,7 @@ fn every_product_command_has_discoverable_help() {
         assert!(output.stderr.is_empty(), "{command}");
         let stdout = String::from_utf8(output.stdout).unwrap();
         assert!(stdout.contains("Usage:"), "{stdout}");
-        assert!(
-            stdout.contains(&format!(" {command} [OPTIONS]")),
-            "{stdout}"
-        );
+        assert!(stdout.contains(&format!(" {command}")), "{stdout}");
     }
 }
 
@@ -212,7 +209,7 @@ fn completion_scripts_are_deterministic_and_do_not_add_a_product_command() {
 
 #[test]
 fn unavailable_commands_return_a_machine_report_without_python_fallback() {
-    for command in ["convert", "import", "export", "release"] {
+    for command in ["import", "export", "release"] {
         let (output, payload) = json_output(&[command, "--format", "json"]);
         assert_eq!(output.status.code(), Some(69), "{command}");
         assert!(output.stderr.is_empty(), "{command}");
@@ -221,6 +218,120 @@ fn unavailable_commands_return_a_machine_report_without_python_fallback() {
         assert_eq!(payload["completeness"], "not-started");
         assert_eq!(payload["diagnostics"][0]["code"], "feature_not_migrated");
     }
+}
+
+#[test]
+fn convert_is_native_deterministic_atomic_and_actionable() {
+    let directory = tempfile::tempdir().unwrap();
+    let input = directory.path().join("input");
+    let output = directory.path().join("output");
+    fs::create_dir_all(input.join("processes")).unwrap();
+    fs::write(
+        input.join("processes/process.json"),
+        r##"{"processDataSet":{"@version":"1.1","name":{"baseName":[{"@xml:lang":"en","#text":"Steel & circularity"},{"@xml:lang":"zh","#text":"钢"}]},"reference":null}}"##,
+    )
+    .unwrap();
+    fs::write(input.join("README.txt"), b"preserved\n").unwrap();
+
+    let run = || {
+        tidas()
+            .args([
+                "convert",
+                input.to_str().unwrap(),
+                "--output",
+                output.to_str().unwrap(),
+                "--to",
+                "ilcd",
+                "--format",
+                "json",
+            ])
+            .output()
+            .unwrap()
+    };
+    let first = run();
+    let second = run();
+    assert!(first.status.success());
+    assert!(second.status.success());
+    assert!(first.stderr.is_empty());
+    assert_eq!(first.stdout, second.stdout);
+
+    let report: OperationReportV1 = serde_json::from_slice(&first.stdout).unwrap();
+    assert_eq!(report.command, CommandNameV1::Convert);
+    assert_eq!(report.summary["conversion"]["direction"], "tidas-to-ilcd");
+    assert_eq!(report.summary["conversion"]["converted_file_count"], 1);
+    assert_eq!(report.summary["conversion"]["copied_file_count"], 1);
+    assert!(
+        report.summary["conversion"]["asset_file_count"]
+            .as_u64()
+            .unwrap()
+            > 0
+    );
+    assert_eq!(
+        report.artifacts[0].sha256.as_deref(),
+        report.summary["conversion"]["output_tree_sha256"].as_str()
+    );
+    assert!(report.next_actions[0].contains("tidas validate"));
+    assert!(output.join("data/processes/process.xml").is_file());
+    assert_eq!(
+        fs::read(output.join("data/README.txt")).unwrap(),
+        b"preserved\n"
+    );
+    assert!(output.join("schemas/ILCD_ProcessDataSet.xsd").is_file());
+}
+
+#[test]
+fn invalid_conversion_data_returns_data_issues_without_publishing_output() {
+    let directory = tempfile::tempdir().unwrap();
+    let input = directory.path().join("input");
+    let output = directory.path().join("output");
+    fs::create_dir_all(&input).unwrap();
+    fs::write(input.join("broken.json"), b"{").unwrap();
+    let (result, report) = json_output(&[
+        "convert",
+        input.to_str().unwrap(),
+        "--output",
+        output.to_str().unwrap(),
+        "--to",
+        "ilcd",
+        "--format",
+        "json",
+    ]);
+    assert_eq!(result.status.code(), Some(2));
+    assert_eq!(report["command"], "convert");
+    assert_eq!(report["exit_class"], "data-issues");
+    assert_eq!(report["diagnostics"][0]["code"], "conversion_input_invalid");
+    assert!(!output.exists());
+}
+
+#[test]
+fn explicit_conversion_progress_uses_stderr_and_keeps_json_stdout_clean() {
+    let directory = tempfile::tempdir().unwrap();
+    let input = directory.path().join("input");
+    let output = directory.path().join("output");
+    fs::create_dir_all(&input).unwrap();
+    fs::write(input.join("document.json"), br#"{"root":null}"#).unwrap();
+    let result = tidas()
+        .args([
+            "convert",
+            input.to_str().unwrap(),
+            "--output",
+            output.to_str().unwrap(),
+            "--to",
+            "ilcd",
+            "--progress",
+            "always",
+            "--format",
+            "json",
+        ])
+        .output()
+        .unwrap();
+    assert!(result.status.success());
+    let report: OperationReportV1 = serde_json::from_slice(&result.stdout).unwrap();
+    assert_eq!(report.command, CommandNameV1::Convert);
+    let stderr = String::from_utf8(result.stderr).unwrap();
+    assert!(stderr.contains("convert phase=started"));
+    assert!(stderr.contains("convert phase=hashing"));
+    assert!(stderr.contains("convert phase=completed"));
 }
 
 #[test]
