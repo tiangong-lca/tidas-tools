@@ -27,7 +27,7 @@ checkPaths:
   - README.md
   - README_CN.md
 lastReviewedAt: 2026-07-27
-lastReviewedCommit: 6a0db19c3a7c8f92c2ee455ae83a158c5a3f91e1
+lastReviewedCommit: 522c4e86f6d6934fed3f2e0940cb3c46cf7569d6
 lastReviewedNote: "Reviewed for Issue #142 phase 1: the v0.1.1 exact version-set preparation does not change the seven-command, report, output-channel, or exit contract."
 related:
   - ../../AGENTS.md

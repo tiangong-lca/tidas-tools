@@ -39,7 +39,7 @@ checkPaths:
   - scripts/validate-release-request.sh
   - scripts/sync-rust-package-assets.sh
 lastReviewedAt: 2026-07-27
-lastReviewedCommit: 6a0db19c3a7c8f92c2ee455ae83a158c5a3f91e1
+lastReviewedCommit: 522c4e86f6d6934fed3f2e0940cb3c46cf7569d6
 lastReviewedNote: "Issue #142 phase 1 prepares the exact v0.1.1 Rust set while keeping tidas-dist private and deferring the immutable Release Request until the preparation merge commit exists."
 related:
   - ../../AGENTS.md

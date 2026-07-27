@@ -29,8 +29,8 @@ checkPaths:
   - scripts/test-release-request.sh
   - scripts/validate-release-request.sh
   - scripts/sync-rust-package-assets.sh
-lastReviewedAt: 2026-07-26
-lastReviewedCommit: eed5ed2
+lastReviewedAt: 2026-07-27
+lastReviewedCommit: 522c4e86f6d6934fed3f2e0940cb3c46cf7569d6
 lastReviewedNote: "Issue #138 将经过评审、只追加的 Release Request PR 设为精确 native tag 与 release dispatch 的授权入口。"
 related:
   - AGENTS.md
