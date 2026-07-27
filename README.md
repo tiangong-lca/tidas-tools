@@ -24,8 +24,8 @@ checkPaths:
   - scripts/validate-release-request.sh
   - scripts/sync-rust-package-assets.sh
   - .github/workflows/**
-lastReviewedAt: 2026-07-26
-lastReviewedCommit: eed5ed2
+lastReviewedAt: 2026-07-27
+lastReviewedCommit: 522c4e86f6d6934fed3f2e0940cb3c46cf7569d6
 lastReviewedNote: "Issue #138 makes a reviewed append-only Release Request PR the authorization for an exact native tag and release dispatch."
 related:
   - AGENTS.md
