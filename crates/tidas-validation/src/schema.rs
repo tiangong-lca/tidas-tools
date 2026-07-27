@@ -8,7 +8,7 @@ use tidas_assets::{AssetKind, bundled_assets};
 
 use crate::contracts::ValidationIssueV1;
 
-const SCHEMA_ASSET_PREFIX: &str = "src/tidas_tools/tidas/schemas/";
+const SCHEMA_ASSET_PREFIX: &str = "assets/tidas/schemas/";
 const SCHEMA_BASE_URI: &str = "https://tiangong.earth/assets/tidas/schemas/";
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
@@ -242,7 +242,7 @@ mod tests {
         );
         for (language, catalog) in [
             ("en", SchemaCatalog::load().unwrap()),
-            ("zh", schema_catalog("src/tidas_tools/tidas/schemas_zh/")),
+            ("zh", schema_catalog("assets/tidas/schemas_zh/")),
         ] {
             let validator = catalog.validator(TidasCategory::Flows).unwrap();
             for case in fixtures["cases"].as_array().unwrap() {

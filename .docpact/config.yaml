@@ -1,16 +1,9 @@
 version: 1
 layout: repo
 lastReviewedAt: "2026-07-27"
-lastReviewedCommit: "522c4e86f6d6934fed3f2e0940cb3c46cf7569d6"
-# Native Rust domain ownership includes bounded conversion, import, export,
-# release packaging, validation, references, rulesets, assets, runtime, and
-# the thin unified CLI.
-# Export owns repeatable-read PostgreSQL extraction, version normalization,
-# S3-compatible streaming, and deterministic atomic ZIP publication. Frozen
-# Python remains a parity oracle until the final cutover.
-# Native publication is authorized by an append-only, exact-SHA Release Request;
-# pull requests validate it without secrets and merge dispatches the qualified
-# release workflow at the created tag.
+lastReviewedCommit: "f7a56243cfc6d38114dac396893889e748c68c88"
+# Issue #126 makes the Cargo workspace, top-level executable assets, unified
+# CLI, native distribution, and Rust-only proof paths the active architecture.
 
 catalog:
   repos:
@@ -32,67 +25,50 @@ ownership:
           - AGENTS.md
           - README.md
           - README_CN.md
-          - .gitattributes
           - .docpact/config.yaml
-          - docs/agents/cli-contract.md
           - docs/agents/**
           - migration/**
+          - packaging/README.md
           - .github/workflows/ai-doc-lint.yml
       ownerRepo: tidas-tools
-    - id: tool-runtime
+    - id: rust-product
       paths:
         include:
           - Cargo.toml
           - Cargo.lock
           - crates/**
           - contracts/**
-          - pyproject.toml
-          - src/tidas_tools/convert.py
-          - src/tidas_tools/import_lca/**
-          - src/tidas_tools/validate.py
-          - src/tidas_tools/validation_report.py
-          - src/tidas_tools/validation_batch.py
-          - src/tidas_tools/reference_extraction.py
-          - src/tidas_tools/validation_indexes/**
-          - src/tidas_tools/export.py
-          - src/tidas_tools/package_versions.py
-          - src/tidas_tools/release.py
+      ownerRepo: tidas-tools
+    - id: executable-assets
+      paths:
+        include:
+          - assets/**
+          - .gitattributes
       ownerRepo: tidas-tools
     - id: native-distribution
       paths:
         include:
           - LICENSE
-          - crates/tidas-dist/**
           - packaging/**
           - .github/releases/**
           - scripts/install.sh
           - scripts/install.ps1
           - scripts/publish-crates.sh
+          - scripts/sync-rust-package-assets.sh
           - scripts/test-release-request.sh
           - scripts/validate-release-request.sh
-          - scripts/sync-rust-package-assets.sh
+          - scripts/validate-final-python-line.sh
           - .github/workflows/release-request.yml
           - .github/workflows/rust-release.yml
-      ownerRepo: tidas-tools
-    - id: packaged-assets
-      paths:
-        include:
-          - assets/**
-          - src/tidas_tools/tidas/**
-          - src/tidas_tools/eilcd/**
       ownerRepo: tidas-tools
     - id: tests-and-automation
       paths:
         include:
-          - tests/**
           - test_data/**
-          - scripts/schema_lock.py
-          - .github/workflows/ci.yml
+          - scripts/audit-rust-only.sh
           - .github/workflows/rust-ci.yml
           - .github/workflows/dispatch-tidas-sdk-sync.yml
-          - .github/workflows/python-package-deploy.yml
       ownerRepo: tidas-tools
-
     - id: local-docpact-push-gate
       paths:
         include:
@@ -104,69 +80,32 @@ ownership:
 
 coverage:
   include:
-    - .githooks/**
-    - scripts/docpact
-    - scripts/docpact-gate.sh
-    - scripts/install-git-hooks.sh
     - AGENTS.md
     - README.md
     - README_CN.md
     - LICENSE
     - .gitattributes
     - .docpact/config.yaml
-    - docs/agents/cli-contract.md
+    - .githooks/**
+    - .github/releases/**
+    - .github/workflows/**
     - docs/agents/**
     - migration/**
+    - packaging/**
     - Cargo.toml
     - Cargo.lock
     - crates/**
-    - packaging/**
-    - .github/releases/**
     - contracts/**
     - assets/**
-    - pyproject.toml
-    - src/tidas_tools/convert.py
-    - src/tidas_tools/import_lca/**
-    - src/tidas_tools/validate.py
-    - src/tidas_tools/validation_report.py
-    - src/tidas_tools/validation_batch.py
-    - src/tidas_tools/reference_extraction.py
-    - src/tidas_tools/validation_indexes/**
-    - src/tidas_tools/export.py
-    - src/tidas_tools/package_versions.py
-    - src/tidas_tools/release.py
-    - src/tidas_tools/tidas/**
-    - src/tidas_tools/eilcd/**
-    - scripts/schema_lock.py
-    - scripts/install.sh
-    - scripts/install.ps1
-    - scripts/publish-crates.sh
-    - scripts/test-release-request.sh
-    - scripts/validate-release-request.sh
-    - scripts/sync-rust-package-assets.sh
-    - tests/**
+    - scripts/**
     - test_data/**
-    - .github/workflows/ci.yml
-    - .github/workflows/rust-ci.yml
-    - .github/workflows/release-request.yml
-    - .github/workflows/rust-release.yml
-    - .github/workflows/ai-doc-lint.yml
-    - .github/workflows/dispatch-tidas-sdk-sync.yml
-    - .github/workflows/python-package-deploy.yml
   exclude:
     - .git/**
     - .github/scripts/**
     - .docpact/runs/**
-    - .venv/**
-    - __pycache__/**
-    - "**/__pycache__/**"
-    - "*.pyc"
+    - target/**
     - build/**
     - dist/**
-    - "*.egg-info/**"
-    - htmlcov/**
-    - .pytest_cache/**
-    - .mypy_cache/**
 
 freshness:
   warn_after_commits: 40
@@ -175,12 +114,16 @@ freshness:
 
 routing:
   intents:
-    local-docpact-gate:
+    tidas-tools:
       paths:
-        - .githooks/pre-push
-        - scripts/docpact
-        - scripts/docpact-gate.sh
-        - scripts/install-git-hooks.sh
+        - AGENTS.md
+        - docs/agents/repo-architecture.md
+        - docs/agents/repo-validation.md
+        - docs/agents/cli-contract.md
+        - Cargo.toml
+        - crates/**
+        - contracts/**
+        - assets/**
     tool-runtime:
       paths:
         - docs/agents/cli-contract.md
@@ -188,41 +131,32 @@ routing:
         - Cargo.lock
         - crates/**
         - contracts/**
-        - pyproject.toml
-        - src/tidas_tools/convert.py
-        - src/tidas_tools/import_lca/**
-        - src/tidas_tools/validate.py
-        - src/tidas_tools/validation_report.py
-        - src/tidas_tools/validation_batch.py
-        - src/tidas_tools/reference_extraction.py
-        - src/tidas_tools/validation_indexes/**
-        - src/tidas_tools/export.py
-        - src/tidas_tools/package_versions.py
-        - src/tidas_tools/release.py
     conversion:
       paths:
         - crates/tidas-cli/**
+        - crates/tidas-conversion/**
         - crates/tidas-contracts/**
         - crates/tidas-references/**
         - crates/tidas-runtime/**
         - crates/tidas-xml/**
-        - src/tidas_tools/convert.py
-        - src/tidas_tools/import_lca/**
-        - src/tidas_tools/eilcd/**
-        - src/tidas_tools/tidas/**
+        - assets/**
     import:
       paths:
         - crates/tidas-cli/**
-        - crates/tidas-contracts/**
         - crates/tidas-conversion/**
         - crates/tidas-import/**
         - crates/tidas-references/**
         - crates/tidas-runtime/**
         - crates/tidas-validation/**
         - contracts/import-*.schema.json
-        - src/tidas_tools/import_lca/**
-        - src/tidas_tools/eilcd/**
-        - src/tidas_tools/tidas/**
+        - assets/**
+    export:
+      paths:
+        - crates/tidas-cli/**
+        - crates/tidas-export/**
+        - crates/tidas-contracts/**
+        - crates/tidas-runtime/**
+        - contracts/export-report.v1.schema.json
     validation:
       paths:
         - crates/tidas-cli/**
@@ -233,38 +167,26 @@ routing:
         - crates/tidas-validation/**
         - crates/tidas-xml/**
         - contracts/**
-        - src/tidas_tools/validate.py
-        - src/tidas_tools/validation_report.py
-        - src/tidas_tools/validation_batch.py
-        - src/tidas_tools/reference_extraction.py
-        - src/tidas_tools/validation_indexes/**
-        - src/tidas_tools/tidas/schemas/**
-        - src/tidas_tools/eilcd/schemas/**
-        - src/tidas_tools/tidas/schemas_zh/**
-        - src/tidas_tools/tidas/schema.lock.json
-        - scripts/schema_lock.py
-    export:
-      paths:
-        - crates/tidas-cli/**
-        - crates/tidas-contracts/**
-        - crates/tidas-runtime/**
-        - src/tidas_tools/export.py
-        - src/tidas_tools/package_versions.py
-        - src/tidas_tools/release.py
+        - assets/**
     release-packaging:
       paths:
         - crates/tidas-cli/**
-        - crates/tidas-contracts/**
         - crates/tidas-release/**
-        - crates/tidas-runtime/**
         - crates/tidas-validation/**
         - crates/tidas-xml/**
         - contracts/release-report.v1.schema.json
-        - src/tidas_tools/release.py
-        - src/tidas_tools/convert.py
-        - src/tidas_tools/validate.py
-        - src/tidas_tools/tidas/**
-        - src/tidas_tools/eilcd/**
+        - assets/**
+    packaged-assets:
+      paths:
+        - assets/**
+        - crates/tidas-assets/**
+        - .gitattributes
+    sdk-dispatch:
+      paths:
+        - .github/workflows/dispatch-tidas-sdk-sync.yml
+        - assets/tidas/schemas/**
+        - assets/tidas/schemas_zh/**
+        - assets/tidas/methodologies/**
     native-distribution:
       paths:
         - LICENSE
@@ -274,79 +196,38 @@ routing:
         - scripts/install.sh
         - scripts/install.ps1
         - scripts/publish-crates.sh
+        - scripts/sync-rust-package-assets.sh
         - scripts/test-release-request.sh
         - scripts/validate-release-request.sh
-        - scripts/sync-rust-package-assets.sh
+        - scripts/validate-final-python-line.sh
         - .github/workflows/release-request.yml
         - .github/workflows/rust-release.yml
-    packaged-assets:
-      paths:
-        - assets/**
-        - crates/tidas-assets/**
-        - src/tidas_tools/tidas/**
-        - src/tidas_tools/eilcd/**
-    sdk-dispatch:
-      paths:
-        - .github/workflows/dispatch-tidas-sdk-sync.yml
-        - src/tidas_tools/tidas/schemas/**
-        - src/tidas_tools/tidas/schemas_zh/**
-        - src/tidas_tools/tidas/methodologies/**
-    release:
-      paths:
-        - Cargo.toml
-        - Cargo.lock
-        - .github/workflows/rust-ci.yml
-        - .github/workflows/release-request.yml
-        - .github/workflows/rust-release.yml
-        - crates/tidas-dist/**
-        - packaging/**
-        - .github/releases/**
-        - scripts/install.sh
-        - scripts/install.ps1
-        - scripts/publish-crates.sh
-        - scripts/test-release-request.sh
-        - scripts/validate-release-request.sh
-        - scripts/sync-rust-package-assets.sh
-        - pyproject.toml
-        - .github/workflows/python-package-deploy.yml
     proof:
       paths:
-        - docs/agents/cli-contract.md
         - docs/agents/repo-validation.md
-        - Cargo.toml
-        - Cargo.lock
+        - scripts/audit-rust-only.sh
+        - .githooks/pre-push
+        - .github/workflows/rust-ci.yml
         - crates/**
         - contracts/**
         - assets/**
         - migration/**
-        - pyproject.toml
-        - scripts/schema_lock.py
-        - scripts/install.sh
-        - scripts/install.ps1
-        - scripts/publish-crates.sh
-        - scripts/test-release-request.sh
-        - scripts/validate-release-request.sh
-        - scripts/sync-rust-package-assets.sh
-        - src/tidas_tools/**
-        - tests/**
         - test_data/**
-        - .github/workflows/ci.yml
-        - .github/workflows/rust-ci.yml
-        - .github/workflows/release-request.yml
-        - .github/workflows/rust-release.yml
-        - .github/workflows/dispatch-tidas-sdk-sync.yml
-        - .github/workflows/python-package-deploy.yml
     repo-docs:
       paths:
         - AGENTS.md
         - README.md
         - README_CN.md
-        - .gitattributes
         - .docpact/config.yaml
-        - docs/agents/cli-contract.md
         - docs/agents/**
         - packaging/README.md
         - migration/**
+    local-docpact-gate:
+      paths:
+        - .githooks/pre-push
+        - scripts/docpact
+        - scripts/docpact-gate.sh
+        - scripts/install-git-hooks.sh
     root-integration:
       paths:
         - AGENTS.md
@@ -376,12 +257,8 @@ rules:
         kind: doc-contract
       - path: .docpact/config.yaml
         kind: doc-ai-layer
-      - path: docs/agents/repo-validation.md
+      - path: docs/agents/**
         kind: deep-doc
-      - path: docs/agents/repo-architecture.md
-        kind: deep-doc
-      - path: docs/agents/cli-contract.md
-        kind: cli-contract
     requiredDocs:
       - path: AGENTS.md
         mode: review_or_update
@@ -393,7 +270,7 @@ rules:
         mode: review_or_update
       - path: docs/agents/cli-contract.md
         mode: review_or_update
-    reason: Repo entry guidance, machine-readable routing, and retained source docs must stay aligned.
+    reason: Entry guidance, routing, validation, architecture, and CLI contracts must stay aligned.
   - id: tidas-tools-readme-contract
     scope: repo
     repo: tidas-tools
@@ -405,11 +282,9 @@ rules:
     requiredDocs:
       - path: AGENTS.md
         mode: must_exist
-      - path: .docpact/config.yaml
-        mode: must_exist
       - path: docs/agents/cli-contract.md
         mode: must_exist
-    reason: User-facing landing docs should stay aligned with the current repo contract and CLI/release surface.
+    reason: User-facing installation and CLI guidance must reflect the active product.
   - id: tidas-tools-runtime-contract
     scope: repo
     repo: tidas-tools
@@ -422,34 +297,8 @@ rules:
         kind: rust-tooling
       - path: contracts/**
         kind: machine-contract
-      - path: migration/**
-        kind: migration-contract
-      - path: pyproject.toml
-        kind: runtime-config
-      - path: src/tidas_tools/convert.py
-        kind: tooling
-      - path: src/tidas_tools/import_lca/**
-        kind: tooling
-      - path: src/tidas_tools/validate.py
-        kind: tooling
-      - path: src/tidas_tools/validation_report.py
-        kind: tooling
-      - path: src/tidas_tools/validation_batch.py
-        kind: tooling
-      - path: src/tidas_tools/reference_extraction.py
-        kind: tooling
-      - path: src/tidas_tools/validation_indexes/**
-        kind: tooling
-      - path: src/tidas_tools/export.py
-        kind: tooling
-      - path: src/tidas_tools/package_versions.py
-        kind: tooling
-      - path: src/tidas_tools/release.py
-        kind: tooling
     requiredDocs:
       - path: AGENTS.md
-        mode: review_or_update
-      - path: .docpact/config.yaml
         mode: review_or_update
       - path: docs/agents/repo-validation.md
         mode: review_or_update
@@ -457,7 +306,7 @@ rules:
         mode: review_or_update
       - path: docs/agents/cli-contract.md
         mode: review_or_update
-    reason: Core standalone tooling changes alter the repo's executable contract and proof expectations.
+    reason: Product behavior and stable machine contracts determine architecture and proof.
   - id: tidas-tools-asset-contract
     scope: repo
     repo: tidas-tools
@@ -465,83 +314,31 @@ rules:
       - path: .gitattributes
         kind: repository-normalization
       - path: assets/**
-        kind: asset-lock
+        kind: executable-asset
       - path: crates/tidas-assets/**
         kind: asset-runtime
-      - path: src/tidas_tools/tidas/**
-        kind: tidas-asset
-      - path: src/tidas_tools/eilcd/**
-        kind: eilcd-asset
     requiredDocs:
       - path: AGENTS.md
-        mode: review_or_update
-      - path: .docpact/config.yaml
         mode: review_or_update
       - path: docs/agents/repo-validation.md
         mode: review_or_update
       - path: docs/agents/repo-architecture.md
         mode: review_or_update
-    reason: Packaged schemas, methodologies, and stylesheets are executable upstream assets and can require downstream SDK follow-up.
-  - id: tidas-tools-tests-and-automation-contract
+    reason: Executable schemas, indexes, XSD, and XSLT require paired and full lock proof.
+  - id: tidas-tools-automation-contract
     scope: repo
     repo: tidas-tools
     triggers:
-      - path: tests/**
-        kind: repo-test
-      - path: test_data/**
-        kind: repo-fixture
-      - path: scripts/schema_lock.py
+      - path: scripts/**
         kind: automation
-      - path: .github/workflows/ci.yml
+      - path: .github/workflows/**
         kind: automation
-      - path: .github/workflows/rust-ci.yml
-        kind: automation
-      - path: .github/workflows/release-request.yml
-        kind: release-authorization
-      - path: .github/workflows/rust-release.yml
-        kind: release-automation
-      - path: .github/workflows/dispatch-tidas-sdk-sync.yml
-        kind: automation
-      - path: .github/workflows/python-package-deploy.yml
-        kind: automation
-    requiredDocs:
-      - path: AGENTS.md
-        mode: review_or_update
-      - path: .docpact/config.yaml
-        mode: review_or_update
-      - path: docs/agents/repo-validation.md
-        mode: review_or_update
-      - path: docs/agents/repo-architecture.md
-        mode: review_or_update
-    reason: Test, fixture, release, and downstream dispatch changes affect future tooling validation and SDK refresh routing.
-  - id: tidas-tools-native-distribution-contract
-    scope: repo
-    repo: tidas-tools
-    triggers:
-      - path: LICENSE
-        kind: release-license
-      - path: crates/tidas-dist/**
-        kind: distribution-tooling
+      - path: .githooks/**
+        kind: local-gate
       - path: packaging/**
-        kind: package-manager
-      - path: .github/releases/**
-        kind: release-request
-      - path: scripts/install.sh
-        kind: installer
-      - path: scripts/install.ps1
-        kind: installer
-      - path: scripts/publish-crates.sh
-        kind: release-automation
-      - path: scripts/test-release-request.sh
-        kind: release-request-test
-      - path: scripts/validate-release-request.sh
-        kind: release-request-validation
-      - path: scripts/sync-rust-package-assets.sh
-        kind: package-asset-sync
-      - path: .github/workflows/release-request.yml
-        kind: release-authorization
-      - path: .github/workflows/rust-release.yml
-        kind: release-automation
+        kind: distribution
+      - path: migration/**
+        kind: migration-record
     requiredDocs:
       - path: AGENTS.md
         mode: review_or_update
@@ -551,40 +348,4 @@ rules:
         mode: review_or_update
       - path: docs/agents/repo-architecture.md
         mode: review_or_update
-      - path: README.md
-        mode: review_or_update
-      - path: README_CN.md
-        mode: review_or_update
-    reason: Native release artifacts, installers, and package-manager metadata must preserve one cross-platform, checksum-bound product distribution contract.
-  - id: tidas-tools-doc-maintenance-contract
-    scope: repo
-    repo: tidas-tools
-    triggers:
-      - path: .github/workflows/ai-doc-lint.yml
-        kind: automation
-    requiredDocs:
-      - path: AGENTS.md
-        mode: review_or_update
-      - path: .docpact/config.yaml
-        mode: review_or_update
-      - path: docs/agents/repo-validation.md
-        mode: review_or_update
-    reason: Repo-local documentation maintenance automation must stay aligned with the repo contract and governed-doc rules.
-  - id: tidas-tools-local-docpact-push-gate
-    scope: repo
-    repo: tidas-tools
-    triggers:
-      - path: .githooks/pre-push
-        kind: local-git-hook
-      - path: scripts/docpact
-        kind: local-automation
-      - path: scripts/docpact-gate.sh
-        kind: local-automation
-      - path: scripts/install-git-hooks.sh
-        kind: local-automation
-    requiredDocs:
-      - path: .docpact/config.yaml
-        mode: review_or_update
-      - path: docs/agents/repo-validation.md
-        mode: review_or_update
-    reason: Local push documentation governance gates must stay aligned with repo validation guidance and docpact configuration.
+    reason: CI, release, distribution, migration, and local gates must preserve the Rust-only product contract.

@@ -9,9 +9,8 @@ use tidas_rulesets::{RulesetCatalog, RulesetError};
 use crate::contracts::ValidationIssueV1;
 use crate::schema::TidasCategory;
 
-const DATA_TYPES_PATH: &str = "src/tidas_tools/tidas/schemas/tidas_data_types.json";
-const PRODUCT_INDEX_PATH: &str =
-    "src/tidas_tools/validation_indexes/product_flow_category_index.json";
+const DATA_TYPES_PATH: &str = "assets/tidas/schemas/tidas_data_types.json";
+const PRODUCT_INDEX_PATH: &str = "assets/validation_indexes/product_flow_category_index.json";
 
 #[derive(Debug)]
 pub(crate) struct SemanticCatalog {

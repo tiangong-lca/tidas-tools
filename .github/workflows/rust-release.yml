@@ -11,6 +11,7 @@ on:
       - packaging/**
       - scripts/install.sh
       - scripts/install.ps1
+      - scripts/audit-rust-only.sh
       - scripts/publish-crates.sh
       - scripts/sync-rust-package-assets.sh
       - .github/workflows/rust-release.yml
@@ -42,6 +43,9 @@ jobs:
 
       - name: Install native XML verification dependencies
         run: sudo apt-get update && sudo apt-get install --yes libxml2-dev libxslt1-dev pkg-config
+
+      - name: Audit Rust-only active tree
+        run: ./scripts/audit-rust-only.sh
 
       - name: Package and dry-run the complete public workspace
         run: ./scripts/publish-crates.sh check

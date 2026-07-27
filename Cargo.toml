@@ -13,11 +13,11 @@ categories = ["science", "data-structures"]
 publish = ["crates-io"]
 include = [
   "/assets/asset-lock.v1.json",
+  "/assets/eilcd/**",
+  "/assets/tidas/**",
+  "/assets/validation_indexes/product_flow_category_index.json",
   "/contracts/asset-lock.v1.schema.json",
   "/crates/tidas-assets/src/**",
-  "/src/tidas_tools/eilcd/**",
-  "/src/tidas_tools/tidas/**",
-  "/src/tidas_tools/validation_indexes/product_flow_category_index.json",
   "/LICENSE",
   "/README.md",
 ]
@@ -31,6 +31,7 @@ path = "crates/tidas-assets/src/bin/asset_lock.rs"
 
 [dependencies]
 include_dir.workspace = true
+jsonschema.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 sha2.workspace = true

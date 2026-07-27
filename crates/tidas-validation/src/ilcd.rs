@@ -20,7 +20,7 @@ use crate::schema::is_valid_cas_number;
 const PATH_ACCOUNTING_OVERHEAD: u64 = 128;
 const XML_MEMORY_MULTIPLIER: u64 = 6;
 const XML_MEMORY_OVERHEAD: u64 = 4096;
-const XSD_ASSET_PREFIX: &str = "src/tidas_tools/eilcd/schemas/";
+const XSD_ASSET_PREFIX: &str = "assets/eilcd/schemas/";
 
 #[derive(Clone, Copy, Debug)]
 struct IlcdSchema {

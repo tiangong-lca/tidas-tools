@@ -27,8 +27,8 @@ checkPaths:
   - README.md
   - README_CN.md
 lastReviewedAt: 2026-07-27
-lastReviewedCommit: 522c4e86f6d6934fed3f2e0940cb3c46cf7569d6
-lastReviewedNote: "Reviewed for Issue #142 phase 1: the v0.1.1 exact version-set preparation does not change the seven-command, report, output-channel, or exit contract."
+lastReviewedCommit: f7a56243cfc6d38114dac396893889e748c68c88
+lastReviewedNote: "Reviewed for Issue #126: the Rust-only cutover preserves the seven-command, report, output-channel, configuration, and exit contract."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -64,8 +64,8 @@ The crates.io package name is also `tidas`; `cargo install tidas` installs this
 single executable. The source-install channel does not add another command or
 legacy alias.
 
-The old Python executable names are not aliases. All seven commands dispatch
-to Rust domain crates and never invoke Python. `unavailable` (69) remains a
+Pre-cutover executable names are not aliases. All seven commands dispatch
+directly to Rust domain crates. `unavailable` (69) remains a
 reserved stable exit class for a known future Rust capability that is exposed
 before implementation.
 

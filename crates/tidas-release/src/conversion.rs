@@ -16,8 +16,8 @@ use crate::{
 };
 
 const FILE_MEMORY_MULTIPLIER: u64 = 8;
-const TIDAS_SCHEMA_PREFIX: &str = "src/tidas_tools/tidas/schemas/";
-const EILCD_ASSET_PREFIX: &str = "src/tidas_tools/eilcd/";
+const TIDAS_SCHEMA_PREFIX: &str = "assets/tidas/schemas/";
+const EILCD_ASSET_PREFIX: &str = "assets/eilcd/";
 
 pub(crate) fn convert_tidas_to_ilcd(
     input_dir: &Path,

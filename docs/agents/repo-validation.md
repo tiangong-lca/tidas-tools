@@ -8,14 +8,13 @@ owner: tidas-tools
 language: en
 whenToUse:
   - when a tidas-tools change is ready for local validation
-  - when deciding the minimum proof required for conversion, validation, export, asset, or automation changes
-  - when writing PR validation notes for tidas-tools work
+  - when selecting proof for a Rust domain, executable asset, release, or automation change
+  - when writing PR validation notes
 whenToUpdate:
-  - when the repo gains new canonical test wrappers
-  - when change categories require different proof
-  - when release or dispatch behavior changes
+  - when canonical checks, supported platforms, scale budgets, or release proof changes
 checkPaths:
   - docs/agents/repo-validation.md
+  - AGENTS.md
   - .docpact/config.yaml
   - Cargo.toml
   - Cargo.lock
@@ -24,107 +23,92 @@ checkPaths:
   - assets/**
   - packaging/**
   - migration/**
-  - pyproject.toml
-  - src/tidas_tools/**
-  - tests/**
-  - test_data/**
   - .github/workflows/**
   - .githooks/pre-push
-  - scripts/docpact
-  - scripts/schema_lock.py
-  - scripts/docpact-gate.sh
-  - scripts/install-git-hooks.sh
-  - scripts/install.sh
-  - scripts/install.ps1
-  - scripts/publish-crates.sh
-  - scripts/test-release-request.sh
-  - scripts/validate-release-request.sh
-  - scripts/sync-rust-package-assets.sh
+  - scripts/**
 lastReviewedAt: 2026-07-27
-lastReviewedCommit: 522c4e86f6d6934fed3f2e0940cb3c46cf7569d6
-lastReviewedNote: "Issue #142 phase 1 requires Rust 1.88 product gates, Cargo 1.94 public-set qualification, release-request tamper tests, deterministic package smoke, and the five-platform PR matrix without publication credentials."
+lastReviewedCommit: f7a56243cfc6d38114dac396893889e748c68c88
+lastReviewedNote: "Issue #126 replaces every active migration-oracle gate with Rust-only source, asset, package, artifact, and scale validation."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
   - ./repo-architecture.md
+  - ./cli-contract.md
   - ../../README.md
 ---
 
-## Default Baseline
+# Validation guide
 
-Review note, 2026-07-17: Issue #112 keeps the existing proof contract and makes its four-platform release matrix authoritative for UTF-8 schema/index parity and LF release bytes. The 0.0.42 recovery still requires schema lock, Black, full pytest, release CLI help, Docpact, the complete publish matrix, and PyPI verification.
+## Default baseline
 
-Unless the change is doc-only, the default local baseline during migration is:
+Run this for every non-documentation change:
 
 ```bash
+scripts/audit-rust-only.sh
 cargo run --locked -p tidas-assets --bin tidas-asset-lock -- check
 cargo fmt --all --check
 cargo clippy --locked --workspace --all-targets -- -D warnings
 cargo test --locked --workspace --all-targets
-uv sync --dev
-uv run python scripts/schema_lock.py check
-uv run black --check --target-version py313 src tests
-uv run pytest
+scripts/sync-rust-package-assets.sh check
+scripts/publish-crates.sh check
 ```
 
-Use narrower manual probes only when the task touches one CLI surface and full tests would add no extra signal.
+The asset command checks both the paired English/Chinese schema contract and
+the complete executable-asset byte lock. The pre-push hook adds strict
+Docpact. Pull requests run the product matrix on Linux x86_64/ARM64, macOS
+Intel/Apple Silicon, and Windows x86_64. Windows ARM64 is intentionally absent.
 
-The local `pre-push` hook runs docpact, Rust, asset-lock, and frozen Python
-oracle gates. `.github/workflows/rust-ci.yml` runs on relevant pull requests
-across the initial five-platform matrix. The old Python `CI` workflow remains
-manual-dispatch during migration; the PyPI workflow is transitional and must
-be removed only by the final #126 cutover.
+## Validation matrix
 
-## Validation Matrix
+| Change | Minimum local proof | Higher-risk proof |
+| --- | --- | --- |
+| CLI, contracts, or shared runtime | baseline; root and affected command help; deterministic JSON/version/completion; report/stdout separation; usage and exit-class tests | configuration precedence, cancellation, bounded queues, memory accounting, spool determinism, and all affected JSON Schema contracts |
+| conversion | focused conversion + CLI tests; both directions; representative category round-trips; envelope sidecars; tree hash; symlink, invalid XML, cancellation, budget, rollback | run the local 237 MiB package twice, compare tree hashes, and record wall time/RSS |
+| import | all supported format fixtures; native target validation; deterministic package/mapping/bundle hashes; malformed/unsupported input, cancellation, budget, atomic publication | large exchange/issue-spool fixture with wall time/RSS and cross-root determinism |
+| export | focused crate/CLI tests; report schema; secret redaction; unsafe paths; cancellation/budget; version suffixes; deterministic ZIP; atomic replacement | disposable local PostgreSQL and S3-compatible fixtures twice, comparing archive bytes and membership |
+| release | closure/order/round-trip golden fixtures; missing/inexact reference failure; four deterministic ZIPs; native validation; cancellation/budget; atomic directory publication | run the local 237 MiB package twice, compare all four archives, and record wall time/RSS |
+| validation/batch/references | compile every bundled schema/XSD root offline; schema and semantic fixtures; bounded issue spool; batch preflight/drift/final-event hash; extraction schema/roles | local 237 MiB validation twice, recording schema time, total time, peak RSS, cancellation, and spool hash |
+| assets | baseline asset check; representative `git check-attr eol`; schema-local-reference and translation-parity tests | regenerate locks only after reviewing every changed path/hash; compare fingerprints twice |
+| XML/XSD/XSLT | focused `tidas-xml` and validation tests; resolver/security tests; five-platform CI | representative production schemas/stylesheets and static-release dependency inspection |
+| native distribution | focused `tidas-dist`; package twice; archive/checksum equality; extract and run version/help/JSON/ruleset; installer syntax | five release jobs, clean-machine archive execution, runtime dependency inspection, SBOM and attestation |
+| crates.io | sync check; public-set qualification; verify exact version set and `tidas-dist` exclusion; script syntax | inspect each `.crate`; source install; registry absent/existing checksum simulations without a real token |
+| release request or final migration marker | shell syntax; tamper/append-only validation; actionlint; strict Docpact | simulate modification/multiple-file/target/tag/ancestry conflicts and confirm exact-tag workflow dispatch |
+| governed docs only | strict Docpact config validation and enforced lint | one focused route rendering for the changed intent |
 
-| Change type | Minimum local proof | Additional proof when risk is higher | Notes |
-| --- | --- | --- | --- |
-| Rust workspace, shared contracts, or CLI adapter | asset lock; Rust fmt/clippy/test; root and command help; deterministic `tidas --format json version` and completion comparisons | exercise configuration precedence, report-file/stdout separation, completion shells, migration parity fixture, structured usage failure, and every affected exit class; validate JSON against the checked-in schema | The CLI remains thin, follows `docs/agents/cli-contract.md`, and incomplete commands fail `unavailable` without invoking Python. |
-| `tidas-runtime` large-data primitives | Rust fmt/clippy/test including bounded queue, cancellation, memory-budget, and streaming spool tests | local large-package benchmark with elapsed time and peak RSS; never start on a Worker server | The target package is intentionally outside Git and issue counts must not cause linear memory growth. |
-| `tidas-conversion` or `tidas convert` | both-direction Python golden fixture; representative process/flow/flow property/unit group/contact/source/LCIA method/lifecycle model round-trip; report-schema, deterministic hash, envelope-sidecar, manifest-copy, symlink, cancellation, memory-budget, progress, and atomic rollback tests | run the local 237 MiB package in both directions, compare a second output-tree hash, record wall time/RSS, and perform per-document semantic comparison against the frozen Python oracle; malformed XML 1.0 data must fail without publishing output | Conversion keeps the strict XML single-root boundary, preserves known top-level extension metadata through deterministic sidecars, and never accumulates the package in memory. |
-| `tidas-import` or `tidas import` | detect and import EcoSpold 1/2, SimaPro CSV, openLCA JSON-LD, openLCA process XLSX, and ILCD; replay frozen Python semantic and source-capability fixtures; validate TIDAS and requested ILCD; prove type-aware Flow names in both language schemas, missing-fact preflight, all 9 extension paths / 10 overlay nodes, fallback warnings, Mass+NCV fidelity, and TIDAS→ILCD→TIDAS extension identity; compare package, mapping, and process-bundle hashes across repeated runs and different source roots; prove malformed input, `.zolca`, cancellation, memory-budget, exit-class, and atomic-publication behavior | exercise large exchange streams and issue spools locally; record wall time and peak RSS; confirm source-relative identifiers and gzip bytes are cross-platform deterministic | Canonical entities and exchanges stay disk-backed; Flow writers receive only typed normalized values; issues stream to JSONL; requested outputs are validated before one atomic commit. |
-| `tidas-export` or `tidas export` | replay Python package-version golden cases; focused crate and CLI tests; validate `tidas.export-report.v1`; prove secret redaction, unsafe-path failure, cancellation, memory budget, skipped-document warning, full version suffixes, deterministic ZIP bytes, and atomic replacement | run disposable local PostgreSQL and S3-compatible fixtures twice; compare archive membership/hash/bytes; run a large local record set with wall time and peak RSS | Database reads use a repeatable-read snapshot and bounded queue; object bodies stream by chunk; never begin connector or scale tests on a Worker server. |
-| `tidas-release` or `tidas release` | replay the frozen Python closure/order/round-trip cases; validate `tidas.release-report.v1`; prove missing/inexact references fail closed, standalone contains unit closure, native TIDAS/ILCD validation, four stored ZIPs, fixed metadata, repeatable bytes, cancellation, memory budget, bounded report samples, and atomic whole-directory publication | run the local 237 MiB package twice; record wall time and peak RSS; compare all four archive hashes and membership; keep this local until the target is met | The release layer consumes finalized UUID/version decisions, never assigns them, and never invokes Python. |
-| `tidas-dist`, native installers, package metadata, or Rust release automation | focused `tidas-dist` fmt/clippy/tests; package the local release binary twice and compare archive/checksum bytes; verify and run packaged `version`, help, JSON `version`, and `ruleset`; `bash -n scripts/install.sh`; actionlint; strict docpact | all five release jobs; Linux clean-container execution; macOS runtime dependency inspection; Windows packaged smoke and `winget validate`; SPDX SBOM generation; provenance/SBOM attestation on canonical dispatch/tag | Archives must derive from the supplied binary, pinned static XML libraries, fixed metadata, and the same SHA-256 values used by installers, Homebrew, and Winget. No public tag or external package-manager submission is required to review the pipeline. |
-| public crate metadata, packaged contracts, root asset include allowlist, or crates.io automation | with the pinned Cargo 1.94.0 publication toolchain, run `scripts/sync-rust-package-assets.sh check` and `scripts/publish-crates.sh check`; confirm the public set is exactly version-synchronized and `tidas-dist` is excluded; `bash -n` both scripts; actionlint | inspect every `.crate` size/checksum; verify `cargo install --path crates/tidas-cli --locked`; exercise registry checksum lookup against absent and existing package records without a real token | Pull requests must not read `CARGO_REGISTRY_TOKEN`. Keep the Rust 1.88 product/MSRV matrix separate from the Cargo 1.94.0 publication job. The tag job may publish only after package qualification and must skip an existing version only when its crates.io checksum matches the locally qualified archive. |
-| `.github/releases/**`, release-request validation, or release authorization workflow | `bash -n scripts/validate-release-request.sh scripts/test-release-request.sh`; `scripts/test-release-request.sh`; actionlint; strict docpact; inspect the PR event permissions and confirm no publication secret is referenced | simulate added/modified/multiple requests; version, filename, target, ancestry, existing-tag, and existing-release mismatches; confirm the dispatch ref is the exact tag | A Release Request PR is review-only. The merge job may write the exact tag and dispatch `rust-release.yml` at that tag, but must never build or publish from the request merge commit. |
-| `tidas-validation` native package paths | focused crate and CLI tests; compile all eight JSON schemas and all used ILCD roots offline; compare frozen Python parity fixtures; validate issue, summary, describe, and batch payloads against checked-in schemas | run the local 237 MiB benchmark twice with wall time and peak RSS; prove cancellation, XSD import resolution, semantic index parity, and deterministic spool bytes/hash | Issue details must stream or be discarded, never accumulate in the operation report. |
-| `tidas-rulesets` or `tidas ruleset` | schema validation, unique id/reference tests, warning/blocker preservation, catalog and selected-profile CLI probes | compare catalog fingerprint twice and confirm unknown ids use the usage exit class | Packaged methodology metadata remains executable, integrity-locked input; gate execution still belongs to its consumers. |
-| `tidas-references` pure extraction | replay the frozen Python golden cases byte-for-structure; validate every result/edge/issue against the checked-in schema; prove role vocabulary and input failures are closed | exercise repeated/cyclic occurrences, invalid UUID/version/type/id, URI aliases, and explicit-versus-omitted versions | Extraction preserves source constraints and defects but never performs target lookup, visibility, winner selection, or closure. |
-| `document-validation-batch.v1` Rust protocol | valid manifest, data-issue completion, malformed/unsafe/hash-drift failure, describe handshake, deterministic event order and logical hash | cancellation and mutation-between-preflight-and-validation probes; validate every emitted event against checked-in schemas | Data issues end with a final event and exit 0; protocol/system defects must not publish completion evidence. |
-| `tidas-assets`, `.gitattributes`, or executable assets | asset-lock check, Rust tests, Python schema lock, full pytest; verify `git check-attr eol` returns `lf` for representative JSON/XSD/XSL files | regenerate the asset lock only after intentional review; compare asset fingerprint twice | The Rust asset lock covers more executable inputs than the legacy paired-schema lock; LF checkout and both lock gates remain during migration. |
-| `tidas-xml` or native dependency workflow | focused `cargo test -p tidas-xml`; full Rust checks; all five CI matrix jobs | representative production XSD/XSLT fixtures; controlled static release-link proof and resolver security tests | `quick-xml` is the streaming reader; libxml2/libxslt native calls are serialized. |
-| `convert.py`, `import_lca/**`, or eILCD asset changes | `uv run pytest`; `uv run python src/tidas_tools/convert.py --help`; `uv run python src/tidas_tools/import_lca/cli.py --help` when external import paths change | run one representative conversion or import path if the task explicitly changes data transformation behavior | Keep packaged asset, conversion logic, import detection, and staged adapters aligned. |
-| `validate.py`, `validation_report.py`, TIDAS schema changes, or eILCD schema validation changes | `uv run python scripts/schema_lock.py check`; `uv run pytest`; `uv run python src/tidas_tools/validate.py --help` | run one representative TIDAS JSON or eILCD/ILCD XML validation path and record entity types touched | Validation categories, packaged JSON schemas, packaged XSD schemas, and the TIDAS schema parity lock all matter here. |
-| `validation_batch.py` or `reference_extraction.py` | `uv run pytest tests/test_validation_batch.py tests/test_reference_extraction.py tests/test_validate.py -q`; `uv run python -m tidas_tools.validate --describe --format json`; Black | run the batch CLI against a valid manifest and replay the golden fixture in the downstream Rust consumer | Data issues must end with a valid final event and exit 0; protocol/system defects must not emit completion evidence. Explicit versions and roles must survive extraction unchanged. |
-| validator-private projection index changes | `uv run pytest tests/test_validate.py -q`; `uv run python src/tidas_tools/validate.py --help` | compare the projection against its source schema and run a representative package validation path | Projection indexes may optimize validation only; they must stay derived from packaged schema contracts and must not replace them. |
-| `export.py` or `package_versions.py` changes | `uv run pytest`; `uv run python src/tidas_tools/export.py --help` | if the task includes live export proof, record the DB and storage assumptions separately | Export behavior depends on external DB and object-storage state. |
-| frozen `release.py` oracle changes | `uv run pytest`; `uv run python -m tidas_tools.release --help`; `uv run black --check --target-version py313 src tests`; focused `tidas-release` parity tests | run the same fixture through Python and Rust and compare closure membership, schema element order, normalized semantics, and deterministic archive properties | Python is parity evidence only; active release behavior and new features belong to Rust. |
-| packaged methodology or schema asset changes | `uv run python scripts/schema_lock.py check`; `uv run pytest` | run `uv run python scripts/schema_lock.py update` before committing TIDAS schema changes; record whether `tidas-sdk` follow-up is required; run the relevant manual probe if a specific CLI surface depends on the asset | These paths are the current executable upstream for downstream package refresh. |
-| workflow or release automation changes | `uv run python scripts/schema_lock.py check`; `uv run pytest` | inspect the touched workflow and record any tag, lock, or dispatch assumptions checked locally | Downstream dispatch and tag-based publish are separate from local tool tests. |
-| repo contract or governed-doc changes only | `scripts/docpact validate-config --root . --strict` and `scripts/docpact lint --root . --staged --mode enforce` | run one focused route check such as `scripts/docpact route --root . --intent repo-docs --format text` or `sdk-dispatch` when the change touches dispatch docs | Refresh review evidence even when prose-only governed docs change. |
+Scale proofs must run locally first. The canonical large package is outside
+Git:
 
-## Minimum PR Note Quality
+```text
+/Users/biao/Code/lca-workspace/lca-workspace/_test_data/tidas-package-open_data-1784707539957.zip
+```
 
-A good PR note for this repo should say:
+Acceptance limits:
 
-1. whether `uv run pytest` ran
-2. whether Rust fmt, clippy, workspace tests, and the asset-lock check ran
-3. whether `uv run python scripts/schema_lock.py check` ran when schema assets or workflows changed
-4. which Rust and/or Python CLI probes ran, including the data format used
-5. whether downstream `tidas-sdk` follow-up is required
-6. whether any large-package, cross-platform, or live export proof is deferred
+- native schema validation: at most 60 seconds
+- unzip/hash/parse/validate/spool, excluding remote download: at most 3 minutes
+- peak RSS: at most 512 MiB
+- issue-detail memory must remain bounded even near 1.07 million issues
 
-## Local Docpact Push Gate
+## PR validation note
 
-Install the versioned local hook once per checkout:
+Record:
+
+1. exact baseline commands and results;
+2. focused CLI/domain probes and input formats;
+3. scale wall time, peak RSS, output/spool hashes, and repeat count when run;
+4. package/archive/clean-machine proof when distribution changes;
+5. whether the owned asset paths require a downstream `tidas-sdk` refresh;
+6. any cross-platform proof left to CI.
+
+Do not claim a deferred cross-platform job or external connector test as a
+local pass.
+
+## Local Docpact push gate
 
 ```bash
 ./scripts/install-git-hooks.sh
 ```
 
-The `pre-push` hook runs `scripts/docpact-gate.sh`, then the asset lock, Rust
-format/lint/tests, and frozen Python schema-lock/Black/pytest oracle. The
-wrapper checks `DOCPACT_BIN`, Cargo install locations, Homebrew install
-locations, and then `PATH`. The default comparison base is `origin/main`;
-override unusual stacks with `DOCPACT_BASE_REF=<ref>`.
+The hook runs strict Docpact, the Rust-only audit, both asset locks, format,
+clippy, and all workspace tests. Override an unusual comparison only with an
+explicit `DOCPACT_BASE_REF`.

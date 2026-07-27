@@ -346,8 +346,8 @@ fn write_direction_assets(
     report: &mut ConversionReportV1,
 ) -> Result<(), ConversionError> {
     let prefix = match request.direction {
-        ConversionDirection::TidasToIlcd => "src/tidas_tools/eilcd/",
-        ConversionDirection::IlcdToTidas => "src/tidas_tools/tidas/",
+        ConversionDirection::TidasToIlcd => "assets/eilcd/",
+        ConversionDirection::IlcdToTidas => "assets/tidas/",
     };
     for asset in bundled_assets() {
         request.cancellation.check()?;
@@ -852,10 +852,9 @@ mod tests {
     #[test]
     fn frozen_python_golden_fixture_matches_both_directions() {
         let cancellation = CancellationToken::default();
-        let fixture: Value = serde_json::from_str(include_str!(
-            "../../../tests/fixtures/conversion_v1/golden.json"
-        ))
-        .unwrap();
+        let fixture: Value =
+            serde_json::from_str(include_str!("../tests/fixtures/conversion-v1/golden.json"))
+                .unwrap();
         assert_eq!(fixture["schema_version"], "tidas.conversion-golden.v1");
         assert_eq!(fixture["oracle"]["version"], "1.0.4");
 

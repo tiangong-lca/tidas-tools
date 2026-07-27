@@ -888,7 +888,7 @@ fn native_ilcd_validation_accepts_valid_assets_and_reports_schema_issues() {
     let directory = tempfile::tempdir().unwrap();
     fs::write(
         directory.path().join("valid.xml"),
-        include_bytes!("../../../src/tidas_tools/eilcd/stylesheets/ILCDLocations_Reference.xml"),
+        include_bytes!("../../../assets/eilcd/stylesheets/ILCDLocations_Reference.xml"),
     )
     .unwrap();
     let (valid_output, valid_payload) = json_output(&[

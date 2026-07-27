@@ -197,7 +197,7 @@ fn category_index() -> &'static BTreeMap<String, CanonicalCategory> {
     static INDEX: OnceLock<BTreeMap<String, CanonicalCategory>> = OnceLock::new();
     INDEX.get_or_init(|| {
         let asset = tidas_assets::bundled_asset(
-            "src/tidas_tools/tidas/schemas/tidas_flows_elementary_category.json",
+            "assets/tidas/schemas/tidas_flows_elementary_category.json",
         )
         .expect("elementary category schema is a locked executable asset");
         let schema: Value =
@@ -282,13 +282,13 @@ fn extension_registry() -> &'static ExtensionRegistry {
     static REGISTRY: OnceLock<ExtensionRegistry> = OnceLock::new();
     REGISTRY.get_or_init(|| {
         let asset = tidas_assets::bundled_asset(
-            "src/tidas_tools/tidas/methodologies/elementary_flow_taxonomy_extension.v1.json",
+            "assets/tidas/methodologies/elementary_flow_taxonomy_extension.v1.json",
         )
         .expect("elementary taxonomy extension is a locked executable asset");
         let registry: ExtensionRegistry = serde_json::from_slice(asset.bytes)
             .expect("elementary taxonomy extension is valid JSON");
         let official = tidas_assets::bundled_asset(
-            "src/tidas_tools/eilcd/stylesheets/ILCDFlowCategorization_Reference.xml",
+            "assets/eilcd/stylesheets/ILCDFlowCategorization_Reference.xml",
         )
         .expect("official ILCD taxonomy is a locked executable asset");
         let official_sha256 = hex_sha256(official.bytes);
@@ -373,7 +373,7 @@ mod tests {
     #[test]
     fn official_ilcd_taxonomy_bytes_remain_immutable() {
         let asset = tidas_assets::bundled_asset(
-            "src/tidas_tools/eilcd/stylesheets/ILCDFlowCategorization_Reference.xml",
+            "assets/eilcd/stylesheets/ILCDFlowCategorization_Reference.xml",
         )
         .unwrap();
         let digest = hex_sha256(asset.bytes);

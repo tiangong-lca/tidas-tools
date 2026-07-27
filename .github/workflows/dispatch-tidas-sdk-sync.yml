@@ -5,9 +5,9 @@ on:
     branches:
       - main
     paths:
-      - "src/tidas_tools/tidas/schemas/**"
-      - "src/tidas_tools/tidas/schemas_zh/**"
-      - "src/tidas_tools/tidas/methodologies/**"
+      - "assets/tidas/schemas/**"
+      - "assets/tidas/schemas_zh/**"
+      - "assets/tidas/methodologies/**"
 
 permissions:
   contents: read
@@ -44,9 +44,9 @@ jobs:
           fi
 
           CHANGED_FILES="$(git diff --name-only "$BASE_REF" "$HEAD_REF" -- \
-            src/tidas_tools/tidas/schemas \
-            src/tidas_tools/tidas/schemas_zh \
-            src/tidas_tools/tidas/methodologies)"
+            assets/tidas/schemas \
+            assets/tidas/schemas_zh \
+            assets/tidas/methodologies)"
 
           if [ -z "$CHANGED_FILES" ]; then
             echo "any_changed=false" >> "$GITHUB_OUTPUT"
@@ -57,13 +57,13 @@ jobs:
           PYTHON=false
           REASON_PARTS=()
 
-          if printf '%s\n' "$CHANGED_FILES" | grep -Eq '^src/tidas_tools/tidas/schemas(_zh)?/'; then
+          if printf '%s\n' "$CHANGED_FILES" | grep -Eq '^assets/tidas/schemas(_zh)?/'; then
             TYPESCRIPT=true
             PYTHON=true
             REASON_PARTS+=("schema update")
           fi
 
-          if printf '%s\n' "$CHANGED_FILES" | grep -q '^src/tidas_tools/tidas/methodologies/'; then
+          if printf '%s\n' "$CHANGED_FILES" | grep -q '^assets/tidas/methodologies/'; then
             TYPESCRIPT=true
             REASON_PARTS+=("methodology update")
           fi
@@ -102,23 +102,24 @@ jobs:
           PYTHON_BUMP: ${{ steps.impact.outputs.python_bump }}
           REASON: ${{ steps.impact.outputs.reason }}
         run: |
-          python3 - <<'PY' > dispatch.json
-          import json
-          import os
-
-          payload = {
-              "event_type": "tidas_tools_changed",
-              "client_payload": {
-                  "tidas_tools_sha": os.environ["TARGET_SHA"],
-                  "tidas_tools_ref": os.environ["TARGET_REF"],
-                  "packages": json.loads(os.environ["PACKAGES_JSON"]),
-                  "typescript_bump": os.environ["TYPESCRIPT_BUMP"],
-                  "python_bump": os.environ["PYTHON_BUMP"],
-                  "reason": os.environ["REASON"],
-              },
-          }
-          print(json.dumps(payload))
-          PY
+          jq -n \
+            --arg target_sha "$TARGET_SHA" \
+            --arg target_ref "$TARGET_REF" \
+            --argjson packages "$PACKAGES_JSON" \
+            --arg typescript_bump "$TYPESCRIPT_BUMP" \
+            --arg python_bump "$PYTHON_BUMP" \
+            --arg reason "$REASON" \
+            '{
+              event_type: "tidas_tools_changed",
+              client_payload: {
+                tidas_tools_sha: $target_sha,
+                tidas_tools_ref: $target_ref,
+                packages: $packages,
+                typescript_bump: $typescript_bump,
+                python_bump: $python_bump,
+                reason: $reason
+              }
+            }' > dispatch.json
 
           gh api "repos/tiangong-lca/tidas-sdk/dispatches" \
             --method POST \

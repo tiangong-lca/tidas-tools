@@ -1,5 +1,7 @@
 //! Offline executable-asset catalog and deterministic integrity lock.
 
+mod schema_lock;
+
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
 use std::fs;
@@ -11,6 +13,10 @@ use sha2::{Digest, Sha256};
 use thiserror::Error;
 use walkdir::WalkDir;
 
+pub use schema_lock::{
+    SCHEMA_LOCK_PATH, check_filesystem_schema_lock, schema_lock_from_filesystem, write_schema_lock,
+};
+
 pub const ASSET_LOCK_SCHEMA_V1: &str = "tidas.asset-lock.v1";
 pub const ASSET_LOCK_PATH: &str = "assets/asset-lock.v1.json";
 pub const ASSET_LOCK_JSON_SCHEMA_V1: &str = include_str!(concat!(
@@ -18,22 +24,18 @@ pub const ASSET_LOCK_JSON_SCHEMA_V1: &str = include_str!(concat!(
     "/contracts/asset-lock.v1.schema.json"
 ));
 
-static TIDAS_ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/src/tidas_tools/tidas");
-static EILCD_ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/src/tidas_tools/eilcd");
+static TIDAS_ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/assets/tidas");
+static EILCD_ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/assets/eilcd");
 const PRODUCT_FLOW_CATEGORY_INDEX: &[u8] = include_bytes!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/src/tidas_tools/validation_indexes/product_flow_category_index.json"
+    "/assets/validation_indexes/product_flow_category_index.json"
 ));
 const EMBEDDED_LOCK: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
     "/assets/asset-lock.v1.json"
 ));
 
-pub const SOURCE_ROOTS: [&str; 3] = [
-    "src/tidas_tools/eilcd",
-    "src/tidas_tools/tidas",
-    "src/tidas_tools/validation_indexes",
-];
+pub const SOURCE_ROOTS: [&str; 3] = ["assets/eilcd", "assets/tidas", "assets/validation_indexes"];
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "kebab-case")]
@@ -76,10 +78,10 @@ pub struct BundledAsset {
 #[must_use]
 pub fn bundled_assets() -> Vec<BundledAsset> {
     let mut assets = Vec::new();
-    collect_embedded(&TIDAS_ASSETS, "src/tidas_tools/tidas", &mut assets);
-    collect_embedded(&EILCD_ASSETS, "src/tidas_tools/eilcd", &mut assets);
+    collect_embedded(&TIDAS_ASSETS, "assets/tidas", &mut assets);
+    collect_embedded(&EILCD_ASSETS, "assets/eilcd", &mut assets);
     assets.push(BundledAsset {
-        path: "src/tidas_tools/validation_indexes/product_flow_category_index.json".to_owned(),
+        path: "assets/validation_indexes/product_flow_category_index.json".to_owned(),
         kind: AssetKind::ValidationIndex,
         bytes: PRODUCT_FLOW_CATEGORY_INDEX,
     });
@@ -231,7 +233,7 @@ fn verify_entry(
     Ok(())
 }
 
-fn sha256_hex(bytes: &[u8]) -> String {
+pub(crate) fn sha256_hex(bytes: &[u8]) -> String {
     let digest = Sha256::digest(bytes);
     let mut output = String::with_capacity(digest.len() * 2);
     for byte in digest {
@@ -325,6 +327,8 @@ pub enum AssetError {
     Json(#[from] serde_json::Error),
     #[error("failed to walk an asset tree: {0}")]
     Walk(#[from] walkdir::Error),
+    #[error("TIDAS paired-schema lock violation: {0}")]
+    SchemaLock(String),
 }
 
 #[cfg(test)]
@@ -345,12 +349,12 @@ mod tests {
 
     #[test]
     fn bundled_asset_lookup_returns_exact_offline_bytes() {
-        let path = "src/tidas_tools/tidas/schemas/tidas_sources.json";
+        let path = "assets/tidas/schemas/tidas_sources.json";
         let asset = bundled_asset(path).unwrap();
         assert_eq!(asset.path, path);
         assert_eq!(asset.kind, AssetKind::JsonSchema);
         assert!(asset.bytes.starts_with(b"{"));
-        assert!(bundled_asset("src/tidas_tools/tidas/schemas/missing.json").is_none());
+        assert!(bundled_asset("assets/tidas/schemas/missing.json").is_none());
     }
 
     #[test]

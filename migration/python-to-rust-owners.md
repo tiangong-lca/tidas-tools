@@ -1,11 +1,16 @@
 # Python-to-Rust ownership matrix
 
-This inventory freezes the Python implementation as a migration oracle for
-[tidas-tools#117](https://github.com/tiangong-lca/tidas-tools/issues/117). It is
-not a promise to preserve Python module boundaries, command names, or argument
-layouts. Each row assigns behavior to a stable Rust domain owner and a tracked
-delivery slice. Private helpers move with their containing module unless a
-later design extracts a more stable domain.
+> Historical migration record. The active tree is Rust-only. The final archived
+> Python line is commit `f7a56243cfc6d38114dac396893889e748c68c88`, declared
+> by `migration/final-python-line.json` as tag `python-final-v0.1.1`. Paths and
+> commands below describe removed code and must not be used as installation,
+> execution, CI, or release guidance.
+
+This inventory captured the Python implementation during
+[tidas-tools#117](https://github.com/tiangong-lca/tidas-tools/issues/117) and
+assigned its behavior to stable Rust domain owners and tracked delivery
+slices. It remains only as the durable ownership/audit record for the completed
+migration.
 
 ## Product entry points
 
@@ -19,12 +24,9 @@ later design extracts a more stable domain.
 | `runtime_rulesets.main` | `tidas ruleset` | `tidas-rulesets` + thin `tidas-cli` adapter | #120 |
 | package version reporting | `tidas version` | `tidas-contracts`, `tidas-assets`, `tidas-xml`, `tidas-cli` | #118/#119 |
 
-No legacy executable name is registered by the Rust workspace. During the
-migration the Python commands remain internal golden/parity oracles only.
-Issue #124 completes the active `release.py` ownership transfer:
-`crates/tidas-release` and `tidas release` now own release behavior, while the
-Python entry point remains frozen evidence until #126 removes the active
-Python tree.
+No legacy executable name is registered by the Rust workspace. Issue #124
+completed the `release.py` ownership transfer, and Issue #126 removed the
+active Python tree after the Rust parity and cutover gates passed.
 
 ## Module and public-symbol inventory
 
@@ -59,6 +61,6 @@ Python tree.
 | `tidas-xml` | strict streaming XML inspection plus the serialized libxml2/libxslt compatibility boundary |
 | `tidas-cli` | final command tree, output routing, parse guidance, and thin domain dispatch only |
 
-The final removal slice (#126) must re-run this inventory against the active
-tree and prove that no Python implementation, install path, CI path, release
-path, workspace script, or agent guidance remains.
+The final removal slice (#126) re-ran this inventory and established the
+repository-wide Rust-only audit that now prevents active implementation,
+installation, CI, release, script, and agent-guidance regressions.

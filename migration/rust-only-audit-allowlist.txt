@@ -1,0 +1,29 @@
+# Intentional, reviewed references retained after the Rust-only cutover.
+# One repository-relative Bash glob per line. This file allows terminology,
+# never executable source, installation commands, or runtime invocation paths.
+AGENTS.md
+README.md
+README_CN.md
+.docpact/config.yaml
+.github/workflows/dispatch-tidas-sdk-sync.yml
+.github/workflows/release-request.yml
+docs/agents/cli-contract.md
+docs/agents/repo-architecture.md
+migration/final-python-line.json
+migration/python-to-rust-owners.md
+scripts/validate-final-python-line.sh
+crates/tidas-cli/src/args.rs
+crates/tidas-cli/tests/**
+crates/tidas-conversion/src/lib.rs
+crates/tidas-conversion/tests/**
+crates/tidas-dist/tests/**
+crates/tidas-export/src/versioning.rs
+crates/tidas-import/src/adapters/openlca_jsonld.rs
+crates/tidas-import/src/adapters/openlca_normalize.rs
+crates/tidas-import/src/pipeline.rs
+crates/tidas-import/tests/**
+crates/tidas-references/src/lib.rs
+crates/tidas-release/tests/**
+crates/tidas-validation/src/schema.rs
+crates/tidas-validation/src/semantic.rs
+crates/tidas-validation/tests/**
