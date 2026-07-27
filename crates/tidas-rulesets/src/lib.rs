@@ -9,9 +9,9 @@ use sha2::{Digest, Sha256};
 use thiserror::Error;
 use tidas_assets::{AssetKind, bundled_asset};
 
-const RUNTIME_RULESETS_PATH: &str = "src/tidas_tools/tidas/methodologies/runtime_rulesets.json";
+const RUNTIME_RULESETS_PATH: &str = "assets/tidas/methodologies/runtime_rulesets.json";
 const RUNTIME_RULESETS_SCHEMA_PATH: &str =
-    "src/tidas_tools/tidas/methodologies/runtime_rulesets.schema.json";
+    "assets/tidas/methodologies/runtime_rulesets.schema.json";
 pub const RULESET_DESCRIPTION_SCHEMA_V1: &str = "tidas.ruleset-description.v1";
 pub const METHODOLOGY_VALIDATION_REPORT_SCHEMA_V1: &str = "tidas.methodology-validation-report.v1";
 pub const RULESET_DESCRIPTION_JSON_SCHEMA_V1: &str = include_str!(concat!(
@@ -227,7 +227,7 @@ fn validate_methodology_asset(
         .and_then(|value| value.to_str())
         .expect("embedded methodology filenames are controlled UTF-8");
     let schema_file = format!("{stem}.json");
-    let schema_path = format!("src/tidas_tools/tidas/schemas/{schema_file}");
+    let schema_path = format!("assets/tidas/schemas/{schema_file}");
     let Some(schema_asset) = bundled_asset(&schema_path) else {
         return Ok(MethodologyFileReportV1 {
             methodology_file,

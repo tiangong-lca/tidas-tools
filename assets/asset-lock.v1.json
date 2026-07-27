@@ -1,487 +1,487 @@
 {
   "schema_version": "tidas.asset-lock.v1",
   "source_roots": [
-    "src/tidas_tools/eilcd",
-    "src/tidas_tools/tidas",
-    "src/tidas_tools/validation_indexes"
+    "assets/eilcd",
+    "assets/tidas",
+    "assets/validation_indexes"
   ],
   "entries": [
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_Categories.xsd",
+      "path": "assets/eilcd/schemas/ILCD_Categories.xsd",
       "kind": "xsd",
       "sha256": "7bb9522ffd42b5b185b01285e3e236697f8bd4c065a9c648afd5b2680a135e3f",
       "bytes": 2143
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_Common_DataTypes.xsd",
+      "path": "assets/eilcd/schemas/ILCD_Common_DataTypes.xsd",
       "kind": "xsd",
       "sha256": "349d946a4a80ef0ebf9d92da227819c8f2e6b8f934bbae4e7fca74c1a28c8009",
       "bytes": 7875
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_Common_EnumerationValues.xsd",
+      "path": "assets/eilcd/schemas/ILCD_Common_EnumerationValues.xsd",
       "kind": "xsd",
       "sha256": "e0388289f3e0ee26d67a7c45d6aad328108eced90d8186c51ad390e7bb4f230d",
       "bytes": 103898
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_Common_Groups.xsd",
+      "path": "assets/eilcd/schemas/ILCD_Common_Groups.xsd",
       "kind": "xsd",
       "sha256": "69406089e2c35a3b4611ac9336f9e86ecebad2ae6c1cb6c63a7bee06e80da180",
       "bytes": 63293
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_Common_Validation.xsd",
+      "path": "assets/eilcd/schemas/ILCD_Common_Validation.xsd",
       "kind": "xsd",
       "sha256": "7c15524f16d206059792afb861dbdeb2bdbc0d26e98875bb464e9e053f618790",
       "bytes": 9960
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_ContactDataSet.xsd",
+      "path": "assets/eilcd/schemas/ILCD_ContactDataSet.xsd",
       "kind": "xsd",
       "sha256": "493121e94e89921e0055bc2b260b7599ee1fc1063a94f420689d4d03e8e88a7f",
       "bytes": 19980
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_Documentation.xsd",
+      "path": "assets/eilcd/schemas/ILCD_Documentation.xsd",
       "kind": "xsd",
       "sha256": "41ab1883adfb3d93472279877679bdc0fd1ce385d691f0e70cc05165805ed3d9",
       "bytes": 3000
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_FlowDataSet.xsd",
+      "path": "assets/eilcd/schemas/ILCD_FlowDataSet.xsd",
       "kind": "xsd",
       "sha256": "dbd9654db9bf4ac5acd8c27297f2c790e88743523ac1d73ebd7f35ffc05e98ac",
       "bytes": 40771
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_FlowPropertyDataSet.xsd",
+      "path": "assets/eilcd/schemas/ILCD_FlowPropertyDataSet.xsd",
       "kind": "xsd",
       "sha256": "501f885238824ea00b49bea27b10aa15babc0730900e880889846612e1631284",
       "bytes": 18920
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_ILCD.xsd",
+      "path": "assets/eilcd/schemas/ILCD_ILCD.xsd",
       "kind": "xsd",
       "sha256": "26a7d1bc90629ac1bb26eb526292a9ccc6a6425b0263e8aabac4c6549e71747d",
       "bytes": 2953
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_LCIAMethodDataSet.xsd",
+      "path": "assets/eilcd/schemas/ILCD_LCIAMethodDataSet.xsd",
       "kind": "xsd",
       "sha256": "442a24dc019ef14003962d673ad8841dcb10d622ce5bfbdf822fb4357f3b0825",
       "bytes": 89067
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_LCIAMethodologies.xsd",
+      "path": "assets/eilcd/schemas/ILCD_LCIAMethodologies.xsd",
       "kind": "xsd",
       "sha256": "7d499e678e72e77416fc6370cfee30d6718a3473c6e524029063684ddb306139",
       "bytes": 1100
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_LifeCycleModelDataSet.xsd",
+      "path": "assets/eilcd/schemas/ILCD_LifeCycleModelDataSet.xsd",
       "kind": "xsd",
       "sha256": "3338e44c809324dd30e8843bfe0b95848141612b42a7ffe59f5f390b6ccb3067",
       "bytes": 47785
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_Locations.xsd",
+      "path": "assets/eilcd/schemas/ILCD_Locations.xsd",
       "kind": "xsd",
       "sha256": "6876dcca9e37aae01ff9f01dab411a1bce6a4912198d3c0d79a775b67a2030e0",
       "bytes": 1222
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_ProcessDataSet.xsd",
+      "path": "assets/eilcd/schemas/ILCD_ProcessDataSet.xsd",
       "kind": "xsd",
       "sha256": "6d869c301f45df9a1d2ba4d400ff52dfd05bd65a69817cfc282bb5ea224ffa95",
       "bytes": 157604
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_SourceDataSet.xsd",
+      "path": "assets/eilcd/schemas/ILCD_SourceDataSet.xsd",
       "kind": "xsd",
       "sha256": "c7071ee0d9546e91917692dd27d5773e67c0bfd9e035a95a3f305a133d436747",
       "bytes": 16856
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/ILCD_UnitGroupDataSet.xsd",
+      "path": "assets/eilcd/schemas/ILCD_UnitGroupDataSet.xsd",
       "kind": "xsd",
       "sha256": "c7ae663ced7f12af3d219aa7b32c86be0aff55483143c891faf73b4eee86fc4d",
       "bytes": 21850
     },
     {
-      "path": "src/tidas_tools/eilcd/schemas/xml.xsd",
+      "path": "assets/eilcd/schemas/xml.xsd",
       "kind": "xsd",
       "sha256": "61960fb3131e38022caad5360e2f33a3382578ab3c80cd58bd74320ede61b20c",
       "bytes": 8836
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/ILCDClassification_Reference.xml",
+      "path": "assets/eilcd/stylesheets/ILCDClassification_Reference.xml",
       "kind": "xml-reference",
       "sha256": "3783e7be618569b1225ec86c09b1e66d770028de9d0facf5f5790762ced2dff8",
       "bytes": 14277
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/ILCDFlowCategorization_Reference.xml",
+      "path": "assets/eilcd/stylesheets/ILCDFlowCategorization_Reference.xml",
       "kind": "xml-reference",
       "sha256": "d0b2fabaab5644a25846b04b096b5aad136f88f04398d172057cdf6c2aac156e",
       "bytes": 4484
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/ILCDLCIAMethodologies_Reference.xml",
+      "path": "assets/eilcd/stylesheets/ILCDLCIAMethodologies_Reference.xml",
       "kind": "xml-reference",
       "sha256": "77ab2db74dd4ae32b3276e38c48b0b571f60d533cb26267eb0be1c218cb9c8f3",
       "bytes": 879
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/ILCDLocations_Reference.xml",
+      "path": "assets/eilcd/stylesheets/ILCDLocations_Reference.xml",
       "kind": "xml-reference",
       "sha256": "6fba6fd1764e75964fa6851c4b750df6ef1f01ebfeb259f816770f6479da0477",
       "bytes": 13403
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/common.xsl",
+      "path": "assets/eilcd/stylesheets/common.xsl",
       "kind": "xslt",
       "sha256": "c6d498cf6e58aec3f84d255d4a83dd933fb62500c036f569bf0b5e3418a9f826",
       "bytes": 26733
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/compliance_1.1.xsl",
+      "path": "assets/eilcd/stylesheets/compliance_1.1.xsl",
       "kind": "xslt",
       "sha256": "3ca55e7d2cf4550fbb1dbad3e899336e67cd191cdcccf58b58de6459d171af89",
       "bytes": 65753
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/contact2html.xsl",
+      "path": "assets/eilcd/stylesheets/contact2html.xsl",
       "kind": "xslt",
       "sha256": "48e9a50865bd346c52d8791ee3981c5477b3128cf2f808d0db285ee5ed990ce9",
       "bytes": 1449
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/dataset-common.xsl",
+      "path": "assets/eilcd/stylesheets/dataset-common.xsl",
       "kind": "xslt",
       "sha256": "838b231bf56e0051100960a76b6e57a31cc1f446499841cc092aa60248118b08",
       "bytes": 430
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/display-common.xsl",
+      "path": "assets/eilcd/stylesheets/display-common.xsl",
       "kind": "xslt",
       "sha256": "a7284f21d2cfa8437a82abed1bba33f2f623242896357a9bda1cb60259da6d37",
       "bytes": 95880
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/flow2html.xsl",
+      "path": "assets/eilcd/stylesheets/flow2html.xsl",
       "kind": "xslt",
       "sha256": "ab9a90ef9924ad7cb983ac2c2e31acb50f8242a81ba6dc4eaa197b0cf6f0a362",
       "bytes": 11157
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/flowproperty2html.xsl",
+      "path": "assets/eilcd/stylesheets/flowproperty2html.xsl",
       "kind": "xslt",
       "sha256": "c3eecf831d114bbd181dcc1880ccf516104e3ea0e8d921e6329a2f0b82dfbfbb",
       "bytes": 2469
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/ilcd2xls.xsl",
+      "path": "assets/eilcd/stylesheets/ilcd2xls.xsl",
       "kind": "xslt",
       "sha256": "d1c2717838ed16f39b5f1a71b3bd22d84dcff41e4527eb6cce7cea48e2434ce6",
       "bytes": 35136
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/lciamethod2html.xsl",
+      "path": "assets/eilcd/stylesheets/lciamethod2html.xsl",
       "kind": "xslt",
       "sha256": "9d5f55abee53dc2dc05aa2201260475f9cb80795ba749ebfb892115fc3d96027",
       "bytes": 15678
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/process2html.xsl",
+      "path": "assets/eilcd/stylesheets/process2html.xsl",
       "kind": "xslt",
       "sha256": "f7a16e3f08b6dc3de235c038cddfb1e69e0a481c2d9e2670dac9e677ba9876ad",
       "bytes": 47219
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/reference_types.xml",
+      "path": "assets/eilcd/stylesheets/reference_types.xml",
       "kind": "xml-reference",
       "sha256": "abed4e7173af86ad4fdbb01581c456b1b2b11783e1e8aae77d2848f53c85a433",
       "bytes": 5373
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/source2html.xsl",
+      "path": "assets/eilcd/stylesheets/source2html.xsl",
       "kind": "xslt",
       "sha256": "99f4033bfb58167b5afa1569e1e344da674b1c18ab7fc63a4e1edc80104850b1",
       "bytes": 1258
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/unitTests.xsl",
+      "path": "assets/eilcd/stylesheets/unitTests.xsl",
       "kind": "xslt",
       "sha256": "be0374fac4a052c73f2294b1586e0fcec39fa5cc9a6e2eb644c5011822e78c54",
       "bytes": 2680
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/unitgroup2html.xsl",
+      "path": "assets/eilcd/stylesheets/unitgroup2html.xsl",
       "kind": "xslt",
       "sha256": "afc5d745dbb311002fb096c3ac07e8858b7684ba4392ec729e5f193a8512df09",
       "bytes": 2806
     },
     {
-      "path": "src/tidas_tools/eilcd/stylesheets/validate.xsl",
+      "path": "assets/eilcd/stylesheets/validate.xsl",
       "kind": "xslt",
       "sha256": "8a1f707b7242a3f98090687fca52bbc91feafca03f26243fe11a1106d416d211",
       "bytes": 22667
     },
     {
-      "path": "src/tidas_tools/tidas/methodologies/elementary_flow_taxonomy_extension.v1.json",
+      "path": "assets/tidas/methodologies/elementary_flow_taxonomy_extension.v1.json",
       "kind": "methodology",
-      "sha256": "10dff7a2ea258880e0ee57ae112999c662a95a7d935795907b1b6caf4ad3bfa3",
-      "bytes": 2919
+      "sha256": "63382b142adde9d8d66ecffebcdc58f61f10588af5373d30f3d90fba67122f31",
+      "bytes": 2910
     },
     {
-      "path": "src/tidas_tools/tidas/methodologies/runtime_rulesets.json",
+      "path": "assets/tidas/methodologies/runtime_rulesets.json",
       "kind": "runtime-ruleset",
       "sha256": "6e9227dd8b174d365dbcbb3380e29566b9d210eb52d49771f11ca12063cdb2bd",
       "bytes": 14206
     },
     {
-      "path": "src/tidas_tools/tidas/methodologies/runtime_rulesets.schema.json",
+      "path": "assets/tidas/methodologies/runtime_rulesets.schema.json",
       "kind": "runtime-ruleset",
       "sha256": "c3db8324c41a3968d1c7f3a1a323d19261514deea0057aafe2bd27ead5e8537f",
       "bytes": 2677
     },
     {
-      "path": "src/tidas_tools/tidas/methodologies/tidas_flows.yaml",
+      "path": "assets/tidas/methodologies/tidas_flows.yaml",
       "kind": "methodology",
       "sha256": "4a389d060f5c901b7c11625675948c0152df95ad33bedc87eca0f93341038d6d",
       "bytes": 30332
     },
     {
-      "path": "src/tidas_tools/tidas/methodologies/tidas_processes.yaml",
+      "path": "assets/tidas/methodologies/tidas_processes.yaml",
       "kind": "methodology",
       "sha256": "3f67155faf703dd85729cf359315250a2a92562398cc41bcccaa46078b1fe79e",
       "bytes": 23612
     },
     {
-      "path": "src/tidas_tools/tidas/schema.lock.json",
+      "path": "assets/tidas/schema.lock.json",
       "kind": "legacy-schema-lock",
-      "sha256": "b3c5f2144c462ee88a957924a109c445d76ad37966373953256c748f74c5c2f8",
-      "bytes": 15588
+      "sha256": "b42a47e1ffa6c888d7f90c16b512b704d70be94822f9cf31d193d9d39ed3e418",
+      "bytes": 15573
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_contacts.json",
+      "path": "assets/tidas/schemas/tidas_contacts.json",
       "kind": "json-schema",
       "sha256": "f16868bcdb99b4785b03a9b36dfe103d8f3ec61a463be9274d22884e6b7d8bda",
       "bytes": 14441
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_contacts_category.json",
+      "path": "assets/tidas/schemas/tidas_contacts_category.json",
       "kind": "json-schema",
       "sha256": "2d043a6686320b5fec5d4012dfd03bdb57897375002b25fc6a64df8ea10092b5",
       "bytes": 3993
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_data_types.json",
+      "path": "assets/tidas/schemas/tidas_data_types.json",
       "kind": "json-schema",
       "sha256": "d9e7fa47e2dd2a665332dc50b1d3b3fc03bba1ae2ab80b07bd52ed01471b1b81",
       "bytes": 14121
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_flowproperties.json",
+      "path": "assets/tidas/schemas/tidas_flowproperties.json",
       "kind": "json-schema",
       "sha256": "bfc56348c4be7d8e20faebf197680b6a38c9e9b91812382710c6ab205f218432",
       "bytes": 15036
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_flowproperties_category.json",
+      "path": "assets/tidas/schemas/tidas_flowproperties_category.json",
       "kind": "json-schema",
       "sha256": "0fd7f4b2e350532ba5809019a079f8fadb90f91702358c1ff7deea19c956a846",
       "bytes": 1877
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_flows.json",
+      "path": "assets/tidas/schemas/tidas_flows.json",
       "kind": "json-schema",
       "sha256": "e773b188271174f834dba5ab410644b9e246385c8005fb6d02e4c7a0a073d283",
       "bytes": 39502
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_flows_elementary_category.json",
+      "path": "assets/tidas/schemas/tidas_flows_elementary_category.json",
       "kind": "json-schema",
       "sha256": "e817d6e40dfa7b21cb947548027f32b393d1b06ee2a7326f7c59686a2cd3552d",
       "bytes": 20892
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_flows_product_category.json",
+      "path": "assets/tidas/schemas/tidas_flows_product_category.json",
       "kind": "json-schema",
       "sha256": "e62e1f676dedaeb6028b05f0c1cc84f53c1c47058ae6e17897f77b2cb17b7cb2",
       "bytes": 1246957
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_lciamethods.json",
+      "path": "assets/tidas/schemas/tidas_lciamethods.json",
       "kind": "json-schema",
       "sha256": "6a96fa34bda4d848eeaa1edb124a544f4511c824436514e62b58626919e57836",
       "bytes": 73636
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_lciamethods_category.json",
+      "path": "assets/tidas/schemas/tidas_lciamethods_category.json",
       "kind": "json-schema",
       "sha256": "83b4bbfb53a2ad1cb1f9c97c261cc867ea6f509020a8ea9041ffba08601eaac9",
       "bytes": 22881
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_lifecyclemodels.json",
+      "path": "assets/tidas/schemas/tidas_lifecyclemodels.json",
       "kind": "json-schema",
       "sha256": "d3355d3c7910efadbee87fe36dacd6ca515c8fe1c5671f6dee2ba63d43c5d108",
       "bytes": 92190
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_locations_category.json",
+      "path": "assets/tidas/schemas/tidas_locations_category.json",
       "kind": "json-schema",
       "sha256": "415fe8c7ba4991a88bc66d9cd55541ee27b74f731541c64a9bc354679d109a71",
       "bytes": 57807
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_processes.json",
+      "path": "assets/tidas/schemas/tidas_processes.json",
       "kind": "json-schema",
       "sha256": "8476530740d2af11fe3c607afbeab68a318c6b08d7558417ebcad8ac33f0efdd",
       "bytes": 102898
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_processes_category.json",
+      "path": "assets/tidas/schemas/tidas_processes_category.json",
       "kind": "json-schema",
       "sha256": "cea1b97b46fd9faa2f7f4d7b911ff19f24a1655ff98b488ebaf5cc9ee6fdec64",
       "bytes": 208189
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_sources.json",
+      "path": "assets/tidas/schemas/tidas_sources.json",
       "kind": "json-schema",
       "sha256": "97b5eb51165640d85eb1cb5a499823754eabbd9facddba93de59543ea8dcf307",
       "bytes": 11712
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_sources_category.json",
+      "path": "assets/tidas/schemas/tidas_sources_category.json",
       "kind": "json-schema",
       "sha256": "dc22fa07e7a2b4742133ea642505b6a18011552459b84764908166d1994c985f",
       "bytes": 3117
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_unitgroups.json",
+      "path": "assets/tidas/schemas/tidas_unitgroups.json",
       "kind": "json-schema",
       "sha256": "d83ada361908ffc047d38ded3aa15be748c7d3421dc294f34c5afbcc6a58f127",
       "bytes": 15210
     },
     {
-      "path": "src/tidas_tools/tidas/schemas/tidas_unitgroups_category.json",
+      "path": "assets/tidas/schemas/tidas_unitgroups_category.json",
       "kind": "json-schema",
       "sha256": "c490544c405ee6ef06e52e121f29994d112040a3f4888541fa69569c998d8b72",
       "bytes": 1865
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_contacts.json",
+      "path": "assets/tidas/schemas_zh/tidas_contacts.json",
       "kind": "chinese-json-schema",
       "sha256": "c8eecba163ad58ef9a61f17268f398ccd3f056f9d90a2c78f08ea7a02c7d0f4f",
       "bytes": 13791
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_contacts_category.json",
+      "path": "assets/tidas/schemas_zh/tidas_contacts_category.json",
       "kind": "chinese-json-schema",
       "sha256": "d95c48c28fc2a88ad058d4ae15b9f83b8664f27b691780c9556e590783c0fdb1",
       "bytes": 2618
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_data_types.json",
+      "path": "assets/tidas/schemas_zh/tidas_data_types.json",
       "kind": "chinese-json-schema",
       "sha256": "b2860813916df4cf92dac84f90909222aa6189f9f9abb058c0c0f49534bd306c",
       "bytes": 13907
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_flowproperties.json",
+      "path": "assets/tidas/schemas_zh/tidas_flowproperties.json",
       "kind": "chinese-json-schema",
       "sha256": "3e53f2b983bece302f33f189efc0fbea9341ec7aebd8d36e87cbac245a3fdbb8",
       "bytes": 14192
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_flowproperties_category.json",
+      "path": "assets/tidas/schemas_zh/tidas_flowproperties_category.json",
       "kind": "chinese-json-schema",
       "sha256": "d2962260c52de1af02ed8a40766b3b5391518c6c7df02ab263db3feaa32da523",
       "bytes": 1252
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_flows.json",
+      "path": "assets/tidas/schemas_zh/tidas_flows.json",
       "kind": "chinese-json-schema",
       "sha256": "eaaa690b7512e3507431c4f102d4697bf6696aaf611f981f569eadfe6bb076bb",
       "bytes": 38212
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_flows_elementary_category.json",
+      "path": "assets/tidas/schemas_zh/tidas_flows_elementary_category.json",
       "kind": "chinese-json-schema",
       "sha256": "289b439014d85971b2f435aff25a6f5b2926469ee75000a8b57f1cdedb152f4c",
       "bytes": 15056
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_flows_product_category.json",
+      "path": "assets/tidas/schemas_zh/tidas_flows_product_category.json",
       "kind": "chinese-json-schema",
       "sha256": "49e6444a61f833ccf97aeb5863f520971a6c7c3c0ed005a57142f040cfae2223",
       "bytes": 1246958
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_lciamethods.json",
+      "path": "assets/tidas/schemas_zh/tidas_lciamethods.json",
       "kind": "chinese-json-schema",
       "sha256": "5cb03a77267346d9655b8d3803f4f839f04caf080d866764c73bd4eaed6388dd",
       "bytes": 68664
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_lciamethods_category.json",
+      "path": "assets/tidas/schemas_zh/tidas_lciamethods_category.json",
       "kind": "chinese-json-schema",
       "sha256": "b11483c16aa5f0d47251b56598109085785168ef88facd28d770df6bb37ebe4c",
       "bytes": 15056
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_lifecyclemodels.json",
+      "path": "assets/tidas/schemas_zh/tidas_lifecyclemodels.json",
       "kind": "chinese-json-schema",
       "sha256": "0c847ddbd80a594c320642fcc76a8bedd0c4b00926d9263455d4da34f27a10da",
       "bytes": 87470
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_locations_category.json",
+      "path": "assets/tidas/schemas_zh/tidas_locations_category.json",
       "kind": "chinese-json-schema",
       "sha256": "e20c3f168481bca8197b58a97a3bd4e12aa8a3f66553ff54f7dea7a40b044141",
       "bytes": 54044
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_processes.json",
+      "path": "assets/tidas/schemas_zh/tidas_processes.json",
       "kind": "chinese-json-schema",
       "sha256": "db81ac7dfca82a0a05982a8add4ba91ebe274dfc929c52c538f6f5fddd081b03",
       "bytes": 95747
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_processes_category.json",
+      "path": "assets/tidas/schemas_zh/tidas_processes_category.json",
       "kind": "chinese-json-schema",
       "sha256": "05107a1aab2869a38ffafc05461778a272117a6a1f2805b3c37a9354e7158bdd",
       "bytes": 208157
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_sources.json",
+      "path": "assets/tidas/schemas_zh/tidas_sources.json",
       "kind": "chinese-json-schema",
       "sha256": "3329df531aa87d4a3a0ec1cfbe452a8452af9c29429a599b16b6826492b059ba",
       "bytes": 11113
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_sources_category.json",
+      "path": "assets/tidas/schemas_zh/tidas_sources_category.json",
       "kind": "chinese-json-schema",
       "sha256": "7d6882f088f9ad7c2ed9aa212e5d0030716a209196d8471bd650c75e3c3e4dad",
       "bytes": 2040
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_unitgroups.json",
+      "path": "assets/tidas/schemas_zh/tidas_unitgroups.json",
       "kind": "chinese-json-schema",
       "sha256": "515e98019b23c69b264c614b34b29e4ec1890aaca04759c22c97638ecfb0cb3e",
       "bytes": 14673
     },
     {
-      "path": "src/tidas_tools/tidas/schemas_zh/tidas_unitgroups_category.json",
+      "path": "assets/tidas/schemas_zh/tidas_unitgroups_category.json",
       "kind": "chinese-json-schema",
       "sha256": "c39bcc54cf03b010ebf176d18d6572ca7f65d3b656ea854cd729cfd96290faa5",
       "bytes": 1240
     },
     {
-      "path": "src/tidas_tools/validation_indexes/product_flow_category_index.json",
+      "path": "assets/validation_indexes/product_flow_category_index.json",
       "kind": "validation-index",
       "sha256": "827bac44025fa3b6b6be00041791325b08b36ec69d83e4f010193d164f492adc",
       "bytes": 855048

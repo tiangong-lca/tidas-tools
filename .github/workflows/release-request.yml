@@ -6,12 +6,15 @@ on:
       - .github/releases/**
       - scripts/test-release-request.sh
       - scripts/validate-release-request.sh
+      - migration/final-python-line.json
+      - scripts/validate-final-python-line.sh
       - .github/workflows/release-request.yml
   push:
     branches:
       - main
     paths:
       - .github/releases/**
+      - migration/final-python-line.json
 
 permissions:
   contents: read
@@ -62,11 +65,16 @@ jobs:
           )
           if (( ${#changes[@]} == 0 )); then
             if [[ "$required" == "true" ]]; then
-              echo "::error::a release-triggering main push must add one request"
-              exit 1
+              marker_changed="$(
+                git diff --name-only "$base" "$head" -- migration/final-python-line.json
+              )"
+              if [[ -z "$marker_changed" ]]; then
+                echo "::error::a release-triggering main push must add one request"
+                exit 1
+              fi
             fi
             echo "request_present=false" >> "$GITHUB_OUTPUT"
-            echo "No release request changed; workflow-only validation is complete."
+            echo "No native release request changed."
             exit 0
           fi
           if (( ${#changes[@]} != 1 )); then
@@ -94,6 +102,64 @@ jobs:
 
       - name: Exercise tamper rejection
         run: ./scripts/test-release-request.sh
+
+  final_python_line:
+    name: Validate final Python line marker
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    outputs:
+      marker_present: ${{ steps.marker.outputs.marker_present }}
+      tag: ${{ steps.marker.outputs.tag }}
+      target: ${{ steps.marker.outputs.target }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Validate immutable migration marker
+        id: marker
+        shell: bash
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            base="$PR_BASE_SHA"
+            head="$PR_HEAD_SHA"
+          else
+            base="$BEFORE_SHA"
+            head="$GITHUB_SHA"
+          fi
+
+          changes=()
+          mapfile -t changes < <(
+            git diff --name-status "$base" "$head" -- migration/final-python-line.json
+          )
+          if (( ${#changes[@]} == 0 )); then
+            echo "marker_present=false" >> "$GITHUB_OUTPUT"
+            echo "No final Python line marker changed."
+            exit 0
+          fi
+          if (( ${#changes[@]} != 1 )); then
+            echo "::error::the final Python line marker must be one immutable file"
+            exit 1
+          fi
+          IFS=$'\t' read -r status path extra <<<"${changes[0]}"
+          if [[ "$status" != "A" || "$path" != "migration/final-python-line.json" || -n "${extra:-}" ]]; then
+            echo "::error::the final Python line marker is append-only"
+            exit 1
+          fi
+
+          context="$(./scripts/validate-final-python-line.sh "$path" "$head")"
+          {
+            echo "marker_present=true"
+            echo "tag=$(jq -r '.tag' <<<"$context")"
+            echo "target=$(jq -r '.target' <<<"$context")"
+          } >> "$GITHUB_OUTPUT"
 
   authorize:
     name: Authorize tag and dispatch exact release
@@ -158,3 +224,45 @@ jobs:
             echo "The native release workflow was dispatched at \`$RELEASE_TAG\`."
             echo "Its workflow context is therefore bound to the tagged source commit."
           } >> "$GITHUB_STEP_SUMMARY"
+
+  tag_final_python_line:
+    name: Create immutable final Python tag
+    needs: final_python_line
+    if: >-
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main' &&
+      needs.final_python_line.outputs.marker_present == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Create or verify the annotated migration tag
+        shell: bash
+        env:
+          FINAL_TAG: ${{ needs.final_python_line.outputs.tag }}
+          FINAL_TARGET: ${{ needs.final_python_line.outputs.target }}
+        run: |
+          set -euo pipefail
+          remote_tag="$(
+            git ls-remote --refs --tags origin "refs/tags/$FINAL_TAG" |
+              awk 'NR == 1 { print $1 }'
+          )"
+          if [[ -n "$remote_tag" ]]; then
+            git fetch --force origin "refs/tags/$FINAL_TAG:refs/tags/$FINAL_TAG"
+            existing="$(git rev-parse "refs/tags/$FINAL_TAG^{commit}")"
+            if [[ "$existing" != "$FINAL_TARGET" ]]; then
+              echo "::error::existing $FINAL_TAG points to $existing, expected $FINAL_TARGET"
+              exit 1
+            fi
+            echo "$FINAL_TAG already points to the reviewed final Python commit."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag --annotate "$FINAL_TAG" "$FINAL_TARGET" \
+              --message "Final archived Python implementation before the Rust-only cutover"
+            git push origin "refs/tags/$FINAL_TAG"
+          fi

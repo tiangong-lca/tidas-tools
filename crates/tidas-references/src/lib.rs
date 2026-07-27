@@ -354,7 +354,7 @@ mod tests {
     #[test]
     fn frozen_python_golden_fixture_matches_all_rust_results() {
         let fixture: Value = serde_json::from_str(include_str!(
-            "../../../tests/fixtures/reference_extraction_v1/golden.json"
+            "../tests/fixtures/reference-extraction-v1/golden.json"
         ))
         .unwrap();
         for case in fixture["cases"].as_array().unwrap() {
@@ -413,7 +413,7 @@ mod tests {
     #[test]
     fn emitted_contracts_validate_against_the_checked_in_schema() {
         let fixture: Value = serde_json::from_str(include_str!(
-            "../../../tests/fixtures/reference_extraction_v1/golden.json"
+            "../tests/fixtures/reference-extraction-v1/golden.json"
         ))
         .unwrap();
         let schema: Value = serde_json::from_str(REFERENCE_EXTRACTION_JSON_SCHEMA_V1).unwrap();
