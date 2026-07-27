@@ -139,7 +139,7 @@ provenance/SBOM attestation。固定版本且静态链接的 libxml2/libxslt 使
 libxml2/libxslt 开发依赖的开发者，也可从源码安装唯一的统一 executable：
 
 ```bash
-cargo install tidas --version 0.1.0 --locked
+cargo install tidas --version 0.1.1 --locked
 ```
 
 全部公开 workspace crates 使用完全相同的精确版本，避免 Cargo 混用不兼容的领域
@@ -158,16 +158,16 @@ tag，再显式从该 tag dispatch 原生 release workflow，使 artifact proven
 ```bash
 curl --proto '=https' --tlsv1.2 -fsSLO \
   https://raw.githubusercontent.com/tiangong-lca/tidas-tools/main/scripts/install.sh
-sh install.sh --version 0.1.0 --prefix "$HOME/.local"
+sh install.sh --version 0.1.1 --prefix "$HOME/.local"
 ```
 
 ```powershell
-.\scripts\install.ps1 -Version 0.1.0
+.\scripts\install.ps1 -Version 0.1.1
 ```
 
 每个 GitHub Release 同时携带由相同归档哈希生成的 Homebrew formula 与 Winget
 manifests。创建外部 tap 或提交 Winget community 需要单独批准，且这些路径绝不
-重新构建 executable。Windows ARM64 是明确跟踪的第二阶段目标。
+重新构建 executable。Windows ARM64 不受支持。
 
 下文记录的 Python 包已经 feature freeze，只在迁移期间作为内部 golden/parity
 oracle。它不是最终产品，旧可执行文件名和参数布局不会保留。只有 Rust 功能语义、

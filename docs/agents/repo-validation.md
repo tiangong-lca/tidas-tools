@@ -40,9 +40,9 @@ checkPaths:
   - scripts/test-release-request.sh
   - scripts/validate-release-request.sh
   - scripts/sync-rust-package-assets.sh
-lastReviewedAt: 2026-07-26
-lastReviewedCommit: eed5ed2
-lastReviewedNote: "Issue #138 adds secret-free Release Request validation, exact target/tag checks, and merge-only tag-context release dispatch."
+lastReviewedAt: 2026-07-27
+lastReviewedCommit: 6a0db19c3a7c8f92c2ee455ae83a158c5a3f91e1
+lastReviewedNote: "Issue #142 phase 1 requires Rust 1.88 product gates, Cargo 1.94 public-set qualification, release-request tamper tests, deterministic package smoke, and the five-platform PR matrix without publication credentials."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml

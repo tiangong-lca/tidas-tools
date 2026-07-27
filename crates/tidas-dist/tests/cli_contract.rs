@@ -58,17 +58,20 @@ fn cli_success_malformed_input_determinism_and_exit_codes_are_stable() {
         assert_eq!(report["schema_version"], "tidas.distribution-artifact.v1");
     }
 
-    let archive = "tidas-v0.1.0-x86_64-unknown-linux-gnu.tar.gz";
+    let archive = format!(
+        "tidas-v{}-x86_64-unknown-linux-gnu.tar.gz",
+        env!("CARGO_PKG_VERSION")
+    );
     assert_eq!(
-        fs::read(first.join(archive)).unwrap(),
-        fs::read(second.join(archive)).unwrap()
+        fs::read(first.join(&archive)).unwrap(),
+        fs::read(second.join(&archive)).unwrap()
     );
 
     let verified = command()
         .args([
             "verify",
             "--archive",
-            first.join(archive).to_str().unwrap(),
+            first.join(&archive).to_str().unwrap(),
             "--checksum",
             first.join(format!("{archive}.sha256")).to_str().unwrap(),
             "--target",
@@ -86,7 +89,7 @@ fn cli_success_malformed_input_determinism_and_exit_codes_are_stable() {
             "--license",
             license.to_str().unwrap(),
             "--target",
-            "windows-arm64-not-yet-supported",
+            "windows-arm64-unsupported",
             "--output-dir",
             temporary.path().to_str().unwrap(),
         ])

@@ -38,9 +38,9 @@ checkPaths:
   - scripts/test-release-request.sh
   - scripts/validate-release-request.sh
   - scripts/sync-rust-package-assets.sh
-lastReviewedAt: 2026-07-26
-lastReviewedCommit: eed5ed2
-lastReviewedNote: "Issue #138 makes an append-only Release Request PR the reviewed authorization for an exact tag and tag-context release dispatch."
+lastReviewedAt: 2026-07-27
+lastReviewedCommit: 6a0db19c3a7c8f92c2ee455ae83a158c5a3f91e1
+lastReviewedNote: "Issue #142 phase 1 prepares the exact v0.1.1 Rust set while keeping tidas-dist private and deferring the immutable Release Request until the preparation merge commit exists."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -378,8 +378,7 @@ Foundry gates without moving gate execution logic into this repository.
   frozen oracle and PyPI release path
 - changes under packaged English schema, Chinese schema, and methodology paths can dispatch downstream SDK refresh workflows
 - `.github/workflows/rust-ci.yml` exercises Linux x86_64/ARM64, macOS
-  Intel/Apple Silicon, and Windows x86_64; Windows ARM64 is a tracked
-  second-phase target
+  Intel/Apple Silicon, and Windows x86_64; Windows ARM64 is not supported
 
 This dispatch path is part of the repo architecture, not just a convenience automation.
 

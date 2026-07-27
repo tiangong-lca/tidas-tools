@@ -45,8 +45,8 @@ checkPaths:
   - scripts/validate-release-request.sh
   - scripts/sync-rust-package-assets.sh
 lastReviewedAt: 2026-07-27
-lastReviewedCommit: 30ebe5df9c53d958f01393517867e7f0b2455943
-lastReviewedNote: "Reviewed for Issue #140: typed Flow normalization, import preflight, versioned elementary taxonomy extension, full flow-property fidelity, and dual-language schema locks preserve repo ownership and validation boundaries."
+lastReviewedCommit: 6a0db19c3a7c8f92c2ee455ae83a158c5a3f91e1
+lastReviewedNote: "Reviewed for Issue #142 phase 1: the exact v0.1.1 Rust version set, repository-private tidas-dist boundary, five supported native targets, and release-request separation preserve repo ownership and delivery gates."
 related:
   - .docpact/config.yaml
   - docs/agents/cli-contract.md
@@ -121,7 +121,7 @@ Keep these entry-level facts in `AGENTS.md`. Use `README.md`, `README_CN.md`, an
 - crates.io package gate: `scripts/publish-crates.sh check`
 - source installation package: `cargo install tidas --version <version> --locked`
 - all public Rust crates use the same exact workspace version; `tidas-dist` is never published
-- initial native artifact matrix: Linux x86_64/ARM64, macOS Intel/Apple Silicon, and Windows x86_64; Windows ARM64 is a separately tracked second phase
+- supported native artifact matrix: Linux x86_64/ARM64, macOS Intel/Apple Silicon, and Windows x86_64; Windows ARM64 is not supported
 - migration-oracle package manager and runner: `uv`
 - routine branch base: `main`
 - routine PR base: `main`
