@@ -359,7 +359,7 @@ fn flow_from_row(row: &BTreeMap<String, String>, source: &str) -> Option<Canonic
         .get("uuid")
         .filter(|value| Uuid::parse_str(value).is_ok())
         .cloned();
-    let mut raw = Map::from_iter([(
+    let mut flow_metadata = Map::from_iter([(
         "flowType".to_owned(),
         Value::String(flow_type(row.get("type").map(String::as_str)).to_owned()),
     )]);
@@ -377,9 +377,9 @@ fn flow_from_row(row: &BTreeMap<String, String>, source: &str) -> Option<Canonic
         }
     }
     if !name_parts.is_empty() {
-        raw.insert("flowName".to_owned(), Value::Object(name_parts));
+        flow_metadata.insert("flowName".to_owned(), Value::Object(name_parts));
     }
-    raw.insert(
+    flow_metadata.insert(
         "sourceTrace".to_owned(),
         json!({"format": "openlca-process-xlsx", "sourceObject": "Flows row"}),
     );
@@ -393,7 +393,7 @@ fn flow_from_row(row: &BTreeMap<String, String>, source: &str) -> Option<Canonic
         external_id: Some(flow_key(&name, &category)),
         name: Some(name),
         category_path: split_path(&category),
-        raw,
+        raw: flow_metadata,
     })
 }
 
