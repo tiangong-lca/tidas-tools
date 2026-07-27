@@ -210,6 +210,27 @@ fn flow_raw(object: &Map<String, Value>) -> Map<String, Value> {
     if let Some(unit) = text(object.get("refUnit")) {
         raw.insert("unitName".to_owned(), Value::String(unit.to_owned()));
     }
+    let mut name_parts = Map::new();
+    for field in [
+        "treatmentStandardsRoutes",
+        "mixAndLocationTypes",
+        "flowProperties",
+    ] {
+        if let Some(value) = object.get(field).and_then(Value::as_str) {
+            name_parts.insert(field.to_owned(), Value::String(value.to_owned()));
+        }
+    }
+    if !name_parts.is_empty() {
+        raw.insert("flowName".to_owned(), Value::Object(name_parts));
+    }
+    raw.insert(
+        "sourceTrace".to_owned(),
+        json!({
+            "format": "openlca-jsonld",
+            "sourceObject": "Flow",
+            "sourceId": object.get("@id")
+        }),
+    );
     raw
 }
 
@@ -853,6 +874,7 @@ mod tests {
     use tidas_validation::{ValidationRequest, validate_ilcd_package, validate_tidas_package};
 
     use super::*;
+    use crate::normalization::normalize_flow;
     use crate::report::IssueSpool;
     use crate::writers::{
         IlcdWriteRequest, TidasWriteRequest, write_ilcd_package, write_tidas_package,
@@ -863,7 +885,7 @@ mod tests {
         let directory = tempdir().unwrap();
         std::fs::write(
             directory.path().join("flow.json"),
-            br#"{"@type":"Flow","@id":"11111111-1111-4111-8111-111111111111","name":"Steel","flowType":"PRODUCT_FLOW","refUnit":"kg"}"#,
+            br#"{"@type":"Flow","@id":"11111111-1111-4111-8111-111111111111","name":"Steel","flowType":"PRODUCT_FLOW","refUnit":"kg","treatmentStandardsRoutes":"production route","mixAndLocationTypes":"GLO"}"#,
         )
         .unwrap();
         std::fs::write(
@@ -919,6 +941,49 @@ mod tests {
         })
         .unwrap();
         assert!(validation.summary.ok, "{:?}", validation.summary);
+    }
+
+    #[test]
+    fn openlca_all_flow_properties_reach_typed_normalization() {
+        let object = json!({
+            "@type": "Flow",
+            "@id": "11111111-1111-4111-8111-111111111111",
+            "name": "Fuel",
+            "flowType": "PRODUCT_FLOW",
+            "treatmentStandardsRoutes": "production route",
+            "mixAndLocationTypes": "GLO",
+            "flowProperties": [
+                {
+                    "flowProperty": {
+                        "@id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+                        "name": "Mass"
+                    },
+                    "conversionFactor": "1",
+                    "isRefFlowProperty": true
+                },
+                {
+                    "flowProperty": {
+                        "@id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+                        "name": "Net calorific value"
+                    },
+                    "conversionFactor": "42.500",
+                    "isRefFlowProperty": false
+                }
+            ]
+        });
+        let entity = to_entity(object.as_object().unwrap(), "fixture.json").unwrap();
+        let normalized = normalize_flow(&entity).unwrap();
+        assert_eq!(normalized.flow_properties.len(), 2);
+        assert_eq!(
+            normalized.flow_properties[0].flow_property_uuid,
+            "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"
+        );
+        assert!(normalized.flow_properties[0].is_reference);
+        assert_eq!(
+            normalized.flow_properties[1].flow_property_uuid,
+            "cccccccc-cccc-4ccc-8ccc-cccccccccccc"
+        );
+        assert_eq!(normalized.flow_properties[1].conversion_factor, "42.500");
     }
 
     #[test]
@@ -1112,7 +1177,7 @@ mod tests {
         std::fs::write(
             directory.join("flow.json"),
             format!(
-                r#"{{"@type":"Flow","@id":"{PROVIDER_FLOW_ID}","name":"Steel","flowType":"PRODUCT_FLOW","refUnit":"kg"}}"#
+                r#"{{"@type":"Flow","@id":"{PROVIDER_FLOW_ID}","name":"Steel","flowType":"PRODUCT_FLOW","refUnit":"kg","treatmentStandardsRoutes":"production route","mixAndLocationTypes":"GLO"}}"#
             ),
         )
         .unwrap();

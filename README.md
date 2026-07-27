@@ -272,6 +272,16 @@ Source units from EcoSpold, SimaPro CSV, and process XLSX inputs are propagated
 into generated unit groups and flow properties when no explicit reference data
 is available.
 
+Flow import is evidence-preserving. Elementary Flow names emit `baseName`
+without generated qualifiers. Product, Waste, and Other Flow names require
+source-backed `baseName`, `treatmentStandardsRoutes`, and
+`mixAndLocationTypes`; missing facts fail preflight before any package is
+published. Elementary classification uses the immutable official ILCD tree
+plus the versioned `tidas-ef-extension` overlay, and unmatched source paths
+produce an explicit air-unspecified warning. All source flow-property
+assignments, including distinct Mass and net-calorific-value properties, keep
+their UUIDs, reference decision, source order, and decimal factors.
+
 When downstream AI/import workers need to handle each TIDAS process
 independently, the importer writes per-process bundles by default. The normal
 `<output_directory>/tidas` package is still written unchanged; the importer

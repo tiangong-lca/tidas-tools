@@ -9,6 +9,7 @@ pub mod bundles;
 pub mod detect;
 pub mod mapping;
 pub mod model;
+pub mod normalization;
 pub mod orchestrator;
 pub mod pipeline;
 pub mod report;
@@ -32,6 +33,10 @@ pub use mapping::{
     write_mapping_csv_gz,
 };
 pub use model::{CanonicalEntity, CanonicalExchange, EntityRef};
+pub use normalization::{
+    CanonicalClassification, CanonicalFlow, CanonicalFlowName, CanonicalFlowPropertyAssignment,
+    FlowDatasetType, FlowNormalizationError, normalize_flow,
+};
 pub use orchestrator::{
     IMPORT_EXECUTION_REPORT_JSON_SCHEMA_V1, IMPORT_EXECUTION_REPORT_SCHEMA_V1,
     ImportExecutionError, ImportExecutionReportV1, ImportRequest, ImportTarget, run_import,

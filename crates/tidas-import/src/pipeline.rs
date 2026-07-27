@@ -6,7 +6,11 @@ use tidas_runtime::{CancellationToken, MemoryBudget, RuntimeError};
 
 use crate::adapters::{AdapterContext, AdapterError, adapter_for};
 use crate::detect::{DetectionError, DetectionRequest, SourceFormat, detect_format};
-use crate::report::{ImportReportV1, IssueSinkError, IssueSpool, IssueSpoolSummary};
+use crate::normalization::normalize_flow;
+use crate::report::{
+    ImportIssue, ImportReportV1, IssueSeverity, IssueSink, IssueSinkError, IssueSpool,
+    IssueSpoolSummary,
+};
 use crate::store::{CanonicalStore, StoreError};
 
 pub struct ImportCoreRequest<'a> {
@@ -61,6 +65,7 @@ pub fn parse_external_source<W: Write>(
         &mut store,
         &mut issues,
     )?;
+    record_elementary_taxonomy_fallbacks(&store, &mut issues)?;
     let (issue_writer, issue_spool) = issues.finish()?;
     let mut report = ImportReportV1::new(
         request.source.to_string_lossy(),
@@ -78,6 +83,54 @@ pub fn parse_external_source<W: Write>(
         issue_writer,
         issue_spool,
     })
+}
+
+fn record_elementary_taxonomy_fallbacks<W: Write>(
+    store: &CanonicalStore,
+    issues: &mut IssueSpool<W>,
+) -> Result<(), ImportCoreError> {
+    for flow in store.iter_type("flows")? {
+        let flow = flow?;
+        let Ok(normalized) = normalize_flow(&flow) else {
+            continue;
+        };
+        if !normalized
+            .classification
+            .match_kind
+            .starts_with("fallback-")
+        {
+            continue;
+        }
+        let source_object = flow
+            .raw
+            .get("sourceTrace")
+            .and_then(|trace| trace.get("sourceObject"))
+            .and_then(serde_json::Value::as_str)
+            .map_or_else(|| flow.internal_id.clone(), ToOwned::to_owned);
+        let mut context = std::collections::BTreeMap::new();
+        context.insert(
+            "canonicalPath".to_owned(),
+            serde_json::Value::String("CanonicalFlow.classification".to_owned()),
+        );
+        context.insert(
+            "mappingKind".to_owned(),
+            serde_json::Value::String(normalized.classification.match_kind.clone()),
+        );
+        context.insert(
+            "sourcePath".to_owned(),
+            serde_json::to_value(&normalized.classification.source_path)
+                .expect("source taxonomy path is serializable"),
+        );
+        issues.push(&ImportIssue {
+            severity: IssueSeverity::Warning,
+            code: "elementary_taxonomy_fallback".to_owned(),
+            message: "source elementary-flow taxonomy path did not match the effective taxonomy; mapped to Emissions > Emissions to air > Emissions to air, unspecified"
+                .to_owned(),
+            source_object: Some(source_object),
+            context,
+        })?;
+    }
+    Ok(())
 }
 
 #[derive(Debug, Error)]

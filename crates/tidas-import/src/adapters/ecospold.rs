@@ -569,6 +569,9 @@ fn flow_entity(
     if let Some(synonyms) = declared(element.attr("localName")) {
         raw.insert("synonyms".to_owned(), Value::String(synonyms.to_owned()));
     }
+    if let Some(name) = flow_name_facts(element) {
+        raw.insert("flowName".to_owned(), name);
+    }
     let source_classification = exchange_classification(element);
     raw.insert(
         "sourceClassification".to_owned(),
@@ -611,6 +614,23 @@ fn flow_entity(
             .collect(),
         raw,
     }
+}
+
+fn flow_name_facts(element: &XmlNode) -> Option<Value> {
+    let route = declared(
+        element
+            .attr("treatmentStandardsRoutes")
+            .or_else(|| element.child_text("treatmentStandardsRoutes")),
+    )?;
+    let mix = declared(
+        element
+            .attr("mixAndLocationTypes")
+            .or_else(|| element.child_text("mixAndLocationTypes")),
+    )?;
+    Some(json!({
+        "treatmentStandardsRoutes": route,
+        "mixAndLocationTypes": mix,
+    }))
 }
 
 fn exchange_value(
@@ -842,12 +862,12 @@ mod tests {
             (
                 EcoSpoldVersion::One,
                 "one.xml",
-                r#"<ecoSpold><dataset><metaInformation><processInformation><referenceFunction name="steel"/></processInformation></metaInformation><flowData><exchange number="1" name="steel" unit="kg" amount="1" outputGroup="0"/><exchange number="2" name="carbon dioxide" unit="kg" amount="2.5" outputGroup="4" category="air"/></flowData></dataset></ecoSpold>"#,
+                r#"<ecoSpold><dataset><metaInformation><processInformation><referenceFunction name="steel"/></processInformation></metaInformation><flowData><exchange number="1" name="steel" unit="kg" amount="1" outputGroup="0" treatmentStandardsRoutes="production route" mixAndLocationTypes="GLO"/><exchange number="2" name="carbon dioxide" unit="kg" amount="2.5" outputGroup="4" category="air"/></flowData></dataset></ecoSpold>"#,
             ),
             (
                 EcoSpoldVersion::Two,
                 "two.spold",
-                r#"<ecoSpold><activityDataset><activityDescription><activity id="22222222-2222-4222-8222-222222222222"><activityName>steel</activityName></activity></activityDescription><flowData><intermediateExchange id="11111111-1111-4111-8111-111111111111" amount="1"><name>steel</name><unitName>kg</unitName><outputGroup>0</outputGroup></intermediateExchange><elementaryExchange id="44444444-4444-4444-8444-444444444444" amount="2.5"><name>carbon dioxide</name><unitName>kg</unitName><outputGroup>4</outputGroup></elementaryExchange></flowData></activityDataset></ecoSpold>"#,
+                r#"<ecoSpold><activityDataset><activityDescription><activity id="22222222-2222-4222-8222-222222222222"><activityName>steel</activityName></activity></activityDescription><flowData><intermediateExchange id="11111111-1111-4111-8111-111111111111" amount="1" treatmentStandardsRoutes="production route" mixAndLocationTypes="GLO"><name>steel</name><unitName>kg</unitName><outputGroup>0</outputGroup></intermediateExchange><elementaryExchange id="44444444-4444-4444-8444-444444444444" amount="2.5"><name>carbon dioxide</name><unitName>kg</unitName><outputGroup>4</outputGroup></elementaryExchange></flowData></activityDataset></ecoSpold>"#,
             ),
         ] {
             let directory = tempdir().unwrap();

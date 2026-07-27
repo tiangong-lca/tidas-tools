@@ -9,8 +9,8 @@
       <technology><comment xml:lang="en">Heat pump route</comment></technology>
     </activityDescription>
     <flowData>
-      <intermediateExchange id="11111111-1111-4111-8111-111111111111" amount="1" productionVolumeAmount="42.0" isCalculatedAmount="true" intermediateExchangeId="11111111-1111-4111-8111-111111111111"><name xml:lang="en">enriched product</name><unitName xml:lang="en">kg</unitName><outputGroup>0</outputGroup></intermediateExchange>
-      <intermediateExchange id="33333333-3333-4333-8333-333333333333" amount="0.20000000000000001" isCalculatedAmount="true" activityLinkId="aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"><name xml:lang="en">linked input</name><unitName xml:lang="en">kg</unitName><comment xml:lang="en">linked input comment</comment><uncertainty><lognormal meanValue="0.2" variance="0.12"/></uncertainty><inputGroup>5</inputGroup></intermediateExchange>
+      <intermediateExchange id="11111111-1111-4111-8111-111111111111" amount="1" productionVolumeAmount="42.0" isCalculatedAmount="true" intermediateExchangeId="11111111-1111-4111-8111-111111111111" treatmentStandardsRoutes="production route" mixAndLocationTypes="GLO"><name xml:lang="en">enriched product</name><unitName xml:lang="en">kg</unitName><outputGroup>0</outputGroup></intermediateExchange>
+      <intermediateExchange id="33333333-3333-4333-8333-333333333333" amount="0.20000000000000001" isCalculatedAmount="true" activityLinkId="aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa" treatmentStandardsRoutes="provider route" mixAndLocationTypes="CH"><name xml:lang="en">linked input</name><unitName xml:lang="en">kg</unitName><comment xml:lang="en">linked input comment</comment><uncertainty><lognormal meanValue="0.2" variance="0.12"/></uncertainty><inputGroup>5</inputGroup></intermediateExchange>
     </flowData>
   </activityDataset>
 </ecoSpold>

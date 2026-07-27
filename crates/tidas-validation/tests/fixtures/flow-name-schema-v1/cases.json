@@ -1,0 +1,114 @@
+{
+  "schema_version": "tidas.flow-name-schema-fixtures.v1",
+  "cases": [
+    {
+      "name": "elementary-base-only",
+      "flow_type": "Elementary flow",
+      "flow_name": {
+        "baseName": {
+          "@xml:lang": "en",
+          "#text": "Carbon dioxide"
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "product-complete",
+      "flow_type": "Product flow",
+      "flow_name": {
+        "baseName": {
+          "@xml:lang": "en",
+          "#text": "Steel"
+        },
+        "treatmentStandardsRoutes": {
+          "@xml:lang": "en",
+          "#text": "production route"
+        },
+        "mixAndLocationTypes": {
+          "@xml:lang": "en",
+          "#text": "GLO"
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "waste-complete",
+      "flow_type": "Waste flow",
+      "flow_name": {
+        "baseName": {
+          "@xml:lang": "en",
+          "#text": "Waste steel"
+        },
+        "treatmentStandardsRoutes": {
+          "@xml:lang": "en",
+          "#text": "collection route"
+        },
+        "mixAndLocationTypes": {
+          "@xml:lang": "en",
+          "#text": "GLO"
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "other-complete",
+      "flow_type": "Other flow",
+      "flow_name": {
+        "baseName": {
+          "@xml:lang": "en",
+          "#text": "Other material"
+        },
+        "treatmentStandardsRoutes": {
+          "@xml:lang": "en",
+          "#text": "source route"
+        },
+        "mixAndLocationTypes": {
+          "@xml:lang": "en",
+          "#text": "GLO"
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "product-missing-route",
+      "flow_type": "Product flow",
+      "flow_name": {
+        "baseName": {
+          "@xml:lang": "en",
+          "#text": "Steel"
+        },
+        "mixAndLocationTypes": {
+          "@xml:lang": "en",
+          "#text": "GLO"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "waste-missing-mix",
+      "flow_type": "Waste flow",
+      "flow_name": {
+        "baseName": {
+          "@xml:lang": "en",
+          "#text": "Waste steel"
+        },
+        "treatmentStandardsRoutes": {
+          "@xml:lang": "en",
+          "#text": "collection route"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "other-base-only",
+      "flow_type": "Other flow",
+      "flow_name": {
+        "baseName": {
+          "@xml:lang": "en",
+          "#text": "Other material"
+        }
+      },
+      "valid": false
+    }
+  ]
+}

@@ -424,7 +424,7 @@ fn import_is_native_atomic_validated_and_actionable() {
     let output = directory.path().join("output");
     fs::write(
         &input,
-        b"{SimaPro 9.5}\n\nProcess\n\nProcess name\nSteel\n\nProducts\nSteel;kg;1\n\nEnd\n",
+        b"{SimaPro 9.5}\n\nProcess\n\nProcess name\nSteel\n\nProducts\nSteel | production route | GLO;kg;1\n\nEnd\n",
     )
     .unwrap();
     let run = || {
@@ -481,7 +481,7 @@ fn import_warning_policy_and_invalid_sources_have_stable_exit_classes() {
     let output = directory.path().join("output");
     fs::write(
         &source,
-        b"{SimaPro 9.5}\n\nProcess\n\nProcess name\nSteel\n\nProducts\nSteel;kg;1\n\nEnd\n",
+        b"{SimaPro 9.5}\n\nProcess\n\nProcess name\nSteel\n\nProducts\nSteel | production route | GLO;kg;1\n\nEnd\n",
     )
     .unwrap();
     let (warning_output, warning_report) = json_output(&[
@@ -503,6 +503,35 @@ fn import_warning_policy_and_invalid_sources_have_stable_exit_classes() {
     assert_eq!(warning_report["status"], "completed-with-issues");
     assert_eq!(warning_report["exit_class"], "data-issues");
     assert!(output.join("tidas").is_dir());
+
+    let missing_facts = directory.path().join("missing-facts.csv");
+    fs::write(
+        &missing_facts,
+        b"{SimaPro 9.5}\n\nProcess\n\nProcess name\nSteel\n\nProducts\nSteel;kg;1\n\nEnd\n",
+    )
+    .unwrap();
+    let missing_output = directory.path().join("missing-output");
+    let (preflight_output, preflight_report) = json_output(&[
+        "import",
+        missing_facts.to_str().unwrap(),
+        "--output",
+        missing_output.to_str().unwrap(),
+        "--format",
+        "json",
+    ]);
+    assert_eq!(preflight_output.status.code(), Some(2));
+    assert_eq!(preflight_report["exit_class"], "data-issues");
+    assert_eq!(
+        preflight_report["diagnostics"][0]["code"],
+        "import_preflight_failed"
+    );
+    assert!(
+        preflight_report["diagnostics"][0]["message"]
+            .as_str()
+            .unwrap()
+            .contains("CanonicalFlow.name.treatmentStandardsRoutes")
+    );
+    assert!(!missing_output.exists());
 
     let zolca = directory.path().join("database.zolca");
     fs::write(&zolca, b"SQLite format 3").unwrap();

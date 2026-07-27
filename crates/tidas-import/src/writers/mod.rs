@@ -21,6 +21,7 @@ use tidas_conversion::{
 use tidas_runtime::{CancellationToken, MemoryBudget, RuntimeError};
 use walkdir::WalkDir;
 
+use crate::normalization::{CanonicalFlow, FlowNormalizationError, normalize_flow};
 use crate::store::{CanonicalStore, StoreError};
 
 use self::process::ProcessWriteError;
@@ -92,6 +93,7 @@ pub fn write_tidas_package(
 ) -> Result<PackageWriteReportV1, PackageWriteError> {
     request.cancellation.check()?;
     reject_unsupported_entities(request.store)?;
+    let flows = preflight_flows(request.store, request.cancellation)?;
     let staging = StagedDirectory::new(request.output_dir)?;
     for category in CATEGORY_ORDER {
         fs::create_dir_all(staging.path().join(category))?;
@@ -124,9 +126,7 @@ pub fn write_tidas_package(
         &mut counts,
         |entity| Ok(unit_flow::flow_property(entity)),
     )?;
-    write_entities(request, staging.path(), "flows", &mut counts, |entity| {
-        Ok(unit_flow::flow(entity))
-    })?;
+    write_flow_entities(request, staging.path(), &flows, &mut counts)?;
     write_process_entities(request, staging.path(), &mut counts)?;
     write_entities(
         request,
@@ -148,6 +148,34 @@ pub fn write_tidas_package(
     request.cancellation.check()?;
     staging.commit()?;
     Ok(report)
+}
+
+fn preflight_flows(
+    store: &CanonicalStore,
+    cancellation: &CancellationToken,
+) -> Result<Vec<CanonicalFlow>, PackageWriteError> {
+    store
+        .iter_type("flows")?
+        .map(|entity| {
+            cancellation.check()?;
+            Ok(normalize_flow(&entity?)?)
+        })
+        .collect()
+}
+
+fn write_flow_entities(
+    request: &TidasWriteRequest<'_>,
+    root: &Path,
+    flows: &[CanonicalFlow],
+    counts: &mut BTreeMap<String, u64>,
+) -> Result<(), PackageWriteError> {
+    for flow in flows {
+        request.cancellation.check()?;
+        let dataset = unit_flow::flow(flow);
+        write_dataset(root, "flows", &flow.id, &dataset, request)?;
+        *counts.entry("flows".to_owned()).or_default() += 1;
+    }
+    Ok(())
 }
 
 pub fn write_ilcd_package(
@@ -467,6 +495,8 @@ pub enum PackageWriteError {
     Runtime(#[from] RuntimeError),
     #[error("canonical store failed: {0}")]
     Store(#[from] StoreError),
+    #[error("flow normalization/preflight failed: {0}")]
+    FlowPreflight(#[from] FlowNormalizationError),
     #[error("process writer failed: {0}")]
     Process(#[from] ProcessWriteError),
     #[error("asset verification failed: {0}")]
@@ -490,7 +520,7 @@ mod tests {
         let source = directory.path().join("source.csv");
         fs::write(
             &source,
-            b"{SimaPro 9.5}\n{CSV separator: semicolon}\n\nProcess\n\nProcess name\nSteel production\n\nComment\nfixture\n\nProducts\nSteel;kg;1\n\nEmissions to air\nCarbon dioxide;air;kg;2.5\n\nEnd\n",
+            b"{SimaPro 9.5}\n{CSV separator: semicolon}\n\nProcess\n\nProcess name\nSteel production\n\nComment\nfixture\n\nProducts\nSteel | production route | GLO;kg;1\n\nEmissions to air\nCarbon dioxide;air;kg;2.5\n\nEnd\n",
         )
         .unwrap();
         let cancellation = CancellationToken::default();
@@ -535,9 +565,10 @@ mod tests {
         assert_eq!(first_report.object_counts["flows"], 2);
         assert_eq!(first_report.object_counts["unitgroups"], 1);
         assert_eq!(first_report.object_counts["flowproperties"], 1);
+        let tidas_issues = directory.path().join("tidas-issues.jsonl");
         let validation = validate_tidas_package(&ValidationRequest {
             input_dir: first.clone(),
-            issue_spool: None,
+            issue_spool: Some(tidas_issues.clone()),
             cancellation: cancellation.clone(),
             memory_budget: memory_budget.clone(),
             queue_capacity: 2,
@@ -546,8 +577,9 @@ mod tests {
         .unwrap();
         assert!(
             validation.summary.ok,
-            "validation summary: {:?}",
-            validation.summary
+            "validation summary: {:?}; issues: {}",
+            validation.summary,
+            fs::read_to_string(tidas_issues).unwrap_or_default(),
         );
         let flow_property = fs::read_to_string(first.join("flowproperties").join(format!(
             "{}.json",
@@ -606,5 +638,118 @@ mod tests {
             PackageWriteError::Runtime(RuntimeError::Cancelled)
         ));
         assert_eq!(fs::read(output.join("sentinel")).unwrap(), b"keep");
+    }
+
+    #[test]
+    fn flow_preflight_rejects_missing_source_name_facts_before_publication() {
+        let directory = tempdir().unwrap();
+        let source = directory.path().join("source.csv");
+        fs::write(
+            &source,
+            b"{SimaPro 9.5}\n{CSV separator: semicolon}\n\nProcess\n\nProcess name\nSteel production\n\nProducts\nSteel;kg;1\n\nEnd\n",
+        )
+        .unwrap();
+        let cancellation = CancellationToken::default();
+        let memory_budget = MemoryBudget::new(8 * 1024 * 1024);
+        let mut store = CanonicalStore::create(Some(directory.path())).unwrap();
+        let mut issues = IssueSpool::new(Vec::new(), 64 * 1024);
+        crate::adapters::SimaProCsvAdapter
+            .read(
+                &AdapterContext {
+                    source: &source,
+                    cancellation: &cancellation,
+                    memory_budget: &memory_budget,
+                    max_entry_bytes: 1024 * 1024,
+                },
+                &mut store,
+                &mut issues,
+            )
+            .unwrap();
+        issues.finish().unwrap();
+        let output = directory.path().join("output");
+        let error = write_tidas_package(&TidasWriteRequest {
+            store: &store,
+            output_dir: &output,
+            cancellation: &cancellation,
+            memory_budget: &memory_budget,
+        })
+        .unwrap_err();
+        let message = error.to_string();
+        assert!(matches!(error, PackageWriteError::FlowPreflight(_)));
+        assert!(message.contains("simapro-csv:Products"));
+        assert!(message.contains("CanonicalFlow.name.treatmentStandardsRoutes"));
+        assert!(!output.exists());
+    }
+
+    #[test]
+    fn extension_identity_survives_tidas_ilcd_tidas_round_trip() {
+        let directory = tempdir().unwrap();
+        let flow_id = "11111111-1111-4111-8111-111111111111";
+        let mut store = CanonicalStore::create(Some(directory.path())).unwrap();
+        store
+            .add(&crate::model::CanonicalEntity {
+                entity_type: "flows".to_owned(),
+                internal_id: flow_id.to_owned(),
+                external_id: None,
+                name: Some("Carbon dioxide".to_owned()),
+                category_path: vec![
+                    "Emissions".to_owned(),
+                    "Emissions to air".to_owned(),
+                    "Emissions to non-urban air high stack".to_owned(),
+                ],
+                raw: serde_json::Map::from_iter([
+                    (
+                        "flowType".to_owned(),
+                        Value::String("ELEMENTARY_FLOW".to_owned()),
+                    ),
+                    ("unitName".to_owned(), Value::String("kg".to_owned())),
+                    (
+                        "sourceTrace".to_owned(),
+                        serde_json::json!({
+                            "format": "fixture",
+                            "sourceObject": "extension-round-trip"
+                        }),
+                    ),
+                ]),
+            })
+            .unwrap();
+        let cancellation = CancellationToken::default();
+        let memory_budget = MemoryBudget::new(16 * 1024 * 1024);
+        let ilcd = directory.path().join("ilcd");
+        write_ilcd_package(&IlcdWriteRequest {
+            store: &store,
+            output_dir: &ilcd,
+            cancellation: &cancellation,
+            memory_budget: &memory_budget,
+            queue_capacity: 2,
+        })
+        .unwrap();
+        let mut round_trip_store = CanonicalStore::create(Some(directory.path())).unwrap();
+        let mut issues = IssueSpool::new(Vec::new(), 64 * 1024);
+        crate::adapters::IlcdAdapter
+            .read(
+                &AdapterContext {
+                    source: &ilcd,
+                    cancellation: &cancellation,
+                    memory_budget: &memory_budget,
+                    max_entry_bytes: 1024 * 1024,
+                },
+                &mut round_trip_store,
+                &mut issues,
+            )
+            .unwrap();
+        issues.finish().unwrap();
+        let round_trip = round_trip_store.get("flows", flow_id).unwrap().unwrap();
+        let normalized = normalize_flow(&round_trip).unwrap();
+        assert_eq!(normalized.classification.taxonomy_id, "tidas-ef-extension");
+        assert_eq!(normalized.classification.taxonomy_version, "1");
+        assert_eq!(
+            normalized.classification.extension_node_id.as_deref(),
+            Some("1.3.12")
+        );
+        assert_eq!(
+            normalized.classification.categories.last().unwrap().label,
+            "Emissions to non-urban air high stack"
+        );
     }
 }

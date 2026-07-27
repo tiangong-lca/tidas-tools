@@ -1,13 +1,11 @@
-use std::collections::BTreeMap;
-use std::sync::OnceLock;
-
 use serde_json::{Map, Value, json};
 
 use crate::model::CanonicalEntity;
+use crate::normalization::{CanonicalClassification, CanonicalFlow, FlowDatasetType};
 
 use super::common::{
-    administrative_for_entity, compliance_declarations, dataset_ref, import_trace, localized,
-    name_parts, stable_id,
+    DEFAULT_VERSION, administrative_for_entity, administrative_version, compliance_declarations,
+    dataset_ref, dataset_ref_version, import_trace, localized, stable_id,
 };
 
 pub fn unit_group(entity: &CanonicalEntity) -> Value {
@@ -146,43 +144,34 @@ pub fn flow_property(entity: &CanonicalEntity) -> Value {
     })
 }
 
-pub fn flow(entity: &CanonicalEntity) -> Value {
-    let source_type = entity
-        .raw
-        .get("flowType")
-        .and_then(Value::as_str)
-        .unwrap_or("PRODUCT_FLOW");
-    let dataset_type = if source_type.contains("ELEMENTARY") {
-        "Elementary flow"
-    } else if source_type.contains("WASTE") {
-        "Waste flow"
-    } else {
-        "Product flow"
-    };
-    let name = entity.name.as_deref().unwrap_or("Flow");
-    let unit_name = entity
-        .raw
-        .get("unitName")
-        .and_then(Value::as_str)
-        .map(str::trim)
-        .filter(|value| !value.is_empty());
-    let flow_property_id = entity
-        .raw
-        .get("flowPropertyRefId")
-        .and_then(Value::as_str)
-        .map(ToOwned::to_owned)
-        .or_else(|| {
-            unit_name.map(|unit| stable_id(&format!("tidas-tools/import/flowproperty/{unit}")))
+pub fn flow(flow: &CanonicalFlow) -> Value {
+    let dataset_type = flow.dataset_type.as_tidas();
+    let classification = flow_classification(&flow.classification, flow.dataset_type);
+    let name = flow_name(flow);
+    let properties = flow
+        .flow_properties
+        .iter()
+        .enumerate()
+        .map(|(index, property)| {
+            json!({
+                "@dataSetInternalID": index.saturating_add(1).to_string(),
+                "referenceToFlowPropertyDataSet": dataset_ref_version(
+                    "flow property data set",
+                    &property.flow_property_uuid,
+                    &property.flow_property_name,
+                    "flowproperties",
+                    property.version.as_deref(),
+                ),
+                "meanValue": property.conversion_factor,
+                "common:other": import_trace(&property.source_evidence),
+            })
         })
-        .unwrap_or_else(|| stable_id("tidas-tools/import/default-flow-property"));
-    let flow_property_name = entity
-        .raw
-        .get("flowPropertyName")
-        .and_then(Value::as_str)
-        .map(ToOwned::to_owned)
-        .or_else(|| unit_name.map(|unit| format!("Amount in {unit}")))
-        .unwrap_or_else(|| "Flow property".to_owned());
-    let classification = flow_classification(entity, dataset_type, source_type);
+        .collect::<Vec<_>>();
+    let properties = if properties.len() == 1 {
+        properties.into_iter().next().expect("one flow property")
+    } else {
+        Value::Array(properties)
+    };
     let mut document = json!({
         "flowDataSet": {
             "@xmlns": "http://lca.jrc.it/ILCD/Flow",
@@ -194,28 +183,26 @@ pub fn flow(entity: &CanonicalEntity) -> Value {
             "@xsi:schemaLocation": "http://lca.jrc.it/ILCD/Flow ../../schemas/ILCD_FlowDataSet.xsd",
             "flowInformation": {
                 "dataSetInformation": {
-                    "common:UUID": entity.internal_id,
-                    "name": name_parts(name, "source-described geography"),
+                    "common:UUID": flow.id,
+                    "name": name,
                     "classificationInformation": classification
                 },
-                "quantitativeReference": {"referenceToReferenceFlowProperty": "1"}
+                "quantitativeReference": {
+                    "referenceToReferenceFlowProperty": flow.reference_property_internal_id
+                }
             },
             "modellingAndValidation": {
                 "LCIMethod": {"typeOfDataSet": dataset_type},
                 "complianceDeclarations": compliance_declarations(false)
             },
-            "administrativeInformation": administrative_for_entity("flows", entity, false),
+            "administrativeInformation": administrative_version(
+                "flows",
+                &flow.id,
+                false,
+                flow.version.as_deref().unwrap_or(DEFAULT_VERSION),
+            ),
             "flowProperties": {
-                "flowProperty": {
-                    "@dataSetInternalID": "1",
-                    "referenceToFlowPropertyDataSet": dataset_ref(
-                        "flow property data set",
-                        &flow_property_id,
-                        &flow_property_name,
-                        "flowproperties"
-                    ),
-                    "meanValue": "1"
-                }
+                "flowProperty": properties
             }
         }
     });
@@ -223,50 +210,68 @@ pub fn flow(entity: &CanonicalEntity) -> Value {
         .pointer_mut("/flowDataSet/flowInformation/dataSetInformation")
         .and_then(Value::as_object_mut)
         .expect("native flow dataset information is an object");
-    if let Some(synonyms) = entity
-        .raw
-        .get("synonyms")
-        .and_then(Value::as_str)
-        .map(str::trim)
-        .filter(|value| !value.is_empty())
-    {
+    if let Some(synonyms) = flow.synonyms.as_deref() {
         let classification = dataset_information
             .remove("classificationInformation")
             .expect("native flow classification exists");
         dataset_information.insert("common:synonyms".to_owned(), localized(synonyms));
         dataset_information.insert("classificationInformation".to_owned(), classification);
     }
-    if let Some(cas_number) = entity.raw.get("CASNumber").and_then(Value::as_str) {
+    if let Some(cas_number) = flow.cas_number.as_deref() {
         dataset_information.insert("CASNumber".to_owned(), Value::String(cas_number.to_owned()));
     }
-    if let Some(formula) = entity.raw.get("sumFormula").and_then(Value::as_str) {
+    if let Some(formula) = flow.sum_formula.as_deref() {
         dataset_information.insert("sumFormula".to_owned(), Value::String(formula.to_owned()));
     }
-    if let Some(trace) = entity.raw.get("sourceTrace") {
-        dataset_information.insert("common:other".to_owned(), import_trace(trace));
+    if !flow.source_trace.is_null() {
+        dataset_information.insert("common:other".to_owned(), import_trace(&flow.source_trace));
     }
     document
 }
 
-fn flow_classification(entity: &CanonicalEntity, dataset_type: &str, source_type: &str) -> Value {
-    let trace = import_trace(&json!({"sourceFlowType": source_type}));
-    if dataset_type == "Elementary flow" {
-        let categories = source_elementary_categories(entity);
-        if !categories.is_empty() {
-            return json!({
-                "common:elementaryFlowCategorization": {
-                    "common:category": categories,
-                    "common:other": trace
-                }
-            });
+fn flow_name(flow: &CanonicalFlow) -> Value {
+    let mut name = Map::from_iter([("baseName".to_owned(), localized(&flow.name.base_name))]);
+    for (field, value) in [
+        (
+            "treatmentStandardsRoutes",
+            flow.name.treatment_standards_routes.as_deref(),
+        ),
+        (
+            "mixAndLocationTypes",
+            flow.name.mix_and_location_types.as_deref(),
+        ),
+        ("flowProperties", flow.name.flow_properties.as_deref()),
+    ] {
+        if let Some(value) = value {
+            name.insert(field.to_owned(), localized(value));
         }
+    }
+    Value::Object(name)
+}
+
+fn flow_classification(
+    classification: &CanonicalClassification,
+    dataset_type: FlowDatasetType,
+) -> Value {
+    let trace = import_trace(&crate::normalization::classification_trace(
+        classification,
+        dataset_type.as_tidas(),
+    ));
+    if dataset_type == FlowDatasetType::Elementary {
+        let categories = classification
+            .categories
+            .iter()
+            .map(|category| {
+                json!({
+                    "@level": category.level,
+                    "@catId": category.category_id,
+                    "#text": category.label,
+                })
+            })
+            .collect::<Vec<_>>();
         json!({
             "common:elementaryFlowCategorization": {
-                "common:category": [
-                    {"@level": "0", "@catId": "1", "#text": "Emissions"},
-                    {"@level": "1", "@catId": "1.3", "#text": "Emissions to air"},
-                    {"@level": "2", "@catId": "1.3.4", "#text": "Emissions to air, unspecified"}
-                ],
+                "common:category": categories,
                 "common:other": trace
             }
         })
@@ -285,58 +290,6 @@ fn flow_classification(entity: &CanonicalEntity, dataset_type: &str, source_type
             }
         })
     }
-}
-
-fn source_elementary_categories(entity: &CanonicalEntity) -> Vec<Value> {
-    let Some(categories) = entity
-        .raw
-        .get("elementaryCategorization")
-        .and_then(Value::as_array)
-    else {
-        return Vec::new();
-    };
-    let index = elementary_category_index();
-    let mapped = categories
-        .iter()
-        .filter_map(|category| {
-            let text = category.get("text")?.as_str()?;
-            let (level, category_id) = index.get(text)?;
-            Some(json!({
-                "@level": level,
-                "@catId": category_id,
-                "#text": text
-            }))
-        })
-        .collect::<Vec<_>>();
-    if mapped.len() == categories.len() {
-        mapped
-    } else {
-        Vec::new()
-    }
-}
-
-fn elementary_category_index() -> &'static BTreeMap<String, (String, String)> {
-    static INDEX: OnceLock<BTreeMap<String, (String, String)>> = OnceLock::new();
-    INDEX.get_or_init(|| {
-        let asset = tidas_assets::bundled_asset(
-            "src/tidas_tools/tidas/schemas/tidas_flows_elementary_category.json",
-        )
-        .expect("elementary category schema is a locked executable asset");
-        let schema: Value =
-            serde_json::from_slice(asset.bytes).expect("locked elementary schema is valid JSON");
-        schema["oneOf"]
-            .as_array()
-            .expect("elementary schema declares oneOf")
-            .iter()
-            .filter_map(|entry| {
-                let properties = entry.get("properties")?;
-                let text = properties.get("#text")?.get("const")?.as_str()?;
-                let level = properties.get("@level")?.get("const")?.as_str()?;
-                let category_id = properties.get("@catId")?.get("const")?.as_str()?;
-                Some((text.to_owned(), (level.to_owned(), category_id.to_owned())))
-            })
-            .collect()
-    })
 }
 
 fn real_string(value: &Value) -> String {
@@ -442,7 +395,7 @@ mod tests {
                 ),
             ]),
         };
-        let value = flow(&entity);
+        let value = flow(&crate::normalization::normalize_flow(&entity).unwrap());
         let categories = &value["flowDataSet"]["flowInformation"]["dataSetInformation"]["classificationInformation"]
             ["common:elementaryFlowCategorization"]["common:category"];
         assert_eq!(categories[2]["@catId"], "1.1.1");

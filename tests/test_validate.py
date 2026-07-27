@@ -8,6 +8,7 @@ import pytest
 from jsonschema import Draft7Validator
 from lxml import etree
 from referencing import Registry
+from referencing.jsonschema import DRAFT7
 
 import tidas_tools.eilcd.stylesheets as eilcd_stylesheets
 import tidas_tools.tidas.schemas as schemas
@@ -351,7 +352,9 @@ def test_flows_fastjsonschema_codegen_stays_bounded_after_category_index_split()
         use_default=False,
     )
 
-    assert len(code.encode("utf-8")) < 2_000_000
+    # The type-aware Flow-name conditional adds a small Draft 7 branch while
+    # remaining far below the pre-split category code-generation footprint.
+    assert len(code.encode("utf-8")) < 2_100_000
     assert code.count("\n") < 10_000
 
 
@@ -413,6 +416,60 @@ def test_tidas_lciamethod_and_flow_enums_match_tidas_contract():
         assert "Expert judgement" in method_enum
         assert "Compliance with legal limits" not in method_enum
         assert "Energy balance" not in method_enum
+
+
+def test_english_and_chinese_flow_schemas_share_type_aware_name_fixtures():
+    fixture_root = (
+        Path(__file__).resolve().parents[1]
+        / "crates"
+        / "tidas-validation"
+        / "tests"
+        / "fixtures"
+        / "flow-name-schema-v1"
+    )
+    cases = json.loads((fixture_root / "cases.json").read_text(encoding="utf-8"))
+    template = json.loads((fixture_root / "template.json").read_text(encoding="utf-8"))
+    assert cases["schema_version"] == "tidas.flow-name-schema-fixtures.v1"
+
+    schema_roots = [
+        Path(__file__).resolve().parents[1]
+        / "src"
+        / "tidas_tools"
+        / "tidas"
+        / "schemas",
+        Path(__file__).resolve().parents[1]
+        / "src"
+        / "tidas_tools"
+        / "tidas"
+        / "schemas_zh",
+    ]
+    for schema_root in schema_roots:
+
+        def retrieve_from_root(uri):
+            schema_name = (
+                uri.replace("\\", "/").split("#", 1)[0].rstrip("/").split("/")[-1]
+            )
+            return DRAFT7.create_resource(
+                json.loads((schema_root / schema_name).read_text(encoding="utf-8"))
+            )
+
+        validator = Draft7Validator(
+            json.loads((schema_root / "tidas_flows.json").read_text(encoding="utf-8")),
+            registry=Registry(retrieve=retrieve_from_root),
+            format_checker=FORMAT_CHECKER,
+        )
+        for case in cases["cases"]:
+            document = json.loads(json.dumps(template))
+            document["flowDataSet"]["flowInformation"]["dataSetInformation"]["name"] = (
+                case["flow_name"]
+            )
+            document["flowDataSet"]["modellingAndValidation"]["LCIMethod"][
+                "typeOfDataSet"
+            ] = case["flow_type"]
+            assert (not list(validator.iter_errors(document))) is case["valid"], (
+                schema_root.name,
+                case["name"],
+            )
 
 
 def test_fastjsonschema_schema_failure_falls_back_to_strict_error_collection():

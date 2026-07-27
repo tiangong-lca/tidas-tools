@@ -30,10 +30,20 @@ pub fn localized(text: impl Into<String>) -> Value {
 }
 
 pub fn dataset_ref(ref_type: &str, id: &str, description: &str, category: &str) -> Value {
+    dataset_ref_version(ref_type, id, description, category, None)
+}
+
+pub fn dataset_ref_version(
+    ref_type: &str,
+    id: &str,
+    description: &str,
+    category: &str,
+    version: Option<&str>,
+) -> Value {
     json!({
         "@type": ref_type,
         "@refObjectId": id,
-        "@version": DEFAULT_VERSION,
+        "@version": version.unwrap_or(DEFAULT_VERSION),
         "@uri": format!("../{category}/{id}.json"),
         "common:shortDescription": localized(description),
     })
@@ -83,7 +93,12 @@ pub fn administrative_for_entity(category: &str, entity: &CanonicalEntity, proce
     administrative_version(category, &entity.internal_id, process, version)
 }
 
-fn administrative_version(category: &str, id: &str, process: bool, version: &str) -> Value {
+pub(super) fn administrative_version(
+    category: &str,
+    id: &str,
+    process: bool,
+    version: &str,
+) -> Value {
     let owner = dataset_ref("contact data set", &contact_id(), CONTACT_NAME, "contacts");
     let mut data_entry = serde_json::Map::from_iter([
         (

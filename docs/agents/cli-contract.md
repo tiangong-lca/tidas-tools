@@ -202,6 +202,15 @@ Per-process dependency bundles are written by default and
 `--no-process-bundles` disables them. `--write-mapping` enables deterministic
 `mapping.csv.gz`; `--max-entry-mib` limits each source entry.
 
+Flow import preflight runs before package publication. Elementary Flow names
+may contain only source-backed `baseName`; Product, Waste, and Other Flow names
+must also have source-backed `treatmentStandardsRoutes` and
+`mixAndLocationTypes`. Missing or placeholder facts return a data issue naming
+the source object and canonical field, and no output directory is published.
+Unmatched elementary taxonomy paths publish through the documented
+air-unspecified fallback and add `elementary_taxonomy_fallback` to
+`issues.jsonl`.
+
 The operation report summary contains one `import` member conforming to
 `tidas.import-execution-report.v1`. Artifacts carry directory/file hashes and
 byte counts, and next actions give exact native `tidas validate` commands for
