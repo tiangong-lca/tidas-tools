@@ -26,9 +26,9 @@ checkPaths:
   - contracts/**
   - README.md
   - README_CN.md
-lastReviewedAt: 2026-07-26
-lastReviewedCommit: 9053f3bcdd1aa692c3ae56fbcda8566d373fccdc
-lastReviewedNote: "Reviewed for Issue #138 merge-gated v0.1.0 release authorization: release automation does not change the seven-command, output, or exit contract."
+lastReviewedAt: 2026-07-27
+lastReviewedCommit: 6a0db19c3a7c8f92c2ee455ae83a158c5a3f91e1
+lastReviewedNote: "Reviewed for Issue #142 phase 1: the v0.1.1 exact version-set preparation does not change the seven-command, report, output-channel, or exit contract."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml

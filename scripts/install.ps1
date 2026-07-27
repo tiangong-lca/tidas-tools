@@ -15,7 +15,7 @@ if ([string]::IsNullOrWhiteSpace($Version)) {
 }
 
 if ([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture -ne "X64") {
-    throw "The initial release supports Windows x86_64 only. Windows ARM64 is tracked separately."
+    throw "The supported Windows release target is x86_64 only. Windows ARM64 is not supported."
 }
 
 $Target = "x86_64-pc-windows-msvc"

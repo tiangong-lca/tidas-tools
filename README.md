@@ -151,7 +151,7 @@ libxslt development dependencies can install the unified executable from
 source:
 
 ```bash
-cargo install tidas --version 0.1.0 --locked
+cargo install tidas --version 0.1.1 --locked
 ```
 
 All public workspace crates use the exact same version so Cargo cannot combine
@@ -172,17 +172,17 @@ After a native version is published, install an explicit immutable version:
 ```bash
 curl --proto '=https' --tlsv1.2 -fsSLO \
   https://raw.githubusercontent.com/tiangong-lca/tidas-tools/main/scripts/install.sh
-sh install.sh --version 0.1.0 --prefix "$HOME/.local"
+sh install.sh --version 0.1.1 --prefix "$HOME/.local"
 ```
 
 ```powershell
-.\scripts\install.ps1 -Version 0.1.0
+.\scripts\install.ps1 -Version 0.1.1
 ```
 
 Every GitHub Release also carries generated Homebrew formula and Winget
 manifests that reference the same archive hashes. External tap creation or a
 Winget community submission is a separate publication approval; those paths
-never rebuild the executable. Windows ARM64 is a tracked second-phase target.
+never rebuild the executable. Windows ARM64 is not supported.
 
 The Python package described below is feature-frozen and remains temporarily
 available as an internal golden/parity oracle. It is not the final product and
