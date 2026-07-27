@@ -165,6 +165,24 @@ default; deterministic gzip mapping CSV is opt-in. Generated identifiers use
 portable source-relative keys, so equivalent inputs under different checkout
 roots produce the same package, mapping, and bundle hashes.
 
+Flow publication follows one enforced boundary: source adapters capture
+evidence, typed Flow normalization resolves name/classification/property
+contracts, import preflight rejects missing source facts, the Flow writer only
+serializes normalized values, and schema validation is the final gate.
+Elementary Flow names require only `baseName`; Product, Waste, and Other Flow
+names require source-backed `baseName`, `treatmentStandardsRoutes`, and
+`mixAndLocationTypes`. Missing or placeholder qualifiers fail before any
+package is staged.
+
+Elementary classifications use the immutable 55-node official ILCD reference
+plus the locked `tidas-ef-extension` v1 overlay: ten added nodes represent nine
+exact source paths. Deterministic non-exact matching records source evidence;
+unmatched elementary paths fall back to air-unspecified with an import warning.
+All source flow-property assignments survive normalization. The reference
+property is written first, remaining properties retain source order, UUID,
+version, and exact decimal factor, and ambiguous multi-property references fail
+preflight.
+
 The retained semantic layer includes openLCA unit/property normalization,
 allocation, uncertainty, pedigree/data quality, and documentation fields;
 EcoSpold 1/2 time, geography, technology, classification, source, and exchange

@@ -1,0 +1,102 @@
+{
+  "schema_version": "tidas.elementary-flow-taxonomy-extension.v1",
+  "taxonomy_id": "tidas-ef-extension",
+  "taxonomy_version": 1,
+  "base_taxonomy": {
+    "taxonomy_id": "ilcd-flow-categorization",
+    "taxonomy_version": "1.1",
+    "source": "src/tidas_tools/eilcd/stylesheets/ILCDFlowCategorization_Reference.xml",
+    "node_count": 55,
+    "sha256": "d0b2fabaab5644a25846b04b096b5aad136f88f04398d172057cdf6c2aac156e"
+  },
+  "nodes": [
+    {
+      "level": "2",
+      "cat_id": "1.3.6",
+      "label": "Emissions to air, indoor",
+      "parent_cat_id": "1.3",
+      "source_paths": [
+        ["Emissions", "Emissions to air", "Emissions to air, indoor"]
+      ]
+    },
+    {
+      "level": "2",
+      "cat_id": "1.3.7",
+      "label": "Emissions to urban air low stack",
+      "parent_cat_id": "1.3",
+      "source_paths": [
+        ["Emissions", "Emissions to air", "Emissions to urban air low stack"]
+      ]
+    },
+    {
+      "level": "2",
+      "cat_id": "1.3.8",
+      "label": "Emissions to urban air high stack",
+      "parent_cat_id": "1.3",
+      "source_paths": [
+        ["Emissions", "Emissions to air", "Emissions to urban air high stack"]
+      ]
+    },
+    {
+      "level": "2",
+      "cat_id": "1.3.9",
+      "label": "Emissions to urban air very high stack",
+      "parent_cat_id": "1.3",
+      "source_paths": [
+        ["Emissions", "Emissions to air", "Emissions to urban air very high stack"]
+      ]
+    },
+    {
+      "level": "2",
+      "cat_id": "1.3.10",
+      "label": "Emissions to non-urban air close to ground",
+      "parent_cat_id": "1.3",
+      "source_paths": [
+        ["Emissions", "Emissions to air", "Emissions to non-urban air close to ground"]
+      ]
+    },
+    {
+      "level": "2",
+      "cat_id": "1.3.11",
+      "label": "Emissions to non-urban air low stack",
+      "parent_cat_id": "1.3",
+      "source_paths": [
+        ["Emissions", "Emissions to air", "Emissions to non-urban air low stack"]
+      ]
+    },
+    {
+      "level": "2",
+      "cat_id": "1.3.12",
+      "label": "Emissions to non-urban air high stack",
+      "parent_cat_id": "1.3",
+      "source_paths": [
+        ["Emissions", "Emissions to air", "Emissions to non-urban air high stack"]
+      ]
+    },
+    {
+      "level": "2",
+      "cat_id": "1.3.13",
+      "label": "Emissions to non-urban air very high stack",
+      "parent_cat_id": "1.3",
+      "source_paths": [
+        ["Emissions", "Emissions to air", "Emissions to non-urban air very high stack"]
+      ]
+    },
+    {
+      "level": "1",
+      "cat_id": "1.4",
+      "label": "Emissions to industrial soil",
+      "parent_cat_id": "1",
+      "source_paths": []
+    },
+    {
+      "level": "2",
+      "cat_id": "1.4.1",
+      "label": "Other emissions to industrial soil",
+      "parent_cat_id": "1.4",
+      "source_paths": [
+        ["Emissions", "Emissions to industrial soil", "Other emissions to industrial soil"]
+      ]
+    }
+  ]
+}

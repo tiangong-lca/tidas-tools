@@ -16,7 +16,7 @@
       </sources>
     </metaInformation>
     <flowData>
-      <exchange number="1" name="enriched steel" unit="kg" amount="1" outputGroup="0"/>
+      <exchange number="1" name="enriched steel" unit="kg" amount="1" outputGroup="0" treatmentStandardsRoutes="electric arc furnace route" mixAndLocationTypes="GLO"/>
       <exchange number="2" name="carbon dioxide" CASNumber="124-38-9" formula="CO2" unit="kg" amount="2.5000000000000001" outputGroup="4" category="air" subCategory="unspecified" localCategory="local air" localSubCategory="local stack" minValue="1.2" maxValue="3.4" uncertaintyType="1" standardDeviation95="12.3456" generalComment="measured stack emissions" localName="CO2 local"/>
     </flowData>
   </dataset>

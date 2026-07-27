@@ -44,9 +44,9 @@ checkPaths:
   - scripts/test-release-request.sh
   - scripts/validate-release-request.sh
   - scripts/sync-rust-package-assets.sh
-lastReviewedAt: 2026-07-26
-lastReviewedCommit: eed5ed2
-lastReviewedNote: "Reviewed for Issue #138: an append-only Release Request PR authorizes the exact native tag, then explicitly dispatches the existing release workflow at that tag."
+lastReviewedAt: 2026-07-27
+lastReviewedCommit: 30ebe5df9c53d958f01393517867e7f0b2455943
+lastReviewedNote: "Reviewed for Issue #140: typed Flow normalization, import preflight, versioned elementary taxonomy extension, full flow-property fidelity, and dual-language schema locks preserve repo ownership and validation boundaries."
 related:
   - .docpact/config.yaml
   - docs/agents/cli-contract.md

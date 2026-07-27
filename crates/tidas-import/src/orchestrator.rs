@@ -354,7 +354,7 @@ mod tests {
         let source = directory.path().join("source.csv");
         fs::write(
             &source,
-            b"{SimaPro 9.5}\n\nProcess\n\nProcess name\nSteel\n\nProducts\nSteel;kg;1\n\nEnd\n",
+            b"{SimaPro 9.5}\n\nProcess\n\nProcess name\nSteel\n\nProducts\nSteel | production route | GLO;kg;1\n\nEnd\n",
         )
         .unwrap();
         let output = directory.path().join("output");

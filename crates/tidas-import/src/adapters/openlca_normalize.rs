@@ -651,7 +651,16 @@ mod tests {
                 external_id: Some(id.to_owned()),
                 name: Some(id.to_owned()),
                 category_path: Vec::new(),
-                raw: Map::from_iter([("flowProperties".to_owned(), Value::Array(properties))]),
+                raw: Map::from_iter([
+                    ("flowProperties".to_owned(), Value::Array(properties)),
+                    (
+                        "flowName".to_owned(),
+                        json!({
+                            "treatmentStandardsRoutes": "fixture route",
+                            "mixAndLocationTypes": "GLO"
+                        }),
+                    ),
+                ]),
             })
             .unwrap();
     }

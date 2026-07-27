@@ -1,0 +1,112 @@
+{
+  "schema_version": "tidas.flow-source-capabilities.v1",
+  "normalization_boundary": [
+    "source-adapter",
+    "typed-flow-normalization",
+    "import-preflight",
+    "pure-writer",
+    "schema-validation"
+  ],
+  "missing_name_fact_result": {
+    "status": "preflight-failure",
+    "publishes_output": false,
+    "required_diagnostics": [
+      "sourceObject",
+      "canonicalPath",
+      "reason"
+    ]
+  },
+  "sources": [
+    {
+      "format": "ilcd",
+      "success_fixture": "python-oracle-v1/ilcd",
+      "missing_fixture": {
+        "mutation": "remove non-elementary name/treatmentStandardsRoutes"
+      },
+      "name_evidence": {
+        "baseName": "flowInformation/dataSetInformation/name/baseName",
+        "treatmentStandardsRoutes": "flowInformation/dataSetInformation/name/treatmentStandardsRoutes",
+        "mixAndLocationTypes": "flowInformation/dataSetInformation/name/mixAndLocationTypes"
+      },
+      "taxonomy_evidence": "classificationInformation category level/id/label path",
+      "flow_property_capability": "all flowProperty entries with quantitative reference",
+      "golden_parity_changed": false
+    },
+    {
+      "format": "openlca-jsonld",
+      "success_fixture": "python-oracle-v1/openlca",
+      "missing_fixture": {
+        "mutation": "remove treatmentStandardsRoutes from non-elementary Flow"
+      },
+      "name_evidence": {
+        "baseName": "Flow.name",
+        "treatmentStandardsRoutes": "Flow.treatmentStandardsRoutes",
+        "mixAndLocationTypes": "Flow.mixAndLocationTypes"
+      },
+      "taxonomy_evidence": "Flow.category path",
+      "flow_property_capability": "all Flow.flowProperties entries",
+      "golden_parity_changed": false
+    },
+    {
+      "format": "openlca-process-xlsx",
+      "success_fixture": "generated:python-oracle-v1/openlca-process-xlsx",
+      "missing_fixture": {
+        "mutation": "blank Treatment standards routes cell for non-elementary Flow"
+      },
+      "name_evidence": {
+        "baseName": "Flows.Name",
+        "treatmentStandardsRoutes": "Flows.Treatment standards routes",
+        "mixAndLocationTypes": "Flows.Mix and location types"
+      },
+      "taxonomy_evidence": "Flows.Category",
+      "flow_property_capability": "single source-declared property",
+      "golden_parity_changed": false
+    },
+    {
+      "format": "ecospold1",
+      "success_fixture": "python-oracle-v1/ecospold1_64e926e8-dd48-3704-b902-daaf546087c4.xml",
+      "missing_fixture": {
+        "mutation": "remove treatmentStandardsRoutes attribute from non-elementary exchange"
+      },
+      "name_evidence": {
+        "baseName": "exchange/@name",
+        "treatmentStandardsRoutes": "exchange/@treatmentStandardsRoutes",
+        "mixAndLocationTypes": "exchange/@mixAndLocationTypes"
+      },
+      "taxonomy_evidence": "exchange compartment/subcompartment path",
+      "flow_property_capability": "single source-declared property",
+      "golden_parity_changed": false
+    },
+    {
+      "format": "ecospold2",
+      "success_fixture": "python-oracle-v1/ecospold2_22222222-2222-4222-8222-222222222222.spold",
+      "missing_fixture": {
+        "mutation": "remove mixAndLocationTypes attribute from non-elementary exchange"
+      },
+      "name_evidence": {
+        "baseName": "exchange/@name",
+        "treatmentStandardsRoutes": "exchange/@treatmentStandardsRoutes",
+        "mixAndLocationTypes": "exchange/@mixAndLocationTypes"
+      },
+      "taxonomy_evidence": "exchange compartment/subcompartment path",
+      "flow_property_capability": "single source-declared property",
+      "golden_parity_changed": false
+    },
+    {
+      "format": "simapro-csv",
+      "success_fixture": "python-oracle-v1/simapro.csv",
+      "missing_fixture": {
+        "mutation": "replace three-part non-elementary name with base name only"
+      },
+      "name_evidence": {
+        "baseName": "first exact name component",
+        "treatmentStandardsRoutes": "second exact name component",
+        "mixAndLocationTypes": "third exact name component",
+        "delimiter": " | "
+      },
+      "taxonomy_evidence": "section heading compartment path",
+      "flow_property_capability": "single source-declared property",
+      "golden_parity_changed": false
+    }
+  ]
+}

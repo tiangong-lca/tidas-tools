@@ -217,22 +217,45 @@ fn flow_entity(section_name: &str, exchange: &Map<String, Value>, source: &str) 
         .get("flowName")
         .and_then(Value::as_str)
         .unwrap_or("Unnamed flow");
+    let mut raw = Map::from_iter([
+        (
+            "flowType".to_owned(),
+            Value::String(flow_type(section_name).to_owned()),
+        ),
+        (
+            "unitName".to_owned(),
+            exchange.get("unitName").cloned().unwrap_or(Value::Null),
+        ),
+    ]);
+    if let (Some(route), Some(mix)) = (
+        exchange
+            .get("treatmentStandardsRoutes")
+            .and_then(Value::as_str),
+        exchange.get("mixAndLocationTypes").and_then(Value::as_str),
+    ) {
+        raw.insert(
+            "flowName".to_owned(),
+            json!({
+                "treatmentStandardsRoutes": route,
+                "mixAndLocationTypes": mix,
+            }),
+        );
+    }
+    raw.insert(
+        "sourceTrace".to_owned(),
+        json!({
+            "format": "simapro-csv",
+            "sourceObject": section_name,
+            "sourceName": exchange.get("sourceFlowName"),
+        }),
+    );
     CanonicalEntity {
         entity_type: "flows".to_owned(),
         internal_id: stable_id(&format!("simapro/flow/{source}/{section_name}/{name}")),
         external_id: None,
         name: Some(name.to_owned()),
         category_path: vec![section_name.to_owned()],
-        raw: Map::from_iter([
-            (
-                "flowType".to_owned(),
-                Value::String(flow_type(section_name).to_owned()),
-            ),
-            (
-                "unitName".to_owned(),
-                exchange.get("unitName").cloned().unwrap_or(Value::Null),
-            ),
-        ]),
+        raw,
     }
 }
 
@@ -247,14 +270,23 @@ fn exchange(
         .split(separator)
         .map(|part| part.trim().replace('\u{7f}', "\n"))
         .collect::<Vec<_>>();
-    let flow_name = parts.first()?.as_str();
-    if flow_name.is_empty() {
+    let source_flow_name = parts.first()?.as_str();
+    if source_flow_name.is_empty() {
         return None;
     }
+    let parsed_name = source_flow_name
+        .split(" | ")
+        .map(str::trim)
+        .collect::<Vec<_>>();
+    let flow_name = parsed_name.first().copied().unwrap_or(source_flow_name);
     let amount = parts.get(indexes.amount).map_or("0", String::as_str);
-    Some(Map::from_iter([
+    let mut exchange = Map::from_iter([
         ("internalId".to_owned(), json!(row_index)),
         ("flowName".to_owned(), Value::String(flow_name.to_owned())),
+        (
+            "sourceFlowName".to_owned(),
+            Value::String(source_flow_name.to_owned()),
+        ),
         ("isInput".to_owned(), Value::Bool(indexes.is_input)),
         ("amount".to_owned(), Value::String(numeric(amount))),
         (
@@ -263,7 +295,18 @@ fn exchange(
                 .get(indexes.unit)
                 .map_or(Value::Null, |value| Value::String(value.clone())),
         ),
-    ]))
+    ]);
+    if parsed_name.len() == 3 && parsed_name.iter().all(|part| !part.is_empty()) {
+        exchange.insert(
+            "treatmentStandardsRoutes".to_owned(),
+            Value::String(parsed_name[1].to_owned()),
+        );
+        exchange.insert(
+            "mixAndLocationTypes".to_owned(),
+            Value::String(parsed_name[2].to_owned()),
+        );
+    }
+    Some(exchange)
 }
 
 struct ExchangeIndexes {

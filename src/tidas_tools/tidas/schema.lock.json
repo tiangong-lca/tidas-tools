@@ -9,8 +9,8 @@
   "schemaRoot": "src/tidas_tools/tidas",
   "schemaSets": {
     "en": {
-      "contentAggregateSha256": "00b9c69ed7ec7a61d7288beb17b69594a27b66ee25563aae987a074c7becd1a3",
-      "contractAggregateSha256": "c9dbe635b3f712546ec83f8a36b17e65d62eaa5e7166c921aad34eb1645e094e",
+      "contentAggregateSha256": "1ea0aa48360147be0fb73cfd64edaab25454fe5f3021d1473681bb1a2d7ab5a0",
+      "contractAggregateSha256": "71567bb884035e5ea09140b23cbe465e5a07196b328442c804f02e8b0f8fb767",
       "fileCount": 18,
       "files": {
         "tidas_contacts.json": {
@@ -34,12 +34,12 @@
           "contractSha256": "78018626e461315fd821988b87b53e919516a5eb7c91e1f9a4320d76a6adb431"
         },
         "tidas_flows.json": {
-          "contentSha256": "7833d7f1e66a475531fecfd64bdc80db57ddaae0f4717c11615353bb4552c22b",
-          "contractSha256": "fbee29bfeb75cf51f6b4b55e3e0a9424ea0d7151c014694db970fc76d44186bc"
+          "contentSha256": "e773b188271174f834dba5ab410644b9e246385c8005fb6d02e4c7a0a073d283",
+          "contractSha256": "2d3da2721ca40b7273591381bb8fb64943d5ebecd46de0e616f21ca117a2f490"
         },
         "tidas_flows_elementary_category.json": {
-          "contentSha256": "e7b05dd2f082f2a60f4520f9a6eee1f28a2cabd5ea92f47c6ce07194275b26ea",
-          "contractSha256": "78c76935ef941853bea7ba766318e8fa363fcaf54756b864f5fd14828c729974"
+          "contentSha256": "e817d6e40dfa7b21cb947548027f32b393d1b06ee2a7326f7c59686a2cd3552d",
+          "contractSha256": "bdfdcf5cf941b488d0f99e679ddef318dcc72a50683023dc5272beac34e1536b"
         },
         "tidas_flows_product_category.json": {
           "contentSha256": "e62e1f676dedaeb6028b05f0c1cc84f53c1c47058ae6e17897f77b2cb17b7cb2",
@@ -89,8 +89,8 @@
       "path": "schemas"
     },
     "zh": {
-      "contentAggregateSha256": "a108d930f7b3bfabb416ec03afbf500e533e470d67e088e84648d2d2d944be6b",
-      "contractAggregateSha256": "c9dbe635b3f712546ec83f8a36b17e65d62eaa5e7166c921aad34eb1645e094e",
+      "contentAggregateSha256": "0394e4488501b41a65642c8809af426b1cd92c412b1d3bd74395a0a691079e8d",
+      "contractAggregateSha256": "71567bb884035e5ea09140b23cbe465e5a07196b328442c804f02e8b0f8fb767",
       "fileCount": 18,
       "files": {
         "tidas_contacts.json": {
@@ -114,12 +114,12 @@
           "contractSha256": "78018626e461315fd821988b87b53e919516a5eb7c91e1f9a4320d76a6adb431"
         },
         "tidas_flows.json": {
-          "contentSha256": "371d56438e6eeead3224ad6e361b100ce520d8936d424dccae7c1c4875cd326c",
-          "contractSha256": "fbee29bfeb75cf51f6b4b55e3e0a9424ea0d7151c014694db970fc76d44186bc"
+          "contentSha256": "eaaa690b7512e3507431c4f102d4697bf6696aaf611f981f569eadfe6bb076bb",
+          "contractSha256": "2d3da2721ca40b7273591381bb8fb64943d5ebecd46de0e616f21ca117a2f490"
         },
         "tidas_flows_elementary_category.json": {
-          "contentSha256": "1d1a91c4a24888683441b89ef19115855ec96d3428a722b4ef96877374bbb141",
-          "contractSha256": "78c76935ef941853bea7ba766318e8fa363fcaf54756b864f5fd14828c729974"
+          "contentSha256": "289b439014d85971b2f435aff25a6f5b2926469ee75000a8b57f1cdedb152f4c",
+          "contractSha256": "bdfdcf5cf941b488d0f99e679ddef318dcc72a50683023dc5272beac34e1536b"
         },
         "tidas_flows_product_category.json": {
           "contentSha256": "49e6444a61f833ccf97aeb5863f520971a6c7c3c0ed005a57142f040cfae2223",
@@ -170,7 +170,7 @@
     }
   },
   "translationPairs": {
-    "contractAggregateSha256": "c9dbe635b3f712546ec83f8a36b17e65d62eaa5e7166c921aad34eb1645e094e",
+    "contractAggregateSha256": "71567bb884035e5ea09140b23cbe465e5a07196b328442c804f02e8b0f8fb767",
     "fileCount": 18,
     "files": {
       "tidas_contacts.json": {
@@ -199,14 +199,14 @@
         "zhContentSha256": "d2962260c52de1af02ed8a40766b3b5391518c6c7df02ab263db3feaa32da523"
       },
       "tidas_flows.json": {
-        "contractSha256": "fbee29bfeb75cf51f6b4b55e3e0a9424ea0d7151c014694db970fc76d44186bc",
-        "enContentSha256": "7833d7f1e66a475531fecfd64bdc80db57ddaae0f4717c11615353bb4552c22b",
-        "zhContentSha256": "371d56438e6eeead3224ad6e361b100ce520d8936d424dccae7c1c4875cd326c"
+        "contractSha256": "2d3da2721ca40b7273591381bb8fb64943d5ebecd46de0e616f21ca117a2f490",
+        "enContentSha256": "e773b188271174f834dba5ab410644b9e246385c8005fb6d02e4c7a0a073d283",
+        "zhContentSha256": "eaaa690b7512e3507431c4f102d4697bf6696aaf611f981f569eadfe6bb076bb"
       },
       "tidas_flows_elementary_category.json": {
-        "contractSha256": "78c76935ef941853bea7ba766318e8fa363fcaf54756b864f5fd14828c729974",
-        "enContentSha256": "e7b05dd2f082f2a60f4520f9a6eee1f28a2cabd5ea92f47c6ce07194275b26ea",
-        "zhContentSha256": "1d1a91c4a24888683441b89ef19115855ec96d3428a722b4ef96877374bbb141"
+        "contractSha256": "bdfdcf5cf941b488d0f99e679ddef318dcc72a50683023dc5272beac34e1536b",
+        "enContentSha256": "e817d6e40dfa7b21cb947548027f32b393d1b06ee2a7326f7c59686a2cd3552d",
+        "zhContentSha256": "289b439014d85971b2f435aff25a6f5b2926469ee75000a8b57f1cdedb152f4c"
       },
       "tidas_flows_product_category.json": {
         "contractSha256": "1c096f134747298c4d5a72aae271cc8a07ea9e60205383408281701497cc3b65",

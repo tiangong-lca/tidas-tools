@@ -1,0 +1,116 @@
+{
+  "flowDataSet": {
+    "@xmlns": "http://lca.jrc.it/ILCD/Flow",
+    "@xmlns:common": "http://lca.jrc.it/ILCD/Common",
+    "@xmlns:ecn": "http://eplca.jrc.ec.europa.eu/ILCD/Extensions/2018/ECNumber",
+    "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "@version": "1.1",
+    "@locations": "../ILCDLocations.xml",
+    "@xsi:schemaLocation": "http://lca.jrc.it/ILCD/Flow ../../schemas/ILCD_FlowDataSet.xsd",
+    "flowInformation": {
+      "dataSetInformation": {
+        "common:UUID": "11111111-1111-4111-8111-111111111111",
+        "name": {},
+        "classificationInformation": {
+          "common:classification": {
+            "@name": "CPC",
+            "common:class": [
+              {
+                "@level": "0",
+                "@classId": "9",
+                "#text": "Community, social and personal services"
+              },
+              {
+                "@level": "1",
+                "@classId": "94",
+                "#text": "Sewage and waste collection, treatment and disposal and other environmental protection services"
+              },
+              {
+                "@level": "2",
+                "@classId": "949",
+                "#text": "Other environmental protection services n.e.c."
+              },
+              {
+                "@level": "3",
+                "@classId": "9490",
+                "#text": "Other environmental protection services n.e.c."
+              },
+              {
+                "@level": "4",
+                "@classId": "94900",
+                "#text": "Other environmental protection services n.e.c."
+              }
+            ]
+          }
+        }
+      },
+      "quantitativeReference": {
+        "referenceToReferenceFlowProperty": "1"
+      }
+    },
+    "modellingAndValidation": {
+      "LCIMethod": {
+        "typeOfDataSet": "Product flow"
+      },
+      "complianceDeclarations": {
+        "compliance": {
+          "common:referenceToComplianceSystem": {
+            "@type": "source data set",
+            "@refObjectId": "22222222-2222-4222-8222-222222222222",
+            "@version": "00.00.001",
+            "@uri": "../sources/22222222-2222-4222-8222-222222222222.json",
+            "common:shortDescription": {
+              "@xml:lang": "en",
+              "#text": "Compliance"
+            }
+          },
+          "common:approvalOfOverallCompliance": "Not defined"
+        }
+      }
+    },
+    "administrativeInformation": {
+      "dataEntryBy": {
+        "common:timeStamp": "1900-01-01T00:00:00Z",
+        "common:referenceToDataSetFormat": {
+          "@type": "source data set",
+          "@refObjectId": "33333333-3333-4333-8333-333333333333",
+          "@version": "00.00.001",
+          "@uri": "../sources/33333333-3333-4333-8333-333333333333.json",
+          "common:shortDescription": {
+            "@xml:lang": "en",
+            "#text": "ILCD format"
+          }
+        }
+      },
+      "publicationAndOwnership": {
+        "common:dataSetVersion": "00.00.001",
+        "common:referenceToOwnershipOfDataSet": {
+          "@type": "contact data set",
+          "@refObjectId": "44444444-4444-4444-8444-444444444444",
+          "@version": "00.00.001",
+          "@uri": "../contacts/44444444-4444-4444-8444-444444444444.json",
+          "common:shortDescription": {
+            "@xml:lang": "en",
+            "#text": "Owner"
+          }
+        }
+      }
+    },
+    "flowProperties": {
+      "flowProperty": {
+        "@dataSetInternalID": "1",
+        "referenceToFlowPropertyDataSet": {
+          "@type": "flow property data set",
+          "@refObjectId": "55555555-5555-4555-8555-555555555555",
+          "@version": "00.00.001",
+          "@uri": "../flowproperties/55555555-5555-4555-8555-555555555555.json",
+          "common:shortDescription": {
+            "@xml:lang": "en",
+            "#text": "Mass"
+          }
+        },
+        "meanValue": "1"
+      }
+    }
+  }
+}

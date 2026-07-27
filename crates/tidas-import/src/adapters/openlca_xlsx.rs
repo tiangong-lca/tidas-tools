@@ -359,6 +359,30 @@ fn flow_from_row(row: &BTreeMap<String, String>, source: &str) -> Option<Canonic
         .get("uuid")
         .filter(|value| Uuid::parse_str(value).is_ok())
         .cloned();
+    let mut raw = Map::from_iter([(
+        "flowType".to_owned(),
+        Value::String(flow_type(row.get("type").map(String::as_str)).to_owned()),
+    )]);
+    let mut name_parts = Map::new();
+    for (source_field, target_field) in [
+        ("treatment standards routes", "treatmentStandardsRoutes"),
+        ("mix and location types", "mixAndLocationTypes"),
+        ("flow properties", "flowProperties"),
+    ] {
+        if let Some(value) = row
+            .get(source_field)
+            .filter(|value| !value.trim().is_empty())
+        {
+            name_parts.insert(target_field.to_owned(), Value::String(value.clone()));
+        }
+    }
+    if !name_parts.is_empty() {
+        raw.insert("flowName".to_owned(), Value::Object(name_parts));
+    }
+    raw.insert(
+        "sourceTrace".to_owned(),
+        json!({"format": "openlca-process-xlsx", "sourceObject": "Flows row"}),
+    );
     Some(CanonicalEntity {
         entity_type: "flows".to_owned(),
         internal_id: declared_id.clone().unwrap_or_else(|| {
@@ -369,10 +393,7 @@ fn flow_from_row(row: &BTreeMap<String, String>, source: &str) -> Option<Canonic
         external_id: Some(flow_key(&name, &category)),
         name: Some(name),
         category_path: split_path(&category),
-        raw: Map::from_iter([(
-            "flowType".to_owned(),
-            Value::String(flow_type(row.get("type").map(String::as_str)).to_owned()),
-        )]),
+        raw,
     })
 }
 
@@ -604,6 +625,7 @@ mod tests {
     use crate::writers::{TidasWriteRequest, write_tidas_package};
 
     #[test]
+    #[allow(clippy::too_many_lines)]
     fn process_workbook_is_streamed_into_a_valid_package() {
         let directory = tempdir().unwrap();
         let source = directory.path().join("process.xlsx");
@@ -637,12 +659,21 @@ mod tests {
             options,
             "xl/worksheets/sheet2.xml",
             &sheet(&[
-                &["name", "category", "type", "uuid"],
+                &[
+                    "name",
+                    "category",
+                    "type",
+                    "uuid",
+                    "treatment standards routes",
+                    "mix and location types",
+                ],
                 &[
                     "Steel",
                     "Products/Metals",
                     "Product flow",
                     "11111111-1111-4111-8111-111111111111",
+                    "production route",
+                    "GLO",
                 ],
             ]),
         );

@@ -393,7 +393,7 @@ fn native_valid_tree_builds_four_repeatable_self_contained_packages() {
     let source = temporary.path().join("source.csv");
     fs::write(
         &source,
-        b"{SimaPro 9.5}\n{CSV separator: semicolon}\n\nProcess\n\nProcess name\nSteel production\n\nComment\nrelease fixture\n\nProducts\nSteel;kg;1\n\nEmissions to air\nCarbon dioxide;air;kg;2.5\n\nEnd\n",
+        b"{SimaPro 9.5}\n{CSV separator: semicolon}\n\nProcess\n\nProcess name\nSteel production\n\nComment\nrelease fixture\n\nProducts\nSteel | production route | GLO;kg;1\n\nEmissions to air\nCarbon dioxide;air;kg;2.5\n\nEnd\n",
     )
     .unwrap();
     let imported = temporary.path().join("imported");

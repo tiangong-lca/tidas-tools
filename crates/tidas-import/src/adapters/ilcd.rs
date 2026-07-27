@@ -207,6 +207,10 @@ fn flow_property_raw(dataset: &Map<String, Value>) -> Map<String, Value> {
 
 fn flow_raw(dataset: &Map<String, Value>) -> Map<String, Value> {
     let mut raw = Map::new();
+    let data_set_information = value_at(dataset, &["flowInformation", "dataSetInformation"]);
+    if let Some(name) = flow_name_facts(data_set_information) {
+        raw.insert("flowName".to_owned(), name);
+    }
     let flow_type = value_at(
         dataset,
         &["modellingAndValidation", "LCIMethod", "typeOfDataSet"],
@@ -224,39 +228,31 @@ fn flow_raw(dataset: &Map<String, Value>) -> Map<String, Value> {
             raw.insert(target.to_owned(), Value::String(value.to_owned()));
         }
     }
-    let reference_internal = value_at(
-        dataset,
-        &[
-            "flowInformation",
-            "quantitativeReference",
-            "referenceToReferenceFlowProperty",
-        ],
-    )
-    .and_then(scalar_text);
-    let property = value_at(dataset, &["flowProperties", "flowProperty"])
-        .map(items)
-        .unwrap_or_default()
-        .into_iter()
-        .filter_map(Value::as_object)
-        .find(|item| {
-            reference_internal.is_none()
-                || field_text(item, "@dataSetInternalID") == reference_internal
-        })
-        .and_then(|item| item.get("referenceToFlowPropertyDataSet"))
-        .and_then(Value::as_object);
-    if let Some(property) = property {
-        if let Some(id) = field_text(property, "@refObjectId") {
-            raw.insert("flowPropertyRefId".to_owned(), Value::String(id.to_owned()));
+    let properties = flow_property_assignments(dataset);
+    if !properties.is_empty() {
+        if let Some(reference) = properties.iter().find(|property| {
+            property
+                .get("isRefFlowProperty")
+                .and_then(Value::as_bool)
+                .unwrap_or(false)
+        }) {
+            if let Some(id) = reference
+                .pointer("/flowProperty/@id")
+                .and_then(Value::as_str)
+            {
+                raw.insert("flowPropertyRefId".to_owned(), Value::String(id.to_owned()));
+            }
+            if let Some(name) = reference
+                .pointer("/flowProperty/name")
+                .and_then(Value::as_str)
+            {
+                raw.insert(
+                    "flowPropertyName".to_owned(),
+                    Value::String(name.to_owned()),
+                );
+            }
         }
-        if let Some(name) = property
-            .get("common:shortDescription")
-            .and_then(localized_text)
-        {
-            raw.insert(
-                "flowPropertyName".to_owned(),
-                Value::String(name.to_owned()),
-            );
-        }
+        raw.insert("flowProperties".to_owned(), Value::Array(properties));
     }
     let categories = value_at(
         dataset,
@@ -274,6 +270,7 @@ fn flow_raw(dataset: &Map<String, Value>) -> Map<String, Value> {
     .filter_map(|category| {
         Some(json!({
             "level": category.get("@level").and_then(scalar_text)?,
+            "catId": category.get("@catId").and_then(scalar_text),
             "text": localized_text(category)?
         }))
     })
@@ -285,6 +282,71 @@ fn flow_raw(dataset: &Map<String, Value>) -> Map<String, Value> {
         );
     }
     raw
+}
+
+fn flow_name_facts(data_set_information: Option<&Value>) -> Option<Value> {
+    let mut name_parts = Map::new();
+    for field in [
+        "treatmentStandardsRoutes",
+        "mixAndLocationTypes",
+        "flowProperties",
+    ] {
+        if let Some(value) = data_set_information
+            .and_then(|information| information.get("name"))
+            .and_then(|name| name.get(field))
+            .and_then(localized_text)
+        {
+            name_parts.insert(field.to_owned(), Value::String(value.to_owned()));
+        }
+    }
+    (!name_parts.is_empty()).then_some(Value::Object(name_parts))
+}
+
+fn flow_property_assignments(dataset: &Map<String, Value>) -> Vec<Value> {
+    let reference_internal = value_at(
+        dataset,
+        &[
+            "flowInformation",
+            "quantitativeReference",
+            "referenceToReferenceFlowProperty",
+        ],
+    )
+    .and_then(scalar_text);
+    value_at(dataset, &["flowProperties", "flowProperty"])
+        .map(items)
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(Value::as_object)
+        .enumerate()
+        .filter_map(|(source_order, item)| {
+            let reference = item.get("referenceToFlowPropertyDataSet")?.as_object()?;
+            let id = field_text(reference, "@refObjectId")?;
+            let name = reference
+                .get("common:shortDescription")
+                .and_then(localized_text)
+                .unwrap_or("Flow property");
+            let internal_id = field_text(item, "@dataSetInternalID");
+            let mut property = Map::from_iter([
+                ("@id".to_owned(), Value::String(id.to_owned())),
+                ("name".to_owned(), Value::String(name.to_owned())),
+            ]);
+            if let Some(version) = field_text(reference, "@version") {
+                property.insert("@version".to_owned(), Value::String(version.to_owned()));
+            }
+            Some(json!({
+                "flowProperty": property,
+                "conversionFactor": field_text(item, "meanValue").unwrap_or("1"),
+                "isRefFlowProperty": reference_internal.is_none_or(|reference| {
+                    internal_id == Some(reference)
+                }),
+                "sourceEvidence": {
+                    "format": "ilcd",
+                    "sourcePath": format!("flowProperties.flowProperty[{source_order}]"),
+                    "sourceInternalId": internal_id,
+                }
+            }))
+        })
+        .collect()
 }
 
 fn process_raw(dataset: &Map<String, Value>) -> Map<String, Value> {
@@ -595,6 +657,7 @@ mod tests {
     }
 
     #[test]
+    #[allow(clippy::too_many_lines)]
     fn ilcd_identifiers_relations_and_values_survive_native_import() {
         let directory = tempdir().unwrap();
         let root = directory.path().join("ilcd");
@@ -611,6 +674,7 @@ mod tests {
         write_support_entities(&root);
         let unit_id = "22222222-2222-4222-8222-222222222222";
         let property_id = "33333333-3333-4333-8333-333333333333";
+        let ncv_property_id = "88888888-8888-4888-8888-888888888888";
         let flow_id = "44444444-4444-4444-8444-444444444444";
         let process_id = "55555555-5555-4555-8555-555555555555";
         std::fs::write(
@@ -628,9 +692,16 @@ mod tests {
         )
         .unwrap();
         std::fs::write(
+            root.join("flowproperties/ncv.xml"),
+            format!(
+                r#"<flowPropertyDataSet xmlns:common="http://lca.jrc.it/ILCD/Common"><flowPropertiesInformation><dataSetInformation><common:UUID>{ncv_property_id}</common:UUID><common:name xml:lang="en">Net calorific value</common:name></dataSetInformation><quantitativeReference><referenceToReferenceUnitGroup refObjectId="{unit_id}"><common:shortDescription xml:lang="en">Energy per mass</common:shortDescription></referenceToReferenceUnitGroup></quantitativeReference></flowPropertiesInformation></flowPropertyDataSet>"#
+            ),
+        )
+        .unwrap();
+        std::fs::write(
             root.join("flows/f.xml"),
             format!(
-                r#"<flowDataSet xmlns:common="http://lca.jrc.it/ILCD/Common"><flowInformation><dataSetInformation><common:UUID>{flow_id}</common:UUID><name><baseName xml:lang="en">Steel</baseName></name><CASNumber>7439-89-6</CASNumber><sumFormula>Fe</sumFormula></dataSetInformation><quantitativeReference><referenceToReferenceFlowProperty>0</referenceToReferenceFlowProperty></quantitativeReference></flowInformation><modellingAndValidation><LCIMethod><typeOfDataSet>Product flow</typeOfDataSet></LCIMethod></modellingAndValidation><administrativeInformation><publicationAndOwnership><common:dataSetVersion>20.25.001</common:dataSetVersion></publicationAndOwnership></administrativeInformation><flowProperties><flowProperty dataSetInternalID="0"><referenceToFlowPropertyDataSet refObjectId="{property_id}"><common:shortDescription xml:lang="en">Mass</common:shortDescription></referenceToFlowPropertyDataSet></flowProperty></flowProperties></flowDataSet>"#
+                r#"<flowDataSet xmlns:common="http://lca.jrc.it/ILCD/Common"><flowInformation><dataSetInformation><common:UUID>{flow_id}</common:UUID><name><baseName xml:lang="en">Steel</baseName><treatmentStandardsRoutes xml:lang="en">production route</treatmentStandardsRoutes><mixAndLocationTypes xml:lang="en">GLO</mixAndLocationTypes></name><CASNumber>7439-89-6</CASNumber><sumFormula>Fe</sumFormula></dataSetInformation><quantitativeReference><referenceToReferenceFlowProperty>0</referenceToReferenceFlowProperty></quantitativeReference></flowInformation><modellingAndValidation><LCIMethod><typeOfDataSet>Product flow</typeOfDataSet></LCIMethod></modellingAndValidation><administrativeInformation><publicationAndOwnership><common:dataSetVersion>20.25.001</common:dataSetVersion></publicationAndOwnership></administrativeInformation><flowProperties><flowProperty dataSetInternalID="0"><referenceToFlowPropertyDataSet refObjectId="{property_id}"><common:shortDescription xml:lang="en">Mass</common:shortDescription></referenceToFlowPropertyDataSet><meanValue>1</meanValue></flowProperty><flowProperty dataSetInternalID="1"><referenceToFlowPropertyDataSet refObjectId="{ncv_property_id}"><common:shortDescription xml:lang="en">Net calorific value</common:shortDescription></referenceToFlowPropertyDataSet><meanValue>42.500</meanValue></flowProperty></flowProperties></flowDataSet>"#
             ),
         )
         .unwrap();
@@ -662,6 +733,14 @@ mod tests {
             store.get("flows", flow_id).unwrap().unwrap().raw["flowPropertyRefId"],
             property_id
         );
+        let source_properties = store.get("flows", flow_id).unwrap().unwrap().raw["flowProperties"]
+            .as_array()
+            .unwrap()
+            .clone();
+        assert_eq!(source_properties.len(), 2);
+        assert_eq!(source_properties[0]["flowProperty"]["@id"], property_id);
+        assert_eq!(source_properties[1]["flowProperty"]["@id"], ncv_property_id);
+        assert_eq!(source_properties[1]["conversionFactor"], "42.500");
         assert_eq!(
             store.get("flows", flow_id).unwrap().unwrap().raw["version"],
             "20.25.001"
@@ -687,5 +766,23 @@ mod tests {
         assert_eq!(store.counts()["sources"], 1);
         let output = directory.path().join("tidas");
         assert_valid_package(&store, &output, cancellation, memory_budget);
+        let written_flow: Value = serde_json::from_slice(
+            &std::fs::read(output.join("flows").join(format!("{flow_id}.json"))).unwrap(),
+        )
+        .unwrap();
+        let written_properties = written_flow["flowDataSet"]["flowProperties"]["flowProperty"]
+            .as_array()
+            .unwrap();
+        assert_eq!(written_properties.len(), 2);
+        assert_eq!(written_properties[0]["@dataSetInternalID"], "1");
+        assert_eq!(
+            written_properties[0]["referenceToFlowPropertyDataSet"]["@refObjectId"],
+            property_id
+        );
+        assert_eq!(
+            written_properties[1]["referenceToFlowPropertyDataSet"]["@refObjectId"],
+            ncv_property_id
+        );
+        assert_eq!(written_properties[1]["meanValue"], "42.500");
     }
 }

@@ -63,9 +63,7 @@
                     }
                   },
                   "required": [
-                    "baseName",
-                    "treatmentStandardsRoutes",
-                    "mixAndLocationTypes"
+                    "baseName"
                   ]
                 },
                 "common:synonyms": {
@@ -766,6 +764,66 @@
           "$ref": "tidas_data_types.json#/$defs/CommonOther"
         }
       },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "modellingAndValidation": {
+                "properties": {
+                  "LCIMethod": {
+                    "properties": {
+                      "typeOfDataSet": {
+                        "enum": [
+                          "Product flow",
+                          "Waste flow",
+                          "Other flow"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "typeOfDataSet"
+                    ]
+                  }
+                },
+                "required": [
+                  "LCIMethod"
+                ]
+              }
+            },
+            "required": [
+              "modellingAndValidation"
+            ]
+          },
+          "then": {
+            "properties": {
+              "flowInformation": {
+                "properties": {
+                  "dataSetInformation": {
+                    "properties": {
+                      "name": {
+                        "required": [
+                          "baseName",
+                          "treatmentStandardsRoutes",
+                          "mixAndLocationTypes"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ]
+                  }
+                },
+                "required": [
+                  "dataSetInformation"
+                ]
+              }
+            },
+            "required": [
+              "flowInformation"
+            ]
+          }
+        }
+      ],
       "required": [
         "@xmlns",
         "@xmlns:common",

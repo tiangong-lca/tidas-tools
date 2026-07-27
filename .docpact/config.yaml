@@ -1,7 +1,7 @@
 version: 1
 layout: repo
-lastReviewedAt: "2026-07-26"
-lastReviewedCommit: "eed5ed2"
+lastReviewedAt: "2026-07-27"
+lastReviewedCommit: "30ebe5df9c53d958f01393517867e7f0b2455943"
 # Native Rust domain ownership includes bounded conversion, import, export,
 # release packaging, validation, references, rulesets, assets, runtime, and
 # the thin unified CLI.

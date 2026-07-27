@@ -207,6 +207,7 @@ pub enum SchemaError {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serde_json::json;
 
     #[test]
     fn cas_number_contract_matches_the_python_oracle() {
@@ -223,5 +224,61 @@ mod tests {
         for category in SUPPORTED_TIDAS_CATEGORIES {
             catalog.validator(category).unwrap();
         }
+    }
+
+    #[test]
+    fn english_and_chinese_flow_schemas_share_the_type_aware_name_contract() {
+        let fixtures: Value = serde_json::from_str(include_str!(
+            "../tests/fixtures/flow-name-schema-v1/cases.json"
+        ))
+        .unwrap();
+        let template: Value = serde_json::from_str(include_str!(
+            "../tests/fixtures/flow-name-schema-v1/template.json"
+        ))
+        .unwrap();
+        assert_eq!(
+            fixtures["schema_version"],
+            "tidas.flow-name-schema-fixtures.v1"
+        );
+        for (language, catalog) in [
+            ("en", SchemaCatalog::load().unwrap()),
+            ("zh", schema_catalog("src/tidas_tools/tidas/schemas_zh/")),
+        ] {
+            let validator = catalog.validator(TidasCategory::Flows).unwrap();
+            for case in fixtures["cases"].as_array().unwrap() {
+                let mut document = template.clone();
+                document["flowDataSet"]["flowInformation"]["dataSetInformation"]["name"] =
+                    case["flow_name"].clone();
+                document["flowDataSet"]["modellingAndValidation"]["LCIMethod"]["typeOfDataSet"] =
+                    case["flow_type"].clone();
+                let issues = validator
+                    .issues(&document, "flows/fixture.json")
+                    .collect::<Vec<_>>();
+                assert_eq!(
+                    issues.is_empty(),
+                    case["valid"].as_bool().unwrap(),
+                    "{language} case {}: {}",
+                    case["name"].as_str().unwrap(),
+                    json!(issues),
+                );
+            }
+        }
+    }
+
+    fn schema_catalog(prefix: &str) -> SchemaCatalog {
+        let schemas = bundled_assets()
+            .into_iter()
+            .filter_map(|asset| {
+                let filename = asset.path.strip_prefix(prefix)?;
+                let mut schema: Value = serde_json::from_slice(asset.bytes).unwrap();
+                schema.as_object_mut().unwrap().insert(
+                    "$id".to_owned(),
+                    Value::String(format!("{SCHEMA_BASE_URI}{filename}")),
+                );
+                Some((filename.to_owned(), schema))
+            })
+            .collect::<BTreeMap<_, _>>();
+        assert!(!schemas.is_empty());
+        SchemaCatalog { schemas }
     }
 }

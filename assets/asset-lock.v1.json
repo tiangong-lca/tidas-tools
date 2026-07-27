@@ -229,6 +229,12 @@
       "bytes": 22667
     },
     {
+      "path": "src/tidas_tools/tidas/methodologies/elementary_flow_taxonomy_extension.v1.json",
+      "kind": "methodology",
+      "sha256": "10dff7a2ea258880e0ee57ae112999c662a95a7d935795907b1b6caf4ad3bfa3",
+      "bytes": 2919
+    },
+    {
       "path": "src/tidas_tools/tidas/methodologies/runtime_rulesets.json",
       "kind": "runtime-ruleset",
       "sha256": "6e9227dd8b174d365dbcbb3380e29566b9d210eb52d49771f11ca12063cdb2bd",
@@ -255,7 +261,7 @@
     {
       "path": "src/tidas_tools/tidas/schema.lock.json",
       "kind": "legacy-schema-lock",
-      "sha256": "8773382db2de0f75c4f97dc64b3b5e05fafbb953c156c12bcfee2d037ed782de",
+      "sha256": "b3c5f2144c462ee88a957924a109c445d76ad37966373953256c748f74c5c2f8",
       "bytes": 15588
     },
     {
@@ -291,14 +297,14 @@
     {
       "path": "src/tidas_tools/tidas/schemas/tidas_flows.json",
       "kind": "json-schema",
-      "sha256": "7833d7f1e66a475531fecfd64bdc80db57ddaae0f4717c11615353bb4552c22b",
-      "bytes": 37953
+      "sha256": "e773b188271174f834dba5ab410644b9e246385c8005fb6d02e4c7a0a073d283",
+      "bytes": 39502
     },
     {
       "path": "src/tidas_tools/tidas/schemas/tidas_flows_elementary_category.json",
       "kind": "json-schema",
-      "sha256": "e7b05dd2f082f2a60f4520f9a6eee1f28a2cabd5ea92f47c6ce07194275b26ea",
-      "bytes": 18643
+      "sha256": "e817d6e40dfa7b21cb947548027f32b393d1b06ee2a7326f7c59686a2cd3552d",
+      "bytes": 20892
     },
     {
       "path": "src/tidas_tools/tidas/schemas/tidas_flows_product_category.json",
@@ -399,14 +405,14 @@
     {
       "path": "src/tidas_tools/tidas/schemas_zh/tidas_flows.json",
       "kind": "chinese-json-schema",
-      "sha256": "371d56438e6eeead3224ad6e361b100ce520d8936d424dccae7c1c4875cd326c",
-      "bytes": 36663
+      "sha256": "eaaa690b7512e3507431c4f102d4697bf6696aaf611f981f569eadfe6bb076bb",
+      "bytes": 38212
     },
     {
       "path": "src/tidas_tools/tidas/schemas_zh/tidas_flows_elementary_category.json",
       "kind": "chinese-json-schema",
-      "sha256": "1d1a91c4a24888683441b89ef19115855ec96d3428a722b4ef96877374bbb141",
-      "bytes": 13248
+      "sha256": "289b439014d85971b2f435aff25a6f5b2926469ee75000a8b57f1cdedb152f4c",
+      "bytes": 15056
     },
     {
       "path": "src/tidas_tools/tidas/schemas_zh/tidas_flows_product_category.json",

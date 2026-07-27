@@ -251,6 +251,14 @@ tidas-convert --input-dir <eILCD数据目录> --output-dir <TIDAS数据输出目
 
 导入的 JSON-LD Actor 和 Source 会写出为 TIDAS contact 与 source。EcoSpold、SimaPro CSV 和 process XLSX 源数据中的单位会在缺少显式 reference data 时生成对应 unit group 与 flow property，减少全部 flow 落到默认 `Mass`/`kg` 的情况。
 
+Flow 导入严格保留来源证据。Elementary Flow 名称只写入 `baseName`，不再生成
+qualifier；Product、Waste 和 Other Flow 必须同时具备来源支持的 `baseName`、
+`treatmentStandardsRoutes` 与 `mixAndLocationTypes`，缺失时会在发布任何 package
+之前由 preflight 阻断。Elementary 分类使用不可变的官方 ILCD 树与版本化
+`tidas-ef-extension` overlay；无法匹配的来源路径会回退到 air-unspecified，并写入明确
+warning。包括 Mass 与净热值在内的全部来源 flow-property assignment 都保留 UUID、
+reference 决策、来源顺序与十进制 factor。
+
 当下游 AI/导入 worker 需要按 process 并行处理时，导入器默认写出
 process bundle。标准 `<输出目录>/tidas` 包会保持原样写出；导入器会额外写出
 `<输出目录>/process-bundles/<process_uuid>/` 子目录，其中包含该 process JSON 以及它引用的

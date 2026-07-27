@@ -627,6 +627,9 @@ fn failed_import_report(error: &ImportExecutionError) -> OperationReportV1 {
         ImportExecutionError::Package(
             PackageWriteError::ReservedIdentifier { .. } | PackageWriteError::ProcessNoExchanges(_),
         ) => (ExitClass::DataIssues, "import_source_invalid"),
+        ImportExecutionError::Package(PackageWriteError::FlowPreflight(_)) => {
+            (ExitClass::DataIssues, "import_preflight_failed")
+        }
         ImportExecutionError::Io(_)
         | ImportExecutionError::CommitRollback { .. }
         | ImportExecutionError::Core(ImportCoreError::Store(_))

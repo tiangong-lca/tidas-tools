@@ -12,6 +12,78 @@ use zip::write::SimpleFileOptions;
 
 const SOURCE: &[u8] = include_bytes!("fixtures/python-oracle-v1/simapro.csv");
 const EXPECTED: &str = include_str!("fixtures/python-oracle-v1/simapro.expected.json");
+const FLOW_SOURCE_CAPABILITIES: &str = include_str!("fixtures/flow-source-capabilities.v1.json");
+
+#[test]
+fn flow_source_capability_matrix_freezes_success_and_missing_fact_contracts() {
+    let fixture: Value = serde_json::from_str(FLOW_SOURCE_CAPABILITIES).unwrap();
+    assert_eq!(
+        fixture["schema_version"],
+        "tidas.flow-source-capabilities.v1"
+    );
+    assert_eq!(
+        fixture["normalization_boundary"],
+        serde_json::json!([
+            "source-adapter",
+            "typed-flow-normalization",
+            "import-preflight",
+            "pure-writer",
+            "schema-validation"
+        ])
+    );
+    assert_eq!(
+        fixture["missing_name_fact_result"]["publishes_output"],
+        false
+    );
+    let sources = fixture["sources"].as_array().unwrap();
+    assert_eq!(sources.len(), 6);
+    let formats = sources
+        .iter()
+        .map(|source| source["format"].as_str().unwrap())
+        .collect::<std::collections::BTreeSet<_>>();
+    assert_eq!(
+        formats,
+        std::collections::BTreeSet::from([
+            "ecospold1",
+            "ecospold2",
+            "ilcd",
+            "openlca-jsonld",
+            "openlca-process-xlsx",
+            "simapro-csv",
+        ])
+    );
+    let fixture_root = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures");
+    for source in sources {
+        let success_fixture = source["success_fixture"].as_str().unwrap();
+        if let Some(path) = success_fixture.strip_prefix("generated:") {
+            assert_eq!(path, "python-oracle-v1/openlca-process-xlsx");
+        } else {
+            assert!(
+                fixture_root.join(success_fixture).exists(),
+                "{success_fixture}"
+            );
+        }
+        assert!(
+            source["missing_fixture"]["mutation"]
+                .as_str()
+                .is_some_and(|value| !value.is_empty())
+        );
+        for field in [
+            "baseName",
+            "treatmentStandardsRoutes",
+            "mixAndLocationTypes",
+        ] {
+            assert!(
+                source["name_evidence"][field]
+                    .as_str()
+                    .is_some_and(|value| !value.is_empty()),
+                "{} {field}",
+                source["format"]
+            );
+        }
+        assert_eq!(source["golden_parity_changed"], false);
+    }
+}
 
 #[test]
 fn frozen_python_simapro_oracle_matches_complete_rust_import() {
@@ -186,24 +258,37 @@ fn write_xlsx_fixture(path: &Path) {
         (
             "Flows",
             sheet(&[
-                &["UUID", "Name", "Category", "Type"],
+                &[
+                    "UUID",
+                    "Name",
+                    "Category",
+                    "Type",
+                    "Treatment standards routes",
+                    "Mix and location types",
+                ],
                 &[
                     "11111111-1111-4111-8111-111111111111",
                     "test product",
                     "products",
                     "Product flow",
+                    "production route",
+                    "GLO",
                 ],
                 &[
                     "33333333-3333-4333-8333-333333333333",
                     "test input",
                     "materials",
                     "Product flow",
+                    "supply route",
+                    "GLO",
                 ],
                 &[
                     "44444444-4444-4444-8444-444444444444",
                     "carbon dioxide",
                     "air",
                     "Elementary flow",
+                    "",
+                    "",
                 ],
             ]),
         ),
