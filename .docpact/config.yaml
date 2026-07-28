@@ -1,9 +1,9 @@
 version: 1
 layout: repo
 lastReviewedAt: "2026-07-28"
-lastReviewedCommit: "0d3170f3f4af0f25a63be49ff63585af1b53f76b"
-# Reviewed for Issue #146: validation and Worker protocol changes remain routed
-# through the existing Rust product/runtime contracts and proof paths.
+lastReviewedCommit: "174cbaf530756261c358f877d0d963ccc3ebaea4"
+# Reviewed for Issue #148: the 0.1.2 version-set and native distribution paths
+# remain governed by the existing Rust release and validation contracts.
 
 catalog:
   repos:

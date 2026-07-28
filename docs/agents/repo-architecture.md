@@ -26,8 +26,8 @@ checkPaths:
   - .githooks/pre-push
   - scripts/**
 lastReviewedAt: 2026-07-28
-lastReviewedCommit: 0d3170f3f4af0f25a63be49ff63585af1b53f76b
-lastReviewedNote: "Issue #146 keeps validation streaming and deterministic by summarizing oversized rejected instances instead of embedding them in schema issue events."
+lastReviewedCommit: 174cbaf530756261c358f877d0d963ccc3ebaea4
+lastReviewedNote: "Issue #148 reviews the 0.1.2 exact-version crate set and native release packaging without changing crate ownership or release architecture."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml

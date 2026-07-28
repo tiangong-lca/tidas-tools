@@ -30,8 +30,8 @@ checkPaths:
   - .github/workflows/**
   - .githooks/pre-push
 lastReviewedAt: 2026-07-28
-lastReviewedCommit: 0d3170f3f4af0f25a63be49ff63585af1b53f76b
-lastReviewedNote: "Reviewed for Issue #146: bounded schema diagnostics preserve the Rust-only validation, streaming, deterministic-contract, and Worker integration rules."
+lastReviewedCommit: 174cbaf530756261c358f877d0d963ccc3ebaea4
+lastReviewedNote: "Reviewed for Issue #148: the 0.1.2 version-set preparation preserves the unified Rust product, exact-version crate set, supported platform matrix, and merge-gated release architecture."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md
