@@ -27,8 +27,8 @@ checkPaths:
   - .githooks/pre-push
   - scripts/**
 lastReviewedAt: 2026-07-28
-lastReviewedCommit: 0d3170f3f4af0f25a63be49ff63585af1b53f76b
-lastReviewedNote: "Issue #146 adds an oversized rejected-instance regression proving bounded issue frames, deterministic final events, and logical stream hashes."
+lastReviewedCommit: 174cbaf530756261c358f877d0d963ccc3ebaea4
+lastReviewedNote: "Issue #148 retains the full Rust, package qualification, deterministic native distribution, release-request, Docpact, and five-platform proof for the 0.1.2 version set."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml

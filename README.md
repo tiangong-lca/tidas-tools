@@ -150,7 +150,7 @@ libxslt development dependencies can install the unified executable from
 source:
 
 ```bash
-cargo install tidas --version 0.1.1 --locked
+cargo install tidas --version 0.1.2 --locked
 ```
 
 All public workspace crates use the exact same version so Cargo cannot combine
@@ -171,11 +171,11 @@ After a native version is published, install an explicit immutable version:
 ```bash
 curl --proto '=https' --tlsv1.2 -fsSLO \
   https://raw.githubusercontent.com/tiangong-lca/tidas-tools/main/scripts/install.sh
-sh install.sh --version 0.1.1 --prefix "$HOME/.local"
+sh install.sh --version 0.1.2 --prefix "$HOME/.local"
 ```
 
 ```powershell
-.\scripts\install.ps1 -Version 0.1.1
+.\scripts\install.ps1 -Version 0.1.2
 ```
 
 Every GitHub Release also carries generated Homebrew formula and Winget

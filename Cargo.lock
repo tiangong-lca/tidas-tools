@@ -2455,7 +2455,7 @@ dependencies = [
 
 [[package]]
 name = "tidas"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "clap",
  "clap_complete",
@@ -2477,7 +2477,7 @@ dependencies = [
 
 [[package]]
 name = "tidas-assets"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "include_dir",
  "jsonschema",
@@ -2490,7 +2490,7 @@ dependencies = [
 
 [[package]]
 name = "tidas-contracts"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "serde",
  "serde_json",
@@ -2499,7 +2499,7 @@ dependencies = [
 
 [[package]]
 name = "tidas-conversion"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "jsonschema",
  "quick-xml",
@@ -2515,7 +2515,7 @@ dependencies = [
 
 [[package]]
 name = "tidas-dist"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "clap",
  "flate2",
@@ -2531,7 +2531,7 @@ dependencies = [
 
 [[package]]
 name = "tidas-export"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "futures-util",
  "jsonschema",
@@ -2554,7 +2554,7 @@ dependencies = [
 
 [[package]]
 name = "tidas-import"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "bigdecimal",
  "encoding_rs",
@@ -2577,7 +2577,7 @@ dependencies = [
 
 [[package]]
 name = "tidas-references"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "jsonschema",
  "serde",
@@ -2587,7 +2587,7 @@ dependencies = [
 
 [[package]]
 name = "tidas-release"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "jsonschema",
  "serde",
@@ -2606,7 +2606,7 @@ dependencies = [
 
 [[package]]
 name = "tidas-rulesets"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "jsonschema",
  "noyalib",
@@ -2619,7 +2619,7 @@ dependencies = [
 
 [[package]]
 name = "tidas-runtime"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "crossbeam-channel",
  "serde",
@@ -2631,7 +2631,7 @@ dependencies = [
 
 [[package]]
 name = "tidas-validation"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "jsonschema",
  "quick-xml",
@@ -2649,7 +2649,7 @@ dependencies = [
 
 [[package]]
 name = "tidas-xml"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "libxml",
  "libxslt",

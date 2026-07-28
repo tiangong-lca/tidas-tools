@@ -27,8 +27,8 @@ checkPaths:
   - README.md
   - README_CN.md
 lastReviewedAt: 2026-07-28
-lastReviewedCommit: 0d3170f3f4af0f25a63be49ff63585af1b53f76b
-lastReviewedNote: "Reviewed for Issue #146: schema diagnostics retain complete issue/final protocol semantics while bounding rejected-instance text below the Worker event ceiling."
+lastReviewedCommit: 174cbaf530756261c358f877d0d963ccc3ebaea4
+lastReviewedNote: "Reviewed for Issue #148: the 0.1.2 packaging update changes only the exact published version and installation examples, not the unified command or report contracts."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
