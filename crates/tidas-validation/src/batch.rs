@@ -752,6 +752,51 @@ mod tests {
     }
 
     #[test]
+    fn oversized_schema_issue_stays_within_the_batch_frame_limit() {
+        let directory = tempfile::tempdir().unwrap();
+        let root = directory.path().join("batch");
+        fs::create_dir_all(root.join("sources")).unwrap();
+        let oversized = "x".repeat(2 * 1024 * 1024);
+        let document = serde_json::to_vec(&oversized).unwrap();
+        fs::write(root.join("sources/bad.json"), &document).unwrap();
+        let manifest = directory.path().join("manifest.jsonl");
+        fs::write(
+            &manifest,
+            format!(
+                "{{\"document_key\":\"source:oversized:01.00.000\",\"category\":\"sources\",\"relative_path\":\"sources/bad.json\",\"content_sha256\":\"{}\",\"identity\":{{\"dataset_type\":\"source\",\"dataset_id\":\"22222222-2222-2222-2222-222222222222\",\"dataset_version\":\"01.00.000\"}}}}\n",
+                hex_sha256(&document)
+            ),
+        )
+        .unwrap();
+        let events = directory.path().join("events.jsonl");
+
+        let first = run_document_validation_batch(&request(&root, &manifest, &events)).unwrap();
+        let first_bytes = fs::read(&events).unwrap();
+        let second = run_document_validation_batch(&request(&root, &manifest, &events)).unwrap();
+        let second_bytes = fs::read(&events).unwrap();
+
+        assert_eq!(first.final_event, second.final_event);
+        assert_eq!(first_bytes, second_bytes);
+        let lines: Vec<&[u8]> = first_bytes.split_inclusive(|byte| *byte == b'\n').collect();
+        assert_eq!(lines.len(), 2);
+        assert!(lines[0].len() <= MAX_EVENT_BYTES);
+        let issue_event: Value = serde_json::from_slice(lines[0]).unwrap();
+        assert_eq!(issue_event["type"], "issue");
+        assert_eq!(issue_event["issue"]["context"]["schema_keyword"], "type");
+        assert_eq!(
+            issue_event["issue"]["context"]["instance_byte_length"],
+            Value::from(oversized.len() as u64)
+        );
+        assert_eq!(
+            first.final_event.logical_issue_stream_sha256,
+            hex_sha256(lines[0])
+        );
+        let final_event: Value = serde_json::from_slice(lines[1]).unwrap();
+        assert_eq!(final_event["type"], "final");
+        assert_eq!(first.final_event.summary.error_count, 1);
+    }
+
+    #[test]
     fn unsafe_paths_duplicates_and_hash_drift_fail_before_completion() {
         let directory = tempfile::tempdir().unwrap();
         let root = directory.path().join("batch");
