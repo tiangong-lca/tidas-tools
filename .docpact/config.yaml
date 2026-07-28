@@ -1,9 +1,9 @@
 version: 1
 layout: repo
 lastReviewedAt: "2026-07-28"
-lastReviewedCommit: "174cbaf530756261c358f877d0d963ccc3ebaea4"
-# Reviewed for Issue #148: the 0.1.2 version-set and native distribution paths
-# remain governed by the existing Rust release and validation contracts.
+lastReviewedCommit: "9837f4f99606e6571a1c02672a6a2998d2866ac4"
+# Reviewed for Issue #148 phase 2: the immutable v0.1.2 Release Request remains
+# governed by the existing merge-gated Rust release and validation contracts.
 
 catalog:
   repos:
@@ -329,6 +329,8 @@ rules:
     scope: repo
     repo: tidas-tools
     triggers:
+      - path: .github/releases/**
+        kind: release-authorization
       - path: scripts/**
         kind: automation
       - path: .github/workflows/**
