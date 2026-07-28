@@ -27,8 +27,8 @@ checkPaths:
   - .githooks/pre-push
   - scripts/**
 lastReviewedAt: 2026-07-28
-lastReviewedCommit: 174cbaf530756261c358f877d0d963ccc3ebaea4
-lastReviewedNote: "Issue #148 retains the full Rust, package qualification, deterministic native distribution, release-request, Docpact, and five-platform proof for the 0.1.2 version set."
+lastReviewedCommit: 9837f4f99606e6571a1c02672a6a2998d2866ac4
+lastReviewedNote: "Issue #148 phase 2 retains release-request validation, Docpact gates, and tag-bound five-platform publication proof for the qualified v0.1.2 version set."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
