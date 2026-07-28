@@ -25,9 +25,9 @@ checkPaths:
   - .github/workflows/**
   - .githooks/pre-push
   - scripts/**
-lastReviewedAt: 2026-07-27
-lastReviewedCommit: f7a56243cfc6d38114dac396893889e748c68c88
-lastReviewedNote: "Issue #126 establishes the Rust workspace, top-level assets, unified CLI, native release, and Rust-only gates as the complete active architecture."
+lastReviewedAt: 2026-07-28
+lastReviewedCommit: 0d3170f3f4af0f25a63be49ff63585af1b53f76b
+lastReviewedNote: "Issue #146 keeps validation streaming and deterministic by summarizing oversized rejected instances instead of embedding them in schema issue events."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -94,7 +94,9 @@ credentials.
 Validation resolves only embedded assets. Draft 7 schema resources and ILCD
 XSD contexts are compiled offline and reused. Issue details stream or are
 discarded; batch evidence preflights content hashes and publishes a final
-logical stream hash only after drift-free completion.
+logical stream hash only after drift-free completion. Schema diagnostics
+describe rejected instances through bounded summaries and content hashes
+rather than embedding arbitrarily large instance values in JSONL events.
 
 Release consumes finalized UUID/version decisions. It resolves exact
 standalone/full closure, derives schema-ordered ILCD, runs native validation and

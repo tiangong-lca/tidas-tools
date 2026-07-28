@@ -26,9 +26,9 @@ checkPaths:
   - contracts/**
   - README.md
   - README_CN.md
-lastReviewedAt: 2026-07-27
-lastReviewedCommit: f7a56243cfc6d38114dac396893889e748c68c88
-lastReviewedNote: "Reviewed for Issue #126: the Rust-only cutover preserves the seven-command, report, output-channel, configuration, and exit contract."
+lastReviewedAt: 2026-07-28
+lastReviewedCommit: 0d3170f3f4af0f25a63be49ff63585af1b53f76b
+lastReviewedNote: "Reviewed for Issue #146: schema diagnostics retain complete issue/final protocol semantics while bounding rejected-instance text below the Worker event ceiling."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -350,6 +350,14 @@ logical issue-stream hash, and validation fingerprints. Unsafe paths,
 symlinks, missing files, hash drift, or malformed protocol input fail without
 a final event. `tidas validate --describe --format json` returns the supported
 protocol/profile and engine/asset handshake.
+
+Schema issue diagnostics never serialize the complete rejected JSON instance.
+Their human message is capped at 16 KiB and uses an instance placeholder;
+structured context carries the schema keyword/path, instance type, bounded
+scalar preview or collection size, and SHA-256/original-byte metadata whenever
+text is truncated. This keeps each Worker-facing JSONL issue below the 1 MiB
+protocol frame ceiling without dropping the issue, changing its ordinal, or
+breaking the final logical issue-stream hash.
 
 `tidas ruleset --format json` validates and returns the packaged methodology
 catalog. `tidas ruleset --id <RULESET_ID> --format json` returns its ordered

@@ -1,9 +1,9 @@
 version: 1
 layout: repo
-lastReviewedAt: "2026-07-27"
-lastReviewedCommit: "f7a56243cfc6d38114dac396893889e748c68c88"
-# Issue #126 makes the Cargo workspace, top-level executable assets, unified
-# CLI, native distribution, and Rust-only proof paths the active architecture.
+lastReviewedAt: "2026-07-28"
+lastReviewedCommit: "0d3170f3f4af0f25a63be49ff63585af1b53f76b"
+# Reviewed for Issue #146: validation and Worker protocol changes remain routed
+# through the existing Rust product/runtime contracts and proof paths.
 
 catalog:
   repos:

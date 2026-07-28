@@ -1,8 +1,11 @@
 use std::collections::BTreeMap;
+use std::fmt::Write as _;
 
+use jsonschema::error::ValidationErrorKind;
 use jsonschema::{Resource, Validator};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use sha2::{Digest, Sha256};
 use thiserror::Error;
 use tidas_assets::{AssetKind, bundled_assets};
 
@@ -10,6 +13,9 @@ use crate::contracts::ValidationIssueV1;
 
 const SCHEMA_ASSET_PREFIX: &str = "assets/tidas/schemas/";
 const SCHEMA_BASE_URI: &str = "https://tiangong.earth/assets/tidas/schemas/";
+const MAX_SCHEMA_MESSAGE_BYTES: usize = 16 * 1024;
+const MAX_INSTANCE_PREVIEW_BYTES: usize = 256;
+const MAX_LOCATION_BYTES: usize = 4 * 1024;
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "lowercase")]
@@ -147,15 +153,184 @@ impl TidasValidator {
             } else {
                 location
             };
-            ValidationIssueV1::error(
+            let bounded_location = bounded_text(&location, MAX_LOCATION_BYTES);
+            let schema_path = error.schema_path().to_string();
+            let detail = error.masked_with("<instance>").to_string();
+            let raw_message = format!(
+                "Schema error at {} (keyword: {}): {detail}",
+                bounded_location.value,
+                schema_keyword(error.kind())
+            );
+            let bounded_message = bounded_text(&raw_message, MAX_SCHEMA_MESSAGE_BYTES);
+            let message = bounded_message.value.clone();
+            let mut issue = ValidationIssueV1::error(
                 "schema_error",
                 self.category.as_str(),
                 file_path,
-                &location,
-                format!("Schema Error at {location}: {error}"),
-            )
+                &bounded_location.value,
+                message,
+            );
+            issue.context.insert(
+                "schema_keyword".to_owned(),
+                Value::String(schema_keyword(error.kind()).to_owned()),
+            );
+            issue
+                .context
+                .insert("schema_path".to_owned(), Value::String(schema_path));
+            add_instance_context(error.instance(), &mut issue.context);
+            add_truncation_context("location", &bounded_location, &mut issue.context);
+            add_truncation_context("diagnostic", &bounded_message, &mut issue.context);
+            issue
         })
     }
+}
+
+struct BoundedText {
+    value: String,
+    original_bytes: Option<usize>,
+    sha256: Option<String>,
+}
+
+fn bounded_text(value: &str, max_bytes: usize) -> BoundedText {
+    if value.len() <= max_bytes {
+        return BoundedText {
+            value: value.to_owned(),
+            original_bytes: None,
+            sha256: None,
+        };
+    }
+    let prefix = utf8_prefix(value, max_bytes);
+    BoundedText {
+        value: prefix.to_owned(),
+        original_bytes: Some(value.len()),
+        sha256: Some(sha256_hex(value.as_bytes())),
+    }
+}
+
+fn utf8_prefix(value: &str, max_bytes: usize) -> &str {
+    let mut end = value.len().min(max_bytes);
+    while !value.is_char_boundary(end) {
+        end -= 1;
+    }
+    &value[..end]
+}
+
+fn add_truncation_context(
+    prefix: &str,
+    bounded: &BoundedText,
+    context: &mut BTreeMap<String, Value>,
+) {
+    let (Some(original_bytes), Some(sha256)) = (bounded.original_bytes, bounded.sha256.as_ref())
+    else {
+        return;
+    };
+    context.insert(format!("{prefix}_truncated"), Value::Bool(true));
+    context.insert(
+        format!("{prefix}_original_bytes"),
+        Value::from(original_bytes as u64),
+    );
+    context.insert(format!("{prefix}_sha256"), Value::String(sha256.clone()));
+}
+
+fn add_instance_context(instance: &Value, context: &mut BTreeMap<String, Value>) {
+    context.insert(
+        "instance_type".to_owned(),
+        Value::String(instance_type(instance).to_owned()),
+    );
+    match instance {
+        Value::Null => {}
+        Value::Bool(value) => {
+            context.insert("instance_preview".to_owned(), Value::Bool(*value));
+        }
+        Value::Number(value) => {
+            context.insert("instance_preview".to_owned(), Value::Number(value.clone()));
+        }
+        Value::String(value) => {
+            context.insert(
+                "instance_byte_length".to_owned(),
+                Value::from(value.len() as u64),
+            );
+            let preview = bounded_text(value, MAX_INSTANCE_PREVIEW_BYTES);
+            context.insert(
+                "instance_preview".to_owned(),
+                Value::String(preview.value.clone()),
+            );
+            add_truncation_context("instance_preview", &preview, context);
+        }
+        Value::Array(values) => {
+            context.insert(
+                "instance_item_count".to_owned(),
+                Value::from(values.len() as u64),
+            );
+        }
+        Value::Object(values) => {
+            context.insert(
+                "instance_property_count".to_owned(),
+                Value::from(values.len() as u64),
+            );
+        }
+    }
+}
+
+const fn instance_type(instance: &Value) -> &'static str {
+    match instance {
+        Value::Null => "null",
+        Value::Bool(_) => "boolean",
+        Value::Number(_) => "number",
+        Value::String(_) => "string",
+        Value::Array(_) => "array",
+        Value::Object(_) => "object",
+    }
+}
+
+const fn schema_keyword(kind: &ValidationErrorKind) -> &'static str {
+    match kind {
+        ValidationErrorKind::AdditionalItems { .. } => "additionalItems",
+        ValidationErrorKind::AdditionalProperties { .. } => "additionalProperties",
+        ValidationErrorKind::AnyOf { .. } => "anyOf",
+        ValidationErrorKind::BacktrackLimitExceeded { .. }
+        | ValidationErrorKind::Pattern { .. } => "pattern",
+        ValidationErrorKind::Constant { .. } => "const",
+        ValidationErrorKind::Contains => "contains",
+        ValidationErrorKind::ContentEncoding { .. } | ValidationErrorKind::FromUtf8 { .. } => {
+            "contentEncoding"
+        }
+        ValidationErrorKind::ContentMediaType { .. } => "contentMediaType",
+        ValidationErrorKind::Custom { .. } => "custom",
+        ValidationErrorKind::Enum { .. } => "enum",
+        ValidationErrorKind::ExclusiveMaximum { .. } => "exclusiveMaximum",
+        ValidationErrorKind::ExclusiveMinimum { .. } => "exclusiveMinimum",
+        ValidationErrorKind::FalseSchema => "falseSchema",
+        ValidationErrorKind::Format { .. } => "format",
+        ValidationErrorKind::MaxItems { .. } => "maxItems",
+        ValidationErrorKind::Maximum { .. } => "maximum",
+        ValidationErrorKind::MaxLength { .. } => "maxLength",
+        ValidationErrorKind::MaxProperties { .. } => "maxProperties",
+        ValidationErrorKind::MinItems { .. } => "minItems",
+        ValidationErrorKind::Minimum { .. } => "minimum",
+        ValidationErrorKind::MinLength { .. } => "minLength",
+        ValidationErrorKind::MinProperties { .. } => "minProperties",
+        ValidationErrorKind::MultipleOf { .. } => "multipleOf",
+        ValidationErrorKind::Not { .. } => "not",
+        ValidationErrorKind::OneOfMultipleValid { .. }
+        | ValidationErrorKind::OneOfNotValid { .. } => "oneOf",
+        ValidationErrorKind::PropertyNames { .. } => "propertyNames",
+        ValidationErrorKind::Required { .. } => "required",
+        ValidationErrorKind::Type { .. } => "type",
+        ValidationErrorKind::UnevaluatedItems { .. } => "unevaluatedItems",
+        ValidationErrorKind::UnevaluatedProperties { .. } => "unevaluatedProperties",
+        ValidationErrorKind::UniqueItems => "uniqueItems",
+        ValidationErrorKind::Referencing(_) => "$ref",
+    }
+}
+
+fn sha256_hex(bytes: &[u8]) -> String {
+    let digest = Sha256::digest(bytes);
+    let mut output = String::with_capacity(digest.len() * 2);
+    for byte in digest {
+        write!(&mut output, "{byte:02x}").expect("writing to a String cannot fail");
+    }
+    output
 }
 
 #[must_use]
@@ -224,6 +399,34 @@ mod tests {
         for category in SUPPORTED_TIDAS_CATEGORIES {
             catalog.validator(category).unwrap();
         }
+    }
+
+    #[test]
+    fn oversized_schema_instances_emit_bounded_diagnostics() {
+        let validator = SchemaCatalog::load()
+            .unwrap()
+            .validator(TidasCategory::Sources)
+            .unwrap();
+        let oversized = "数".repeat(1024 * 1024);
+        let document = Value::String(oversized.clone());
+        let issue = validator
+            .issues(&document, "sources/oversized.json")
+            .next()
+            .unwrap();
+
+        assert!(issue.message.len() <= MAX_SCHEMA_MESSAGE_BYTES);
+        assert!(!issue.message.contains(&oversized));
+        assert_eq!(issue.context["schema_keyword"], "type");
+        assert_eq!(issue.context["instance_type"], "string");
+        assert_eq!(
+            issue.context["instance_byte_length"],
+            Value::from(oversized.len() as u64)
+        );
+        assert_eq!(issue.context["instance_preview_truncated"], true);
+        assert_eq!(
+            issue.context["instance_preview_sha256"],
+            sha256_hex(oversized.as_bytes())
+        );
     }
 
     #[test]

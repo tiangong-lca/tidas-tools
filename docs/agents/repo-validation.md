@@ -26,9 +26,9 @@ checkPaths:
   - .github/workflows/**
   - .githooks/pre-push
   - scripts/**
-lastReviewedAt: 2026-07-27
-lastReviewedCommit: f7a56243cfc6d38114dac396893889e748c68c88
-lastReviewedNote: "Issue #126 replaces every active migration-oracle gate with Rust-only source, asset, package, artifact, and scale validation."
+lastReviewedAt: 2026-07-28
+lastReviewedCommit: 0d3170f3f4af0f25a63be49ff63585af1b53f76b
+lastReviewedNote: "Issue #146 adds an oversized rejected-instance regression proving bounded issue frames, deterministic final events, and logical stream hashes."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -67,7 +67,7 @@ Intel/Apple Silicon, and Windows x86_64. Windows ARM64 is intentionally absent.
 | import | all supported format fixtures; native target validation; deterministic package/mapping/bundle hashes; malformed/unsupported input, cancellation, budget, atomic publication | large exchange/issue-spool fixture with wall time/RSS and cross-root determinism |
 | export | focused crate/CLI tests; report schema; secret redaction; unsafe paths; cancellation/budget; version suffixes; deterministic ZIP; atomic replacement | disposable local PostgreSQL and S3-compatible fixtures twice, comparing archive bytes and membership |
 | release | closure/order/round-trip golden fixtures; missing/inexact reference failure; four deterministic ZIPs; native validation; cancellation/budget; atomic directory publication | run the local 237 MiB package twice, compare all four archives, and record wall time/RSS |
-| validation/batch/references | compile every bundled schema/XSD root offline; schema and semantic fixtures; bounded issue spool; batch preflight/drift/final-event hash; extraction schema/roles | local 237 MiB validation twice, recording schema time, total time, peak RSS, cancellation, and spool hash |
+| validation/batch/references | compile every bundled schema/XSD root offline; schema and semantic fixtures; oversized rejected-instance event below the 1 MiB frame ceiling; bounded issue spool; batch preflight/drift/final-event hash; extraction schema/roles | local 237 MiB validation twice, recording schema time, total time, peak RSS, cancellation, and spool hash |
 | assets | baseline asset check; representative `git check-attr eol`; schema-local-reference and translation-parity tests | regenerate locks only after reviewing every changed path/hash; compare fingerprints twice |
 | XML/XSD/XSLT | focused `tidas-xml` and validation tests; resolver/security tests; five-platform CI | representative production schemas/stylesheets and static-release dependency inspection |
 | native distribution | focused `tidas-dist`; package twice; archive/checksum equality; extract and run version/help/JSON/ruleset; installer syntax | five release jobs, clean-machine archive execution, runtime dependency inspection, SBOM and attestation |

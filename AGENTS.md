@@ -29,9 +29,9 @@ checkPaths:
   - scripts/**
   - .github/workflows/**
   - .githooks/pre-push
-lastReviewedAt: 2026-07-27
-lastReviewedCommit: f7a56243cfc6d38114dac396893889e748c68c88
-lastReviewedNote: "Issue #126 makes the Rust workspace and unified tidas executable the only active implementation, CI, release, and development path."
+lastReviewedAt: 2026-07-28
+lastReviewedCommit: 0d3170f3f4af0f25a63be49ff63585af1b53f76b
+lastReviewedNote: "Reviewed for Issue #146: bounded schema diagnostics preserve the Rust-only validation, streaming, deterministic-contract, and Worker integration rules."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md
