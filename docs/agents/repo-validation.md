@@ -27,8 +27,8 @@ checkPaths:
   - .githooks/pre-push
   - scripts/**
 lastReviewedAt: 2026-08-01
-lastReviewedCommit: 9ffb6c51aa07c7719b3bd218b99d30a19676168c
-lastReviewedNote: "Issue #153 phase 1 retains crate qualification, Docpact gates, and tag-bound five-platform publication proof for the v0.1.3 version set."
+lastReviewedCommit: 9f67345f4c6f791a01d21688b4f003a157a33d04
+lastReviewedNote: "Issue #153 phase 2 retains release-request validation, Docpact gates, and tag-bound five-platform publication proof for the qualified v0.1.3 version set."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
