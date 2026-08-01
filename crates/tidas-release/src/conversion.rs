@@ -1,11 +1,10 @@
-use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use serde_json::{Map, Value};
+use serde_json::Value;
 use sha2::{Digest, Sha256};
-use tidas_assets::{AssetKind, asset_fingerprint, bundled_assets};
-use tidas_conversion::{convert_json_to_xml, convert_xml_to_json};
+use tidas_assets::{asset_fingerprint, bundled_assets};
+use tidas_conversion::{TidasSchemaOrderer, convert_json_to_xml, convert_xml_to_json};
 use walkdir::WalkDir;
 
 use crate::index::{hex_digest, safe_relative, sha256_file};
@@ -16,7 +15,6 @@ use crate::{
 };
 
 const FILE_MEMORY_MULTIPLIER: u64 = 8;
-const TIDAS_SCHEMA_PREFIX: &str = "assets/tidas/schemas/";
 const EILCD_ASSET_PREFIX: &str = "assets/eilcd/";
 
 pub(crate) fn convert_tidas_to_ilcd(
@@ -29,7 +27,7 @@ pub(crate) fn convert_tidas_to_ilcd(
         return Err(ReleaseError::InputNotDirectory(input_dir.to_path_buf()));
     }
     reject_nested_output(input_dir, output_dir)?;
-    let schemas = ordering_schemas()?;
+    let orderer = TidasSchemaOrderer::from_bundled_assets()?;
     let staging = StagedDirectory::new(output_dir)?;
     let mut dataset_count = 0_u64;
     let mut input_bytes = 0_u64;
@@ -59,13 +57,9 @@ pub(crate) fn convert_tidas_to_ilcd(
                 path: source.clone(),
                 source: source_error,
             })?;
-        let schema_path = format!("{TIDAS_SCHEMA_PREFIX}tidas_{category}.json");
-        let schema = schemas
-            .get(&schema_path)
-            .ok_or_else(|| ReleaseError::OrderingSchemaMissing(category.to_owned()))?;
-        let mut ordered = order_value(&document, schema, &schema_path, &schemas)?;
-        convert_reference_uris(&mut ordered);
-        let ordered_bytes = serde_json::to_vec(&ordered)?;
+        let mut ordered_document = orderer.order_document(&document, category)?;
+        convert_reference_uris(&mut ordered_document);
+        let ordered_bytes = serde_json::to_vec(&ordered_document)?;
         let xml = convert_json_to_xml(&ordered_bytes, &runtime.cancellation)?;
         let output_relative = Path::new("data").join(relative).with_extension("xml");
         let target = staging.path().join(&output_relative);
@@ -223,190 +217,6 @@ fn dataset_files(root: &Path, runtime: &ReleaseRuntime) -> Result<PathCatalog, R
         paths: files,
         _reservation: reservation,
     })
-}
-
-fn ordering_schemas() -> Result<BTreeMap<String, Value>, ReleaseError> {
-    bundled_assets()
-        .into_iter()
-        .filter(|asset| {
-            asset.kind == AssetKind::JsonSchema && asset.path.starts_with(TIDAS_SCHEMA_PREFIX)
-        })
-        .map(|asset| {
-            let value = serde_json::from_slice(asset.bytes)?;
-            Ok((asset.path, value))
-        })
-        .collect()
-}
-
-fn resolve_schema(
-    schema: &Value,
-    schema_path: &str,
-    catalog: &BTreeMap<String, Value>,
-) -> Result<(Value, String), ReleaseError> {
-    let mut current = schema.clone();
-    let mut current_path = schema_path.to_owned();
-    let mut seen = std::collections::BTreeSet::new();
-    loop {
-        let Some(reference) = current.get("$ref").and_then(Value::as_str) else {
-            return Ok((current, current_path));
-        };
-        let (file_name, fragment) = reference.split_once('#').unwrap_or((reference, ""));
-        let target_path = if file_name.is_empty() {
-            current_path.clone()
-        } else {
-            let parent = Path::new(&current_path)
-                .parent()
-                .unwrap_or_else(|| Path::new(""));
-            path_to_portable(&parent.join(file_name))?
-        };
-        if !seen.insert((target_path.clone(), fragment.to_owned())) {
-            return Err(ReleaseError::OrderingSchemaCycle(reference.to_owned()));
-        }
-        let target = catalog
-            .get(&target_path)
-            .ok_or_else(|| ReleaseError::OrderingSchemaReference(reference.to_owned()))?;
-        current = if fragment.is_empty() {
-            target.clone()
-        } else {
-            target
-                .pointer(fragment)
-                .cloned()
-                .ok_or_else(|| ReleaseError::OrderingSchemaReference(reference.to_owned()))?
-        };
-        current_path = target_path;
-    }
-}
-
-fn select_schema(
-    schema: &Value,
-    schema_path: &str,
-    value: &Value,
-    catalog: &BTreeMap<String, Value>,
-) -> Result<(Value, String), ReleaseError> {
-    let (resolved, resolved_path) = resolve_schema(schema, schema_path, catalog)?;
-    if let Some(alternatives) = resolved
-        .get("oneOf")
-        .or_else(|| resolved.get("anyOf"))
-        .and_then(Value::as_array)
-    {
-        for candidate in alternatives {
-            if schema_matches(candidate, &resolved_path, value, catalog)? {
-                return select_schema(candidate, &resolved_path, value, catalog);
-            }
-        }
-    }
-    Ok((resolved, resolved_path))
-}
-
-fn schema_matches(
-    schema: &Value,
-    schema_path: &str,
-    value: &Value,
-    catalog: &BTreeMap<String, Value>,
-) -> Result<bool, ReleaseError> {
-    let (resolved, resolved_path) = resolve_schema(schema, schema_path, catalog)?;
-    if let Some(alternatives) = resolved
-        .get("oneOf")
-        .or_else(|| resolved.get("anyOf"))
-        .and_then(Value::as_array)
-    {
-        return alternatives
-            .iter()
-            .map(|candidate| schema_matches(candidate, &resolved_path, value, catalog))
-            .try_fold(false, |matched, candidate| {
-                candidate.map(|value| matched || value)
-            });
-    }
-    let types: Vec<&str> = match resolved.get("type") {
-        Some(Value::String(value)) => vec![value],
-        Some(Value::Array(values)) => values.iter().filter_map(Value::as_str).collect(),
-        _ => Vec::new(),
-    };
-    Ok(types.is_empty()
-        || match value {
-            Value::Object(_) => types.contains(&"object") || resolved.get("properties").is_some(),
-            Value::Array(_) => types.contains(&"array") || resolved.get("items").is_some(),
-            Value::Null => types.contains(&"null"),
-            Value::Bool(_) => types.contains(&"boolean"),
-            Value::Number(_) => types.contains(&"number") || types.contains(&"integer"),
-            Value::String(_) => types.contains(&"string"),
-        })
-}
-
-fn property_schemas(
-    schema: &Value,
-    schema_path: &str,
-    value: &Value,
-    catalog: &BTreeMap<String, Value>,
-) -> Result<Vec<(String, Value, String)>, ReleaseError> {
-    let (resolved, resolved_path) = select_schema(schema, schema_path, value, catalog)?;
-    let mut properties = Vec::new();
-    if let Some(all_of) = resolved.get("allOf").and_then(Value::as_array) {
-        for component in all_of {
-            for item in property_schemas(component, &resolved_path, value, catalog)? {
-                if let Some(position) = properties.iter().position(|(name, _, _)| name == &item.0) {
-                    properties.remove(position);
-                }
-                properties.push(item);
-            }
-        }
-    }
-    if let Some(object) = resolved.get("properties").and_then(Value::as_object) {
-        for (name, child) in object {
-            if let Some(position) = properties
-                .iter()
-                .position(|(existing, _, _)| existing == name)
-            {
-                properties.remove(position);
-            }
-            properties.push((name.clone(), child.clone(), resolved_path.clone()));
-        }
-    }
-    Ok(properties)
-}
-
-fn order_value(
-    value: &Value,
-    schema: &Value,
-    schema_path: &str,
-    catalog: &BTreeMap<String, Value>,
-) -> Result<Value, ReleaseError> {
-    match value {
-        Value::Array(items) => {
-            let (resolved, resolved_path) = select_schema(schema, schema_path, value, catalog)?;
-            let item_schema = resolved.get("items");
-            let Some(item_schema) = item_schema else {
-                return Ok(value.clone());
-            };
-            items
-                .iter()
-                .map(|item| order_value(item, item_schema, &resolved_path, catalog))
-                .collect::<Result<Vec<_>, _>>()
-                .map(Value::Array)
-        }
-        Value::Object(object) => {
-            let properties = property_schemas(schema, schema_path, value, catalog)?;
-            let mut ordered = Map::new();
-            for (name, child_schema, child_path) in properties {
-                if let Some(child) = object.get(&name) {
-                    ordered.insert(
-                        name,
-                        order_value(child, &child_schema, &child_path, catalog)?,
-                    );
-                }
-            }
-            let mut remaining: Vec<&String> = object
-                .keys()
-                .filter(|name| !ordered.contains_key(*name))
-                .collect();
-            remaining.sort();
-            for name in remaining {
-                ordered.insert(name.clone(), object[name].clone());
-            }
-            Ok(Value::Object(ordered))
-        }
-        _ => Ok(value.clone()),
-    }
 }
 
 fn convert_reference_uris(value: &mut Value) {

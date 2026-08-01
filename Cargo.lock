@@ -2510,6 +2510,7 @@ dependencies = [
  "thiserror",
  "tidas-assets",
  "tidas-runtime",
+ "tidas-validation",
  "walkdir",
 ]
 

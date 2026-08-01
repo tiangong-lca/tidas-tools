@@ -291,6 +291,9 @@ fn classify_release_conversion_error(error: &ConversionError) -> (ExitClass, &'s
         ConversionError::Runtime(_)
         | ConversionError::PathOutsideInput(_)
         | ConversionError::NonPortablePath(_)
+        | ConversionError::OrderingSchemaMissing(_)
+        | ConversionError::OrderingSchemaReference(_)
+        | ConversionError::OrderingSchemaCycle(_)
         | ConversionError::SizeOverflow
         | ConversionError::Asset(_) => (ExitClass::Internal, "release_runtime_failed"),
     }
@@ -763,6 +766,9 @@ fn failed_conversion_report(error: &ConversionError) -> OperationReportV1 {
         ConversionError::Runtime(_) => (ExitClass::Internal, "conversion_runtime_failed"),
         ConversionError::PathOutsideInput(_)
         | ConversionError::NonPortablePath(_)
+        | ConversionError::OrderingSchemaMissing(_)
+        | ConversionError::OrderingSchemaReference(_)
+        | ConversionError::OrderingSchemaCycle(_)
         | ConversionError::SizeOverflow
         | ConversionError::Asset(_) => (ExitClass::Internal, "conversion_setup_failed"),
     };

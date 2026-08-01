@@ -50,7 +50,7 @@ alternate executable or runtime fallback is part of the product.
 | `crates/tidas-cli` | unified executable, invocation context, output routing, completion, cancellation wiring, thin dispatch |
 | `crates/tidas-contracts` | stable operation reports, diagnostics, artifacts, completeness, exit classes |
 | `crates/tidas-runtime` | bounded queues, memory reservations, cancellation, deterministic spools |
-| `crates/tidas-conversion` | bidirectional TIDAS JSON/eILCD XML transformation and atomic publication |
+| `crates/tidas-conversion` | bidirectional TIDAS JSON/eILCD XML transformation with schema-ordered ILCD output and atomic publication |
 | `crates/tidas-import` | format detection, disk-backed canonicalization, TIDAS/ILCD publication, bundles, mapping |
 | `crates/tidas-export` | repeatable-read PostgreSQL extraction, S3-compatible streaming, deterministic ZIP |
 | `crates/tidas-validation` | offline TIDAS JSON and ILCD/XSD validation, semantic indexes, batch protocol |
@@ -79,7 +79,10 @@ sibling temporary path and commits atomically.
 
 Conversion traverses sorted package trees, rejects symlinks and invalid XML
 text, uses deterministic envelope sidecars for top-level TIDAS metadata, locks
-target assets, and reports a cross-platform output-tree hash.
+target assets, and reports a cross-platform output-tree hash. TIDAS-to-ILCD
+conversion orders every known dataset object from the integrity-locked TIDAS
+schema catalog before XML serialization, so JSON member order cannot violate
+an ILCD XSD sequence; release conversion reuses the same ordering component.
 
 Import detects EcoSpold 1/2, SimaPro CSV, openLCA JSON-LD, openLCA process
 XLSX, and ILCD. Adapters stream into disk-backed canonical entities/exchanges;

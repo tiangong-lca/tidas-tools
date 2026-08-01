@@ -15,7 +15,7 @@ publish = ["crates-io"]
 [dependencies]
 quick-xml.workspace = true
 serde.workspace = true
-serde_json = { workspace = true, features = ["arbitrary_precision"] }
+serde_json = { workspace = true, features = ["arbitrary_precision", "preserve_order"] }
 sha2.workspace = true
 tempfile.workspace = true
 thiserror.workspace = true
@@ -25,6 +25,7 @@ walkdir.workspace = true
 
 [dev-dependencies]
 jsonschema.workspace = true
+tidas-validation = { version = "=0.1.2", path = "../tidas-validation" }
 
 [lints]
 workspace = true
