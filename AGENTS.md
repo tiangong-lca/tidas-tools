@@ -29,9 +29,9 @@ checkPaths:
   - scripts/**
   - .github/workflows/**
   - .githooks/pre-push
-lastReviewedAt: 2026-07-28
-lastReviewedCommit: 9837f4f99606e6571a1c02672a6a2998d2866ac4
-lastReviewedNote: "Reviewed for Issue #148 phase 2: the immutable v0.1.2 Release Request preserves the unified Rust product, exact-version crate set, supported platform matrix, and merge-gated release architecture."
+lastReviewedAt: 2026-08-01
+lastReviewedCommit: 9ffb6c51aa07c7719b3bd218b99d30a19676168c
+lastReviewedNote: "Reviewed for Issue #153 phase 1: the v0.1.3 version-set preparation preserves the unified Rust product, exact-version crate set, supported platform matrix, and merge-gated release architecture."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md
