@@ -169,10 +169,12 @@ tidas convert <INPUT_DIR> --output <OUTPUT_DIR> --to tidas --format json
 
 The command never infers direction. It mirrors input under `OUTPUT_DIR/data`,
 copies non-domain package metadata, materializes the locked target assets, and
-publishes the whole directory atomically. Symlinks, malformed JSON/XML,
-multiple unknown roots, XML 1.0-invalid text, and malformed envelope sidecars
-are data issues; nested output is a usage error; missing paths and commit
-failures use the I/O class; cancellation uses 130.
+publishes the whole directory atomically. TIDAS-to-ILCD conversion orders known
+dataset members from the locked TIDAS schema catalog before XML serialization;
+source JSON object member order therefore cannot change XSD validity. Symlinks,
+malformed JSON/XML, multiple unknown roots, XML 1.0-invalid text, and malformed
+envelope sidecars are data issues; nested output is a usage error; missing
+paths and commit failures use the I/O class; cancellation uses 130.
 
 The operation report summary contains one `conversion` member conforming to
 `tidas.conversion-report.v1`. Its artifact is the output directory with total

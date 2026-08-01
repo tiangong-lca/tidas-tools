@@ -1,9 +1,9 @@
 version: 1
 layout: repo
-lastReviewedAt: "2026-07-28"
-lastReviewedCommit: "9837f4f99606e6571a1c02672a6a2998d2866ac4"
-# Reviewed for Issue #148 phase 2: the immutable v0.1.2 Release Request remains
-# governed by the existing merge-gated Rust release and validation contracts.
+lastReviewedAt: "2026-08-01"
+lastReviewedCommit: "076028949d0de8c35f4ef6a67563dc958d655707"
+# Reviewed for Issue #151: schema-ordered direct conversion remains inside the
+# existing Rust product ownership, conversion routing, and validation proof graph.
 
 catalog:
   repos:

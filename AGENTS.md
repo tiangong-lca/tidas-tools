@@ -57,7 +57,7 @@ Repository-owned behavior belongs in the corresponding crate:
 | `crates/tidas-cli` | parsing, configuration precedence, output routing, completion, cancellation wiring, and thin dispatch |
 | `crates/tidas-contracts` | stable reports, diagnostics, artifacts, completeness, and exit classes |
 | `crates/tidas-runtime` | explicit memory accounting, bounded queues, cancellation, and streaming spools |
-| `crates/tidas-conversion` | deterministic TIDAS/eILCD conversion and atomic publication |
+| `crates/tidas-conversion` | deterministic TIDAS/eILCD conversion with schema-ordered ILCD output and atomic publication |
 | `crates/tidas-import` | bounded external-format import and canonical publication |
 | `crates/tidas-export` | repeatable-read database export, S3-compatible streaming, and deterministic ZIP output |
 | `crates/tidas-validation` | offline JSON Schema and ILCD/XSD validation |

@@ -1,6 +1,7 @@
 //! Bounded, deterministic TIDAS JSON and eILCD XML conversion.
 
 mod format;
+mod ordering;
 mod transaction;
 
 use std::fmt::Write as _;
@@ -19,6 +20,8 @@ use tidas_runtime::{
 use walkdir::WalkDir;
 
 use transaction::StagedDirectory;
+
+pub use ordering::TidasSchemaOrderer;
 
 pub const CONVERSION_REPORT_SCHEMA_V1: &str = "tidas.conversion-report.v1";
 pub const CONVERSION_REPORT_JSON_SCHEMA_V1: &str = include_str!(concat!(
@@ -133,6 +136,9 @@ pub fn convert_directory(
     }
     reject_nested_output(&request.input_dir, &request.output_dir)?;
     let staging = StagedDirectory::new(&request.output_dir)?;
+    let orderer = (request.direction == ConversionDirection::TidasToIlcd)
+        .then(TidasSchemaOrderer::from_bundled_assets)
+        .transpose()?;
     let mut report = ConversionReportV1 {
         schema_version: CONVERSION_REPORT_SCHEMA_V1.to_owned(),
         direction: request.direction,
@@ -158,6 +164,7 @@ pub fn convert_directory(
             staging.path(),
             request,
             None,
+            None,
             &mut report,
         )?;
     }
@@ -168,6 +175,7 @@ pub fn convert_directory(
         &data_dir,
         request,
         Some(request.direction),
+        orderer.as_ref(),
         &mut report,
     )?;
     write_direction_assets(staging.path(), request, &mut report)?;
@@ -187,6 +195,7 @@ fn copy_tree(
     target_root: &Path,
     request: &ConversionRequest,
     conversion: Option<ConversionDirection>,
+    orderer: Option<&TidasSchemaOrderer>,
     report: &mut ConversionReportV1,
 ) -> Result<(), ConversionError> {
     let (sender, receiver) =
@@ -231,13 +240,13 @@ fn copy_tree(
             sender.send(job, estimated, &request.cancellation)?;
             queued += 1;
             if queued == request.queue_capacity {
-                process_next_file(source_root, &receiver, conversion, request, report)?;
+                process_next_file(source_root, &receiver, conversion, orderer, request, report)?;
                 queued -= 1;
             }
         }
     }
     while queued > 0 {
-        process_next_file(source_root, &receiver, conversion, request, report)?;
+        process_next_file(source_root, &receiver, conversion, orderer, request, report)?;
         queued -= 1;
     }
     Ok(())
@@ -264,6 +273,7 @@ fn process_next_file(
     source_root: &Path,
     receiver: &BoundedReceiver<FileJob>,
     conversion: Option<ConversionDirection>,
+    orderer: Option<&TidasSchemaOrderer>,
     request: &ConversionRequest,
     report: &mut ConversionReportV1,
 ) -> Result<(), ConversionError> {
@@ -279,6 +289,7 @@ fn process_next_file(
             &job.source,
             &target,
             direction,
+            orderer,
             request,
             report,
         )?;
@@ -301,6 +312,7 @@ fn convert_file(
     source: &Path,
     target: &Path,
     direction: ConversionDirection,
+    orderer: Option<&TidasSchemaOrderer>,
     request: &ConversionRequest,
     report: &mut ConversionReportV1,
 ) -> Result<(), ConversionError> {
@@ -318,6 +330,11 @@ fn convert_file(
         ConversionDirection::TidasToIlcd => {
             let mut document: serde_json::Value = serde_json::from_slice(&bytes)?;
             let sidecar = split_envelope(source_root, source, &mut document)?;
+            if let (Some(orderer), Some(category)) =
+                (orderer, dataset_category(source_root, source))
+            {
+                document = orderer.order_document(&document, category)?;
+            }
             (
                 format::json_value_to_xml(&document, &request.cancellation)?,
                 sidecar,
@@ -614,14 +631,7 @@ fn dataset_path_for_sidecar(path: &Path) -> Result<PathBuf, ConversionError> {
 }
 
 fn expected_dataset_root(source_root: &Path, source: &Path) -> Option<&'static str> {
-    let category = source
-        .strip_prefix(source_root)
-        .ok()?
-        .components()
-        .next()?
-        .as_os_str()
-        .to_str()?;
-    match category {
+    match dataset_category(source_root, source)? {
         "contacts" => Some("contactDataSet"),
         "flowproperties" => Some("flowPropertyDataSet"),
         "flows" => Some("flowDataSet"),
@@ -632,6 +642,28 @@ fn expected_dataset_root(source_root: &Path, source: &Path) -> Option<&'static s
         "unitgroups" => Some("unitGroupDataSet"),
         _ => None,
     }
+}
+
+fn dataset_category<'a>(source_root: &Path, source: &'a Path) -> Option<&'a str> {
+    let category = source
+        .strip_prefix(source_root)
+        .ok()?
+        .components()
+        .next()?
+        .as_os_str()
+        .to_str()?;
+    matches!(
+        category,
+        "contacts"
+            | "flowproperties"
+            | "flows"
+            | "lciamethods"
+            | "lifecyclemodels"
+            | "processes"
+            | "sources"
+            | "unitgroups"
+    )
+    .then_some(category)
 }
 
 fn normalized_relative(root: &Path, path: &Path) -> Result<String, ConversionError> {
@@ -700,6 +732,12 @@ pub enum ConversionError {
     JsonRootCount(usize),
     #[error("dataset at {path} does not contain expected root {expected}")]
     MissingDatasetRoot { path: PathBuf, expected: String },
+    #[error("TIDAS ordering schema is missing for category {0}")]
+    OrderingSchemaMissing(String),
+    #[error("TIDAS ordering schema reference is invalid: {0}")]
+    OrderingSchemaReference(String),
+    #[error("TIDAS ordering schema reference cycle: {0}")]
+    OrderingSchemaCycle(String),
     #[error("conversion envelope sidecar is not a JSON object: {0}")]
     InvalidEnvelope(PathBuf),
     #[error("conversion envelope sidecar has no matching XML dataset: {0}")]
@@ -759,6 +797,7 @@ mod tests {
 
     use serde_json::{Value, json};
     use tempfile::tempdir;
+    use tidas_validation::{ValidationRequest, validate_ilcd_package};
 
     use super::*;
 
@@ -898,6 +937,74 @@ mod tests {
         let text = String::from_utf8(xml).unwrap();
         assert!(text.contains(r#"<child id="1" version="00.00.001"/>"#));
         assert!(!text.contains("<child id=\"1\" version=\"00.00.001\">\n"));
+    }
+
+    #[test]
+    fn direct_flow_conversion_applies_schema_order_before_xsd_validation() {
+        let directory = tempdir().unwrap();
+        let input = directory.path().join("tidas");
+        let output = directory.path().join("ilcd");
+        let flow_dir = input.join("flows");
+        fs::create_dir_all(&flow_dir).unwrap();
+        fs::write(
+            flow_dir.join("scrambled.json"),
+            br##"{
+  "flowDataSet": {
+    "@xmlns": "http://lca.jrc.it/ILCD/Flow",
+    "@xmlns:common": "http://lca.jrc.it/ILCD/Common",
+    "@version": "1.1",
+    "flowProperties": {
+      "flowProperty": {
+        "@dataSetInternalID": "0",
+        "referenceToFlowPropertyDataSet": {
+          "@type": "flow property data set",
+          "@refObjectId": "11111111-1111-4111-8111-111111111111",
+          "@version": "01.00.000",
+          "@uri": "../flowproperties/mass.xml"
+        },
+        "meanValue": "1"
+      }
+    },
+    "flowInformation": {
+      "dataSetInformation": {
+        "common:UUID": "00000000-0000-4000-8000-000000000000",
+        "name": {
+          "baseName": {
+            "@xml:lang": "en",
+            "#text": "Schema-ordered flow"
+          }
+        }
+      },
+      "quantitativeReference": {
+        "referenceToReferenceFlowProperty": "0"
+      }
+    }
+  }
+}"##,
+        )
+        .unwrap();
+
+        convert_directory(&request(&input, &output, ConversionDirection::TidasToIlcd)).unwrap();
+
+        let xml = fs::read_to_string(output.join("data/flows/scrambled.xml")).unwrap();
+        assert!(xml.find("flowInformation").unwrap() < xml.find("flowProperties").unwrap());
+
+        let issues = output.join("issues.jsonl");
+        let validation = validate_ilcd_package(&ValidationRequest {
+            input_dir: output.join("data"),
+            issue_spool: Some(issues.clone()),
+            cancellation: CancellationToken::default(),
+            memory_budget: MemoryBudget::new(16 * 1024 * 1024),
+            queue_capacity: 4,
+            progress: None,
+        })
+        .unwrap();
+        assert!(
+            validation.summary.ok,
+            "{:?}\n{}",
+            validation.summary,
+            fs::read_to_string(issues).unwrap()
+        );
     }
 
     #[test]
