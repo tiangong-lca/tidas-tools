@@ -41,7 +41,7 @@ jobs:
             family: windows
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Install Linux XML toolchain
         if: matrix.family == 'linux'
