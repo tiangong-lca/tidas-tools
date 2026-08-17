@@ -115,8 +115,7 @@
                       "type": "object",
                       "properties": {
                         "@uri": {
-                          "type": "string",
-                          "format": "uri"
+                          "type": "string"
                         }
                       }
                     },
@@ -127,8 +126,7 @@
                         "type": "object",
                         "properties": {
                           "@uri": {
-                            "type": "string",
-                            "format": "uri"
+                            "type": "string"
                           }
                         }
                       }

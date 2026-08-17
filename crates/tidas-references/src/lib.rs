@@ -88,7 +88,7 @@ pub fn extract_references(
         edges: Vec::new(),
         issues: Vec::new(),
     };
-    walk_references(payload, "$", None, &mut output);
+    walk_references(payload, "$", None, category, &mut output);
     Ok(output)
 }
 
@@ -96,20 +96,40 @@ fn walk_references(
     node: &Value,
     path: &str,
     parent_key: Option<&str>,
+    source_category: &str,
     output: &mut ReferenceExtractionResultV1,
 ) {
+    if source_category.eq_ignore_ascii_case("sources")
+        && path.eq_ignore_ascii_case(
+            "$.sourceDataSet.sourceInformation.dataSetInformation.referenceToDigitalFile",
+        )
+    {
+        return;
+    }
     match node {
         Value::Object(object) => {
             if looks_like_reference(object, parent_key) {
                 extract_reference(object, path, parent_key, output);
             }
             for (key, value) in object {
-                walk_references(value, &format!("{path}.{key}"), Some(key), output);
+                walk_references(
+                    value,
+                    &format!("{path}.{key}"),
+                    Some(key),
+                    source_category,
+                    output,
+                );
             }
         }
         Value::Array(items) => {
             for (index, item) in items.iter().enumerate() {
-                walk_references(item, &format!("{path}[{index}]"), parent_key, output);
+                walk_references(
+                    item,
+                    &format!("{path}[{index}]"),
+                    parent_key,
+                    source_category,
+                    output,
+                );
             }
         }
         _ => {}
@@ -408,6 +428,36 @@ mod tests {
             extract_references("key", "", &Value::Null),
             Err(ReferenceExtractionError::EmptyCategory)
         );
+    }
+
+    #[test]
+    fn source_digital_file_locators_are_not_dataset_references() {
+        let result = extract_references(
+            "source:test@01.00.000",
+            "sources",
+            &serde_json::json!({
+                "sourceDataSet": {
+                    "sourceInformation": {
+                        "dataSetInformation": {
+                            "referenceToDigitalFile": [
+                                {"@uri": "../external_docs/report.jpg"},
+                                {"@uri": "https://example.test/report.pdf"}
+                            ],
+                            "referenceToContact": {
+                                "@type": "contact data set",
+                                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                                "@version": "01.00.000"
+                            }
+                        }
+                    }
+                }
+            }),
+        )
+        .unwrap();
+
+        assert!(result.issues.is_empty());
+        assert_eq!(result.edges.len(), 1);
+        assert_eq!(result.edges[0].target_category, "contacts");
     }
 
     #[test]

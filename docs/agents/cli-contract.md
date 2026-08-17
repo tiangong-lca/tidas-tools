@@ -26,8 +26,8 @@ checkPaths:
   - contracts/**
   - README.md
   - README_CN.md
-lastReviewedAt: 2026-08-01
-lastReviewedCommit: 9f67345f4c6f791a01d21688b4f003a157a33d04
+lastReviewedAt: 2026-08-17
+lastReviewedCommit: ddac8d99a4b3435f81d2a3c31e14930e71854ab1
 lastReviewedNote: "Reviewed for Issue #153 phase 2: the immutable v0.1.3 Release Request does not change the unified command, report, output-channel, or exit contracts."
 related:
   - ../../AGENTS.md
