@@ -27,8 +27,8 @@ checkPaths:
   - README.md
   - README_CN.md
 lastReviewedAt: 2026-08-17
-lastReviewedCommit: ddac8d99a4b3435f81d2a3c31e14930e71854ab1
-lastReviewedNote: "Reviewed for Issue #153 phase 2: the immutable v0.1.3 Release Request does not change the unified command, report, output-channel, or exit contracts."
+lastReviewedCommit: 89e2df17cb55a626052e69059dc0c16a18afd798
+lastReviewedNote: "Reviewed for Issue #160 phase 1: the v0.1.4 packaging update changes only the exact published version and installation examples, not the unified command or report contracts."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
