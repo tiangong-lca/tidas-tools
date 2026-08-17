@@ -261,7 +261,7 @@
     {
       "path": "assets/tidas/schema.lock.json",
       "kind": "legacy-schema-lock",
-      "sha256": "b42a47e1ffa6c888d7f90c16b512b704d70be94822f9cf31d193d9d39ed3e418",
+      "sha256": "47ca2a51efb654312422d8cb6ac415cc1798bd993467b138cf8d220a0b7eb9a1",
       "bytes": 15573
     },
     {
@@ -351,8 +351,8 @@
     {
       "path": "assets/tidas/schemas/tidas_sources.json",
       "kind": "json-schema",
-      "sha256": "97b5eb51165640d85eb1cb5a499823754eabbd9facddba93de59543ea8dcf307",
-      "bytes": 11712
+      "sha256": "2f37df9004a05ed83f8c708b7edc5f482ec1f848c050fd9f54e1aad49687dd5d",
+      "bytes": 11624
     },
     {
       "path": "assets/tidas/schemas/tidas_sources_category.json",
@@ -459,8 +459,8 @@
     {
       "path": "assets/tidas/schemas_zh/tidas_sources.json",
       "kind": "chinese-json-schema",
-      "sha256": "3329df531aa87d4a3a0ec1cfbe452a8452af9c29429a599b16b6826492b059ba",
-      "bytes": 11113
+      "sha256": "33ab4a934a47fe3e74453cda9710437b1124ad900272f3a2caa3812ae711198a",
+      "bytes": 11025
     },
     {
       "path": "assets/tidas/schemas_zh/tidas_sources_category.json",

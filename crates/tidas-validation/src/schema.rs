@@ -468,6 +468,27 @@ mod tests {
         }
     }
 
+    #[test]
+    fn source_digital_file_accepts_opaque_relative_locator_in_both_languages() {
+        for catalog in [
+            SchemaCatalog::load().unwrap(),
+            schema_catalog("assets/tidas/schemas_zh/"),
+        ] {
+            let field_schema = catalog.schemas["tidas_sources.json"]
+                .pointer("/properties/sourceDataSet/properties/sourceInformation/properties/dataSetInformation/properties/referenceToDigitalFile")
+                .unwrap()
+                .clone();
+            let validator = jsonschema::draft7::new(&field_schema).unwrap();
+            assert!(validator.is_valid(&serde_json::json!({
+                "@uri": "../external_docs/report.jpg"
+            })));
+            assert!(validator.is_valid(&serde_json::json!([
+                {"@uri": "../external_docs/report.jpg"},
+                {"@uri": "https://example.test/report.pdf"}
+            ])));
+        }
+    }
+
     fn schema_catalog(prefix: &str) -> SchemaCatalog {
         let schemas = bundled_assets()
             .into_iter()
