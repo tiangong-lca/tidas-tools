@@ -7,7 +7,7 @@ VERSION=""
 
 usage() {
   echo "usage: install.sh --version <VERSION> [--prefix <DIR>]" >&2
-  echo "example: install.sh --version 0.1.3 --prefix \"\$HOME/.local\"" >&2
+  echo "example: install.sh --version 0.1.4 --prefix \"\$HOME/.local\"" >&2
 }
 
 while [ "$#" -gt 0 ]; do
