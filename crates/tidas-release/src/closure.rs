@@ -77,7 +77,7 @@ pub(crate) fn resolve(
                 source,
             })?;
         let mut references = BTreeSet::new();
-        walk_references(&document, "$", &mut references)?;
+        walk_references(&document, "$", None, &mut references)?;
         reference_count = reference_count
             .checked_add(u64::try_from(references.len()).map_err(|_| ReleaseError::SizeOverflow)?)
             .ok_or(ReleaseError::SizeOverflow)?;
@@ -131,14 +131,17 @@ pub(crate) fn verify_result_contains_unit(
 fn walk_references(
     value: &Value,
     location: &str,
+    parent_key: Option<&str>,
     output: &mut BTreeSet<(String, String)>,
 ) -> Result<(), ReleaseError> {
     match value {
         Value::Object(object) => {
-            if let (Some(reference_id), Some(reference_type)) = (
-                object.get("@refObjectId").and_then(Value::as_str),
-                object.get("@type").and_then(Value::as_str),
-            ) && let Some(dataset_type) = reference_dataset_type(reference_type)
+            if !parent_key.is_some_and(is_preceding_version_reference)
+                && let (Some(reference_id), Some(reference_type)) = (
+                    object.get("@refObjectId").and_then(Value::as_str),
+                    object.get("@type").and_then(Value::as_str),
+                )
+                && let Some(dataset_type) = reference_dataset_type(reference_type)
             {
                 let version = object
                     .get("@version")
@@ -160,17 +163,23 @@ fn walk_references(
                 ));
             }
             for (key, child) in object {
-                walk_references(child, &format!("{location}/{key}"), output)?;
+                walk_references(child, &format!("{location}/{key}"), Some(key), output)?;
             }
         }
         Value::Array(items) => {
             for (index, child) in items.iter().enumerate() {
-                walk_references(child, &format!("{location}/{index}"), output)?;
+                walk_references(child, &format!("{location}/{index}"), parent_key, output)?;
             }
         }
         _ => {}
     }
     Ok(())
+}
+
+fn is_preceding_version_reference(key: &str) -> bool {
+    key.rsplit(':')
+        .next()
+        .is_some_and(|name| name.eq_ignore_ascii_case("referenceToPrecedingDataSetVersion"))
 }
 
 fn reference_dataset_type(value: &str) -> Option<&'static str> {

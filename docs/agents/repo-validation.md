@@ -26,8 +26,8 @@ checkPaths:
   - .github/workflows/**
   - .githooks/pre-push
   - scripts/**
-lastReviewedAt: 2026-08-17
-lastReviewedCommit: ea641f098257e54ab81c14dab25706085af0328e
+lastReviewedAt: 2026-08-19
+lastReviewedCommit: 0c8fe24c5d8cc64536561ce6cc262f155af3ce73
 lastReviewedNote: "Issue #162 phase 2 retains release-request validation, Docpact gates, and tag-bound five-platform publication proof for the qualified v0.1.4 version set."
 related:
   - ../../AGENTS.md
