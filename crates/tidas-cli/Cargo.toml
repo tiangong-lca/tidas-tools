@@ -22,16 +22,16 @@ clap_complete.workspace = true
 ctrlc.workspace = true
 serde.workspace = true
 serde_json.workspace = true
-tidas-assets = { version = "=0.1.4", path = "../.." }
-tidas-conversion = { version = "=0.1.4", path = "../tidas-conversion" }
-tidas-contracts = { version = "=0.1.4", path = "../tidas-contracts" }
-tidas-export = { version = "=0.1.4", path = "../tidas-export" }
-tidas-import = { version = "=0.1.4", path = "../tidas-import" }
-tidas-release = { version = "=0.1.4", path = "../tidas-release" }
-tidas-runtime = { version = "=0.1.4", path = "../tidas-runtime" }
-tidas-rulesets = { version = "=0.1.4", path = "../tidas-rulesets" }
-tidas-validation = { version = "=0.1.4", path = "../tidas-validation" }
-tidas-xml = { version = "=0.1.4", path = "../tidas-xml" }
+tidas-assets = { version = "=0.1.5", path = "../.." }
+tidas-conversion = { version = "=0.1.5", path = "../tidas-conversion" }
+tidas-contracts = { version = "=0.1.5", path = "../tidas-contracts" }
+tidas-export = { version = "=0.1.5", path = "../tidas-export" }
+tidas-import = { version = "=0.1.5", path = "../tidas-import" }
+tidas-release = { version = "=0.1.5", path = "../tidas-release" }
+tidas-runtime = { version = "=0.1.5", path = "../tidas-runtime" }
+tidas-rulesets = { version = "=0.1.5", path = "../tidas-rulesets" }
+tidas-validation = { version = "=0.1.5", path = "../tidas-validation" }
+tidas-xml = { version = "=0.1.5", path = "../tidas-xml" }
 
 [dev-dependencies]
 tempfile.workspace = true
