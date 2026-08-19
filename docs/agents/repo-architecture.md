@@ -25,8 +25,8 @@ checkPaths:
   - .github/workflows/**
   - .githooks/pre-push
   - scripts/**
-lastReviewedAt: 2026-08-17
-lastReviewedCommit: ea641f098257e54ab81c14dab25706085af0328e
+lastReviewedAt: 2026-08-19
+lastReviewedCommit: 0c8fe24c5d8cc64536561ce6cc262f155af3ce73
 lastReviewedNote: "Issue #162 phase 2 binds the immutable v0.1.4 Release Request to the qualified version-set merge commit without changing crate ownership or release architecture."
 related:
   - ../../AGENTS.md

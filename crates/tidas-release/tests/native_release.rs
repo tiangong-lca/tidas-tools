@@ -275,6 +275,80 @@ fn missing_exact_reference_version_fails_closed() {
 }
 
 #[test]
+fn preceding_dataset_version_is_lineage_not_a_closure_dependency() {
+    let temporary = tempfile::tempdir().unwrap();
+    let (tidas, index) = fixture(temporary.path());
+    let flow_path = tidas.join(format!("flows/{FLOW_ID}_{VERSION}.json"));
+    let mut document: Value = serde_json::from_slice(&fs::read(&flow_path).unwrap()).unwrap();
+    document["flowDataSet"]["administrativeInformation"]["publicationAndOwnership"]["common:referenceToPrecedingDataSetVersion"] = json!({
+        "@type": "flow data set",
+        "@refObjectId": FLOW_ID,
+        "@version": "00.99.000"
+    });
+    let mut body = serde_json::to_vec_pretty(&document).unwrap();
+    body.push(b'\n');
+    fs::write(&flow_path, &body).unwrap();
+    update_index_digest(&index, FLOW_ID, &body);
+
+    let closure = run_release(
+        &ReleaseRequest::ValidateClosure {
+            input_dir: tidas,
+            dataset_index: index,
+            profile: ReleaseProfile::UnitProcess,
+        },
+        &runtime(),
+    )
+    .unwrap()
+    .closure
+    .unwrap();
+    assert_eq!(closure.dataset_count, 2);
+    assert_eq!(closure.reference_count, 1);
+}
+
+#[test]
+fn missing_functional_reference_target_still_fails_closed() {
+    let temporary = tempfile::tempdir().unwrap();
+    let (tidas, index) = fixture(temporary.path());
+    let unit_path = tidas.join(format!("processes/{UNIT_ID}_{VERSION}.json"));
+    let mut document: Value = serde_json::from_slice(&fs::read(&unit_path).unwrap()).unwrap();
+    let missing_id = "33333333-3333-4333-8333-333333333333";
+    document["processDataSet"]["exchanges"]["exchange"]["referenceToFlowDataSet"]["@refObjectId"] =
+        Value::String(missing_id.to_owned());
+    let mut body = serde_json::to_vec_pretty(&document).unwrap();
+    body.push(b'\n');
+    fs::write(&unit_path, &body).unwrap();
+    update_index_digest(&index, UNIT_ID, &body);
+
+    let error = run_release(
+        &ReleaseRequest::ValidateClosure {
+            input_dir: tidas,
+            dataset_index: index,
+            profile: ReleaseProfile::UnitProcess,
+        },
+        &runtime(),
+    )
+    .unwrap_err();
+    assert!(matches!(
+        error,
+        tidas_release::ReleaseError::ReferenceClosureMissing(ref detail)
+            if detail.contains(missing_id) && detail.contains("referenceToFlowDataSet")
+    ));
+}
+
+fn update_index_digest(index: &Path, uuid: &str, body: &[u8]) {
+    let mut index_value: Value = serde_json::from_slice(&fs::read(index).unwrap()).unwrap();
+    let entry = index_value["datasets"]
+        .as_array_mut()
+        .unwrap()
+        .iter_mut()
+        .find(|entry| entry["uuid"] == uuid)
+        .unwrap();
+    entry["sha256"] = Value::String(hex(Sha256::digest(body)));
+    entry["byteSize"] = json!(body.len());
+    fs::write(index, serde_json::to_vec_pretty(&index_value).unwrap()).unwrap();
+}
+
+#[test]
 fn large_closure_report_is_capped_and_explicitly_marked_truncated() {
     let temporary = tempfile::tempdir().unwrap();
     let tidas = temporary.path().join("tidas");

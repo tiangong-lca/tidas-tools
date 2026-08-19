@@ -296,6 +296,13 @@ are `unit-process-full-closure.v1` and
 `standalone-lifecyclemodel-result-full-closure.v1`, and the standalone closure
 must contain the complete unit closure.
 
+Exact closure follows references required to interpret the packaged datasets.
+`referenceToPrecedingDataSetVersion` is retained in the dataset as lineage
+metadata, but it does not pull historical dataset versions into package
+closure and is not included in the closure report's `reference_count`.
+Functional and support references remain fail-closed when their exact target
+UUID and version are absent.
+
 `build-packages` is the end-to-end product action. Before any output becomes
 visible it runs native TIDAS validation, exact closure, schema-ordered eILCD
 derivation, native eILCD validation, normalized semantic round-trip, and the

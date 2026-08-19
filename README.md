@@ -60,6 +60,7 @@ distribution:
 
 ```bash
 cargo build --workspace
+cargo build --release -p tidas --bin tidas
 cargo run -p tidas --bin tidas -- --help
 cargo run -p tidas --bin tidas -- --format json version
 cargo run -p tidas --bin tidas -- convert <tidas-package-dir> \
@@ -83,6 +84,10 @@ cargo run -p tidas --bin tidas -- --completion bash > tidas.bash
 cargo run -p tidas-assets --bin tidas-asset-lock -- check
 cargo run -p tidas-dist -- version
 ```
+
+For a source-built release executable, use the package-qualified command
+`cargo build --release -p tidas --bin tidas`; the binary is written to
+`target/release/tidas` (`target/release/tidas.exe` on Windows).
 
 The command tree is `convert`, `import`, `export`, `validate`, `release`,
 `ruleset`, and `version`. All seven commands are implemented in Rust and none

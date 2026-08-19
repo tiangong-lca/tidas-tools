@@ -61,6 +61,7 @@ TIDAS/eILCD 转换、外部格式导入、数据库导出、确定性 release co
 
 ```bash
 cargo build --workspace
+cargo build --release -p tidas --bin tidas
 cargo run -p tidas --bin tidas -- --help
 cargo run -p tidas --bin tidas -- --format json version
 cargo run -p tidas --bin tidas -- convert <TIDAS数据包目录> \
@@ -84,6 +85,10 @@ cargo run -p tidas --bin tidas -- --completion bash > tidas.bash
 cargo run -p tidas-assets --bin tidas-asset-lock -- check
 cargo run -p tidas-dist -- version
 ```
+
+从源码构建 release executable 时，使用带 package 限定的命令
+`cargo build --release -p tidas --bin tidas`；产物位于 `target/release/tidas`
+（Windows 为 `target/release/tidas.exe`）。
 
 命令树固定为 `convert`、`import`、`export`、`validate`、`release`、
 `ruleset` 和 `version`。七个命令均由 Rust 实现，且不依赖第二运行时。
