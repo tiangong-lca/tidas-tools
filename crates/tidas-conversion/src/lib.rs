@@ -21,7 +21,7 @@ use walkdir::WalkDir;
 
 use transaction::StagedDirectory;
 
-pub use ordering::TidasSchemaOrderer;
+pub use ordering::{IlcdSchemaOrderer, TidasSchemaOrderer};
 
 pub const CONVERSION_REPORT_SCHEMA_V1: &str = "tidas.conversion-report.v1";
 pub const CONVERSION_REPORT_JSON_SCHEMA_V1: &str = include_str!(concat!(
@@ -137,7 +137,7 @@ pub fn convert_directory(
     reject_nested_output(&request.input_dir, &request.output_dir)?;
     let staging = StagedDirectory::new(&request.output_dir)?;
     let orderer = (request.direction == ConversionDirection::TidasToIlcd)
-        .then(TidasSchemaOrderer::from_bundled_assets)
+        .then(IlcdSchemaOrderer::from_bundled_assets)
         .transpose()?;
     let mut report = ConversionReportV1 {
         schema_version: CONVERSION_REPORT_SCHEMA_V1.to_owned(),
@@ -195,7 +195,7 @@ fn copy_tree(
     target_root: &Path,
     request: &ConversionRequest,
     conversion: Option<ConversionDirection>,
-    orderer: Option<&TidasSchemaOrderer>,
+    orderer: Option<&IlcdSchemaOrderer>,
     report: &mut ConversionReportV1,
 ) -> Result<(), ConversionError> {
     let (sender, receiver) =
@@ -273,7 +273,7 @@ fn process_next_file(
     source_root: &Path,
     receiver: &BoundedReceiver<FileJob>,
     conversion: Option<ConversionDirection>,
-    orderer: Option<&TidasSchemaOrderer>,
+    orderer: Option<&IlcdSchemaOrderer>,
     request: &ConversionRequest,
     report: &mut ConversionReportV1,
 ) -> Result<(), ConversionError> {
@@ -312,7 +312,7 @@ fn convert_file(
     source: &Path,
     target: &Path,
     direction: ConversionDirection,
-    orderer: Option<&TidasSchemaOrderer>,
+    orderer: Option<&IlcdSchemaOrderer>,
     request: &ConversionRequest,
     report: &mut ConversionReportV1,
 ) -> Result<(), ConversionError> {
@@ -732,11 +732,11 @@ pub enum ConversionError {
     JsonRootCount(usize),
     #[error("dataset at {path} does not contain expected root {expected}")]
     MissingDatasetRoot { path: PathBuf, expected: String },
-    #[error("TIDAS ordering schema is missing for category {0}")]
+    #[error("target eILCD ordering schema is missing for {0}")]
     OrderingSchemaMissing(String),
-    #[error("TIDAS ordering schema reference is invalid: {0}")]
+    #[error("target eILCD ordering schema reference is invalid: {0}")]
     OrderingSchemaReference(String),
-    #[error("TIDAS ordering schema reference cycle: {0}")]
+    #[error("target eILCD ordering schema reference cycle: {0}")]
     OrderingSchemaCycle(String),
     #[error("conversion envelope sidecar is not a JSON object: {0}")]
     InvalidEnvelope(PathBuf),
@@ -989,6 +989,63 @@ mod tests {
         let xml = fs::read_to_string(output.join("data/flows/scrambled.xml")).unwrap();
         assert!(xml.find("flowInformation").unwrap() < xml.find("flowProperties").unwrap());
 
+        let issues = output.join("issues.jsonl");
+        let validation = validate_ilcd_package(&ValidationRequest {
+            input_dir: output.join("data"),
+            issue_spool: Some(issues.clone()),
+            cancellation: CancellationToken::default(),
+            memory_budget: MemoryBudget::new(16 * 1024 * 1024),
+            queue_capacity: 4,
+            progress: None,
+        })
+        .unwrap();
+        assert!(
+            validation.summary.ok,
+            "{:?}\n{}",
+            validation.summary,
+            fs::read_to_string(issues).unwrap()
+        );
+    }
+
+    #[test]
+    fn contact_conversion_uses_ilcd_sequence_instead_of_tidas_property_order() {
+        let directory = tempdir().unwrap();
+        let input = directory.path().join("tidas");
+        let output = directory.path().join("ilcd");
+        let contact_dir = input.join("contacts");
+        fs::create_dir_all(&contact_dir).unwrap();
+        fs::write(
+            contact_dir.join("scrambled.json"),
+            br##"{
+  "contactDataSet": {
+    "@xmlns": "http://lca.jrc.it/ILCD/Contact",
+    "@xmlns:common": "http://lca.jrc.it/ILCD/Common",
+    "@version": "1.1",
+    "contactInformation": {
+      "dataSetInformation": {
+        "common:UUID": "66666666-6666-4666-8666-666666666666",
+        "common:shortName": {"@xml:lang": "en", "#text": "Steel team"},
+        "common:name": {"@xml:lang": "en", "#text": "Steel team"},
+        "contactAddress": {"@xml:lang": "en", "#text": "Zurich"},
+        "email": "team@example.org",
+        "telephone": "+41",
+        "WWWAddress": "https://example.org"
+      }
+    },
+    "administrativeInformation": {
+      "publicationAndOwnership": {
+        "common:dataSetVersion": "01.00.000"
+      }
+    }
+  }
+}"##,
+        )
+        .unwrap();
+
+        convert_directory(&request(&input, &output, ConversionDirection::TidasToIlcd)).unwrap();
+        let xml = fs::read_to_string(output.join("data/contacts/scrambled.xml")).unwrap();
+        assert!(xml.find("telephone").unwrap() < xml.find("email").unwrap());
+        assert!(xml.find("email").unwrap() < xml.find("WWWAddress").unwrap());
         let issues = output.join("issues.jsonl");
         let validation = validate_ilcd_package(&ValidationRequest {
             input_dir: output.join("data"),

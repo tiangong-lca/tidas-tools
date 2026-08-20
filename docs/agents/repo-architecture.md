@@ -80,9 +80,10 @@ sibling temporary path and commits atomically.
 Conversion traverses sorted package trees, rejects symlinks and invalid XML
 text, uses deterministic envelope sidecars for top-level TIDAS metadata, locks
 target assets, and reports a cross-platform output-tree hash. TIDAS-to-ILCD
-conversion orders every known dataset object from the integrity-locked TIDAS
-schema catalog before XML serialization, so JSON member order cannot violate
-an ILCD XSD sequence; release conversion reuses the same ordering component.
+conversion orders every known dataset object from the integrity-locked target
+eILCD XSD catalog before XML serialization, so source JSON member order cannot
+violate an ILCD `xs:sequence`; release conversion reuses the same ordering
+component.
 
 Import detects EcoSpold 1/2, SimaPro CSV, openLCA JSON-LD, openLCA process
 XLSX, and ILCD. Adapters stream into disk-backed canonical entities/exchanges;

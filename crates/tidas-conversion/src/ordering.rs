@@ -1,227 +1,381 @@
 use std::collections::{BTreeMap, BTreeSet};
-use std::path::Path;
 
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::{Reader, XmlVersion};
 use serde_json::{Map, Value};
 use tidas_assets::{AssetKind, bundled_assets};
 
 use crate::ConversionError;
 
-const TIDAS_SCHEMA_PREFIX: &str = "assets/tidas/schemas/";
+const EILCD_SCHEMA_PREFIX: &str = "assets/eilcd/schemas/";
+const COMMON_NS: &str = "http://lca.jrc.it/ILCD/Common";
 
-/// Reusable schema-ordering catalog for TIDAS JSON documents.
-pub struct TidasSchemaOrderer {
-    catalog: BTreeMap<String, Value>,
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
+struct QName {
+    namespace: String,
+    local: String,
 }
 
-impl TidasSchemaOrderer {
-    /// Load the integrity-locked English TIDAS schemas embedded in the binary.
+#[derive(Clone, Debug)]
+struct XsdNode {
+    name: String,
+    attributes: BTreeMap<String, String>,
+    children: Vec<XsdNode>,
+}
+
+struct SchemaDocument {
+    target_namespace: String,
+    namespaces: BTreeMap<String, String>,
+    root: XsdNode,
+}
+
+type ChildSpec = (String, QName, XsdNode, BTreeMap<String, String>);
+
+/// Orders TIDAS JSON members according to the target eILCD XSD content model.
+/// JSON object order is not semantic, while XML children must obey `xs:sequence`.
+pub struct IlcdSchemaOrderer {
+    elements: BTreeMap<QName, (XsdNode, BTreeMap<String, String>)>,
+    complex_types: BTreeMap<QName, (XsdNode, BTreeMap<String, String>)>,
+    groups: BTreeMap<QName, (XsdNode, BTreeMap<String, String>)>,
+}
+
+/// Compatibility alias for the original public API name.
+pub type TidasSchemaOrderer = IlcdSchemaOrderer;
+
+impl IlcdSchemaOrderer {
     pub fn from_bundled_assets() -> Result<Self, ConversionError> {
-        let catalog = bundled_assets()
+        let documents = bundled_assets()
             .into_iter()
             .filter(|asset| {
-                asset.kind == AssetKind::JsonSchema && asset.path.starts_with(TIDAS_SCHEMA_PREFIX)
+                asset.kind == AssetKind::Xsd && asset.path.starts_with(EILCD_SCHEMA_PREFIX)
             })
-            .map(|asset| {
-                let value = serde_json::from_slice(asset.bytes)?;
-                Ok((asset.path, value))
-            })
-            .collect::<Result<_, serde_json::Error>>()?;
-        Ok(Self { catalog })
+            .map(|asset| parse_schema(&asset.path, asset.bytes))
+            .collect::<Result<Vec<_>, _>>()?;
+        let mut catalog = Self {
+            elements: BTreeMap::new(),
+            complex_types: BTreeMap::new(),
+            groups: BTreeMap::new(),
+        };
+        for document in documents {
+            for node in &document.root.children {
+                let Some(name) = node.attributes.get("name") else {
+                    continue;
+                };
+                let key = QName {
+                    namespace: document.target_namespace.clone(),
+                    local: name.clone(),
+                };
+                let entry = (node.clone(), document.namespaces.clone());
+                match node.name.as_str() {
+                    "element" => {
+                        catalog.elements.insert(key, entry);
+                    }
+                    "complexType" => {
+                        catalog.complex_types.insert(key, entry);
+                    }
+                    "group" => {
+                        catalog.groups.insert(key, entry);
+                    }
+                    _ => {}
+                }
+            }
+        }
+        Ok(catalog)
     }
 
-    /// Return a copy whose object members follow the declared schema property order.
     pub fn order_document(
         &self,
         document: &Value,
-        category: &str,
+        _category: &str,
     ) -> Result<Value, ConversionError> {
-        let schema_path = format!("{TIDAS_SCHEMA_PREFIX}tidas_{category}.json");
-        let schema = self
-            .catalog
-            .get(&schema_path)
-            .ok_or_else(|| ConversionError::OrderingSchemaMissing(category.to_owned()))?;
-        order_value(document, schema, &schema_path, &self.catalog)
-    }
-}
-
-fn resolve_schema(
-    schema: &Value,
-    schema_path: &str,
-    catalog: &BTreeMap<String, Value>,
-) -> Result<(Value, String), ConversionError> {
-    let mut current = schema.clone();
-    let mut current_path = schema_path.to_owned();
-    let mut seen = BTreeSet::new();
-    loop {
-        let Some(reference) = current.get("$ref").and_then(Value::as_str) else {
-            return Ok((current, current_path));
-        };
-        let (file_name, fragment) = reference.split_once('#').unwrap_or((reference, ""));
-        let target_path = if file_name.is_empty() {
-            current_path.clone()
-        } else {
-            let parent = Path::new(&current_path)
-                .parent()
-                .unwrap_or_else(|| Path::new(""));
-            portable_path(&parent.join(file_name))?
-        };
-        if !seen.insert((target_path.clone(), fragment.to_owned())) {
-            return Err(ConversionError::OrderingSchemaCycle(reference.to_owned()));
+        let object = document
+            .as_object()
+            .ok_or_else(|| ConversionError::OrderingSchemaMissing("JSON root object".to_owned()))?;
+        if object.len() != 1 {
+            return Err(ConversionError::OrderingSchemaMissing(format!(
+                "single dataset root, found {}",
+                object.len()
+            )));
         }
-        let target = catalog
-            .get(&target_path)
-            .ok_or_else(|| ConversionError::OrderingSchemaReference(reference.to_owned()))?;
-        current = if fragment.is_empty() {
-            target.clone()
-        } else {
-            target
-                .pointer(fragment)
-                .cloned()
-                .ok_or_else(|| ConversionError::OrderingSchemaReference(reference.to_owned()))?
-        };
-        current_path = target_path;
-    }
-}
-
-fn select_schema(
-    schema: &Value,
-    schema_path: &str,
-    value: &Value,
-    catalog: &BTreeMap<String, Value>,
-) -> Result<(Value, String), ConversionError> {
-    let (resolved, resolved_path) = resolve_schema(schema, schema_path, catalog)?;
-    if let Some(alternatives) = resolved
-        .get("oneOf")
-        .or_else(|| resolved.get("anyOf"))
-        .and_then(Value::as_array)
-    {
-        for candidate in alternatives {
-            if schema_matches(candidate, &resolved_path, value, catalog)? {
-                return select_schema(candidate, &resolved_path, value, catalog);
-            }
-        }
-    }
-    Ok((resolved, resolved_path))
-}
-
-fn schema_matches(
-    schema: &Value,
-    schema_path: &str,
-    value: &Value,
-    catalog: &BTreeMap<String, Value>,
-) -> Result<bool, ConversionError> {
-    let (resolved, resolved_path) = resolve_schema(schema, schema_path, catalog)?;
-    if let Some(alternatives) = resolved
-        .get("oneOf")
-        .or_else(|| resolved.get("anyOf"))
-        .and_then(Value::as_array)
-    {
-        return alternatives
+        let (root_name, value) = object.iter().next().expect("one root member");
+        let candidates = self
+            .elements
             .iter()
-            .map(|candidate| schema_matches(candidate, &resolved_path, value, catalog))
-            .try_fold(false, |matched, candidate| {
-                candidate.map(|value| matched || value)
-            });
-    }
-    let types: Vec<&str> = match resolved.get("type") {
-        Some(Value::String(value)) => vec![value],
-        Some(Value::Array(values)) => values.iter().filter_map(Value::as_str).collect(),
-        _ => Vec::new(),
-    };
-    Ok(types.is_empty()
-        || match value {
-            Value::Object(_) => types.contains(&"object") || resolved.get("properties").is_some(),
-            Value::Array(_) => types.contains(&"array") || resolved.get("items").is_some(),
-            Value::Null => types.contains(&"null"),
-            Value::Bool(_) => types.contains(&"boolean"),
-            Value::Number(_) => types.contains(&"number") || types.contains(&"integer"),
-            Value::String(_) => types.contains(&"string"),
-        })
-}
-
-fn property_schemas(
-    schema: &Value,
-    schema_path: &str,
-    value: &Value,
-    catalog: &BTreeMap<String, Value>,
-) -> Result<Vec<(String, Value, String)>, ConversionError> {
-    let (resolved, resolved_path) = select_schema(schema, schema_path, value, catalog)?;
-    let mut properties = Vec::new();
-    if let Some(all_of) = resolved.get("allOf").and_then(Value::as_array) {
-        for component in all_of {
-            for item in property_schemas(component, &resolved_path, value, catalog)? {
-                if let Some(position) = properties.iter().position(|(name, _, _)| name == &item.0) {
-                    properties.remove(position);
-                }
-                properties.push(item);
-            }
+            .filter(|(name, _)| name.local == *root_name)
+            .collect::<Vec<_>>();
+        if candidates.len() != 1 {
+            return Err(ConversionError::OrderingSchemaMissing(root_name.clone()));
         }
+        let (qname, (schema, namespaces)) = candidates[0];
+        let mut ordered = Map::new();
+        ordered.insert(
+            root_name.clone(),
+            self.order_element(value, qname, schema, namespaces, &mut BTreeSet::new())?,
+        );
+        Ok(Value::Object(ordered))
     }
-    if let Some(object) = resolved.get("properties").and_then(Value::as_object) {
-        for (name, child) in object {
-            if let Some(position) = properties
-                .iter()
-                .position(|(existing, _, _)| existing == name)
-            {
-                properties.remove(position);
-            }
-            properties.push((name.clone(), child.clone(), resolved_path.clone()));
-        }
-    }
-    Ok(properties)
-}
 
-fn order_value(
-    value: &Value,
-    schema: &Value,
-    schema_path: &str,
-    catalog: &BTreeMap<String, Value>,
-) -> Result<Value, ConversionError> {
-    match value {
-        Value::Array(items) => {
-            let (resolved, resolved_path) = select_schema(schema, schema_path, value, catalog)?;
-            let Some(item_schema) = resolved.get("items") else {
-                return Ok(value.clone());
-            };
-            items
+    fn order_element(
+        &self,
+        value: &Value,
+        element_name: &QName,
+        element: &XsdNode,
+        namespaces: &BTreeMap<String, String>,
+        resolving: &mut BTreeSet<QName>,
+    ) -> Result<Value, ConversionError> {
+        if let Value::Array(items) = value {
+            return items
                 .iter()
-                .map(|item| order_value(item, item_schema, &resolved_path, catalog))
+                .map(|item| self.order_element(item, element_name, element, namespaces, resolving))
                 .collect::<Result<Vec<_>, _>>()
-                .map(Value::Array)
+                .map(Value::Array);
         }
-        Value::Object(object) => {
-            let properties = property_schemas(schema, schema_path, value, catalog)?;
-            let mut ordered = Map::new();
-            for (name, child_schema, child_path) in properties {
-                if let Some(child) = object.get(&name) {
-                    ordered.insert(
-                        name,
-                        order_value(child, &child_schema, &child_path, catalog)?,
-                    );
+        let Value::Object(object) = value else {
+            return Ok(value.clone());
+        };
+        let children = self.element_children(element_name, element, namespaces, resolving)?;
+        let mut ordered = Map::new();
+        for (key, child_name, child_schema, child_namespaces) in children {
+            if let Some(child_value) = object.get(&key) {
+                ordered.insert(
+                    key,
+                    self.order_element(
+                        child_value,
+                        &child_name,
+                        &child_schema,
+                        &child_namespaces,
+                        resolving,
+                    )?,
+                );
+            }
+        }
+        let mut remaining = object
+            .keys()
+            .filter(|name| !ordered.contains_key(*name))
+            .collect::<Vec<_>>();
+        remaining.sort();
+        for name in remaining {
+            ordered.insert(name.clone(), object[name].clone());
+        }
+        Ok(Value::Object(ordered))
+    }
+
+    fn element_children(
+        &self,
+        element_name: &QName,
+        element: &XsdNode,
+        namespaces: &BTreeMap<String, String>,
+        resolving: &mut BTreeSet<QName>,
+    ) -> Result<Vec<ChildSpec>, ConversionError> {
+        if !resolving.insert(element_name.clone()) {
+            return Err(ConversionError::OrderingSchemaCycle(format!(
+                "{}:{}",
+                element_name.namespace, element_name.local
+            )));
+        }
+        let result = if let Some(complex) = child(element, "complexType") {
+            self.complex_children(complex, namespaces)
+        } else if let Some(type_name) = element.attributes.get("type") {
+            let qname = resolve_qname(type_name, namespaces, &element_name.namespace)?;
+            match self.complex_types.get(&qname) {
+                Some((complex, type_namespaces)) => self.complex_children(complex, type_namespaces),
+                None => Ok(Vec::new()),
+            }
+        } else if let Some(reference) = element.attributes.get("ref") {
+            let qname = resolve_qname(reference, namespaces, &element_name.namespace)?;
+            let (target, target_namespaces) = self
+                .elements
+                .get(&qname)
+                .ok_or_else(|| ConversionError::OrderingSchemaReference(reference.clone()))?;
+            self.element_children(&qname, target, target_namespaces, resolving)
+        } else {
+            Ok(Vec::new())
+        };
+        resolving.remove(element_name);
+        result
+    }
+
+    fn complex_children(
+        &self,
+        complex: &XsdNode,
+        namespaces: &BTreeMap<String, String>,
+    ) -> Result<Vec<ChildSpec>, ConversionError> {
+        if let Some(content) = child(complex, "complexContent")
+            && let Some(extension) = child(content, "extension")
+        {
+            let mut result = Vec::new();
+            if let Some(base) = extension.attributes.get("base") {
+                let qname = resolve_qname(base, namespaces, "")?;
+                if let Some((base_type, base_namespaces)) = self.complex_types.get(&qname) {
+                    result.extend(self.complex_children(base_type, base_namespaces)?);
                 }
             }
-            let mut remaining: Vec<&String> = object
-                .keys()
-                .filter(|name| !ordered.contains_key(*name))
-                .collect();
-            remaining.sort();
-            for name in remaining {
-                ordered.insert(name.clone(), object[name].clone());
-            }
-            Ok(Value::Object(ordered))
+            result.extend(self.particle_children(extension, namespaces)?);
+            return Ok(result);
         }
-        _ => Ok(value.clone()),
+        self.particle_children(complex, namespaces)
+    }
+
+    fn particle_children(
+        &self,
+        node: &XsdNode,
+        namespaces: &BTreeMap<String, String>,
+    ) -> Result<Vec<ChildSpec>, ConversionError> {
+        let mut result = Vec::new();
+        for particle in &node.children {
+            match particle.name.as_str() {
+                "sequence" | "choice" | "all" => {
+                    result.extend(self.particle_children(particle, namespaces)?);
+                }
+                "group" => {
+                    if let Some(reference) = particle.attributes.get("ref") {
+                        let qname = resolve_qname(reference, namespaces, "")?;
+                        let (group, group_namespaces) =
+                            self.groups.get(&qname).ok_or_else(|| {
+                                ConversionError::OrderingSchemaReference(reference.clone())
+                            })?;
+                        result.extend(self.particle_children(group, group_namespaces)?);
+                    }
+                }
+                "element" => result.push(self.resolve_element(particle, namespaces)?),
+                _ => {}
+            }
+        }
+        Ok(result)
+    }
+
+    fn resolve_element(
+        &self,
+        element: &XsdNode,
+        namespaces: &BTreeMap<String, String>,
+    ) -> Result<ChildSpec, ConversionError> {
+        if let Some(reference) = element.attributes.get("ref") {
+            let qname = resolve_qname(reference, namespaces, "")?;
+            let (target, target_namespaces) = self
+                .elements
+                .get(&qname)
+                .ok_or_else(|| ConversionError::OrderingSchemaReference(reference.clone()))?;
+            return Ok((
+                json_key(&qname),
+                qname,
+                target.clone(),
+                target_namespaces.clone(),
+            ));
+        }
+        let local = element
+            .attributes
+            .get("name")
+            .ok_or_else(|| ConversionError::OrderingSchemaReference("local element".to_owned()))?;
+        let qname = QName {
+            namespace: namespaces.get("").cloned().unwrap_or_default(),
+            local: local.clone(),
+        };
+        Ok((json_key(&qname), qname, element.clone(), namespaces.clone()))
     }
 }
 
-fn portable_path(path: &Path) -> Result<String, ConversionError> {
-    path.components()
-        .map(|component| {
-            component
-                .as_os_str()
-                .to_str()
-                .ok_or_else(|| ConversionError::NonPortablePath(path.to_path_buf()))
+fn parse_schema(path: &str, bytes: &[u8]) -> Result<SchemaDocument, ConversionError> {
+    let mut reader = Reader::from_reader(bytes);
+    reader.config_mut().trim_text(true);
+    let mut buffer = Vec::new();
+    let mut stack: Vec<XsdNode> = Vec::new();
+    let mut root = None;
+    loop {
+        match reader.read_event_into(&mut buffer)? {
+            Event::Start(start) => stack.push(parse_node(&reader, &start)?),
+            Event::Empty(start) => {
+                let node = parse_node(&reader, &start)?;
+                if let Some(parent) = stack.last_mut() {
+                    parent.children.push(node);
+                }
+            }
+            Event::End(_) => {
+                let node = stack.pop().ok_or(ConversionError::UnmatchedEnd)?;
+                if let Some(parent) = stack.last_mut() {
+                    parent.children.push(node);
+                } else {
+                    root = Some(node);
+                }
+            }
+            Event::Eof => break,
+            _ => {}
+        }
+        buffer.clear();
+    }
+    let root = root.ok_or(ConversionError::MissingRoot)?;
+    let target_namespace = root
+        .attributes
+        .get("targetNamespace")
+        .cloned()
+        .or_else(|| (path.ends_with("ILCD_Common_Validation.xsd")).then(|| COMMON_NS.to_owned()))
+        .ok_or_else(|| ConversionError::OrderingSchemaMissing(path.to_owned()))?;
+    let mut namespaces = root
+        .attributes
+        .iter()
+        .filter_map(|(key, value)| {
+            key.strip_prefix("xmlns:")
+                .map(|prefix| (prefix.to_owned(), value.clone()))
         })
-        .collect::<Result<Vec<_>, _>>()
-        .map(|components| components.join("/"))
+        .collect::<BTreeMap<_, _>>();
+    namespaces.insert(String::new(), target_namespace.clone());
+    Ok(SchemaDocument {
+        target_namespace,
+        namespaces,
+        root,
+    })
+}
+
+fn parse_node(reader: &Reader<&[u8]>, start: &BytesStart<'_>) -> Result<XsdNode, ConversionError> {
+    let qualified = reader.decoder().decode(start.name().as_ref())?.into_owned();
+    let name = qualified
+        .rsplit(':')
+        .next()
+        .unwrap_or(&qualified)
+        .to_owned();
+    let mut attributes = BTreeMap::new();
+    for attribute in start.attributes() {
+        let attribute = attribute?;
+        let key = reader
+            .decoder()
+            .decode(attribute.key.as_ref())?
+            .into_owned();
+        let value = attribute
+            .decoded_and_normalized_value(XmlVersion::Implicit1_0, reader.decoder())?
+            .into_owned();
+        attributes.insert(key, value);
+    }
+    Ok(XsdNode {
+        name,
+        attributes,
+        children: Vec::new(),
+    })
+}
+
+fn child<'a>(node: &'a XsdNode, name: &str) -> Option<&'a XsdNode> {
+    node.children.iter().find(|child| child.name == name)
+}
+
+fn resolve_qname(
+    value: &str,
+    namespaces: &BTreeMap<String, String>,
+    fallback_namespace: &str,
+) -> Result<QName, ConversionError> {
+    let (prefix, local) = value.split_once(':').unwrap_or(("", value));
+    let namespace = namespaces
+        .get(prefix)
+        .cloned()
+        .or_else(|| (!fallback_namespace.is_empty()).then(|| fallback_namespace.to_owned()))
+        .ok_or_else(|| ConversionError::OrderingSchemaReference(value.to_owned()))?;
+    Ok(QName {
+        namespace,
+        local: local.to_owned(),
+    })
+}
+
+fn json_key(name: &QName) -> String {
+    if name.namespace == COMMON_NS {
+        format!("common:{}", name.local)
+    } else {
+        name.local.clone()
+    }
 }
