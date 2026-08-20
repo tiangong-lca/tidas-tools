@@ -2,6 +2,7 @@
 
 mod format;
 mod ordering;
+mod projection;
 mod transaction;
 
 use std::fmt::Write as _;
@@ -21,7 +22,11 @@ use walkdir::WalkDir;
 
 use transaction::StagedDirectory;
 
-pub use ordering::TidasSchemaOrderer;
+pub use ordering::{IlcdSchemaOrderer, TidasSchemaOrderer};
+pub use projection::{
+    EILCD_PROJECTION_RECOVERY_SCHEMA_V1, EilcdProjectionRecoveryV1, EilcdProjectionV1,
+    ProjectionRestorationV1, project_tidas_to_eilcd, restore_tidas_projection,
+};
 
 pub const CONVERSION_REPORT_SCHEMA_V1: &str = "tidas.conversion-report.v1";
 pub const CONVERSION_REPORT_JSON_SCHEMA_V1: &str = include_str!(concat!(
@@ -137,7 +142,7 @@ pub fn convert_directory(
     reject_nested_output(&request.input_dir, &request.output_dir)?;
     let staging = StagedDirectory::new(&request.output_dir)?;
     let orderer = (request.direction == ConversionDirection::TidasToIlcd)
-        .then(TidasSchemaOrderer::from_bundled_assets)
+        .then(IlcdSchemaOrderer::from_bundled_assets)
         .transpose()?;
     let mut report = ConversionReportV1 {
         schema_version: CONVERSION_REPORT_SCHEMA_V1.to_owned(),
@@ -195,7 +200,7 @@ fn copy_tree(
     target_root: &Path,
     request: &ConversionRequest,
     conversion: Option<ConversionDirection>,
-    orderer: Option<&TidasSchemaOrderer>,
+    orderer: Option<&IlcdSchemaOrderer>,
     report: &mut ConversionReportV1,
 ) -> Result<(), ConversionError> {
     let (sender, receiver) =
@@ -224,7 +229,8 @@ fn copy_tree(
             fs::create_dir_all(&target)?;
         } else if entry.file_type().is_file() {
             if conversion == Some(ConversionDirection::IlcdToTidas)
-                && is_envelope_sidecar(entry.path())
+                && (is_envelope_sidecar(entry.path())
+                    || is_projection_recovery_sidecar(entry.path()))
             {
                 let dataset = dataset_path_for_sidecar(entry.path())?;
                 if !dataset.is_file() {
@@ -273,7 +279,7 @@ fn process_next_file(
     source_root: &Path,
     receiver: &BoundedReceiver<FileJob>,
     conversion: Option<ConversionDirection>,
-    orderer: Option<&TidasSchemaOrderer>,
+    orderer: Option<&IlcdSchemaOrderer>,
     request: &ConversionRequest,
     report: &mut ConversionReportV1,
 ) -> Result<(), ConversionError> {
@@ -312,7 +318,7 @@ fn convert_file(
     source: &Path,
     target: &Path,
     direction: ConversionDirection,
-    orderer: Option<&TidasSchemaOrderer>,
+    orderer: Option<&IlcdSchemaOrderer>,
     request: &ConversionRequest,
     report: &mut ConversionReportV1,
 ) -> Result<(), ConversionError> {
@@ -326,10 +332,21 @@ fn convert_file(
     if u64::try_from(bytes.len()).map_err(|_| ConversionError::SizeOverflow)? != byte_count {
         return Err(ConversionError::SourceChanged(source.to_path_buf()));
     }
-    let (converted, sidecar_output) = match direction {
+    let (converted, sidecar_output, projection_sidecar_output) = match direction {
         ConversionDirection::TidasToIlcd => {
             let mut document: serde_json::Value = serde_json::from_slice(&bytes)?;
-            let sidecar = split_envelope(source_root, source, &mut document)?;
+            let envelope = split_envelope(source_root, source, &mut document)?;
+            let projection = dataset_category(source_root, source)
+                .map(|category| project_tidas_to_eilcd(&document, category))
+                .transpose()?;
+            let recovery = projection
+                .as_ref()
+                .and_then(|value| value.recovery.as_ref())
+                .map(serialize_projection_recovery)
+                .transpose()?;
+            if let Some(projection) = projection {
+                document = projection.document;
+            }
             if let (Some(orderer), Some(category)) =
                 (orderer, dataset_category(source_root, source))
             {
@@ -337,18 +354,33 @@ fn convert_file(
             }
             (
                 format::json_value_to_xml(&document, &request.cancellation)?,
-                sidecar,
+                envelope,
+                recovery,
             )
         }
         ConversionDirection::IlcdToTidas => {
             let converted = format::xml_to_json(&bytes, &request.cancellation)?;
-            (merge_envelope(source, converted, request, report)?, None)
+            (
+                merge_envelope(
+                    source,
+                    merge_projection_recovery(source, converted, request, report)?,
+                    request,
+                    report,
+                )?,
+                None,
+                None,
+            )
         }
     };
     ensure_parent(target)?;
     fs::write(target, converted)?;
     if let Some(sidecar) = sidecar_output {
         let path = envelope_sidecar_path(target);
+        fs::write(path, sidecar)?;
+        checked_increment(&mut report.envelope_sidecar_count)?;
+    }
+    if let Some(sidecar) = projection_sidecar_output {
+        let path = projection_recovery_sidecar_path(target);
         fs::write(path, sidecar)?;
         checked_increment(&mut report.envelope_sidecar_count)?;
     }
@@ -614,9 +646,62 @@ fn envelope_sidecar_path(path: &Path) -> PathBuf {
     path.with_file_name(name)
 }
 
+fn projection_recovery_sidecar_path(path: &Path) -> PathBuf {
+    let stem = path
+        .file_stem()
+        .map_or_else(|| path.as_os_str().to_owned(), std::ffi::OsStr::to_owned);
+    let mut name = stem;
+    name.push(".tidas-recovery.json");
+    path.with_file_name(name)
+}
+
+fn serialize_projection_recovery(
+    recovery: &EilcdProjectionRecoveryV1,
+) -> Result<Vec<u8>, ConversionError> {
+    let mut bytes = serde_json::to_vec_pretty(recovery)?;
+    bytes.push(b'\n');
+    Ok(bytes)
+}
+
+fn merge_projection_recovery(
+    source: &Path,
+    converted: Vec<u8>,
+    request: &ConversionRequest,
+    report: &mut ConversionReportV1,
+) -> Result<Vec<u8>, ConversionError> {
+    let sidecar_path = projection_recovery_sidecar_path(source);
+    if !sidecar_path.is_file() {
+        return Ok(converted);
+    }
+    let sidecar_len = fs::metadata(&sidecar_path)?.len();
+    let estimated = sidecar_len
+        .checked_mul(FILE_MEMORY_MULTIPLIER)
+        .and_then(|value| value.checked_add(FILE_MEMORY_OVERHEAD))
+        .ok_or(ConversionError::SizeOverflow)?;
+    let _reservation = request.memory_budget.reserve(estimated)?;
+    let recovery: EilcdProjectionRecoveryV1 = serde_json::from_slice(&fs::read(&sidecar_path)?)?;
+    let mut document: serde_json::Value = serde_json::from_slice(&converted)?;
+    restore_tidas_projection(&mut document, &recovery).map_err(|error| {
+        ConversionError::ProjectionRecoveryFailed {
+            path: sidecar_path.clone(),
+            message: error.to_string(),
+        }
+    })?;
+    let mut restored = serde_json::to_vec_pretty(&document)?;
+    restored.push(b'\n');
+    checked_add(&mut report.input_bytes, sidecar_len)?;
+    checked_increment(&mut report.envelope_sidecar_count)?;
+    Ok(restored)
+}
+
 fn is_envelope_sidecar(path: &Path) -> bool {
     path.file_name()
         .is_some_and(|name| name.to_string_lossy().ends_with(".tidas-envelope.json"))
+}
+
+fn is_projection_recovery_sidecar(path: &Path) -> bool {
+    path.file_name()
+        .is_some_and(|name| name.to_string_lossy().ends_with(".tidas-recovery.json"))
 }
 
 fn dataset_path_for_sidecar(path: &Path) -> Result<PathBuf, ConversionError> {
@@ -626,6 +711,7 @@ fn dataset_path_for_sidecar(path: &Path) -> Result<PathBuf, ConversionError> {
         .ok_or_else(|| ConversionError::NonPortablePath(path.to_path_buf()))?;
     let stem = name
         .strip_suffix(".tidas-envelope.json")
+        .or_else(|| name.strip_suffix(".tidas-recovery.json"))
         .ok_or_else(|| ConversionError::InvalidEnvelope(path.to_path_buf()))?;
     Ok(path.with_file_name(format!("{stem}.xml")))
 }
@@ -732,11 +818,11 @@ pub enum ConversionError {
     JsonRootCount(usize),
     #[error("dataset at {path} does not contain expected root {expected}")]
     MissingDatasetRoot { path: PathBuf, expected: String },
-    #[error("TIDAS ordering schema is missing for category {0}")]
+    #[error("target eILCD ordering schema is missing for {0}")]
     OrderingSchemaMissing(String),
-    #[error("TIDAS ordering schema reference is invalid: {0}")]
+    #[error("target eILCD ordering schema reference is invalid: {0}")]
     OrderingSchemaReference(String),
-    #[error("TIDAS ordering schema reference cycle: {0}")]
+    #[error("target eILCD ordering schema reference cycle: {0}")]
     OrderingSchemaCycle(String),
     #[error("conversion envelope sidecar is not a JSON object: {0}")]
     InvalidEnvelope(PathBuf),
@@ -744,6 +830,16 @@ pub enum ConversionError {
     OrphanEnvelopeSidecar(PathBuf),
     #[error("conversion envelope sidecar {path} collides with dataset key {key}")]
     EnvelopeKeyCollision { path: PathBuf, key: String },
+    #[error("unsupported eILCD projection recovery schema: {0}")]
+    UnsupportedProjectionRecovery(String),
+    #[error("invalid eILCD projection recovery path: {0}")]
+    InvalidProjectionRecoveryPath(String),
+    #[error(
+        "eILCD projection recovery did not reproduce source semantics: expected {expected}, got {actual}"
+    )]
+    ProjectionRecoveryMismatch { expected: String, actual: String },
+    #[error("eILCD projection recovery failed for {path}: {message}")]
+    ProjectionRecoveryFailed { path: PathBuf, message: String },
     #[error("XML name is invalid: {0}")]
     InvalidXmlName(String),
     #[error("XML 1.0 text contains forbidden character U+{0:04X}")]
@@ -989,6 +1085,63 @@ mod tests {
         let xml = fs::read_to_string(output.join("data/flows/scrambled.xml")).unwrap();
         assert!(xml.find("flowInformation").unwrap() < xml.find("flowProperties").unwrap());
 
+        let issues = output.join("issues.jsonl");
+        let validation = validate_ilcd_package(&ValidationRequest {
+            input_dir: output.join("data"),
+            issue_spool: Some(issues.clone()),
+            cancellation: CancellationToken::default(),
+            memory_budget: MemoryBudget::new(16 * 1024 * 1024),
+            queue_capacity: 4,
+            progress: None,
+        })
+        .unwrap();
+        assert!(
+            validation.summary.ok,
+            "{:?}\n{}",
+            validation.summary,
+            fs::read_to_string(issues).unwrap()
+        );
+    }
+
+    #[test]
+    fn contact_conversion_uses_ilcd_sequence_instead_of_tidas_property_order() {
+        let directory = tempdir().unwrap();
+        let input = directory.path().join("tidas");
+        let output = directory.path().join("ilcd");
+        let contact_dir = input.join("contacts");
+        fs::create_dir_all(&contact_dir).unwrap();
+        fs::write(
+            contact_dir.join("scrambled.json"),
+            br##"{
+  "contactDataSet": {
+    "@xmlns": "http://lca.jrc.it/ILCD/Contact",
+    "@xmlns:common": "http://lca.jrc.it/ILCD/Common",
+    "@version": "1.1",
+    "contactInformation": {
+      "dataSetInformation": {
+        "common:UUID": "66666666-6666-4666-8666-666666666666",
+        "common:shortName": {"@xml:lang": "en", "#text": "Steel team"},
+        "common:name": {"@xml:lang": "en", "#text": "Steel team"},
+        "contactAddress": {"@xml:lang": "en", "#text": "Zurich"},
+        "email": "team@example.org",
+        "telephone": "+41",
+        "WWWAddress": "https://example.org"
+      }
+    },
+    "administrativeInformation": {
+      "publicationAndOwnership": {
+        "common:dataSetVersion": "01.00.000"
+      }
+    }
+  }
+}"##,
+        )
+        .unwrap();
+
+        convert_directory(&request(&input, &output, ConversionDirection::TidasToIlcd)).unwrap();
+        let xml = fs::read_to_string(output.join("data/contacts/scrambled.xml")).unwrap();
+        assert!(xml.find("telephone").unwrap() < xml.find("email").unwrap());
+        assert!(xml.find("email").unwrap() < xml.find("WWWAddress").unwrap());
         let issues = output.join("issues.jsonl");
         let validation = validate_ilcd_package(&ValidationRequest {
             input_dir: output.join("data"),

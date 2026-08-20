@@ -108,7 +108,11 @@ metadata, materializes the locked target schemas/stylesheets/methodologies,
 and publishes the entire output directory atomically. TIDAS documents with
 top-level extension metadata use deterministic `.tidas-envelope.json`
 sidecars so eILCD remains single-root XML and the reverse conversion restores
-the original envelope. Traversal rejects symlinks and XML 1.0-invalid
+the original envelope. When valid TIDAS content is stricter or richer than the
+target eILCD XSD surface, conversion also writes deterministic
+`.tidas-recovery.json` sidecars: the XML contains the eILCD projection and the
+sidecar retains every adapted source fragment for verified reverse recovery.
+Traversal rejects symlinks and XML 1.0-invalid
 characters; repeated successful runs report the same output-tree SHA-256.
 
 Native export reads active PostgreSQL records from one repeatable-read,
@@ -119,7 +123,12 @@ credentials are accepted only through `TIDAS_S3_ACCESS_KEY_ID`,
 `TIDAS_S3_SECRET_ACCESS_KEY`, and optional `TIDAS_S3_SESSION_TOKEN`. Credential
 values never appear in reports or diagnostics.
 
-Native validation resolves only embedded integrity-locked schemas. Complete
+Native validation resolves only embedded integrity-locked schemas. TIDAS
+package validation is complete by default: native schema and semantic checks
+must pass, the actual TIDAS-to-eILCD adapter is run, the projected XML is
+validated against the target eILCD XSDs, and reverse recovery is compared with
+the source semantics. `--schema-only` is an explicitly weaker diagnostic mode.
+Complete
 issues can be written atomically as deterministic JSONL with `--issues`; the
 operation report retains bounded counts and the spool hash instead of an
 in-memory issue array. ILCD XML uses the same bounded report contract with

@@ -441,11 +441,11 @@ pub enum ReleaseError {
         #[source]
         source: serde_json::Error,
     },
-    #[error("TIDAS ordering schema is missing for category {0}")]
+    #[error("target eILCD ordering schema is missing for {0}")]
     OrderingSchemaMissing(String),
-    #[error("TIDAS ordering schema reference is invalid: {0}")]
+    #[error("target eILCD ordering schema reference is invalid: {0}")]
     OrderingSchemaReference(String),
-    #[error("TIDAS ordering schema reference cycle: {0}")]
+    #[error("target eILCD ordering schema reference cycle: {0}")]
     OrderingSchemaCycle(String),
     #[error("release validation found issues in the {0:?} tree")]
     ValidationIssues(ReleaseDataFormat),

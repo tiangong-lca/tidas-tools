@@ -67,20 +67,24 @@ impl SemanticCatalog {
         self.validate_localized(instance, category, file_path, "", emit)?;
         match category {
             TidasCategory::Flows => self.validate_flows(instance, file_path, emit),
-            TidasCategory::Processes => Self::validate_process_like(
-                instance,
-                file_path,
-                &[
-                    "processDataSet",
-                    "processInformation",
-                    "dataSetInformation",
-                    "classificationInformation",
-                    "common:classification",
-                    "common:class",
-                ],
-                category,
-                emit,
-            ),
+            TidasCategory::Processes => {
+                Self::validate_process_like(
+                    instance,
+                    file_path,
+                    &[
+                        "processDataSet",
+                        "processInformation",
+                        "dataSetInformation",
+                        "classificationInformation",
+                        "common:classification",
+                        "common:class",
+                    ],
+                    category,
+                    emit,
+                )?;
+                Self::validate_process_allocations(instance, file_path, emit)?;
+                Self::validate_process_variable_references(instance, file_path, emit)
+            }
             TidasCategory::Lifecyclemodels => Self::validate_process_like(
                 instance,
                 file_path,
@@ -520,6 +524,129 @@ impl SemanticCatalog {
         }
         Ok(())
     }
+
+    fn validate_process_allocations(
+        instance: &Value,
+        file_path: &str,
+        emit: &mut impl FnMut(ValidationIssueV1) -> Result<(), crate::ValidationError>,
+    ) -> Result<(), crate::ValidationError> {
+        let Some(exchanges) = value_at(instance, &["processDataSet", "exchanges", "exchange"])
+        else {
+            return Ok(());
+        };
+        let exchanges: Vec<&Value> = match exchanges {
+            Value::Array(items) => items.iter().collect(),
+            Value::Object(_) => vec![exchanges],
+            _ => return Ok(()),
+        };
+        let ids: BTreeSet<&str> = exchanges
+            .iter()
+            .filter_map(|exchange| exchange.get("@dataSetInternalID").and_then(Value::as_str))
+            .collect();
+        for (exchange_index, exchange) in exchanges.iter().enumerate() {
+            let Some(allocations) = exchange
+                .get("allocations")
+                .and_then(|value| value.get("allocation"))
+            else {
+                continue;
+            };
+            let allocations: Vec<&Value> = match allocations {
+                Value::Array(items) => items.iter().collect(),
+                Value::Object(_) => vec![allocations],
+                _ => continue,
+            };
+            for (allocation_index, allocation) in allocations.iter().enumerate() {
+                let Some(reference) = allocation
+                    .get("@internalReferenceToCoProduct")
+                    .and_then(Value::as_str)
+                else {
+                    continue;
+                };
+                if !ids.contains(reference) {
+                    emit(ValidationIssueV1::error(
+                        "allocation_coproduct_reference_missing",
+                        TidasCategory::Processes.as_str(),
+                        file_path,
+                        format!(
+                            "processDataSet/exchanges/exchange/{exchange_index}/allocations/allocation/{allocation_index}/@internalReferenceToCoProduct"
+                        ),
+                        format!(
+                            "Allocation references co-product exchange internal id '{reference}', but no exchange with that @dataSetInternalID exists"
+                        ),
+                    ))?;
+                }
+            }
+        }
+        Ok(())
+    }
+
+    fn validate_process_variable_references(
+        instance: &Value,
+        file_path: &str,
+        emit: &mut impl FnMut(ValidationIssueV1) -> Result<(), crate::ValidationError>,
+    ) -> Result<(), crate::ValidationError> {
+        let declared: BTreeSet<&str> = value_at(
+            instance,
+            &[
+                "processDataSet",
+                "mathematicalRelations",
+                "variableParameter",
+            ],
+        )
+        .map(|variables| match variables {
+            Value::Array(items) => items.iter().collect::<Vec<_>>(),
+            Value::Object(_) => vec![variables],
+            _ => Vec::new(),
+        })
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|variable| variable.get("@name").and_then(Value::as_str))
+        .collect();
+        validate_variable_reference_nodes(instance, "", &declared, file_path, emit)
+    }
+}
+
+fn validate_variable_reference_nodes(
+    node: &Value,
+    path: &str,
+    declared: &BTreeSet<&str>,
+    file_path: &str,
+    emit: &mut impl FnMut(ValidationIssueV1) -> Result<(), crate::ValidationError>,
+) -> Result<(), crate::ValidationError> {
+    match node {
+        Value::Object(object) => {
+            for (key, child) in object {
+                let child_path = if path.is_empty() {
+                    key.clone()
+                } else {
+                    format!("{path}/{key}")
+                };
+                if key == "referenceToVariable"
+                    && let Some(reference) = child.as_str()
+                    && !declared.contains(reference)
+                {
+                    emit(ValidationIssueV1::error(
+                        "variable_parameter_reference_missing",
+                        TidasCategory::Processes.as_str(),
+                        file_path,
+                        &child_path,
+                        format!(
+                            "referenceToVariable names '{reference}', but no variableParameter with that @name exists"
+                        ),
+                    ))?;
+                }
+                validate_variable_reference_nodes(child, &child_path, declared, file_path, emit)?;
+            }
+        }
+        Value::Array(items) => {
+            for (index, child) in items.iter().enumerate() {
+                let child_path = format!("{path}/{index}");
+                validate_variable_reference_nodes(child, &child_path, declared, file_path, emit)?;
+            }
+        }
+        _ => {}
+    }
+    Ok(())
 }
 
 fn asset_json(path: &str, kind: AssetKind) -> Result<Value, SemanticError> {
@@ -727,5 +854,64 @@ mod tests {
             ]
         );
         assert!(issues[1].location.contains("/1/common:class/0/@classId"));
+    }
+
+    #[test]
+    fn dangling_allocation_coproduct_is_a_tidas_semantic_error() {
+        let catalog = SemanticCatalog::load().unwrap();
+        let instance = serde_json::json!({
+            "processDataSet": {"exchanges": {"exchange": {
+                "@dataSetInternalID": "0",
+                "allocations": {"allocation": {
+                    "@allocatedFraction": "100",
+                    "@internalReferenceToCoProduct": "1"
+                }}
+            }}}
+        });
+        let mut issues = Vec::new();
+        catalog
+            .validate(
+                &instance,
+                TidasCategory::Processes,
+                "process.json",
+                &mut |issue| {
+                    issues.push(issue);
+                    Ok(())
+                },
+            )
+            .unwrap();
+        assert_eq!(issues.len(), 1);
+        assert_eq!(
+            issues[0].issue_code,
+            "allocation_coproduct_reference_missing"
+        );
+        assert!(issues[0].location.contains("@internalReferenceToCoProduct"));
+    }
+
+    #[test]
+    fn dangling_variable_reference_is_a_tidas_semantic_error() {
+        let catalog = SemanticCatalog::load().unwrap();
+        let instance = serde_json::json!({
+            "processDataSet": {
+                "exchanges": {"exchange": {
+                    "@dataSetInternalID": "0",
+                    "referenceToVariable": "missing-variable"
+                }}
+            }
+        });
+        let mut issues = Vec::new();
+        catalog
+            .validate(
+                &instance,
+                TidasCategory::Processes,
+                "process.json",
+                &mut |issue| {
+                    issues.push(issue);
+                    Ok(())
+                },
+            )
+            .unwrap();
+        assert_eq!(issues.len(), 1);
+        assert_eq!(issues[0].issue_code, "variable_parameter_reference_missing");
     }
 }

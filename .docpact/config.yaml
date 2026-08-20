@@ -1,9 +1,9 @@
 version: 1
 layout: repo
-lastReviewedAt: "2026-08-19"
-lastReviewedCommit: "5788bc480280d5bb52cdeaaa12f958efc337f1be"
-# Reviewed for Issue #169 phase 2: the immutable v0.1.5 Release Request remains
-# governed by the existing merge-gated Rust release and validation contracts.
+lastReviewedAt: "2026-08-20"
+lastReviewedCommit: "c6f38bcbddff3448ceffb694cfb6eb228720796e"
+# Reviewed for Issue #171: semantic eILCD projection, target validation, and
+# recoverability remain covered by the existing conversion/validation routes.
 
 catalog:
   repos:

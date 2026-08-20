@@ -26,8 +26,8 @@ checkPaths:
   - contracts/**
   - README.md
   - README_CN.md
-lastReviewedAt: 2026-08-19
-lastReviewedCommit: 5788bc480280d5bb52cdeaaa12f958efc337f1be
+lastReviewedAt: 2026-08-20
+lastReviewedCommit: e7fb32b844d12faf37f80ac58b7d82b6195fa5db
 lastReviewedNote: "Reviewed for Issue #169 phase 2: the immutable v0.1.5 Release Request does not change the unified command, report, output-channel, or exit contracts."
 related:
   - ../../AGENTS.md
@@ -181,7 +181,9 @@ The operation report summary contains one `conversion` member conforming to
 bytes and a cross-platform tree SHA-256. A deterministic
 `.tidas-envelope.json` sidecar preserves top-level TIDAS extension fields that
 cannot appear beside the single eILCD XML root; reverse conversion consumes
-and merges it. The report next action gives the exact `tidas validate
+and merges it. `.tidas-recovery.json` preserves source fragments changed by the
+semantic eILCD projection; reverse conversion applies it and verifies the
+source semantic hash. The report next action gives the exact `tidas validate
 OUTPUT/data --input-format ...` command.
 
 ## Native import surface
@@ -332,13 +334,20 @@ tidas validate <PACKAGE_DIR> \
 ```
 
 `--input-format` is `tidas-json` by default; `ilcd-xml` selects native
-namespace-aware XSD validation. `--issues` is optional. When present, every complete issue is written
+namespace-aware XSD validation. Default TIDAS package validation means native
+TIDAS schema and semantic validation plus actual eILCD projection, target XSD
+validation, and source-semantic recovery. Therefore success guarantees that
+the same input is convertible to XSD-valid eILCD without losing TIDAS-only
+information. `--schema-only` runs only the native TIDAS checks and must be
+reported as diagnostic evidence, not as complete validity. `--issues` is optional. When present, every complete issue is written
 in deterministic order to an atomically persisted
 `tidas.validation-issue-event.v1` JSONL artifact. Without it, issues are
 counted and discarded after validation so report memory remains bounded.
 
-The operation report summary contains one `validation` member conforming to
-`tidas.validation-summary.v1`. Data issues produce `completed-with-issues`
+The complete TIDAS operation report contains `validation`,
+`eilcd_projection`, `eilcd_projection_validation`, and `semantic_roundtrip`
+members. The weaker schema-only and direct ILCD modes contain `validation`.
+Data issues produce `completed-with-issues`
 and exit 2. Missing input/spool paths use the I/O exit class; cancellation uses
 130. The summary records category/document/issue counts, the locked asset
 fingerprint, accounted peak memory, and the optional spool count/bytes/hash.

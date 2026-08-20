@@ -264,27 +264,6 @@ fn classify_release_conversion_error(error: &ConversionError) -> (ExitClass, &'s
         | ConversionError::CommitRollback { .. }
         | ConversionError::Io(_)
         | ConversionError::Walk(_) => (ExitClass::Io, "release_io_failed"),
-        ConversionError::JsonRootNotObject
-        | ConversionError::JsonRootCount(_)
-        | ConversionError::MissingDatasetRoot { .. }
-        | ConversionError::InvalidEnvelope(_)
-        | ConversionError::OrphanEnvelopeSidecar(_)
-        | ConversionError::EnvelopeKeyCollision { .. }
-        | ConversionError::InvalidXmlName(_)
-        | ConversionError::InvalidXmlCharacter(_)
-        | ConversionError::NonScalarText
-        | ConversionError::TextOutsideRoot
-        | ConversionError::MultipleRoots
-        | ConversionError::MissingRoot
-        | ConversionError::UnmatchedEnd
-        | ConversionError::UnclosedElements
-        | ConversionError::DoctypeForbidden
-        | ConversionError::Symlink(_)
-        | ConversionError::Json(_)
-        | ConversionError::Xml(_)
-        | ConversionError::Attribute(_)
-        | ConversionError::Encoding(_)
-        | ConversionError::Escape(_) => (ExitClass::DataIssues, "release_input_invalid"),
         ConversionError::Runtime(RuntimeError::BudgetExceeded { .. }) => {
             (ExitClass::Internal, "memory_budget_exceeded")
         }
@@ -296,6 +275,7 @@ fn classify_release_conversion_error(error: &ConversionError) -> (ExitClass, &'s
         | ConversionError::OrderingSchemaCycle(_)
         | ConversionError::SizeOverflow
         | ConversionError::Asset(_) => (ExitClass::Internal, "release_runtime_failed"),
+        _ => (ExitClass::DataIssues, "release_input_invalid"),
     }
 }
 
@@ -739,27 +719,6 @@ fn failed_conversion_report(error: &ConversionError) -> OperationReportV1 {
         ConversionError::OutputInsideInput(_) | ConversionError::ZeroQueueCapacity => {
             (ExitClass::Usage, "invalid_conversion_request")
         }
-        ConversionError::JsonRootNotObject
-        | ConversionError::JsonRootCount(_)
-        | ConversionError::MissingDatasetRoot { .. }
-        | ConversionError::InvalidEnvelope(_)
-        | ConversionError::OrphanEnvelopeSidecar(_)
-        | ConversionError::EnvelopeKeyCollision { .. }
-        | ConversionError::InvalidXmlName(_)
-        | ConversionError::InvalidXmlCharacter(_)
-        | ConversionError::NonScalarText
-        | ConversionError::TextOutsideRoot
-        | ConversionError::MultipleRoots
-        | ConversionError::MissingRoot
-        | ConversionError::UnmatchedEnd
-        | ConversionError::UnclosedElements
-        | ConversionError::DoctypeForbidden
-        | ConversionError::Symlink(_)
-        | ConversionError::Json(_)
-        | ConversionError::Xml(_)
-        | ConversionError::Attribute(_)
-        | ConversionError::Encoding(_)
-        | ConversionError::Escape(_) => (ExitClass::DataIssues, "conversion_input_invalid"),
         ConversionError::Runtime(RuntimeError::BudgetExceeded { .. }) => {
             (ExitClass::Internal, "memory_budget_exceeded")
         }
@@ -771,6 +730,7 @@ fn failed_conversion_report(error: &ConversionError) -> OperationReportV1 {
         | ConversionError::OrderingSchemaCycle(_)
         | ConversionError::SizeOverflow
         | ConversionError::Asset(_) => (ExitClass::Internal, "conversion_setup_failed"),
+        _ => (ExitClass::DataIssues, "conversion_input_invalid"),
     };
     OperationReportV1::failed(CommandNameV1::Convert, exit_class, code, error.to_string())
 }
@@ -866,8 +826,11 @@ fn validation_report(arguments: &ValidateArgs, execution: &ExecutionContext) -> 
     if arguments.protocol == ValidationProtocol::DocumentValidationBatchV1 {
         return batch_validation_report(arguments, request);
     }
+    if arguments.input_format == ValidationInputFormat::TidasJson {
+        return full_tidas_validation_report(arguments, &request, execution);
+    }
     let result = match arguments.input_format {
-        ValidationInputFormat::TidasJson => validate_tidas_package(&request),
+        ValidationInputFormat::TidasJson => unreachable!("TIDAS validation is handled above"),
         ValidationInputFormat::IlcdXml => validate_ilcd_package(&request),
     };
     match result {
@@ -877,6 +840,233 @@ fn validation_report(arguments: &ValidateArgs, execution: &ExecutionContext) -> 
         }
         Err(error) => failed_validation_report(&error),
     }
+}
+
+fn full_tidas_validation_report(
+    arguments: &ValidateArgs,
+    request: &ValidationRequest,
+    execution: &ExecutionContext,
+) -> OperationReportV1 {
+    let native = match validate_tidas_package(request) {
+        Ok(output) => output,
+        Err(ValidationError::Runtime(RuntimeError::Cancelled)) => {
+            return OperationReportV1::cancelled(CommandNameV1::Validate);
+        }
+        Err(error) => return failed_validation_report(&error),
+    };
+    if !native.summary.ok || arguments.schema_only {
+        let mut report = completed_validation_report(native.summary, native.issue_spool_path);
+        if arguments.schema_only {
+            report.diagnostics.push(DiagnosticV1::new(
+                "schema_only_validation",
+                "Native TIDAS schema and semantic checks passed; eILCD projection, target XSD, and recovery were not checked.",
+            ));
+            report.next_actions.push(
+                "Run the same command without --schema-only for complete TIDAS-to-eILCD compatibility validation."
+                    .to_owned(),
+            );
+        }
+        return report;
+    }
+
+    let compatibility = match run_eilcd_compatibility(arguments, request, execution) {
+        Ok(compatibility) => compatibility,
+        Err(report) => return *report,
+    };
+    complete_tidas_validation_report(native, compatibility)
+}
+
+struct CompatibilityValidation {
+    conversion: tidas_conversion::ConversionReportV1,
+    projection: tidas_validation::ValidationOutput,
+    roundtrip: Option<tidas_release::SemanticRoundtripReportV1>,
+    issue_spool_path: Option<std::path::PathBuf>,
+}
+
+fn run_eilcd_compatibility(
+    arguments: &ValidateArgs,
+    request: &ValidationRequest,
+    execution: &ExecutionContext,
+) -> Result<CompatibilityValidation, Box<OperationReportV1>> {
+    let workspace = match tempfile::tempdir() {
+        Ok(workspace) => workspace,
+        Err(error) => {
+            return Err(Box::new(OperationReportV1::failed(
+                CommandNameV1::Validate,
+                ExitClass::Io,
+                "validation_workspace_failed",
+                error.to_string(),
+            )));
+        }
+    };
+    let ilcd = workspace.path().join("ilcd");
+    let conversion = match convert_directory(&ConversionRequest {
+        input_dir: request.input_dir.clone(),
+        output_dir: ilcd.clone(),
+        direction: ConversionDirection::TidasToIlcd,
+        cancellation: execution.cancellation.clone(),
+        memory_budget: execution.memory_budget.clone(),
+        queue_capacity: execution.invocation.queue_capacity,
+        progress: execution
+            .invocation
+            .progress_enabled
+            .then(conversion_progress_reporter),
+    }) {
+        Ok(report) => report,
+        Err(ConversionError::Runtime(RuntimeError::Cancelled)) => {
+            return Err(Box::new(OperationReportV1::cancelled(
+                CommandNameV1::Validate,
+            )));
+        }
+        Err(error) => {
+            return Err(Box::new(OperationReportV1::failed(
+                CommandNameV1::Validate,
+                ExitClass::DataIssues,
+                "eilcd_projection_failed",
+                error.to_string(),
+            )));
+        }
+    };
+
+    let projection_issues = arguments.issues.as_ref().map(|path| {
+        let mut name = path.as_os_str().to_owned();
+        name.push(".eilcd.jsonl");
+        std::path::PathBuf::from(name)
+    });
+    let projection_validation = match validate_ilcd_package(&ValidationRequest {
+        input_dir: ilcd.join("data"),
+        issue_spool: projection_issues.clone(),
+        cancellation: execution.cancellation.clone(),
+        memory_budget: execution.memory_budget.clone(),
+        queue_capacity: execution.invocation.queue_capacity,
+        progress: execution
+            .invocation
+            .progress_enabled
+            .then(validation_progress_reporter),
+    }) {
+        Ok(output) => output,
+        Err(ValidationError::Runtime(RuntimeError::Cancelled)) => {
+            return Err(Box::new(OperationReportV1::cancelled(
+                CommandNameV1::Validate,
+            )));
+        }
+        Err(error) => return Err(Box::new(failed_validation_report(&error))),
+    };
+
+    let roundtrip = if projection_validation.summary.ok {
+        Some(run_semantic_roundtrip_compatibility(
+            request, ilcd, execution,
+        )?)
+    } else {
+        None
+    };
+
+    Ok(CompatibilityValidation {
+        conversion,
+        projection: projection_validation,
+        roundtrip,
+        issue_spool_path: projection_issues,
+    })
+}
+
+fn run_semantic_roundtrip_compatibility(
+    request: &ValidationRequest,
+    ilcd_dir: std::path::PathBuf,
+    execution: &ExecutionContext,
+) -> Result<tidas_release::SemanticRoundtripReportV1, Box<OperationReportV1>> {
+    match run_release(
+        &ReleaseRequest::SemanticRoundtrip {
+            tidas_dir: request.input_dir.clone(),
+            ilcd_dir,
+        },
+        &ReleaseRuntime {
+            cancellation: execution.cancellation.clone(),
+            memory_budget: execution.memory_budget.clone(),
+            queue_capacity: execution.invocation.queue_capacity,
+        },
+    ) {
+        Ok(report) => report.roundtrip.ok_or_else(|| {
+            Box::new(OperationReportV1::failed(
+                CommandNameV1::Validate,
+                ExitClass::Internal,
+                "eilcd_recovery_report_missing",
+                "The semantic round-trip action completed without a round-trip report.",
+            ))
+        }),
+        Err(ReleaseError::Runtime(RuntimeError::Cancelled)) => Err(Box::new(
+            OperationReportV1::cancelled(CommandNameV1::Validate),
+        )),
+        Err(error) => Err(Box::new(OperationReportV1::failed(
+            CommandNameV1::Validate,
+            ExitClass::DataIssues,
+            "eilcd_recovery_failed",
+            error.to_string(),
+        ))),
+    }
+}
+
+fn complete_tidas_validation_report(
+    native: tidas_validation::ValidationOutput,
+    compatibility: CompatibilityValidation,
+) -> OperationReportV1 {
+    let roundtrip_ok = compatibility
+        .roundtrip
+        .as_ref()
+        .is_none_or(|report| report.ok);
+    let projection_validation = compatibility.projection;
+    let complete_ok = projection_validation.summary.ok && roundtrip_ok;
+    let mut report = if complete_ok {
+        OperationReportV1::succeeded(CommandNameV1::Validate)
+    } else {
+        OperationReportV1::completed_with_issues(
+            CommandNameV1::Validate,
+            DiagnosticV1::new(
+                "eilcd_compatibility_issues",
+                "Native TIDAS checks passed, but eILCD projection, target XSD validation, or recovery found issues.",
+            ),
+        )
+    };
+    report.summary.insert(
+        "validation".to_owned(),
+        serde_json::to_value(&native.summary).expect("validation summary is serializable"),
+    );
+    report.summary.insert(
+        "eilcd_projection_validation".to_owned(),
+        serde_json::to_value(&projection_validation.summary)
+            .expect("validation summary is serializable"),
+    );
+    report.summary.insert(
+        "eilcd_projection".to_owned(),
+        serde_json::to_value(compatibility.conversion).expect("conversion report is serializable"),
+    );
+    if let Some(roundtrip) = compatibility.roundtrip {
+        report.summary.insert(
+            "semantic_roundtrip".to_owned(),
+            serde_json::to_value(roundtrip).expect("roundtrip report is serializable"),
+        );
+    }
+    if let (Some(path), Some(spool)) =
+        (native.issue_spool_path, native.summary.issue_spool.as_ref())
+    {
+        report.artifacts.push(ArtifactRefV1 {
+            path: path.to_string_lossy().into_owned(),
+            media_type: "application/x-ndjson".to_owned(),
+            sha256: Some(spool.sha256.clone()),
+            bytes: Some(spool.bytes),
+        });
+    }
+    if let (Some(path), Some(spool)) = (
+        compatibility.issue_spool_path,
+        projection_validation.summary.issue_spool.as_ref(),
+    ) {
+        report.artifacts.push(ArtifactRefV1 {
+            path: path.to_string_lossy().into_owned(),
+            media_type: "application/x-ndjson".to_owned(),
+            sha256: Some(spool.sha256.clone()),
+            bytes: Some(spool.bytes),
+        });
+    }
+    report
 }
 
 fn validation_progress_reporter() -> ValidationProgressReporter {

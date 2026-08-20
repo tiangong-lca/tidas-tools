@@ -500,6 +500,10 @@ pub struct ValidateArgs {
     /// Print the validation protocol and engine fingerprint handshake.
     #[arg(long)]
     pub describe: bool,
+
+    /// Run only native TIDAS schema and semantic checks. This is diagnostic and does not prove eILCD convertibility.
+    #[arg(long)]
+    pub schema_only: bool,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
@@ -523,6 +527,7 @@ impl ValidateArgs {
                 || self.input_manifest.is_some()
                 || self.issues.is_some()
                 || self.events.is_some()
+                || self.schema_only
             {
                 return Err(invalid(
                     "--describe cannot be combined with input or output paths",
@@ -543,6 +548,9 @@ impl ValidateArgs {
                         "--input-manifest and --events require --protocol document-validation-batch.v1",
                     ));
                 }
+                if self.schema_only && self.input_format != ValidationInputFormat::TidasJson {
+                    return Err(invalid("--schema-only applies to TIDAS JSON input only"));
+                }
             }
             ValidationProtocol::DocumentValidationBatchV1 => {
                 if self.input_format != ValidationInputFormat::TidasJson {
@@ -559,6 +567,11 @@ impl ValidateArgs {
                 if self.issues.is_some() {
                     return Err(invalid(
                         "document-validation-batch.v1 uses --events instead of --issues",
+                    ));
+                }
+                if self.schema_only {
+                    return Err(invalid(
+                        "--schema-only is not part of document-validation-batch.v1",
                     ));
                 }
             }

@@ -134,8 +134,15 @@ fn package_members(
     } else {
         0
     };
-    let member_count = entries
-        .len()
+    let dataset_member_capacity = if format == ReleaseDataFormat::Ilcd {
+        entries
+            .len()
+            .checked_mul(3)
+            .ok_or(ReleaseError::SizeOverflow)?
+    } else {
+        entries.len()
+    };
+    let member_count = dataset_member_capacity
         .checked_add(asset_count)
         .ok_or(ReleaseError::SizeOverflow)?;
     let reserved = u64::try_from(member_count)
@@ -159,6 +166,17 @@ fn package_members(
             }
         };
         add_member(&mut members, name, path)?;
+        if format == ReleaseDataFormat::Ilcd {
+            let xml_relative = Path::new(&entry.relative_path).with_extension("xml");
+            for suffix in ["tidas-envelope.json", "tidas-recovery.json"] {
+                let sidecar_relative = conversion_sidecar_path(&xml_relative, suffix);
+                let sidecar_name = format!("data/{}", portable(&sidecar_relative)?);
+                let sidecar_path = ilcd_root.join(&sidecar_name);
+                if sidecar_path.is_file() {
+                    add_member(&mut members, sidecar_name, sidecar_path)?;
+                }
+            }
+        }
     }
     if format == ReleaseDataFormat::Ilcd {
         for item in WalkDir::new(ilcd_root).follow_links(false) {
@@ -184,6 +202,16 @@ fn package_members(
         entries: members,
         _reservation: reservation,
     })
+}
+
+fn conversion_sidecar_path(path: &Path, suffix: &str) -> PathBuf {
+    let stem = path
+        .file_stem()
+        .map_or_else(|| path.as_os_str().to_owned(), std::ffi::OsStr::to_owned);
+    let mut name = stem;
+    name.push(".");
+    name.push(suffix);
+    path.with_file_name(name)
 }
 
 struct MemberCatalog {
@@ -298,5 +326,80 @@ mod tests {
         assert_eq!(member.name(), "record.json");
         assert_eq!(member.last_modified(), Some(zip::DateTime::default()));
         assert_eq!(member.unix_mode(), Some(0o100_644));
+    }
+
+    #[test]
+    fn ilcd_archive_carries_lossless_sidecars_beside_adapted_xml() {
+        let temporary = tempfile::tempdir().unwrap();
+        let tidas_root = temporary.path().join("tidas");
+        let ilcd_root = temporary.path().join("ilcd");
+        let output = temporary.path().join("output");
+        fs::create_dir_all(tidas_root.join("processes")).unwrap();
+        fs::create_dir_all(ilcd_root.join("data/processes")).unwrap();
+        fs::create_dir(&output).unwrap();
+        fs::write(tidas_root.join("processes/record.json"), b"{}\n").unwrap();
+        fs::write(
+            ilcd_root.join("data/processes/record.xml"),
+            b"<processDataSet/>\n",
+        )
+        .unwrap();
+        fs::write(
+            ilcd_root.join("data/processes/record.tidas-envelope.json"),
+            b"{\"source\":\"envelope\"}\n",
+        )
+        .unwrap();
+        fs::write(
+            ilcd_root.join("data/processes/record.tidas-recovery.json"),
+            b"{\"schema_version\":\"tidas.eilcd-projection-recovery.v1\"}\n",
+        )
+        .unwrap();
+        let entry = DatasetEntry {
+            dataset_type: "process".to_owned(),
+            role: "unit_process".to_owned(),
+            uuid: "11111111-1111-4111-8111-111111111111".to_owned(),
+            version: "01.00.000".to_owned(),
+            relative_path: "processes/record.json".to_owned(),
+            sha256: String::new(),
+            canonical_content_hash: String::new(),
+        };
+        let closure = ReferenceClosureReportV1 {
+            profile_id: UNIT_PROFILE.to_owned(),
+            root_count: 1,
+            dataset_count: 1,
+            reference_count: 0,
+            closure_sha256: "0".repeat(64),
+            dataset_keys: vec![entry.key()],
+            dataset_keys_truncated: false,
+        };
+        let runtime = ReleaseRuntime {
+            cancellation: CancellationToken::default(),
+            memory_budget: MemoryBudget::new(8 * 1024 * 1024),
+            queue_capacity: 8,
+        };
+        let package = write_package(&PackageRequest {
+            profile: ReleaseProfile::UnitProcess,
+            format: ReleaseDataFormat::Ilcd,
+            entries: &[entry],
+            tidas_root: &tidas_root,
+            ilcd_root: &ilcd_root,
+            output_dir: &output,
+            closure: &closure,
+            runtime: &runtime,
+        })
+        .unwrap();
+        let file = File::open(package.artifact.path).unwrap();
+        let mut archive = zip::ZipArchive::new(file).unwrap();
+        let mut names = (0..archive.len())
+            .map(|index| archive.by_index(index).unwrap().name().to_owned())
+            .collect::<Vec<_>>();
+        names.sort();
+        assert_eq!(
+            names,
+            [
+                "data/processes/record.tidas-envelope.json",
+                "data/processes/record.tidas-recovery.json",
+                "data/processes/record.xml"
+            ]
+        );
     }
 }

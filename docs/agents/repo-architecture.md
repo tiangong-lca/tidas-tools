@@ -80,9 +80,13 @@ sibling temporary path and commits atomically.
 Conversion traverses sorted package trees, rejects symlinks and invalid XML
 text, uses deterministic envelope sidecars for top-level TIDAS metadata, locks
 target assets, and reports a cross-platform output-tree hash. TIDAS-to-ILCD
-conversion orders every known dataset object from the integrity-locked TIDAS
-schema catalog before XML serialization, so JSON member order cannot violate
-an ILCD XSD sequence; release conversion reuses the same ordering component.
+conversion orders every known dataset object from the integrity-locked target
+eILCD XSD catalog before XML serialization, so source JSON member order cannot
+violate an ILCD `xs:sequence`. A semantic projection layer handles
+representation differences without changing the TIDAS schemas: target-safe
+XML is paired with `.tidas-recovery.json` fragments, and reverse conversion
+must reproduce the source semantic hash. Release conversion reuses the same
+projection, ordering, XSD-validation, and recovery components.
 
 Import detects EcoSpold 1/2, SimaPro CSV, openLCA JSON-LD, openLCA process
 XLSX, and ILCD. Adapters stream into disk-backed canonical entities/exchanges;
@@ -95,7 +99,11 @@ bodies by chunk, and creates one deterministic archive without serializing
 credentials.
 
 Validation resolves only embedded assets. Draft 7 schema resources and ILCD
-XSD contexts are compiled offline and reused. Issue details stream or are
+XSD contexts are compiled offline and reused. Native TIDAS schema/semantic
+validation remains independent of conversion; the CLI's default complete
+TIDAS validation composes it with actual eILCD projection, XSD validation, and
+semantic recovery. This keeps dependency direction acyclic while making a
+successful user-facing validation a convertibility guarantee. Issue details stream or are
 discarded; batch evidence preflights content hashes and publishes a final
 logical stream hash only after drift-free completion. Schema diagnostics
 describe rejected instances through bounded summaries and content hashes

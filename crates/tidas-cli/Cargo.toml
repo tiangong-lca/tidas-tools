@@ -22,6 +22,7 @@ clap_complete.workspace = true
 ctrlc.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+tempfile.workspace = true
 tidas-assets = { version = "=0.1.5", path = "../.." }
 tidas-conversion = { version = "=0.1.5", path = "../tidas-conversion" }
 tidas-contracts = { version = "=0.1.5", path = "../tidas-contracts" }
