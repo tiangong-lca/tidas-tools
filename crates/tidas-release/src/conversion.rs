@@ -3,19 +3,16 @@ use std::path::{Path, PathBuf};
 
 use serde_json::Value;
 use sha2::{Digest, Sha256};
-use tidas_assets::{asset_fingerprint, bundled_assets};
-use tidas_conversion::{TidasSchemaOrderer, convert_json_to_xml, convert_xml_to_json};
+use tidas_conversion::{ConversionDirection, ConversionRequest, convert_directory};
 use walkdir::WalkDir;
 
-use crate::index::{hex_digest, safe_relative, sha256_file};
-use crate::transaction::StagedDirectory;
+use crate::index::{hex_digest, safe_relative};
 use crate::{
     INLINE_ITEM_LIMIT, IlcdConversionReportV1, ReleaseError, ReleaseRuntime, RoundtripMismatchV1,
     SemanticRoundtripReportV1,
 };
 
 const FILE_MEMORY_MULTIPLIER: u64 = 8;
-const EILCD_ASSET_PREFIX: &str = "assets/eilcd/";
 
 pub(crate) fn convert_tidas_to_ilcd(
     input_dir: &Path,
@@ -26,71 +23,45 @@ pub(crate) fn convert_tidas_to_ilcd(
     if !input_dir.is_dir() {
         return Err(ReleaseError::InputNotDirectory(input_dir.to_path_buf()));
     }
-    reject_nested_output(input_dir, output_dir)?;
-    let orderer = TidasSchemaOrderer::from_bundled_assets()?;
-    let staging = StagedDirectory::new(output_dir)?;
-    let mut dataset_count = 0_u64;
+    let conversion = convert_directory(&ConversionRequest {
+        input_dir: input_dir.to_path_buf(),
+        output_dir: output_dir.to_path_buf(),
+        direction: ConversionDirection::TidasToIlcd,
+        cancellation: runtime.cancellation.clone(),
+        memory_budget: runtime.memory_budget.clone(),
+        queue_capacity: runtime.queue_capacity,
+        progress: None,
+    })?;
+    let files = dataset_files(input_dir, runtime)?;
     let mut input_bytes = 0_u64;
     let mut conversion_hasher = Sha256::new();
-
-    let files = dataset_files(input_dir, runtime)?;
     for source in &files.paths {
         runtime.cancellation.check()?;
         let relative = source
             .strip_prefix(input_dir)
             .map_err(|_| ReleaseError::PathOutsideRoot(source.clone()))?;
         let relative_string = path_to_portable(relative)?;
-        let category = relative
-            .parent()
-            .and_then(Path::file_name)
-            .and_then(|value| value.to_str())
-            .ok_or_else(|| ReleaseError::UnsafePath(relative.to_path_buf()))?;
         let metadata = fs::metadata(source)?;
-        let reserved = metadata
-            .len()
-            .checked_mul(FILE_MEMORY_MULTIPLIER)
-            .ok_or(ReleaseError::SizeOverflow)?;
-        let _reservation = runtime.memory_budget.reserve(reserved)?;
         let bytes = fs::read(source)?;
-        let document: Value =
-            serde_json::from_slice(&bytes).map_err(|source_error| ReleaseError::DatasetJson {
-                path: source.clone(),
-                source: source_error,
-            })?;
-        let mut ordered_document = orderer.order_document(&document, category)?;
-        convert_reference_uris(&mut ordered_document);
-        let ordered_bytes = serde_json::to_vec(&ordered_document)?;
-        let xml = convert_json_to_xml(&ordered_bytes, &runtime.cancellation)?;
-        let output_relative = Path::new("data").join(relative).with_extension("xml");
-        let target = staging.path().join(&output_relative);
-        if let Some(parent) = target.parent() {
-            fs::create_dir_all(parent)?;
-        }
-        fs::write(&target, &xml)?;
+        let target = output_dir.join("data").join(relative).with_extension("xml");
+        let xml = fs::read(&target)?;
         let source_hash = hex_digest(Sha256::digest(&bytes));
         let output_hash = hex_digest(Sha256::digest(&xml));
         update_record_hash(
             &mut conversion_hasher,
             &[&relative_string, &source_hash, &output_hash],
         );
-        dataset_count = dataset_count
-            .checked_add(1)
-            .ok_or(ReleaseError::SizeOverflow)?;
         input_bytes = input_bytes
             .checked_add(metadata.len())
             .ok_or(ReleaseError::SizeOverflow)?;
     }
-    copy_ilcd_assets(staging.path(), runtime)?;
-    let (output_bytes, output_tree_sha256) = hash_tree(staging.path(), runtime)?;
-    runtime.cancellation.check()?;
-    staging.commit()?;
     Ok(IlcdConversionReportV1 {
-        dataset_count,
+        dataset_count: u64::try_from(files.paths.len()).map_err(|_| ReleaseError::SizeOverflow)?,
         input_bytes,
-        output_bytes,
+        output_bytes: conversion.output_bytes,
         conversion_set_sha256: hex_digest(conversion_hasher.finalize()),
-        output_tree_sha256,
-        asset_fingerprint: asset_fingerprint()?,
+        output_tree_sha256: conversion.output_tree_sha256,
+        asset_fingerprint: conversion.asset_fingerprint,
     })
 }
 
@@ -105,6 +76,21 @@ pub(crate) fn semantic_roundtrip(
     if !ilcd_dir.is_dir() {
         return Err(ReleaseError::InputNotDirectory(ilcd_dir.to_path_buf()));
     }
+    let ilcd_data_dir = ilcd_dir.join("data");
+    if !ilcd_data_dir.is_dir() {
+        return Err(ReleaseError::InputNotDirectory(ilcd_data_dir));
+    }
+    let restored_workspace = tempfile::tempdir()?;
+    let restored_dir = restored_workspace.path().join("restored");
+    convert_directory(&ConversionRequest {
+        input_dir: ilcd_data_dir,
+        output_dir: restored_dir.clone(),
+        direction: ConversionDirection::IlcdToTidas,
+        cancellation: runtime.cancellation.clone(),
+        memory_budget: runtime.memory_budget.clone(),
+        queue_capacity: runtime.queue_capacity,
+        progress: None,
+    })?;
     let mut dataset_count = 0_u64;
     let mut mismatch_count = 0_u64;
     let mut mismatches = Vec::new();
@@ -116,8 +102,8 @@ pub(crate) fn semantic_roundtrip(
             .strip_prefix(tidas_dir)
             .map_err(|_| ReleaseError::PathOutsideRoot(source.clone()))?;
         let relative_string = path_to_portable(relative)?;
-        let xml_path = ilcd_dir.join("data").join(relative).with_extension("xml");
-        if !xml_path.is_file() {
+        let restored_path = restored_dir.join("data").join(relative);
+        if !restored_path.is_file() {
             update_record_hash(&mut semantic_hasher, &[&relative_string, "xml-missing"]);
             record_mismatch(
                 &mut mismatches,
@@ -131,10 +117,10 @@ pub(crate) fn semantic_roundtrip(
             continue;
         }
         let source_metadata = fs::metadata(source)?;
-        let xml_metadata = fs::metadata(&xml_path)?;
+        let restored_metadata = fs::metadata(&restored_path)?;
         let reserved = source_metadata
             .len()
-            .checked_add(xml_metadata.len())
+            .checked_add(restored_metadata.len())
             .and_then(|bytes| bytes.checked_mul(FILE_MEMORY_MULTIPLIER))
             .ok_or(ReleaseError::SizeOverflow)?;
         let _reservation = runtime.memory_budget.reserve(reserved)?;
@@ -145,8 +131,7 @@ pub(crate) fn semantic_roundtrip(
                     source: source_error,
                 }
             })?;
-        let converted_bytes = convert_xml_to_json(&fs::read(&xml_path)?, &runtime.cancellation)?;
-        let converted_value: Value = serde_json::from_slice(&converted_bytes)?;
+        let converted_value: Value = serde_json::from_slice(&fs::read(&restored_path)?)?;
         let normalized_source = normalize(source_value, None);
         let normalized_converted = normalize(converted_value, None);
         let source_hash = canonical_hash(&normalized_source)?;
@@ -217,50 +202,6 @@ fn dataset_files(root: &Path, runtime: &ReleaseRuntime) -> Result<PathCatalog, R
         paths: files,
         _reservation: reservation,
     })
-}
-
-fn convert_reference_uris(value: &mut Value) {
-    match value {
-        Value::Object(object) => {
-            for (key, child) in object {
-                if key == "@uri" {
-                    if let Some(uri) = child.as_str()
-                        && let Some(prefix) = uri.strip_suffix(".json")
-                    {
-                        *child = Value::String(format!("{prefix}.xml"));
-                    }
-                } else {
-                    convert_reference_uris(child);
-                }
-            }
-        }
-        Value::Array(items) => {
-            for item in items {
-                convert_reference_uris(item);
-            }
-        }
-        _ => {}
-    }
-}
-
-fn copy_ilcd_assets(target: &Path, runtime: &ReleaseRuntime) -> Result<(), ReleaseError> {
-    for asset in bundled_assets()
-        .into_iter()
-        .filter(|asset| asset.path.starts_with(EILCD_ASSET_PREFIX))
-    {
-        runtime.cancellation.check()?;
-        let relative = asset
-            .path
-            .strip_prefix(EILCD_ASSET_PREFIX)
-            .expect("filtered asset has the eILCD prefix");
-        safe_relative(relative)?;
-        let destination = target.join(relative);
-        if let Some(parent) = destination.parent() {
-            fs::create_dir_all(parent)?;
-        }
-        fs::write(destination, asset.bytes)?;
-    }
-    Ok(())
 }
 
 fn normalize(value: Value, field_name: Option<&str>) -> Value {
@@ -355,76 +296,6 @@ fn update_record_hash(hasher: &mut Sha256, values: &[&str]) {
     for value in values {
         hasher.update(value.len().to_le_bytes());
         hasher.update(value.as_bytes());
-    }
-}
-
-fn hash_tree(root: &Path, runtime: &ReleaseRuntime) -> Result<(u64, String), ReleaseError> {
-    let mut file_count = 0_u64;
-    let mut path_bytes = 0_u64;
-    for entry in WalkDir::new(root).follow_links(false) {
-        runtime.cancellation.check()?;
-        let entry = entry?;
-        if entry.file_type().is_symlink() {
-            return Err(ReleaseError::Symlink(entry.into_path()));
-        }
-        if entry.file_type().is_file() {
-            file_count = file_count
-                .checked_add(1)
-                .ok_or(ReleaseError::SizeOverflow)?;
-            path_bytes = path_bytes
-                .checked_add(
-                    u64::try_from(entry.path().as_os_str().len())
-                        .map_err(|_| ReleaseError::SizeOverflow)?
-                        .checked_add(128)
-                        .ok_or(ReleaseError::SizeOverflow)?,
-                )
-                .ok_or(ReleaseError::SizeOverflow)?;
-        }
-    }
-    let _path_reservation = runtime.memory_budget.reserve(path_bytes)?;
-    let capacity = usize::try_from(file_count).map_err(|_| ReleaseError::SizeOverflow)?;
-    let mut files = Vec::with_capacity(capacity);
-    for entry in WalkDir::new(root).follow_links(false) {
-        runtime.cancellation.check()?;
-        let entry = entry?;
-        if entry.file_type().is_file() {
-            files.push(entry.into_path());
-        }
-    }
-    files.sort();
-    let mut bytes = 0_u64;
-    let mut hasher = Sha256::new();
-    for file in files {
-        let relative = file
-            .strip_prefix(root)
-            .map_err(|_| ReleaseError::PathOutsideRoot(file.clone()))?;
-        let name = path_to_portable(relative)?;
-        let metadata = fs::metadata(&file)?;
-        bytes = bytes
-            .checked_add(metadata.len())
-            .ok_or(ReleaseError::SizeOverflow)?;
-        let hash = sha256_file(&file, runtime)?;
-        update_record_hash(&mut hasher, &[&name, &hash]);
-    }
-    Ok((bytes, hex_digest(hasher.finalize())))
-}
-
-fn reject_nested_output(input: &Path, output: &Path) -> Result<(), ReleaseError> {
-    let input = fs::canonicalize(input)?;
-    let candidate = if output.exists() {
-        fs::canonicalize(output)?
-    } else {
-        let parent = output.parent().unwrap_or_else(|| Path::new("."));
-        fs::canonicalize(parent)?.join(
-            output
-                .file_name()
-                .ok_or_else(|| ReleaseError::UnsafePath(output.to_path_buf()))?,
-        )
-    };
-    if candidate.starts_with(&input) {
-        Err(ReleaseError::OutputInsideInput(output.to_path_buf()))
-    } else {
-        Ok(())
     }
 }
 

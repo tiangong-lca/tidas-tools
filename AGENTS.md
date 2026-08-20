@@ -30,8 +30,8 @@ checkPaths:
   - .github/workflows/**
   - .githooks/pre-push
 lastReviewedAt: 2026-08-20
-lastReviewedCommit: e7fb32b844d12faf37f80ac58b7d82b6195fa5db
-lastReviewedNote: "Reviewed for Issue #169 phase 2: the immutable v0.1.5 Release Request preserves the unified Rust product, exact-version crate set, supported platform matrix, and merge-gated release architecture."
+lastReviewedCommit: c6f38bcbddff3448ceffb694cfb6eb228720796e
+lastReviewedNote: "Reviewed for Issue #171: the semantic eILCD projection and complete validation path preserve the unified Rust product, fixed TIDAS schema boundary, bounded runtime, and merge-gated release architecture."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md

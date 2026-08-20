@@ -794,6 +794,37 @@ fn empty_native_tidas_package_is_a_complete_success() {
     assert_eq!(payload["exit_class"], "success");
     assert_eq!(payload["summary"]["validation"]["document_count"], 0);
     assert_eq!(payload["summary"]["validation"]["issue_count"], 0);
+    assert_eq!(
+        payload["summary"]["eilcd_projection_validation"]["ok"],
+        true
+    );
+    assert_eq!(payload["summary"]["semantic_roundtrip"]["ok"], true);
+}
+
+#[test]
+fn schema_only_is_explicitly_weaker_than_complete_tidas_validation() {
+    let directory = tempfile::tempdir().unwrap();
+    let (output, payload) = json_output(&[
+        "validate",
+        directory.path().to_str().unwrap(),
+        "--schema-only",
+        "--format",
+        "json",
+    ]);
+    assert!(output.status.success());
+    assert_eq!(payload["summary"]["validation"]["ok"], true);
+    assert!(
+        payload["summary"]
+            .get("eilcd_projection_validation")
+            .is_none()
+    );
+    assert_eq!(payload["diagnostics"][0]["code"], "schema_only_validation");
+    assert!(
+        payload["next_actions"][0]
+            .as_str()
+            .unwrap()
+            .contains("without --schema-only")
+    );
 }
 
 #[test]
