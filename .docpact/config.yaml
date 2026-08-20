@@ -1,9 +1,9 @@
 version: 1
 layout: repo
 lastReviewedAt: "2026-08-20"
-lastReviewedCommit: "c6f38bcbddff3448ceffb694cfb6eb228720796e"
-# Reviewed for Issue #171: semantic eILCD projection, target validation, and
-# recoverability remain covered by the existing conversion/validation routes.
+lastReviewedCommit: "02a7ad3ea83424b0372dbbefb8609fe36ae6cba7"
+# Reviewed for Issue #173: the v0.2.0 version-set preparation preserves the
+# current ownership, routing, validation, and immutable release architecture.
 
 catalog:
   repos:

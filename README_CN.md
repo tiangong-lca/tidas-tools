@@ -142,7 +142,7 @@ provenance/SBOM attestation。固定版本且静态链接的 libxml2/libxslt 使
 libxml2/libxslt 开发依赖的开发者，也可从源码安装唯一的统一 executable：
 
 ```bash
-cargo install tidas --version 0.1.5 --locked
+cargo install tidas --version 0.2.0 --locked
 ```
 
 全部公开 workspace crates 使用完全相同的精确版本，避免 Cargo 混用不兼容的领域
@@ -161,11 +161,11 @@ tag，再显式从该 tag dispatch 原生 release workflow，使 artifact proven
 ```bash
 curl --proto '=https' --tlsv1.2 -fsSLO \
   https://raw.githubusercontent.com/tiangong-lca/tidas-tools/main/scripts/install.sh
-sh install.sh --version 0.1.5 --prefix "$HOME/.local"
+sh install.sh --version 0.2.0 --prefix "$HOME/.local"
 ```
 
 ```powershell
-.\scripts\install.ps1 -Version 0.1.5
+.\scripts\install.ps1 -Version 0.2.0
 ```
 
 每个 GitHub Release 同时携带由相同归档哈希生成的 Homebrew formula 与 Winget
