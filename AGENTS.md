@@ -30,8 +30,8 @@ checkPaths:
   - .github/workflows/**
   - .githooks/pre-push
 lastReviewedAt: 2026-08-20
-lastReviewedCommit: c6f38bcbddff3448ceffb694cfb6eb228720796e
-lastReviewedNote: "Reviewed for Issue #171: the semantic eILCD projection and complete validation path preserve the unified Rust product, fixed TIDAS schema boundary, bounded runtime, and merge-gated release architecture."
+lastReviewedCommit: 02a7ad3ea83424b0372dbbefb8609fe36ae6cba7
+lastReviewedNote: "Reviewed for Issue #173: the v0.2.0 version-set preparation preserves the unified Rust product, fixed TIDAS schema boundary, bounded runtime, and merge-gated release architecture."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md
