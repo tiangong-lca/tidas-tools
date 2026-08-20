@@ -30,8 +30,8 @@ checkPaths:
   - .github/workflows/**
   - .githooks/pre-push
 lastReviewedAt: 2026-08-20
-lastReviewedCommit: 02a7ad3ea83424b0372dbbefb8609fe36ae6cba7
-lastReviewedNote: "Reviewed for Issue #173: the v0.2.0 version-set preparation preserves the unified Rust product, fixed TIDAS schema boundary, bounded runtime, and merge-gated release architecture."
+lastReviewedCommit: 4032198caa8654faf573c795434653113b85a331
+lastReviewedNote: "Reviewed for Issue #175: the immutable v0.2.0 Release Request preserves the unified Rust product, fixed TIDAS schema boundary, bounded runtime, and merge-gated release architecture."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md

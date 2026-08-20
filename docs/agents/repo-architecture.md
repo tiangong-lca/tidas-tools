@@ -26,8 +26,8 @@ checkPaths:
   - .githooks/pre-push
   - scripts/**
 lastReviewedAt: 2026-08-20
-lastReviewedCommit: 02a7ad3ea83424b0372dbbefb8609fe36ae6cba7
-lastReviewedNote: "Issue #173 prepares the v0.2.0 exact version set without changing crate ownership or the two-phase immutable release architecture."
+lastReviewedCommit: 4032198caa8654faf573c795434653113b85a331
+lastReviewedNote: "Issue #175 binds the immutable v0.2.0 Release Request to the qualified version-set merge commit without changing crate ownership or release architecture."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
