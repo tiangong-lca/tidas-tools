@@ -3,13 +3,13 @@
   "package": "@tiangong-lca/tidas-spec",
   "version": "0.2.3",
   "specRepository": "https://github.com/tiangong-lca/tidas-spec",
-  "specRevision": "f118660dbcbfbf736be74837cce0bf26cd177245",
+  "specRevision": "97a3725e6a24886ec1332be61e462e2228ee94fe",
   "importedSourceRepository": "https://github.com/tiangong-lca/tidas-toolkit",
   "importedSourceCommit": "9c0d8b1c8ceb1841074f5bc6de5fbb7fcc9318f5",
   "archiveFile": "tiangong-lca-tidas-spec-0.2.3.tgz",
-  "archiveSha256": "e28018d2bf6eb4b67ca437225adfc25fe3795cf69f9dcd95698a5214aaea2a29",
+  "archiveSha256": "57effe04aba1b3450b988853edf6233bc52e09c3f7b55dfe1e88aa4261f39a77",
   "manifestPath": "assets/spec/spec-manifest.json",
-  "manifestSha256": "5b69ab859e26a253dc51c6aeee68c971d727b1f8db44128143795113fe3eee6a",
+  "manifestSha256": "2a258b8acc498c02df70d461ecf7cb7063defb7ba4e378606fd143ca3e9f61e7",
   "importedFileCount": 39,
-  "publicAssetsSha256": "5007285e309eca282c3fe8a5d5f0a08135cd5417bc909178288ca400b7010c7c"
+  "publicAssetsSha256": "c8ff377c1234ed0019a09c19700112fb354799338cc884402b50eb686151076b"
 }

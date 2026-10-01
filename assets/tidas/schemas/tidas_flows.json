@@ -75,97 +75,17 @@
                   "description": "Hierachical classification of the Flow property foreseen to be used to structure the Flow property content of the database. (Note: This entry is NOT required for the identification of the Flow property data set. It should nevertheless be avoided to use identical names for Flow properties in the same class.",
                   "properties": {
                     "common:elementaryFlowCategorization": {
-                      "type": "object",
-                      "properties": {
-                        "common:category": {
-                          "type": "array",
-                          "items": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
-                                  "const": "0"
-                                },
-                                "@catId": {
-                                  "type": "string"
-                                },
-                                "#text": {
-                                  "type": "string"
-                                }
-                              },
-                              "required": [
-                                "@level",
-                                "@catId",
-                                "#text"
-                              ],
-                              "dependencies": {
-                                "@level": {
-                                  "$ref": "./tidas_flows_elementary_category.json"
-                                }
-                              }
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
-                                  "const": "1"
-                                },
-                                "@catId": {
-                                  "type": "string"
-                                },
-                                "#text": {
-                                  "type": "string"
-                                }
-                              },
-                              "required": [
-                                "@level",
-                                "@catId",
-                                "#text"
-                              ],
-                              "dependencies": {
-                                "@level": {
-                                  "$ref": "./tidas_flows_elementary_category.json"
-                                }
-                              }
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
-                                  "const": "2"
-                                },
-                                "@catId": {
-                                  "type": "string"
-                                },
-                                "#text": {
-                                  "type": "string"
-                                }
-                              },
-                              "required": [
-                                "@level",
-                                "@catId",
-                                "#text"
-                              ],
-                              "dependencies": {
-                                "@level": {
-                                  "$ref": "./tidas_flows_elementary_category.json"
-                                }
-                              }
-                            }
-                          ],
-                          "uniqueItems": true,
-                          "maxItems": 3,
-                          "additionalItems": false
+                      "anyOf": [
+                        {
+                          "$ref": "#/$defs/ElementaryFlowCategorization"
                         },
-                        "common:other": {
-                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        {
+                          "type": "array",
+                          "minItems": 1,
+                          "items": {
+                            "$ref": "#/$defs/ElementaryFlowCategorization"
+                          }
                         }
-                      },
-                      "required": [
-                        "common:category"
                       ]
                     },
                     "common:classification": {
@@ -427,7 +347,18 @@
               "type": "object",
               "properties": {
                 "locationOfSupply": {
-                  "$ref": "tidas_locations_category.json"
+                  "anyOf": [
+                    {
+                      "$ref": "tidas_locations_category.json"
+                    },
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "$ref": "tidas_locations_category.json"
+                      }
+                    }
+                  ]
                 },
                 "common:other": {
                   "$ref": "tidas_data_types.json#/$defs/CommonOther"
@@ -841,5 +772,101 @@
   },
   "required": [
     "flowDataSet"
-  ]
+  ],
+  "$defs": {
+    "ElementaryFlowCategorization": {
+      "type": "object",
+      "properties": {
+        "common:category": {
+          "type": "array",
+          "items": [
+            {
+              "type": "object",
+              "properties": {
+                "@level": {
+                  "$ref": "tidas_data_types.json#/$defs/LevelType",
+                  "const": "0"
+                },
+                "@catId": {
+                  "type": "string"
+                },
+                "#text": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "@level",
+                "@catId",
+                "#text"
+              ],
+              "dependencies": {
+                "@level": {
+                  "$ref": "./tidas_flows_elementary_category.json"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "@level": {
+                  "$ref": "tidas_data_types.json#/$defs/LevelType",
+                  "const": "1"
+                },
+                "@catId": {
+                  "type": "string"
+                },
+                "#text": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "@level",
+                "@catId",
+                "#text"
+              ],
+              "dependencies": {
+                "@level": {
+                  "$ref": "./tidas_flows_elementary_category.json"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "@level": {
+                  "$ref": "tidas_data_types.json#/$defs/LevelType",
+                  "const": "2"
+                },
+                "@catId": {
+                  "type": "string"
+                },
+                "#text": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "@level",
+                "@catId",
+                "#text"
+              ],
+              "dependencies": {
+                "@level": {
+                  "$ref": "./tidas_flows_elementary_category.json"
+                }
+              }
+            }
+          ],
+          "uniqueItems": true,
+          "maxItems": 3,
+          "additionalItems": false
+        },
+        "common:other": {
+          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+        }
+      },
+      "required": [
+        "common:category"
+      ]
+    }
+  }
 }

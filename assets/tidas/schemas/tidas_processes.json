@@ -618,7 +618,18 @@
                   ]
                 },
                 "referenceToReferenceFlow": {
-                  "$ref": "tidas_data_types.json#/$defs/Int6"
+                  "anyOf": [
+                    {
+                      "$ref": "tidas_data_types.json#/$defs/Int6"
+                    },
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "$ref": "tidas_data_types.json#/$defs/Int6"
+                      }
+                    }
+                  ]
                 },
                 "functionalUnitOrOther": {
                   "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
@@ -721,24 +732,51 @@
                   ]
                 },
                 "subLocationOfOperationSupplyOrProduction": {
-                  "type": "object",
                   "description": "One or more geographical sub-unit(s) of the stated \"Location\". Such sub-units can be e.g. the sampling sites of a company-average data set, the countries of a region-average data set, or specific sites in a country-average data set. [Note: For single site data sets this field is empty and the site is named in the \"Location\" field.]",
-                  "properties": {
-                    "@subLocation": {
-                      "$ref": "tidas_locations_category.json"
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "@subLocation": {
+                          "$ref": "tidas_locations_category.json"
+                        },
+                        "@latitudeAndLongitude": {
+                          "$ref": "tidas_data_types.json#/$defs/GIS",
+                          "description": "Geographical latitude and longitude reference of \"Location\" / \"Sub-location\". For area-type locations (e.g. countries, continents) the field is empty."
+                        },
+                        "descriptionOfRestrictions": {
+                          "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                          "description": "Further explanations about additional aspects of the location: e.g. a company and/or site description and address, whether for certain sub-areas within the \"Location\" the data set is not valid, whether data is only valid for certain regions within the location indicated, or whether certain elementary flows or intermediate product flows are extrapolated from another geographical area."
+                        },
+                        "common:other": {
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        }
+                      }
                     },
-                    "@latitudeAndLongitude": {
-                      "$ref": "tidas_data_types.json#/$defs/GIS",
-                      "description": "Geographical latitude and longitude reference of \"Location\" / \"Sub-location\". For area-type locations (e.g. countries, continents) the field is empty."
-                    },
-                    "descriptionOfRestrictions": {
-                      "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
-                      "description": "Further explanations about additional aspects of the location: e.g. a company and/or site description and address, whether for certain sub-areas within the \"Location\" the data set is not valid, whether data is only valid for certain regions within the location indicated, or whether certain elementary flows or intermediate product flows are extrapolated from another geographical area."
-                    },
-                    "common:other": {
-                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "@subLocation": {
+                            "$ref": "tidas_locations_category.json"
+                          },
+                          "@latitudeAndLongitude": {
+                            "$ref": "tidas_data_types.json#/$defs/GIS",
+                            "description": "Geographical latitude and longitude reference of \"Location\" / \"Sub-location\". For area-type locations (e.g. countries, continents) the field is empty."
+                          },
+                          "descriptionOfRestrictions": {
+                            "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                            "description": "Further explanations about additional aspects of the location: e.g. a company and/or site description and address, whether for certain sub-areas within the \"Location\" the data set is not valid, whether data is only valid for certain regions within the location indicated, or whether certain elementary flows or intermediate product flows are extrapolated from another geographical area."
+                          },
+                          "common:other": {
+                            "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                          }
+                        }
+                      }
                     }
-                  }
+                  ]
                 },
                 "common:other": {
                   "$ref": "tidas_data_types.json#/$defs/CommonOther"
@@ -787,49 +825,108 @@
                   "description": "Description of the model(s) represented in this section of mathematical relations. Can cover information on restrictions, model strenghts and weaknesses, etc. (Note: Also see information provided on the level of the individual formula in field \"Comment\" and in the general process description in the fields in section \"Technology\".)"
                 },
                 "variableParameter": {
-                  "type": "object",
-                  "properties": {
-                    "@name": {
-                      "$ref": "tidas_data_types.json#/$defs/MatV",
-                      "description": "Name of the variable parameter in the mathematical model."
-                    },
-                    "formula": {
-                      "$ref": "tidas_data_types.json#/$defs/MatR",
-                      "description": "Formula of the variable parameter in the mathematical model."
-                    },
-                    "meanValue": {
-                      "$ref": "tidas_data_types.json#/$defs/Real",
-                      "description": "Comment on the variable parameter in the mathematical model."
-                    },
-                    "minimumValue": {
-                      "$ref": "tidas_data_types.json#/$defs/Real",
-                      "description": "Comment on the variable parameter in the mathematical model."
-                    },
-                    "maximumValue": {
-                      "$ref": "tidas_data_types.json#/$defs/Real",
-                      "description": "Comment on the variable parameter in the mathematical model."
-                    },
-                    "uncertaintyDistributionType": {
-                      "type": "string",
-                      "description": "Defines the kind of uncertainty distribution that is valid for this particular object or parameter.",
-                      "enum": [
-                        "undefined",
-                        "log-normal",
-                        "normal",
-                        "triangular",
-                        "uniform"
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "@name": {
+                          "$ref": "tidas_data_types.json#/$defs/MatV",
+                          "description": "Name of the variable parameter in the mathematical model."
+                        },
+                        "formula": {
+                          "$ref": "tidas_data_types.json#/$defs/MatR",
+                          "description": "Formula of the variable parameter in the mathematical model."
+                        },
+                        "meanValue": {
+                          "$ref": "tidas_data_types.json#/$defs/Real",
+                          "description": "Comment on the variable parameter in the mathematical model."
+                        },
+                        "minimumValue": {
+                          "$ref": "tidas_data_types.json#/$defs/Real",
+                          "description": "Comment on the variable parameter in the mathematical model."
+                        },
+                        "maximumValue": {
+                          "$ref": "tidas_data_types.json#/$defs/Real",
+                          "description": "Comment on the variable parameter in the mathematical model."
+                        },
+                        "uncertaintyDistributionType": {
+                          "type": "string",
+                          "description": "Defines the kind of uncertainty distribution that is valid for this particular object or parameter.",
+                          "enum": [
+                            "undefined",
+                            "log-normal",
+                            "normal",
+                            "triangular",
+                            "uniform"
+                          ]
+                        },
+                        "relativeStandardDeviation95In": {
+                          "$ref": "tidas_data_types.json#/$defs/Perc"
+                        },
+                        "comment": {
+                          "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
+                        },
+                        "common:other": {
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        }
+                      },
+                      "required": [
+                        "@name"
                       ]
                     },
-                    "relativeStandardDeviation95In": {
-                      "$ref": "tidas_data_types.json#/$defs/Perc"
-                    },
-                    "comment": {
-                      "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
-                    },
-                    "common:other": {
-                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "@name": {
+                            "$ref": "tidas_data_types.json#/$defs/MatV",
+                            "description": "Name of the variable parameter in the mathematical model."
+                          },
+                          "formula": {
+                            "$ref": "tidas_data_types.json#/$defs/MatR",
+                            "description": "Formula of the variable parameter in the mathematical model."
+                          },
+                          "meanValue": {
+                            "$ref": "tidas_data_types.json#/$defs/Real",
+                            "description": "Comment on the variable parameter in the mathematical model."
+                          },
+                          "minimumValue": {
+                            "$ref": "tidas_data_types.json#/$defs/Real",
+                            "description": "Comment on the variable parameter in the mathematical model."
+                          },
+                          "maximumValue": {
+                            "$ref": "tidas_data_types.json#/$defs/Real",
+                            "description": "Comment on the variable parameter in the mathematical model."
+                          },
+                          "uncertaintyDistributionType": {
+                            "type": "string",
+                            "description": "Defines the kind of uncertainty distribution that is valid for this particular object or parameter.",
+                            "enum": [
+                              "undefined",
+                              "log-normal",
+                              "normal",
+                              "triangular",
+                              "uniform"
+                            ]
+                          },
+                          "relativeStandardDeviation95In": {
+                            "$ref": "tidas_data_types.json#/$defs/Perc"
+                          },
+                          "comment": {
+                            "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
+                          },
+                          "common:other": {
+                            "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                          }
+                        },
+                        "required": [
+                          "@name"
+                        ]
+                      }
                     }
-                  }
+                  ]
                 },
                 "common:other": {
                   "$ref": "tidas_data_types.json#/$defs/CommonOther"
@@ -880,32 +977,68 @@
                   "description": "Short description of any deviations from the general \"LCI method principles\" and additional explanations. Refers especially to specific processes/cases where the stated \"attributional\" or \"consequential\" approach was not applied. Or where deviations were made from any specific rules for applying the \"Consequential with attributional components\" approach. A reference to the \"Intended application\" of the data collection can be made here, too. Allocated co-products may be reported here as well. In case of no (quantitatively relevant) deviations from the LCI method principle, \"none\" should be stated."
                 },
                 "LCIMethodApproaches": {
-                  "type": "string",
                   "description": "Names briefly the specific approach(es) used in LCI modeling, e.g. allocation, substitution etc. In case of LCI results and Partly terminated system data sets this also covers those applied in the included background system.",
-                  "enum": [
-                    "Allocation - market value",
-                    "Allocation - gross calorific value",
-                    "Allocation - net calorific value",
-                    "Allocation - exergetic content",
-                    "Allocation - element content",
-                    "Allocation - mass",
-                    "Allocation - volume",
-                    "Allocation - ability to bear",
-                    "Allocation - marginal causality",
-                    "Allocation - physical causality",
-                    "Allocation - 100% to main function",
-                    "Allocation - other explicit assignment",
-                    "Allocation - equal distribution",
-                    "Substitution - BAT",
-                    "Substitution - average, market price correction",
-                    "Substitution - average, technical properties correction",
-                    "Allocation - recycled content",
-                    "Substitution - recycling potential",
-                    "Substitution - average, no correction",
-                    "Substitution - specific",
-                    "Consequential effects - other",
-                    "Not applicable",
-                    "Other"
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "Allocation - market value",
+                        "Allocation - gross calorific value",
+                        "Allocation - net calorific value",
+                        "Allocation - exergetic content",
+                        "Allocation - element content",
+                        "Allocation - mass",
+                        "Allocation - volume",
+                        "Allocation - ability to bear",
+                        "Allocation - marginal causality",
+                        "Allocation - physical causality",
+                        "Allocation - 100% to main function",
+                        "Allocation - other explicit assignment",
+                        "Allocation - equal distribution",
+                        "Substitution - BAT",
+                        "Substitution - average, market price correction",
+                        "Substitution - average, technical properties correction",
+                        "Allocation - recycled content",
+                        "Substitution - recycling potential",
+                        "Substitution - average, no correction",
+                        "Substitution - specific",
+                        "Consequential effects - other",
+                        "Not applicable",
+                        "Other"
+                      ]
+                    },
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "Allocation - market value",
+                          "Allocation - gross calorific value",
+                          "Allocation - net calorific value",
+                          "Allocation - exergetic content",
+                          "Allocation - element content",
+                          "Allocation - mass",
+                          "Allocation - volume",
+                          "Allocation - ability to bear",
+                          "Allocation - marginal causality",
+                          "Allocation - physical causality",
+                          "Allocation - 100% to main function",
+                          "Allocation - other explicit assignment",
+                          "Allocation - equal distribution",
+                          "Substitution - BAT",
+                          "Substitution - average, market price correction",
+                          "Substitution - average, technical properties correction",
+                          "Allocation - recycled content",
+                          "Substitution - recycling potential",
+                          "Substitution - average, no correction",
+                          "Substitution - specific",
+                          "Consequential effects - other",
+                          "Not applicable",
+                          "Other"
+                        ]
+                      }
+                    }
                   ]
                 },
                 "deviationsFromLCIMethodApproaches": {
@@ -1016,42 +1149,87 @@
                   "description": "\"LCIA methods data sets\" that can be applied to the elementary flows in the Inputs and Outputs section, i.e. ALL these flows are referenced by the respective LCIA method data set (if they are of environmental relevance and a characterisation factor is defined for the respective flow). [Note: Applicability is not given if the inventoty contains some elementary flows with the same meaning as referenced in the LCIA method data set but in a different nomenclature (and hence carry no characterisation factor), or if the flows are sum indicators or flow groups that are addressed differently in the LCIA method data set.]"
                 },
                 "completenessElementaryFlows": {
-                  "type": "object",
                   "description": "Completeness of the elementary flows in the Inputs and Outputs section of this data set from impact perspective, regarding addressing the individual mid-point problem field / impact category given. The completeness refers to the state-of-the-art of scientific knowledge whether or not an individual elementary flow contributes to the respective mid-point topic in a relevant way, which is e.g. the basis for the ILCD reference elementary flows. [Note: The \"Completeness\" statement does not automatically mean that related LCIA methods exist or reference the elementary flows of this data set. Hence for direct applicability of existing LCIA methods, check the field \"Supported LCIA method data sets\".]",
-                  "properties": {
-                    "@type": {
-                      "type": "string",
-                      "enum": [
-                        "Climate change",
-                        "Ozone depletion",
-                        "Summer smog",
-                        "Eutrophication",
-                        "Acidification",
-                        "Human toxicity",
-                        "Freshwater ecotoxicity",
-                        "Seawater eco-toxicity",
-                        "Terrestric eco-toxicity",
-                        "Radioactivity",
-                        "Land use",
-                        "Non-renewable material resource depletion",
-                        "Renewable material resource consumption",
-                        "Non-renewable primary energy depletion",
-                        "Renewable primary energy consumption",
-                        "Particulate matter/respiratory inorganics",
-                        "Species depletion",
-                        "Noise"
-                      ]
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "@type": {
+                          "type": "string",
+                          "enum": [
+                            "Climate change",
+                            "Ozone depletion",
+                            "Summer smog",
+                            "Eutrophication",
+                            "Acidification",
+                            "Human toxicity",
+                            "Freshwater ecotoxicity",
+                            "Seawater eco-toxicity",
+                            "Terrestric eco-toxicity",
+                            "Radioactivity",
+                            "Land use",
+                            "Non-renewable material resource depletion",
+                            "Renewable material resource consumption",
+                            "Non-renewable primary energy depletion",
+                            "Renewable primary energy consumption",
+                            "Particulate matter/respiratory inorganics",
+                            "Species depletion",
+                            "Noise"
+                          ]
+                        },
+                        "@value": {
+                          "type": "string",
+                          "enum": [
+                            "All relevant flows quantified",
+                            "Relevant flows missing",
+                            "Topic not relevant",
+                            "No statement"
+                          ]
+                        }
+                      }
                     },
-                    "@value": {
-                      "type": "string",
-                      "enum": [
-                        "All relevant flows quantified",
-                        "Relevant flows missing",
-                        "Topic not relevant",
-                        "No statement"
-                      ]
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "@type": {
+                            "type": "string",
+                            "enum": [
+                              "Climate change",
+                              "Ozone depletion",
+                              "Summer smog",
+                              "Eutrophication",
+                              "Acidification",
+                              "Human toxicity",
+                              "Freshwater ecotoxicity",
+                              "Seawater eco-toxicity",
+                              "Terrestric eco-toxicity",
+                              "Radioactivity",
+                              "Land use",
+                              "Non-renewable material resource depletion",
+                              "Renewable material resource consumption",
+                              "Non-renewable primary energy depletion",
+                              "Renewable primary energy consumption",
+                              "Particulate matter/respiratory inorganics",
+                              "Species depletion",
+                              "Noise"
+                            ]
+                          },
+                          "@value": {
+                            "type": "string",
+                            "enum": [
+                              "All relevant flows quantified",
+                              "Relevant flows missing",
+                              "Topic not relevant",
+                              "No statement"
+                            ]
+                          }
+                        }
+                      }
                     }
-                  }
+                  ]
                 },
                 "completenessOtherProblemField": {
                   "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
@@ -1563,7 +1741,10 @@
                           }
                         ]
                       }
-                    }
+                    },
+                    "required": [
+                      "allocation"
+                    ]
                   },
                   "dataSourceType": {
                     "type": "string",

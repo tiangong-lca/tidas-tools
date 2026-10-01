@@ -323,7 +323,10 @@
                             "groupName": {
                               "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
                             }
-                          }
+                          },
+                          "required": [
+                            "@id"
+                          ]
                         },
                         {
                           "type": "array",
@@ -337,7 +340,10 @@
                               "groupName": {
                                 "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
                               }
-                            }
+                            },
+                            "required": [
+                              "@id"
+                            ]
                           }
                         }
                       ]
@@ -369,10 +375,6 @@
                                 "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
                                 "description": "对过程数据集（包括其版本）的引用，包含在生命周期模型的 eILCD 存档中和/或可在远程位置（即 URI 或 URL）访问。"
                               },
-                              "scalingFactors": {
-                                "$ref": "tidas_data_types.json#/$defs/Real",
-                                "description": "该过程实例的整个清单的乘法比例因子，例如使用将“参考流程”扩展到目标产品数量（从而间接地扩展到生命周期模型的整个清单）。注意：要注意模型的指定不要过度或不足 - 请注意，每个过程实例缩放都会将模型的自由度减少 1。"
-                              },
                               "groups": {
                                 "type": "object",
                                 "description": "该过程实例所属的组。",
@@ -388,7 +390,10 @@
                                             "pattern": "^-?\\d+$",
                                             "description": "组的数据集内部 ID。"
                                           }
-                                        }
+                                        },
+                                        "required": [
+                                          "@groupId"
+                                        ]
                                       },
                                       {
                                         "type": "array",
@@ -400,7 +405,10 @@
                                               "pattern": "^-?\\d+$",
                                               "description": "组的数据集内部 ID。"
                                             }
-                                          }
+                                          },
+                                          "required": [
+                                            "@groupId"
+                                          ]
                                         }
                                       }
                                     ]
@@ -418,10 +426,35 @@
                                         "type": "object",
                                         "properties": {
                                           "@name": {
-                                            "$ref": "tidas_data_types.json#/$defs/MatV",
-                                            "description": "自由参数名称"
+                                            "$ref": "tidas_data_types.json#/$defs/MatV"
+                                          },
+                                          "#text": {
+                                            "$ref": "tidas_data_types.json#/$defs/Real"
+                                          },
+                                          "parameter": {
+                                            "$ref": "tidas_data_types.json#/$defs/Real",
+                                            "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
                                           }
-                                        }
+                                        },
+                                        "required": [
+                                          "@name"
+                                        ],
+                                        "allOf": [
+                                          {
+                                            "oneOf": [
+                                              {
+                                                "required": [
+                                                  "#text"
+                                                ]
+                                              },
+                                              {
+                                                "required": [
+                                                  "parameter"
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
                                       },
                                       {
                                         "type": "array",
@@ -429,10 +462,35 @@
                                           "type": "object",
                                           "properties": {
                                             "@name": {
-                                              "$ref": "tidas_data_types.json#/$defs/MatV",
-                                              "description": "自由参数名称"
+                                              "$ref": "tidas_data_types.json#/$defs/MatV"
+                                            },
+                                            "#text": {
+                                              "$ref": "tidas_data_types.json#/$defs/Real"
+                                            },
+                                            "parameter": {
+                                              "$ref": "tidas_data_types.json#/$defs/Real",
+                                              "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
                                             }
-                                          }
+                                          },
+                                          "required": [
+                                            "@name"
+                                          ],
+                                          "allOf": [
+                                            {
+                                              "oneOf": [
+                                                {
+                                                  "required": [
+                                                    "#text"
+                                                  ]
+                                                },
+                                                {
+                                                  "required": [
+                                                    "parameter"
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
                                         }
                                       }
                                     ]
@@ -659,16 +717,38 @@
                                       }
                                     ]
                                   }
-                                }
+                                },
+                                "required": [
+                                  "outputExchange"
+                                ]
                               },
                               "common:other": {
                                 "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                              },
+                              "scalingFactor": {
+                                "$ref": "tidas_data_types.json#/$defs/Real",
+                                "description": "该过程实例的整个清单的乘法比例因子，例如使用将“参考流程”扩展到目标产品数量（从而间接地扩展到生命周期模型的整个清单）。注意：要注意模型的指定不要过度或不足 - 请注意，每个过程实例缩放都会将模型的自由度减少 1。"
+                              },
+                              "scalingFactors": {
+                                "$ref": "tidas_data_types.json#/$defs/Real",
+                                "description": "该过程实例的整个清单的乘法比例因子，例如使用将“参考流程”扩展到目标产品数量（从而间接地扩展到生命周期模型的整个清单）。注意：要注意模型的指定不要过度或不足 - 请注意，每个过程实例缩放都会将模型的自由度减少 1。",
+                                "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
                               }
                             },
                             "required": [
                               "@dataSetInternalID",
                               "@multiplicationFactor",
                               "referenceToProcess"
+                            ],
+                            "allOf": [
+                              {
+                                "not": {
+                                  "required": [
+                                    "scalingFactor",
+                                    "scalingFactors"
+                                  ]
+                                }
+                              }
                             ]
                           }
                         },
@@ -688,10 +768,6 @@
                               "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
                               "description": "对过程数据集（包括其版本）的引用，包含在生命周期模型的 eILCD 存档中和/或可在远程位置（即 URI 或 URL）访问。"
                             },
-                            "scalingFactors": {
-                              "$ref": "tidas_data_types.json#/$defs/Real",
-                              "description": "该过程实例的整个清单的乘法比例因子，例如使用将“参考流程”扩展到目标产品数量（从而间接地扩展到生命周期模型的整个清单）。注意：要注意模型的指定不要过度或不足 - 请注意，每个过程实例缩放都会将模型的自由度减少 1。"
-                            },
                             "groups": {
                               "type": "object",
                               "description": "该过程实例所属的组。",
@@ -707,7 +783,10 @@
                                           "pattern": "^-?\\d+$",
                                           "description": "组的数据集内部 ID。"
                                         }
-                                      }
+                                      },
+                                      "required": [
+                                        "@groupId"
+                                      ]
                                     },
                                     {
                                       "type": "array",
@@ -719,7 +798,10 @@
                                             "pattern": "^-?\\d+$",
                                             "description": "组的数据集内部 ID。"
                                           }
-                                        }
+                                        },
+                                        "required": [
+                                          "@groupId"
+                                        ]
                                       }
                                     }
                                   ]
@@ -737,14 +819,35 @@
                                       "type": "object",
                                       "properties": {
                                         "@name": {
-                                          "type": "string",
-                                          "description": "自由参数名称"
+                                          "$ref": "tidas_data_types.json#/$defs/MatV"
                                         },
                                         "parameter": {
                                           "$ref": "tidas_data_types.json#/$defs/Real",
-                                          "description": "参数的值。"
+                                          "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
+                                        },
+                                        "#text": {
+                                          "$ref": "tidas_data_types.json#/$defs/Real"
                                         }
-                                      }
+                                      },
+                                      "required": [
+                                        "@name"
+                                      ],
+                                      "allOf": [
+                                        {
+                                          "oneOf": [
+                                            {
+                                              "required": [
+                                                "#text"
+                                              ]
+                                            },
+                                            {
+                                              "required": [
+                                                "parameter"
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
                                     },
                                     {
                                       "type": "array",
@@ -752,14 +855,35 @@
                                         "type": "object",
                                         "properties": {
                                           "@name": {
-                                            "type": "string",
-                                            "description": "自由参数名称"
+                                            "$ref": "tidas_data_types.json#/$defs/MatV"
                                           },
                                           "parameter": {
                                             "$ref": "tidas_data_types.json#/$defs/Real",
-                                            "description": "参数的值。"
+                                            "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
+                                          },
+                                          "#text": {
+                                            "$ref": "tidas_data_types.json#/$defs/Real"
                                           }
-                                        }
+                                        },
+                                        "required": [
+                                          "@name"
+                                        ],
+                                        "allOf": [
+                                          {
+                                            "oneOf": [
+                                              {
+                                                "required": [
+                                                  "#text"
+                                                ]
+                                              },
+                                              {
+                                                "required": [
+                                                  "parameter"
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
                                       }
                                     }
                                   ]
@@ -993,12 +1117,31 @@
                             },
                             "common:other": {
                               "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                            },
+                            "scalingFactor": {
+                              "$ref": "tidas_data_types.json#/$defs/Real",
+                              "description": "该过程实例的整个清单的乘法比例因子，例如使用将“参考流程”扩展到目标产品数量（从而间接地扩展到生命周期模型的整个清单）。注意：要注意模型的指定不要过度或不足 - 请注意，每个过程实例缩放都会将模型的自由度减少 1。"
+                            },
+                            "scalingFactors": {
+                              "$ref": "tidas_data_types.json#/$defs/Real",
+                              "description": "该过程实例的整个清单的乘法比例因子，例如使用将“参考流程”扩展到目标产品数量（从而间接地扩展到生命周期模型的整个清单）。注意：要注意模型的指定不要过度或不足 - 请注意，每个过程实例缩放都会将模型的自由度减少 1。",
+                              "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
                             }
                           },
                           "required": [
                             "@dataSetInternalID",
                             "@multiplicationFactor",
                             "referenceToProcess"
+                          ],
+                          "allOf": [
+                            {
+                              "not": {
+                                "required": [
+                                  "scalingFactor",
+                                  "scalingFactors"
+                                ]
+                              }
+                            }
                           ]
                         }
                       ]
@@ -1109,173 +1252,351 @@
             },
             "complianceDeclarations": {
               "description": "一份或多份符合选定标准、方案和其他参考资料的声明，例如ISO 14040、ISO 14044、ILCD、EF、EN 15804，...",
-              "type": "object",
-              "properties": {
-                "compliance": {
-                  "description": "一份合规声明。可以提供多个声明。",
-                  "anyOf": [
-                    {
-                      "type": "object",
-                      "properties": {
-                        "common:referenceToComplianceSystem": {
-                          "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                          "description": "声明数据集满足的“合规体系”的“源数据集”。"
-                        },
-                        "common:approvalOfOverallCompliance": {
-                          "type": "string",
-                          "description": "官方批准数据集是否以及在多大程度上满足所提及的“合规体系”的所有要求。该批准应由该合规系统的所有者发布/确认，该所有者通过相应的“联系数据集”进行识别。",
-                          "enum": [
-                            "Fully compliant",
-                            "Not compliant",
-                            "Not defined"
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "compliance": {
+                      "description": "一份合规声明。可以提供多个声明。",
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "common:referenceToComplianceSystem": {
+                              "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                              "description": "声明数据集满足的“合规体系”的“源数据集”。"
+                            },
+                            "common:approvalOfOverallCompliance": {
+                              "type": "string",
+                              "description": "官方批准数据集是否以及在多大程度上满足所提及的“合规体系”的所有要求。该批准应由该合规系统的所有者发布/确认，该所有者通过相应的“联系数据集”进行识别。",
+                              "enum": [
+                                "Fully compliant",
+                                "Not compliant",
+                                "Not defined"
+                              ]
+                            },
+                            "common:nomenclatureCompliance": {
+                              "type": "string",
+                              "description": "该数据集的命名符合所提及的“合规系统”规定的相应要求。",
+                              "enum": [
+                                "Fully compliant",
+                                "Not compliant",
+                                "Not defined"
+                              ]
+                            },
+                            "common:methodologicalCompliance": {
+                              "type": "string",
+                              "description": "该数据集的方法符合所提及的“合规体系”规定的相应要求。",
+                              "enum": [
+                                "Fully compliant",
+                                "Not compliant",
+                                "Not defined"
+                              ]
+                            },
+                            "common:reviewCompliance": {
+                              "type": "string",
+                              "description": "审查/验证该数据集是否符合所提及的“合规体系”规定的相应要求。",
+                              "enum": [
+                                "Fully compliant",
+                                "Not compliant",
+                                "Not defined"
+                              ]
+                            },
+                            "common:documentationCompliance": {
+                              "type": "string",
+                              "description": "记录/报告该数据集是否符合所提及的“合规系统”规定的相应要求。",
+                              "enum": [
+                                "Fully compliant",
+                                "Not compliant",
+                                "Not defined"
+                              ]
+                            },
+                            "common:qualityCompliance": {
+                              "type": "string",
+                              "description": "该数据集的质量符合所提及的“合规体系”规定的相应要求。",
+                              "enum": [
+                                "Fully compliant",
+                                "Not compliant",
+                                "Not defined"
+                              ]
+                            },
+                            "common:other": {
+                              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                            }
+                          },
+                          "required": [
+                            "common:referenceToComplianceSystem",
+                            "common:approvalOfOverallCompliance",
+                            "common:nomenclatureCompliance",
+                            "common:methodologicalCompliance",
+                            "common:reviewCompliance",
+                            "common:documentationCompliance",
+                            "common:qualityCompliance"
                           ]
                         },
-                        "common:nomenclatureCompliance": {
-                          "type": "string",
-                          "description": "该数据集的命名符合所提及的“合规系统”规定的相应要求。",
-                          "enum": [
-                            "Fully compliant",
-                            "Not compliant",
-                            "Not defined"
-                          ]
-                        },
-                        "common:methodologicalCompliance": {
-                          "type": "string",
-                          "description": "该数据集的方法符合所提及的“合规体系”规定的相应要求。",
-                          "enum": [
-                            "Fully compliant",
-                            "Not compliant",
-                            "Not defined"
-                          ]
-                        },
-                        "common:reviewCompliance": {
-                          "type": "string",
-                          "description": "审查/验证该数据集是否符合所提及的“合规体系”规定的相应要求。",
-                          "enum": [
-                            "Fully compliant",
-                            "Not compliant",
-                            "Not defined"
-                          ]
-                        },
-                        "common:documentationCompliance": {
-                          "type": "string",
-                          "description": "记录/报告该数据集是否符合所提及的“合规系统”规定的相应要求。",
-                          "enum": [
-                            "Fully compliant",
-                            "Not compliant",
-                            "Not defined"
-                          ]
-                        },
-                        "common:qualityCompliance": {
-                          "type": "string",
-                          "description": "该数据集的质量符合所提及的“合规体系”规定的相应要求。",
-                          "enum": [
-                            "Fully compliant",
-                            "Not compliant",
-                            "Not defined"
-                          ]
-                        },
-                        "common:other": {
-                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "common:referenceToComplianceSystem": {
+                                "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                                "description": "声明数据集满足的“合规体系”的“源数据集”。"
+                              },
+                              "common:approvalOfOverallCompliance": {
+                                "type": "string",
+                                "description": "官方批准数据集是否以及在多大程度上满足所提及的“合规体系”的所有要求。该批准应由该合规系统的所有者发布/确认，该所有者通过相应的“联系数据集”进行识别。",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:nomenclatureCompliance": {
+                                "type": "string",
+                                "description": "该数据集的命名符合所提及的“合规系统”规定的相应要求。",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:methodologicalCompliance": {
+                                "type": "string",
+                                "description": "该数据集的方法符合所提及的“合规体系”规定的相应要求。",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:reviewCompliance": {
+                                "type": "string",
+                                "description": "审查/验证该数据集是否符合所提及的“合规体系”规定的相应要求。",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:documentationCompliance": {
+                                "type": "string",
+                                "description": "记录/报告该数据集是否符合所提及的“合规系统”规定的相应要求。",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:qualityCompliance": {
+                                "type": "string",
+                                "description": "该数据集的质量符合所提及的“合规体系”规定的相应要求。",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:other": {
+                                "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                              }
+                            },
+                            "required": [
+                              "common:referenceToComplianceSystem",
+                              "common:approvalOfOverallCompliance",
+                              "common:nomenclatureCompliance",
+                              "common:methodologicalCompliance",
+                              "common:reviewCompliance",
+                              "common:documentationCompliance",
+                              "common:qualityCompliance"
+                            ]
+                          },
+                          "minItems": 1
                         }
-                      },
-                      "required": [
-                        "common:referenceToComplianceSystem",
-                        "common:approvalOfOverallCompliance",
-                        "common:nomenclatureCompliance",
-                        "common:methodologicalCompliance",
-                        "common:reviewCompliance",
-                        "common:documentationCompliance",
-                        "common:qualityCompliance"
                       ]
                     },
-                    {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "common:referenceToComplianceSystem": {
-                            "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                            "description": "声明数据集满足的“合规体系”的“源数据集”。"
-                          },
-                          "common:approvalOfOverallCompliance": {
-                            "type": "string",
-                            "description": "官方批准数据集是否以及在多大程度上满足所提及的“合规体系”的所有要求。该批准应由该合规系统的所有者发布/确认，该所有者通过相应的“联系数据集”进行识别。",
-                            "enum": [
-                              "Fully compliant",
-                              "Not compliant",
-                              "Not defined"
-                            ]
-                          },
-                          "common:nomenclatureCompliance": {
-                            "type": "string",
-                            "description": "该数据集的命名符合所提及的“合规系统”规定的相应要求。",
-                            "enum": [
-                              "Fully compliant",
-                              "Not compliant",
-                              "Not defined"
-                            ]
-                          },
-                          "common:methodologicalCompliance": {
-                            "type": "string",
-                            "description": "该数据集的方法符合所提及的“合规体系”规定的相应要求。",
-                            "enum": [
-                              "Fully compliant",
-                              "Not compliant",
-                              "Not defined"
-                            ]
-                          },
-                          "common:reviewCompliance": {
-                            "type": "string",
-                            "description": "审查/验证该数据集是否符合所提及的“合规体系”规定的相应要求。",
-                            "enum": [
-                              "Fully compliant",
-                              "Not compliant",
-                              "Not defined"
-                            ]
-                          },
-                          "common:documentationCompliance": {
-                            "type": "string",
-                            "description": "记录/报告该数据集是否符合所提及的“合规系统”规定的相应要求。",
-                            "enum": [
-                              "Fully compliant",
-                              "Not compliant",
-                              "Not defined"
-                            ]
-                          },
-                          "common:qualityCompliance": {
-                            "type": "string",
-                            "description": "该数据集的质量符合所提及的“合规体系”规定的相应要求。",
-                            "enum": [
-                              "Fully compliant",
-                              "Not compliant",
-                              "Not defined"
-                            ]
-                          },
-                          "common:other": {
-                            "$ref": "tidas_data_types.json#/$defs/CommonOther"
-                          }
-                        },
-                        "required": [
-                          "common:referenceToComplianceSystem",
-                          "common:approvalOfOverallCompliance",
-                          "common:nomenclatureCompliance",
-                          "common:methodologicalCompliance",
-                          "common:reviewCompliance",
-                          "common:documentationCompliance",
-                          "common:qualityCompliance"
-                        ]
-                      },
-                      "minItems": 1
+                    "common:other": {
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
                     }
+                  },
+                  "required": [
+                    "compliance"
                   ]
                 },
-                "common:other": {
-                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "compliance": {
+                        "description": "一份合规声明。可以提供多个声明。",
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "common:referenceToComplianceSystem": {
+                                "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                                "description": "声明数据集满足的“合规体系”的“源数据集”。"
+                              },
+                              "common:approvalOfOverallCompliance": {
+                                "type": "string",
+                                "description": "官方批准数据集是否以及在多大程度上满足所提及的“合规体系”的所有要求。该批准应由该合规系统的所有者发布/确认，该所有者通过相应的“联系数据集”进行识别。",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:nomenclatureCompliance": {
+                                "type": "string",
+                                "description": "该数据集的命名符合所提及的“合规系统”规定的相应要求。",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:methodologicalCompliance": {
+                                "type": "string",
+                                "description": "该数据集的方法符合所提及的“合规体系”规定的相应要求。",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:reviewCompliance": {
+                                "type": "string",
+                                "description": "审查/验证该数据集是否符合所提及的“合规体系”规定的相应要求。",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:documentationCompliance": {
+                                "type": "string",
+                                "description": "记录/报告该数据集是否符合所提及的“合规系统”规定的相应要求。",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:qualityCompliance": {
+                                "type": "string",
+                                "description": "该数据集的质量符合所提及的“合规体系”规定的相应要求。",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:other": {
+                                "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                              }
+                            },
+                            "required": [
+                              "common:referenceToComplianceSystem",
+                              "common:approvalOfOverallCompliance",
+                              "common:nomenclatureCompliance",
+                              "common:methodologicalCompliance",
+                              "common:reviewCompliance",
+                              "common:documentationCompliance",
+                              "common:qualityCompliance"
+                            ]
+                          },
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "common:referenceToComplianceSystem": {
+                                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                                  "description": "声明数据集满足的“合规体系”的“源数据集”。"
+                                },
+                                "common:approvalOfOverallCompliance": {
+                                  "type": "string",
+                                  "description": "官方批准数据集是否以及在多大程度上满足所提及的“合规体系”的所有要求。该批准应由该合规系统的所有者发布/确认，该所有者通过相应的“联系数据集”进行识别。",
+                                  "enum": [
+                                    "Fully compliant",
+                                    "Not compliant",
+                                    "Not defined"
+                                  ]
+                                },
+                                "common:nomenclatureCompliance": {
+                                  "type": "string",
+                                  "description": "该数据集的命名符合所提及的“合规系统”规定的相应要求。",
+                                  "enum": [
+                                    "Fully compliant",
+                                    "Not compliant",
+                                    "Not defined"
+                                  ]
+                                },
+                                "common:methodologicalCompliance": {
+                                  "type": "string",
+                                  "description": "该数据集的方法符合所提及的“合规体系”规定的相应要求。",
+                                  "enum": [
+                                    "Fully compliant",
+                                    "Not compliant",
+                                    "Not defined"
+                                  ]
+                                },
+                                "common:reviewCompliance": {
+                                  "type": "string",
+                                  "description": "审查/验证该数据集是否符合所提及的“合规体系”规定的相应要求。",
+                                  "enum": [
+                                    "Fully compliant",
+                                    "Not compliant",
+                                    "Not defined"
+                                  ]
+                                },
+                                "common:documentationCompliance": {
+                                  "type": "string",
+                                  "description": "记录/报告该数据集是否符合所提及的“合规系统”规定的相应要求。",
+                                  "enum": [
+                                    "Fully compliant",
+                                    "Not compliant",
+                                    "Not defined"
+                                  ]
+                                },
+                                "common:qualityCompliance": {
+                                  "type": "string",
+                                  "description": "该数据集的质量符合所提及的“合规体系”规定的相应要求。",
+                                  "enum": [
+                                    "Fully compliant",
+                                    "Not compliant",
+                                    "Not defined"
+                                  ]
+                                },
+                                "common:other": {
+                                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                                }
+                              },
+                              "required": [
+                                "common:referenceToComplianceSystem",
+                                "common:approvalOfOverallCompliance",
+                                "common:nomenclatureCompliance",
+                                "common:methodologicalCompliance",
+                                "common:reviewCompliance",
+                                "common:documentationCompliance",
+                                "common:qualityCompliance"
+                              ]
+                            },
+                            "minItems": 1
+                          }
+                        ]
+                      },
+                      "common:other": {
+                        "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                      }
+                    },
+                    "required": [
+                      "compliance"
+                    ]
+                  }
                 }
-              },
-              "required": [
-                "compliance"
               ]
             },
             "common:other": {

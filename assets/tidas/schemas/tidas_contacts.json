@@ -49,14 +49,71 @@
                   "description": "Hierarchical classification of the contact foreseen to be used to structure the contact content of the database. (Note: This entry is NOT required for the identification of the contact data set. It should nevertheless be avoided to use identical names for contacts in the same class.",
                   "properties": {
                     "common:classification": {
-                      "type": "object",
                       "description": "Optional statistical or other classification of the data set. Typically also used for structuring LCA databases.",
-                      "properties": {
-                        "common:class": {
-                          "anyOf": [
-                            {
-                              "type": "array",
-                              "items": [
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "common:class": {
+                              "anyOf": [
+                                {
+                                  "type": "array",
+                                  "items": [
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "@level": {
+                                          "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                          "const": "0"
+                                        },
+                                        "@classId": {
+                                          "type": "string"
+                                        },
+                                        "#text": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "@level",
+                                        "@classId",
+                                        "#text"
+                                      ],
+                                      "dependencies": {
+                                        "@level": {
+                                          "$ref": "./tidas_contacts_category.json#/$defs/Contact"
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "@level": {
+                                          "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                          "const": "1"
+                                        },
+                                        "@classId": {
+                                          "type": "string"
+                                        },
+                                        "#text": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "@level",
+                                        "@classId",
+                                        "#text"
+                                      ],
+                                      "dependencies": {
+                                        "@level": {
+                                          "$ref": "./tidas_contacts_category.json#/$defs/Contact"
+                                        }
+                                      }
+                                    }
+                                  ],
+                                  "uniqueItems": true,
+                                  "maxItems": 2,
+                                  "additionalItems": false
+                                },
                                 {
                                   "type": "object",
                                   "properties": {
@@ -81,13 +138,46 @@
                                       "$ref": "./tidas_contacts_category.json#/$defs/Contact"
                                     }
                                   }
-                                },
-                                {
+                                }
+                              ]
+                            },
+                            "@name": {
+                              "type": "string"
+                            },
+                            "@classes": {
+                              "type": "string"
+                            },
+                            "common:other": {
+                              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                            }
+                          },
+                          "required": [
+                            "common:class"
+                          ]
+                        },
+                        {
+                          "type": "array",
+                          "minItems": 1,
+                          "items": {
+                            "type": "object",
+                            "description": "One named classification system (e.g. CPC or HS). Used in the array form to let multiple systems coexist.",
+                            "properties": {
+                              "@name": {
+                                "type": "string",
+                                "description": "Name of the classification system (e.g. CPC, ISIC, HS). Per ILCD this defaults to 'ILCD' when absent; set it explicitly for non-ILCD systems."
+                              },
+                              "@classes": {
+                                "type": "string",
+                                "description": "Optional URL or identifier of the classification file/system."
+                              },
+                              "common:class": {
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
                                   "type": "object",
                                   "properties": {
                                     "@level": {
-                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
-                                      "const": "1"
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType"
                                     },
                                     "@classId": {
                                       "type": "string"
@@ -100,48 +190,19 @@
                                     "@level",
                                     "@classId",
                                     "#text"
-                                  ],
-                                  "dependencies": {
-                                    "@level": {
-                                      "$ref": "./tidas_contacts_category.json#/$defs/Contact"
-                                    }
-                                  }
-                                }
-                              ],
-                              "uniqueItems": true,
-                              "maxItems": 2,
-                              "additionalItems": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "@level": {
-                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
-                                  "const": "0"
-                                },
-                                "@classId": {
-                                  "type": "string"
-                                },
-                                "#text": {
-                                  "type": "string"
+                                  ]
                                 }
                               },
-                              "required": [
-                                "@level",
-                                "@classId",
-                                "#text"
-                              ],
-                              "dependencies": {
-                                "@level": {
-                                  "$ref": "./tidas_contacts_category.json#/$defs/Contact"
-                                }
+                              "common:other": {
+                                "$ref": "tidas_data_types.json#/$defs/CommonOther"
                               }
-                            }
-                          ]
+                            },
+                            "required": [
+                              "@name",
+                              "common:class"
+                            ]
+                          }
                         }
-                      },
-                      "required": [
-                        "common:class"
                       ]
                     },
                     "common:other": {

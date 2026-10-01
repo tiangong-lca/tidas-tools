@@ -618,7 +618,18 @@
                   ]
                 },
                 "referenceToReferenceFlow": {
-                  "$ref": "tidas_data_types.json#/$defs/Int6"
+                  "anyOf": [
+                    {
+                      "$ref": "tidas_data_types.json#/$defs/Int6"
+                    },
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "$ref": "tidas_data_types.json#/$defs/Int6"
+                      }
+                    }
+                  ]
                 },
                 "functionalUnitOrOther": {
                   "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
@@ -721,24 +732,51 @@
                   ]
                 },
                 "subLocationOfOperationSupplyOrProduction": {
-                  "type": "object",
                   "description": "所述“位置”的一个或多个地理子单位。这样的子单元可以是例如公司平均数据集的采样点、区域平均数据集的国家或国家平均数据集的特定站点。 [注意：对于单个站点数据集，此字段为空，站点在“位置”字段中命名。]",
-                  "properties": {
-                    "@subLocation": {
-                      "$ref": "tidas_locations_category.json"
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "@subLocation": {
+                          "$ref": "tidas_locations_category.json"
+                        },
+                        "@latitudeAndLongitude": {
+                          "$ref": "tidas_data_types.json#/$defs/GIS",
+                          "description": "“位置”/“子位置”的地理纬度和经度参考。对于区域类型位置（例如国家、大洲），该字段为空。"
+                        },
+                        "descriptionOfRestrictions": {
+                          "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                          "description": "有关该位置其他方面的进一步说明：例如公司和/或站点描述和地址，数据集是否对于“位置”内的某些子区域无效，数据是否仅对指定位置内的某些区域有效，或者某些基本流或中间产品流是否是从另一个地理区域推断出来的。"
+                        },
+                        "common:other": {
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        }
+                      }
                     },
-                    "@latitudeAndLongitude": {
-                      "$ref": "tidas_data_types.json#/$defs/GIS",
-                      "description": "“位置”/“子位置”的地理纬度和经度参考。对于区域类型位置（例如国家、大洲），该字段为空。"
-                    },
-                    "descriptionOfRestrictions": {
-                      "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
-                      "description": "有关该位置其他方面的进一步说明：例如公司和/或站点描述和地址，数据集是否对于“位置”内的某些子区域无效，数据是否仅对指定位置内的某些区域有效，或者某些基本流或中间产品流是否是从另一个地理区域推断出来的。"
-                    },
-                    "common:other": {
-                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "@subLocation": {
+                            "$ref": "tidas_locations_category.json"
+                          },
+                          "@latitudeAndLongitude": {
+                            "$ref": "tidas_data_types.json#/$defs/GIS",
+                            "description": "“位置”/“子位置”的地理纬度和经度参考。对于区域类型位置（例如国家、大洲），该字段为空。"
+                          },
+                          "descriptionOfRestrictions": {
+                            "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                            "description": "有关该位置其他方面的进一步说明：例如公司和/或站点描述和地址，数据集是否对于“位置”内的某些子区域无效，数据是否仅对指定位置内的某些区域有效，或者某些基本流或中间产品流是否是从另一个地理区域推断出来的。"
+                          },
+                          "common:other": {
+                            "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                          }
+                        }
+                      }
                     }
-                  }
+                  ]
                 },
                 "common:other": {
                   "$ref": "tidas_data_types.json#/$defs/CommonOther"
@@ -787,49 +825,108 @@
                   "description": "本节数学关系中表示的模型的描述。可以涵盖有关限制、模型优点和缺点等的信息。（注意：另请参阅“注释”字段中提供的有关各个公式级别的信息以及“技术”部分字段中的一般流程描述中提供的信息。）"
                 },
                 "variableParameter": {
-                  "type": "object",
-                  "properties": {
-                    "@name": {
-                      "$ref": "tidas_data_types.json#/$defs/MatV",
-                      "description": "数学模型中变量参数的名称。"
-                    },
-                    "formula": {
-                      "$ref": "tidas_data_types.json#/$defs/MatR",
-                      "description": "数学模型中变量参数的公式。"
-                    },
-                    "meanValue": {
-                      "$ref": "tidas_data_types.json#/$defs/Real",
-                      "description": "评论数学模型中的可变参数。"
-                    },
-                    "minimumValue": {
-                      "$ref": "tidas_data_types.json#/$defs/Real",
-                      "description": "评论数学模型中的可变参数。"
-                    },
-                    "maximumValue": {
-                      "$ref": "tidas_data_types.json#/$defs/Real",
-                      "description": "评论数学模型中的可变参数。"
-                    },
-                    "uncertaintyDistributionType": {
-                      "type": "string",
-                      "description": "定义对该特定对象或参数有效的不确定性分布类型。",
-                      "enum": [
-                        "undefined",
-                        "log-normal",
-                        "normal",
-                        "triangular",
-                        "uniform"
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "@name": {
+                          "$ref": "tidas_data_types.json#/$defs/MatV",
+                          "description": "数学模型中变量参数的名称。"
+                        },
+                        "formula": {
+                          "$ref": "tidas_data_types.json#/$defs/MatR",
+                          "description": "数学模型中变量参数的公式。"
+                        },
+                        "meanValue": {
+                          "$ref": "tidas_data_types.json#/$defs/Real",
+                          "description": "评论数学模型中的可变参数。"
+                        },
+                        "minimumValue": {
+                          "$ref": "tidas_data_types.json#/$defs/Real",
+                          "description": "评论数学模型中的可变参数。"
+                        },
+                        "maximumValue": {
+                          "$ref": "tidas_data_types.json#/$defs/Real",
+                          "description": "评论数学模型中的可变参数。"
+                        },
+                        "uncertaintyDistributionType": {
+                          "type": "string",
+                          "description": "定义对该特定对象或参数有效的不确定性分布类型。",
+                          "enum": [
+                            "undefined",
+                            "log-normal",
+                            "normal",
+                            "triangular",
+                            "uniform"
+                          ]
+                        },
+                        "relativeStandardDeviation95In": {
+                          "$ref": "tidas_data_types.json#/$defs/Perc"
+                        },
+                        "comment": {
+                          "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
+                        },
+                        "common:other": {
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        }
+                      },
+                      "required": [
+                        "@name"
                       ]
                     },
-                    "relativeStandardDeviation95In": {
-                      "$ref": "tidas_data_types.json#/$defs/Perc"
-                    },
-                    "comment": {
-                      "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
-                    },
-                    "common:other": {
-                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "@name": {
+                            "$ref": "tidas_data_types.json#/$defs/MatV",
+                            "description": "数学模型中变量参数的名称。"
+                          },
+                          "formula": {
+                            "$ref": "tidas_data_types.json#/$defs/MatR",
+                            "description": "数学模型中变量参数的公式。"
+                          },
+                          "meanValue": {
+                            "$ref": "tidas_data_types.json#/$defs/Real",
+                            "description": "评论数学模型中的可变参数。"
+                          },
+                          "minimumValue": {
+                            "$ref": "tidas_data_types.json#/$defs/Real",
+                            "description": "评论数学模型中的可变参数。"
+                          },
+                          "maximumValue": {
+                            "$ref": "tidas_data_types.json#/$defs/Real",
+                            "description": "评论数学模型中的可变参数。"
+                          },
+                          "uncertaintyDistributionType": {
+                            "type": "string",
+                            "description": "定义对该特定对象或参数有效的不确定性分布类型。",
+                            "enum": [
+                              "undefined",
+                              "log-normal",
+                              "normal",
+                              "triangular",
+                              "uniform"
+                            ]
+                          },
+                          "relativeStandardDeviation95In": {
+                            "$ref": "tidas_data_types.json#/$defs/Perc"
+                          },
+                          "comment": {
+                            "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
+                          },
+                          "common:other": {
+                            "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                          }
+                        },
+                        "required": [
+                          "@name"
+                        ]
+                      }
                     }
-                  }
+                  ]
                 },
                 "common:other": {
                   "$ref": "tidas_data_types.json#/$defs/CommonOther"
@@ -880,32 +977,68 @@
                   "description": "对与一般“LCI 方法原则”的任何偏差的简短描述以及附加解释。特别指未应用所述“归因”或“后果”方法的特定过程/案例。或者偏离了应用“具有归因成分的后果”方法的任何特定规则。此处也可以提及数据收集的“预期应用”。分配的联产品也可以在此处报告。如果没有（定量相关）偏离 LCI 方法原则，则应注明“无”。"
                 },
                 "LCIMethodApproaches": {
-                  "type": "string",
                   "description": "简要说明 LCI 建模中使用的具体方法，例如分配、替代等。对于 LCI 结果和部分终止的系统数据集，这也涵盖了所包含的后台系统中应用的数据。",
-                  "enum": [
-                    "Allocation - market value",
-                    "Allocation - gross calorific value",
-                    "Allocation - net calorific value",
-                    "Allocation - exergetic content",
-                    "Allocation - element content",
-                    "Allocation - mass",
-                    "Allocation - volume",
-                    "Allocation - ability to bear",
-                    "Allocation - marginal causality",
-                    "Allocation - physical causality",
-                    "Allocation - 100% to main function",
-                    "Allocation - other explicit assignment",
-                    "Allocation - equal distribution",
-                    "Substitution - BAT",
-                    "Substitution - average, market price correction",
-                    "Substitution - average, technical properties correction",
-                    "Allocation - recycled content",
-                    "Substitution - recycling potential",
-                    "Substitution - average, no correction",
-                    "Substitution - specific",
-                    "Consequential effects - other",
-                    "Not applicable",
-                    "Other"
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "Allocation - market value",
+                        "Allocation - gross calorific value",
+                        "Allocation - net calorific value",
+                        "Allocation - exergetic content",
+                        "Allocation - element content",
+                        "Allocation - mass",
+                        "Allocation - volume",
+                        "Allocation - ability to bear",
+                        "Allocation - marginal causality",
+                        "Allocation - physical causality",
+                        "Allocation - 100% to main function",
+                        "Allocation - other explicit assignment",
+                        "Allocation - equal distribution",
+                        "Substitution - BAT",
+                        "Substitution - average, market price correction",
+                        "Substitution - average, technical properties correction",
+                        "Allocation - recycled content",
+                        "Substitution - recycling potential",
+                        "Substitution - average, no correction",
+                        "Substitution - specific",
+                        "Consequential effects - other",
+                        "Not applicable",
+                        "Other"
+                      ]
+                    },
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "Allocation - market value",
+                          "Allocation - gross calorific value",
+                          "Allocation - net calorific value",
+                          "Allocation - exergetic content",
+                          "Allocation - element content",
+                          "Allocation - mass",
+                          "Allocation - volume",
+                          "Allocation - ability to bear",
+                          "Allocation - marginal causality",
+                          "Allocation - physical causality",
+                          "Allocation - 100% to main function",
+                          "Allocation - other explicit assignment",
+                          "Allocation - equal distribution",
+                          "Substitution - BAT",
+                          "Substitution - average, market price correction",
+                          "Substitution - average, technical properties correction",
+                          "Allocation - recycled content",
+                          "Substitution - recycling potential",
+                          "Substitution - average, no correction",
+                          "Substitution - specific",
+                          "Consequential effects - other",
+                          "Not applicable",
+                          "Other"
+                        ]
+                      }
+                    }
                   ]
                 },
                 "deviationsFromLCIMethodApproaches": {
@@ -1016,42 +1149,87 @@
                   "description": "“LCIA 方法数据集”可应用于输入和输出部分中的基本流程，即所有这些流程均由相应的 LCIA 方法数据集引用（如果它们具有环境相关性并且为相应流程定义了表征因子）。 [注：如果发明包含一些基本流，其含义与 LCIA 方法数据集中引用的相同，但采用不同的命名法（因此不携带表征因子），或者如果流是在 LCIA 方法数据集中以不同方式处理的总和指示符或流组，则不给出适用性。]"
                 },
                 "completenessElementaryFlows": {
-                  "type": "object",
                   "description": "从影响的角度来看，该数据集的输入和输出部分中基本过程的完整性，涉及解决给定的单个中点问题领域/影响类别。完整性是指科学知识的最新水平，无论单个基本流程是否以相关方式对相应的中点主题做出贡献，例如ILCD 参考基本过程的基础。 [注：“完整性”声明并不自动意味着相关的 LCIA 方法存在或引用该数据集的基本流程。因此，为了直接适用现有 LCIA 方法，请检查“支持的 LCIA 方法数据集”字段。]",
-                  "properties": {
-                    "@type": {
-                      "type": "string",
-                      "enum": [
-                        "Climate change",
-                        "Ozone depletion",
-                        "Summer smog",
-                        "Eutrophication",
-                        "Acidification",
-                        "Human toxicity",
-                        "Freshwater ecotoxicity",
-                        "Seawater eco-toxicity",
-                        "Terrestric eco-toxicity",
-                        "Radioactivity",
-                        "Land use",
-                        "Non-renewable material resource depletion",
-                        "Renewable material resource consumption",
-                        "Non-renewable primary energy depletion",
-                        "Renewable primary energy consumption",
-                        "Particulate matter/respiratory inorganics",
-                        "Species depletion",
-                        "Noise"
-                      ]
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "@type": {
+                          "type": "string",
+                          "enum": [
+                            "Climate change",
+                            "Ozone depletion",
+                            "Summer smog",
+                            "Eutrophication",
+                            "Acidification",
+                            "Human toxicity",
+                            "Freshwater ecotoxicity",
+                            "Seawater eco-toxicity",
+                            "Terrestric eco-toxicity",
+                            "Radioactivity",
+                            "Land use",
+                            "Non-renewable material resource depletion",
+                            "Renewable material resource consumption",
+                            "Non-renewable primary energy depletion",
+                            "Renewable primary energy consumption",
+                            "Particulate matter/respiratory inorganics",
+                            "Species depletion",
+                            "Noise"
+                          ]
+                        },
+                        "@value": {
+                          "type": "string",
+                          "enum": [
+                            "All relevant flows quantified",
+                            "Relevant flows missing",
+                            "Topic not relevant",
+                            "No statement"
+                          ]
+                        }
+                      }
                     },
-                    "@value": {
-                      "type": "string",
-                      "enum": [
-                        "All relevant flows quantified",
-                        "Relevant flows missing",
-                        "Topic not relevant",
-                        "No statement"
-                      ]
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "@type": {
+                            "type": "string",
+                            "enum": [
+                              "Climate change",
+                              "Ozone depletion",
+                              "Summer smog",
+                              "Eutrophication",
+                              "Acidification",
+                              "Human toxicity",
+                              "Freshwater ecotoxicity",
+                              "Seawater eco-toxicity",
+                              "Terrestric eco-toxicity",
+                              "Radioactivity",
+                              "Land use",
+                              "Non-renewable material resource depletion",
+                              "Renewable material resource consumption",
+                              "Non-renewable primary energy depletion",
+                              "Renewable primary energy consumption",
+                              "Particulate matter/respiratory inorganics",
+                              "Species depletion",
+                              "Noise"
+                            ]
+                          },
+                          "@value": {
+                            "type": "string",
+                            "enum": [
+                              "All relevant flows quantified",
+                              "Relevant flows missing",
+                              "Topic not relevant",
+                              "No statement"
+                            ]
+                          }
+                        }
+                      }
                     }
-                  }
+                  ]
                 },
                 "completenessOtherProblemField": {
                   "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
@@ -1563,7 +1741,10 @@
                           }
                         ]
                       }
-                    }
+                    },
+                    "required": [
+                      "allocation"
+                    ]
                   },
                   "dataSourceType": {
                     "type": "string",

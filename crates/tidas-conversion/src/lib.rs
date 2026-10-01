@@ -844,6 +844,18 @@ pub enum ConversionError {
     OrphanEnvelopeSidecar(PathBuf),
     #[error("conversion envelope sidecar {path} collides with dataset key {key}")]
     EnvelopeKeyCollision { path: PathBuf, key: String },
+    #[error("conflicting legacy field {legacy} and canonical field {canonical} at {path}")]
+    ConflictingProjectionFields {
+        path: String,
+        legacy: String,
+        canonical: String,
+    },
+    #[error(
+        "legacy classification extension at {0} requires one unambiguous classification object"
+    )]
+    InvalidLegacyClassificationExtension(String),
+    #[error("legacy alias projection was modified at {0}")]
+    ProjectionAliasMismatch(String),
     #[error("unsupported eILCD projection recovery schema: {0}")]
     UnsupportedProjectionRecovery(String),
     #[error("invalid eILCD projection recovery path: {0}")]

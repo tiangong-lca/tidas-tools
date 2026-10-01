@@ -323,7 +323,10 @@
                             "groupName": {
                               "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
                             }
-                          }
+                          },
+                          "required": [
+                            "@id"
+                          ]
                         },
                         {
                           "type": "array",
@@ -337,7 +340,10 @@
                               "groupName": {
                                 "$ref": "tidas_data_types.json#/$defs/StringMultiLang"
                               }
-                            }
+                            },
+                            "required": [
+                              "@id"
+                            ]
                           }
                         }
                       ]
@@ -369,10 +375,6 @@
                                 "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
                                 "description": "Reference to the process data set, including its version, that is included in the eILCD archive of the Life cycle model and/or accessible at a remote location, i.e. a URI or URL."
                               },
-                              "scalingFactors": {
-                                "$ref": "tidas_data_types.json#/$defs/Real",
-                                "description": "A multiplicative scaling factor for the entire inventory of this process instance, used e.g. to scale the \"Reference process\" to the aimed-at amount of product (and thereby indirectly the entire inventory of the life cycle model). Note: Care is to be taken that models are not over- or under-specified - note that each process instance scaling is reducing the model's degree of freedom by one."
-                              },
                               "groups": {
                                 "type": "object",
                                 "description": "Group(s) to which this process instance belongs.",
@@ -388,7 +390,10 @@
                                             "pattern": "^-?\\d+$",
                                             "description": "Data set internal ID of the group."
                                           }
-                                        }
+                                        },
+                                        "required": [
+                                          "@groupId"
+                                        ]
                                       },
                                       {
                                         "type": "array",
@@ -400,7 +405,10 @@
                                               "pattern": "^-?\\d+$",
                                               "description": "Data set internal ID of the group."
                                             }
-                                          }
+                                          },
+                                          "required": [
+                                            "@groupId"
+                                          ]
                                         }
                                       }
                                     ]
@@ -418,10 +426,35 @@
                                         "type": "object",
                                         "properties": {
                                           "@name": {
-                                            "$ref": "tidas_data_types.json#/$defs/MatV",
-                                            "description": "Name of free parameter"
+                                            "$ref": "tidas_data_types.json#/$defs/MatV"
+                                          },
+                                          "#text": {
+                                            "$ref": "tidas_data_types.json#/$defs/Real"
+                                          },
+                                          "parameter": {
+                                            "$ref": "tidas_data_types.json#/$defs/Real",
+                                            "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
                                           }
-                                        }
+                                        },
+                                        "required": [
+                                          "@name"
+                                        ],
+                                        "allOf": [
+                                          {
+                                            "oneOf": [
+                                              {
+                                                "required": [
+                                                  "#text"
+                                                ]
+                                              },
+                                              {
+                                                "required": [
+                                                  "parameter"
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
                                       },
                                       {
                                         "type": "array",
@@ -429,10 +462,35 @@
                                           "type": "object",
                                           "properties": {
                                             "@name": {
-                                              "$ref": "tidas_data_types.json#/$defs/MatV",
-                                              "description": "Name of free parameter"
+                                              "$ref": "tidas_data_types.json#/$defs/MatV"
+                                            },
+                                            "#text": {
+                                              "$ref": "tidas_data_types.json#/$defs/Real"
+                                            },
+                                            "parameter": {
+                                              "$ref": "tidas_data_types.json#/$defs/Real",
+                                              "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
                                             }
-                                          }
+                                          },
+                                          "required": [
+                                            "@name"
+                                          ],
+                                          "allOf": [
+                                            {
+                                              "oneOf": [
+                                                {
+                                                  "required": [
+                                                    "#text"
+                                                  ]
+                                                },
+                                                {
+                                                  "required": [
+                                                    "parameter"
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
                                         }
                                       }
                                     ]
@@ -659,16 +717,38 @@
                                       }
                                     ]
                                   }
-                                }
+                                },
+                                "required": [
+                                  "outputExchange"
+                                ]
                               },
                               "common:other": {
                                 "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                              },
+                              "scalingFactor": {
+                                "$ref": "tidas_data_types.json#/$defs/Real",
+                                "description": "A multiplicative scaling factor for the entire inventory of this process instance, used e.g. to scale the \"Reference process\" to the aimed-at amount of product (and thereby indirectly the entire inventory of the life cycle model). Note: Care is to be taken that models are not over- or under-specified - note that each process instance scaling is reducing the model's degree of freedom by one."
+                              },
+                              "scalingFactors": {
+                                "$ref": "tidas_data_types.json#/$defs/Real",
+                                "description": "A multiplicative scaling factor for the entire inventory of this process instance, used e.g. to scale the \"Reference process\" to the aimed-at amount of product (and thereby indirectly the entire inventory of the life cycle model). Note: Care is to be taken that models are not over- or under-specified - note that each process instance scaling is reducing the model's degree of freedom by one.",
+                                "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
                               }
                             },
                             "required": [
                               "@dataSetInternalID",
                               "@multiplicationFactor",
                               "referenceToProcess"
+                            ],
+                            "allOf": [
+                              {
+                                "not": {
+                                  "required": [
+                                    "scalingFactor",
+                                    "scalingFactors"
+                                  ]
+                                }
+                              }
                             ]
                           }
                         },
@@ -688,10 +768,6 @@
                               "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
                               "description": "Reference to the process data set, including its version, that is included in the eILCD archive of the Life cycle model and/or accessible at a remote location, i.e. a URI or URL."
                             },
-                            "scalingFactors": {
-                              "$ref": "tidas_data_types.json#/$defs/Real",
-                              "description": "A multiplicative scaling factor for the entire inventory of this process instance, used e.g. to scale the \"Reference process\" to the aimed-at amount of product (and thereby indirectly the entire inventory of the life cycle model). Note: Care is to be taken that models are not over- or under-specified - note that each process instance scaling is reducing the model's degree of freedom by one."
-                            },
                             "groups": {
                               "type": "object",
                               "description": "Group(s) to which this process instance belongs.",
@@ -707,7 +783,10 @@
                                           "pattern": "^-?\\d+$",
                                           "description": "Data set internal ID of the group."
                                         }
-                                      }
+                                      },
+                                      "required": [
+                                        "@groupId"
+                                      ]
                                     },
                                     {
                                       "type": "array",
@@ -719,7 +798,10 @@
                                             "pattern": "^-?\\d+$",
                                             "description": "Data set internal ID of the group."
                                           }
-                                        }
+                                        },
+                                        "required": [
+                                          "@groupId"
+                                        ]
                                       }
                                     }
                                   ]
@@ -737,14 +819,35 @@
                                       "type": "object",
                                       "properties": {
                                         "@name": {
-                                          "type": "string",
-                                          "description": "Name of free parameter"
+                                          "$ref": "tidas_data_types.json#/$defs/MatV"
                                         },
                                         "parameter": {
                                           "$ref": "tidas_data_types.json#/$defs/Real",
-                                          "description": "Value of the parameter."
+                                          "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
+                                        },
+                                        "#text": {
+                                          "$ref": "tidas_data_types.json#/$defs/Real"
                                         }
-                                      }
+                                      },
+                                      "required": [
+                                        "@name"
+                                      ],
+                                      "allOf": [
+                                        {
+                                          "oneOf": [
+                                            {
+                                              "required": [
+                                                "#text"
+                                              ]
+                                            },
+                                            {
+                                              "required": [
+                                                "parameter"
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
                                     },
                                     {
                                       "type": "array",
@@ -752,14 +855,35 @@
                                         "type": "object",
                                         "properties": {
                                           "@name": {
-                                            "type": "string",
-                                            "description": "Name of free parameter"
+                                            "$ref": "tidas_data_types.json#/$defs/MatV"
                                           },
                                           "parameter": {
                                             "$ref": "tidas_data_types.json#/$defs/Real",
-                                            "description": "Value of the parameter."
+                                            "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
+                                          },
+                                          "#text": {
+                                            "$ref": "tidas_data_types.json#/$defs/Real"
                                           }
-                                        }
+                                        },
+                                        "required": [
+                                          "@name"
+                                        ],
+                                        "allOf": [
+                                          {
+                                            "oneOf": [
+                                              {
+                                                "required": [
+                                                  "#text"
+                                                ]
+                                              },
+                                              {
+                                                "required": [
+                                                  "parameter"
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
                                       }
                                     }
                                   ]
@@ -993,12 +1117,31 @@
                             },
                             "common:other": {
                               "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                            },
+                            "scalingFactor": {
+                              "$ref": "tidas_data_types.json#/$defs/Real",
+                              "description": "A multiplicative scaling factor for the entire inventory of this process instance, used e.g. to scale the \"Reference process\" to the aimed-at amount of product (and thereby indirectly the entire inventory of the life cycle model). Note: Care is to be taken that models are not over- or under-specified - note that each process instance scaling is reducing the model's degree of freedom by one."
+                            },
+                            "scalingFactors": {
+                              "$ref": "tidas_data_types.json#/$defs/Real",
+                              "description": "A multiplicative scaling factor for the entire inventory of this process instance, used e.g. to scale the \"Reference process\" to the aimed-at amount of product (and thereby indirectly the entire inventory of the life cycle model). Note: Care is to be taken that models are not over- or under-specified - note that each process instance scaling is reducing the model's degree of freedom by one.",
+                              "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
                             }
                           },
                           "required": [
                             "@dataSetInternalID",
                             "@multiplicationFactor",
                             "referenceToProcess"
+                          ],
+                          "allOf": [
+                            {
+                              "not": {
+                                "required": [
+                                  "scalingFactor",
+                                  "scalingFactors"
+                                ]
+                              }
+                            }
                           ]
                         }
                       ]
@@ -1109,173 +1252,351 @@
             },
             "complianceDeclarations": {
               "description": "One or more declarations of compliance to selected standards, schemes and other references, e.g. ISO 14040, ISO 14044, ILCD, EF, EN 15804, ...",
-              "type": "object",
-              "properties": {
-                "compliance": {
-                  "description": "One compliance declaration. Multiple declarations may be provided.",
-                  "anyOf": [
-                    {
-                      "type": "object",
-                      "properties": {
-                        "common:referenceToComplianceSystem": {
-                          "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                          "description": "\"Source data set\" of the \"Compliance system\" that is declared to be met by the data set."
-                        },
-                        "common:approvalOfOverallCompliance": {
-                          "type": "string",
-                          "description": "Official approval whether or not and in how far the data set meets all the requirements of the \"Compliance system\" refered to. This approval should be issued/confirmed by the owner of that compliance system, who is identified via the respective \"Contact data set\".",
-                          "enum": [
-                            "Fully compliant",
-                            "Not compliant",
-                            "Not defined"
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "compliance": {
+                      "description": "One compliance declaration. Multiple declarations may be provided.",
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "common:referenceToComplianceSystem": {
+                              "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                              "description": "\"Source data set\" of the \"Compliance system\" that is declared to be met by the data set."
+                            },
+                            "common:approvalOfOverallCompliance": {
+                              "type": "string",
+                              "description": "Official approval whether or not and in how far the data set meets all the requirements of the \"Compliance system\" refered to. This approval should be issued/confirmed by the owner of that compliance system, who is identified via the respective \"Contact data set\".",
+                              "enum": [
+                                "Fully compliant",
+                                "Not compliant",
+                                "Not defined"
+                              ]
+                            },
+                            "common:nomenclatureCompliance": {
+                              "type": "string",
+                              "description": "Nomenclature compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                              "enum": [
+                                "Fully compliant",
+                                "Not compliant",
+                                "Not defined"
+                              ]
+                            },
+                            "common:methodologicalCompliance": {
+                              "type": "string",
+                              "description": "Methodological compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                              "enum": [
+                                "Fully compliant",
+                                "Not compliant",
+                                "Not defined"
+                              ]
+                            },
+                            "common:reviewCompliance": {
+                              "type": "string",
+                              "description": "Review/Verification compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                              "enum": [
+                                "Fully compliant",
+                                "Not compliant",
+                                "Not defined"
+                              ]
+                            },
+                            "common:documentationCompliance": {
+                              "type": "string",
+                              "description": "Documentation/Reporting compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                              "enum": [
+                                "Fully compliant",
+                                "Not compliant",
+                                "Not defined"
+                              ]
+                            },
+                            "common:qualityCompliance": {
+                              "type": "string",
+                              "description": "Quality compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                              "enum": [
+                                "Fully compliant",
+                                "Not compliant",
+                                "Not defined"
+                              ]
+                            },
+                            "common:other": {
+                              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                            }
+                          },
+                          "required": [
+                            "common:referenceToComplianceSystem",
+                            "common:approvalOfOverallCompliance",
+                            "common:nomenclatureCompliance",
+                            "common:methodologicalCompliance",
+                            "common:reviewCompliance",
+                            "common:documentationCompliance",
+                            "common:qualityCompliance"
                           ]
                         },
-                        "common:nomenclatureCompliance": {
-                          "type": "string",
-                          "description": "Nomenclature compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                          "enum": [
-                            "Fully compliant",
-                            "Not compliant",
-                            "Not defined"
-                          ]
-                        },
-                        "common:methodologicalCompliance": {
-                          "type": "string",
-                          "description": "Methodological compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                          "enum": [
-                            "Fully compliant",
-                            "Not compliant",
-                            "Not defined"
-                          ]
-                        },
-                        "common:reviewCompliance": {
-                          "type": "string",
-                          "description": "Review/Verification compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                          "enum": [
-                            "Fully compliant",
-                            "Not compliant",
-                            "Not defined"
-                          ]
-                        },
-                        "common:documentationCompliance": {
-                          "type": "string",
-                          "description": "Documentation/Reporting compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                          "enum": [
-                            "Fully compliant",
-                            "Not compliant",
-                            "Not defined"
-                          ]
-                        },
-                        "common:qualityCompliance": {
-                          "type": "string",
-                          "description": "Quality compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                          "enum": [
-                            "Fully compliant",
-                            "Not compliant",
-                            "Not defined"
-                          ]
-                        },
-                        "common:other": {
-                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "common:referenceToComplianceSystem": {
+                                "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                                "description": "\"Source data set\" of the \"Compliance system\" that is declared to be met by the data set."
+                              },
+                              "common:approvalOfOverallCompliance": {
+                                "type": "string",
+                                "description": "Official approval whether or not and in how far the data set meets all the requirements of the \"Compliance system\" refered to. This approval should be issued/confirmed by the owner of that compliance system, who is identified via the respective \"Contact data set\".",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:nomenclatureCompliance": {
+                                "type": "string",
+                                "description": "Nomenclature compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:methodologicalCompliance": {
+                                "type": "string",
+                                "description": "Methodological compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:reviewCompliance": {
+                                "type": "string",
+                                "description": "Review/Verification compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:documentationCompliance": {
+                                "type": "string",
+                                "description": "Documentation/Reporting compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:qualityCompliance": {
+                                "type": "string",
+                                "description": "Quality compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:other": {
+                                "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                              }
+                            },
+                            "required": [
+                              "common:referenceToComplianceSystem",
+                              "common:approvalOfOverallCompliance",
+                              "common:nomenclatureCompliance",
+                              "common:methodologicalCompliance",
+                              "common:reviewCompliance",
+                              "common:documentationCompliance",
+                              "common:qualityCompliance"
+                            ]
+                          },
+                          "minItems": 1
                         }
-                      },
-                      "required": [
-                        "common:referenceToComplianceSystem",
-                        "common:approvalOfOverallCompliance",
-                        "common:nomenclatureCompliance",
-                        "common:methodologicalCompliance",
-                        "common:reviewCompliance",
-                        "common:documentationCompliance",
-                        "common:qualityCompliance"
                       ]
                     },
-                    {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "common:referenceToComplianceSystem": {
-                            "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                            "description": "\"Source data set\" of the \"Compliance system\" that is declared to be met by the data set."
-                          },
-                          "common:approvalOfOverallCompliance": {
-                            "type": "string",
-                            "description": "Official approval whether or not and in how far the data set meets all the requirements of the \"Compliance system\" refered to. This approval should be issued/confirmed by the owner of that compliance system, who is identified via the respective \"Contact data set\".",
-                            "enum": [
-                              "Fully compliant",
-                              "Not compliant",
-                              "Not defined"
-                            ]
-                          },
-                          "common:nomenclatureCompliance": {
-                            "type": "string",
-                            "description": "Nomenclature compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                            "enum": [
-                              "Fully compliant",
-                              "Not compliant",
-                              "Not defined"
-                            ]
-                          },
-                          "common:methodologicalCompliance": {
-                            "type": "string",
-                            "description": "Methodological compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                            "enum": [
-                              "Fully compliant",
-                              "Not compliant",
-                              "Not defined"
-                            ]
-                          },
-                          "common:reviewCompliance": {
-                            "type": "string",
-                            "description": "Review/Verification compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                            "enum": [
-                              "Fully compliant",
-                              "Not compliant",
-                              "Not defined"
-                            ]
-                          },
-                          "common:documentationCompliance": {
-                            "type": "string",
-                            "description": "Documentation/Reporting compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                            "enum": [
-                              "Fully compliant",
-                              "Not compliant",
-                              "Not defined"
-                            ]
-                          },
-                          "common:qualityCompliance": {
-                            "type": "string",
-                            "description": "Quality compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
-                            "enum": [
-                              "Fully compliant",
-                              "Not compliant",
-                              "Not defined"
-                            ]
-                          },
-                          "common:other": {
-                            "$ref": "tidas_data_types.json#/$defs/CommonOther"
-                          }
-                        },
-                        "required": [
-                          "common:referenceToComplianceSystem",
-                          "common:approvalOfOverallCompliance",
-                          "common:nomenclatureCompliance",
-                          "common:methodologicalCompliance",
-                          "common:reviewCompliance",
-                          "common:documentationCompliance",
-                          "common:qualityCompliance"
-                        ]
-                      },
-                      "minItems": 1
+                    "common:other": {
+                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
                     }
+                  },
+                  "required": [
+                    "compliance"
                   ]
                 },
-                "common:other": {
-                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "compliance": {
+                        "description": "One compliance declaration. Multiple declarations may be provided.",
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "common:referenceToComplianceSystem": {
+                                "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                                "description": "\"Source data set\" of the \"Compliance system\" that is declared to be met by the data set."
+                              },
+                              "common:approvalOfOverallCompliance": {
+                                "type": "string",
+                                "description": "Official approval whether or not and in how far the data set meets all the requirements of the \"Compliance system\" refered to. This approval should be issued/confirmed by the owner of that compliance system, who is identified via the respective \"Contact data set\".",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:nomenclatureCompliance": {
+                                "type": "string",
+                                "description": "Nomenclature compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:methodologicalCompliance": {
+                                "type": "string",
+                                "description": "Methodological compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:reviewCompliance": {
+                                "type": "string",
+                                "description": "Review/Verification compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:documentationCompliance": {
+                                "type": "string",
+                                "description": "Documentation/Reporting compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:qualityCompliance": {
+                                "type": "string",
+                                "description": "Quality compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                                "enum": [
+                                  "Fully compliant",
+                                  "Not compliant",
+                                  "Not defined"
+                                ]
+                              },
+                              "common:other": {
+                                "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                              }
+                            },
+                            "required": [
+                              "common:referenceToComplianceSystem",
+                              "common:approvalOfOverallCompliance",
+                              "common:nomenclatureCompliance",
+                              "common:methodologicalCompliance",
+                              "common:reviewCompliance",
+                              "common:documentationCompliance",
+                              "common:qualityCompliance"
+                            ]
+                          },
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "common:referenceToComplianceSystem": {
+                                  "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                                  "description": "\"Source data set\" of the \"Compliance system\" that is declared to be met by the data set."
+                                },
+                                "common:approvalOfOverallCompliance": {
+                                  "type": "string",
+                                  "description": "Official approval whether or not and in how far the data set meets all the requirements of the \"Compliance system\" refered to. This approval should be issued/confirmed by the owner of that compliance system, who is identified via the respective \"Contact data set\".",
+                                  "enum": [
+                                    "Fully compliant",
+                                    "Not compliant",
+                                    "Not defined"
+                                  ]
+                                },
+                                "common:nomenclatureCompliance": {
+                                  "type": "string",
+                                  "description": "Nomenclature compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                                  "enum": [
+                                    "Fully compliant",
+                                    "Not compliant",
+                                    "Not defined"
+                                  ]
+                                },
+                                "common:methodologicalCompliance": {
+                                  "type": "string",
+                                  "description": "Methodological compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                                  "enum": [
+                                    "Fully compliant",
+                                    "Not compliant",
+                                    "Not defined"
+                                  ]
+                                },
+                                "common:reviewCompliance": {
+                                  "type": "string",
+                                  "description": "Review/Verification compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                                  "enum": [
+                                    "Fully compliant",
+                                    "Not compliant",
+                                    "Not defined"
+                                  ]
+                                },
+                                "common:documentationCompliance": {
+                                  "type": "string",
+                                  "description": "Documentation/Reporting compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                                  "enum": [
+                                    "Fully compliant",
+                                    "Not compliant",
+                                    "Not defined"
+                                  ]
+                                },
+                                "common:qualityCompliance": {
+                                  "type": "string",
+                                  "description": "Quality compliance of this data set with the respective requirements set by the \"compliance system\" refered to.",
+                                  "enum": [
+                                    "Fully compliant",
+                                    "Not compliant",
+                                    "Not defined"
+                                  ]
+                                },
+                                "common:other": {
+                                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                                }
+                              },
+                              "required": [
+                                "common:referenceToComplianceSystem",
+                                "common:approvalOfOverallCompliance",
+                                "common:nomenclatureCompliance",
+                                "common:methodologicalCompliance",
+                                "common:reviewCompliance",
+                                "common:documentationCompliance",
+                                "common:qualityCompliance"
+                              ]
+                            },
+                            "minItems": 1
+                          }
+                        ]
+                      },
+                      "common:other": {
+                        "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                      }
+                    },
+                    "required": [
+                      "compliance"
+                    ]
+                  }
                 }
-              },
-              "required": [
-                "compliance"
               ]
             },
             "common:other": {

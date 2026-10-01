@@ -32,7 +32,7 @@ pub const SPEC_VERSION: &str = "0.2.3";
 /// were qualified at, and it is recorded so an upgrade is an explicit event.
 pub const SPEC_REPOSITORY: &str = "https://github.com/tiangong-lca/tidas-spec";
 /// Reviewed specification-repository revision the qualified archive came from.
-pub const SPEC_REVISION: &str = "f118660dbcbfbf736be74837cce0bf26cd177245";
+pub const SPEC_REVISION: &str = "97a3725e6a24886ec1332be61e462e2228ee94fe";
 /// Tools repository the candidate extracted its public assets from.
 ///
 /// Unlike the specification-repository revision, this one travels inside the
@@ -43,9 +43,9 @@ pub const SPEC_IMPORTED_SOURCE_REPOSITORY: &str = "https://github.com/tiangong-l
 pub const SPEC_IMPORTED_SOURCE_COMMIT: &str = "9c0d8b1c8ceb1841074f5bc6de5fbb7fcc9318f5";
 /// Owner of the assets the candidate imports from the tools repository.
 ///
-/// The candidate keeps two origins strictly apart: 33 public assets retain the
-/// `tidas-toolkit` origin they were extracted from, while eight authored assets
-/// and five package-metadata files carry [`SPEC_PACKAGE_METADATA_ORIGIN`]. Six
+/// The candidate keeps two origins strictly apart: 21 public assets retain the
+/// `tidas-toolkit` origin they were extracted from, while twenty authored assets
+/// and five package-metadata files carry [`SPEC_PACKAGE_METADATA_ORIGIN`]. Eighteen
 /// authored assets belong to the 39-file public runtime subset; the other two
 /// and all package metadata are evidence/bookkeeping and are not copied into
 /// the runtime asset tree.
@@ -56,14 +56,14 @@ pub const SPEC_PACKAGE_METADATA_ORIGIN: &str = "tidas-spec";
 pub const SPEC_ARCHIVE_FILE: &str = "tiangong-lca-tidas-spec-0.2.3.tgz";
 /// SHA-256 of the qualified candidate archive.
 pub const SPEC_ARCHIVE_SHA256: &str =
-    "e28018d2bf6eb4b67ca437225adfc25fe3795cf69f9dcd95698a5214aaea2a29";
+    "57effe04aba1b3450b988853edf6233bc52e09c3f7b55dfe1e88aa4261f39a77";
 /// SHA-256 of the candidate's own `spec-manifest.json`.
 pub const SPEC_MANIFEST_SHA256: &str =
-    "5b69ab859e26a253dc51c6aeee68c971d727b1f8db44128143795113fe3eee6a";
+    "2a258b8acc498c02df70d461ecf7cb7063defb7ba4e378606fd143ca3e9f61e7";
 /// Public specification assets imported into this repository.
-pub const SPEC_IMPORTED_FILE_COUNT: usize = 33;
+pub const SPEC_IMPORTED_FILE_COUNT: usize = 21;
 /// Public assets authored or derived in the specification repository.
-pub const SPEC_AUTHORED_FILE_COUNT: usize = 8;
+pub const SPEC_AUTHORED_FILE_COUNT: usize = 20;
 /// Complete public runtime subset copied into this repository.
 pub const SPEC_PUBLIC_FILE_COUNT: usize = 39;
 /// Candidate files that belong to the specification repository itself.
@@ -1242,9 +1242,9 @@ pub struct SpecProvenance {
     pub imported_file_count: usize,
     /// Canonical digest of the complete 39-file public runtime subset.
     ///
-    /// This includes the six public assets authored or derived by the
+    /// This includes the eighteen public assets authored or derived by the
     /// specification repository, so it intentionally differs from the
-    /// reviewed baseline digest over the 33 historical toolkit imports.
+    /// reviewed baseline digest over the 21 historical toolkit imports.
     pub public_assets_sha256: String,
 }
 

@@ -27,9 +27,9 @@ checkPaths:
   - .github/actions/native-xml/**
   - .githooks/pre-push
   - scripts/**
-lastReviewedAt: 2026-09-24
-lastReviewedCommit: c9bbb7a3c7da1ad9b2b12a884326a2d166f1ea49
-lastReviewedNote: "Reviewed for Toolkit #232: public Windows archive qualification reads exact tag/source/checksum and runs the extracted executable; canonical tag publication and data ownership remain separate."
+lastReviewedAt: "2026-10-01"
+lastReviewedCommit: "6ede550618b274b8b3044ba8124bc6e9beab3e8e"
+lastReviewedNote: "Reviewed for #234: exact spec #38 adoption and native legacy mappings preserve intentional projection policies; added receiver-visible and recovery evidence, with separate release and root integration boundaries."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -166,7 +166,7 @@ both.
 The public subset of that tree — 36 schemas, the two shared methodology
 documents, and the paired `schema.lock.json` — is a generated copy of the
 qualified 0.2.3 specification candidate from `tiangong-lca/tidas-spec`. It
-contains 33 assets imported from the historical toolkit source and six public
+contains 21 assets imported from the historical toolkit source and eighteen public
 assets authored or derived in the specification repository. Its
 identity is Rust source in `crates/tidas-assets/src/spec_pin.rs`: package
 version, archive SHA-256, manifest SHA-256, specification revision, and the
@@ -312,3 +312,56 @@ seeding through `.github/actions/native-xml`. Reuse is limited to vcpkg binary
 archives; installed native inputs and final product/notice outputs remain fresh.
 Cache seeding owns no release, registry or attestation action. Package archive
 location comes from existing Cargo metadata, preserving portable isolated builds.
+
+## ILCD compatibility and projection dispositions (Toolkit #234)
+
+The public schema comes from the qualified spec #38 candidate. Eight datasets
+retain TIDAS mandatory documentation and pinned-singleton versus named-array
+classification semantics. Toolkit exports canonical native names while accepting
+explicit historical aliases. Colliding names or an ambiguously placed legacy
+Contact extension are data errors; the converter does not guess which value wins.
+This adds no general export-blocking or degradation-approval policy.
+
+The receiver-visible surface and recoverable source are different contracts.
+`ilcd_compatibility.rs` validates canonical/legacy LCIA and Lifecycle Model XML
+against the pinned XSD, parses those bytes without sidecars to inspect values,
+and reverses them with recovery. Alias-bearing object restorations first compare the current native XML representation with the expected projection, so restoring the source cannot hide edits to mapped values. Its remaining cases are field-level projection
+fixtures, not claims that every synthetic fragment is a complete valid dataset.
+The existing Process type/review, eight-category format round-trip, tampering,
+invalid XML and atomic-directory suites remain required.
+
+| Dataset / family | Receiver-visible XML | Recovery-only information / disposition |
+| --- | --- | --- |
+| All eight: URI rewriting | `.json` references become `.xml`. | Original URI retained; unchanged policy. |
+| All eight: duplicate language | Same-language fragments become one text value in original order. | Fragment boundaries retained; unchanged policy. |
+| All eight: empty/extension normalization | Empty arrays/text/optional containers and unbound `tidasimport:`/`unmatched:` elements are omitted; XML text is trimmed and line endings normalized. | Exact source fragments retained; unchanged policy. |
+| Process: time description | Local legacy description maps to `common:timeRepresentativenessDescription`. | Original spelling retained; unchanged policy. |
+| Process: named variables | Both singleton and repeated named variables survive. | Fixed the old object-only predicate that removed a valid array. Incomplete-variable fallback remains. |
+| Process: results/review | Standard `LCIAResults/LCIAResult` and review `common:reviewDetails` survive, including repeated review records. | Fixed broad extension-name removal at these standard paths; legacy out-of-place fields remain recoverable extensions. |
+| Process: extensions/empty indicators/placeholders | Exchange `quantitativeReference`, generated-model metadata, out-of-place result/flow/review fields, incomplete variables and empty quality-indicator containers are omitted. | Retained policy; standard quantitative reference stays in Process information. |
+| Process/Flow: bounded text | Existing base-name/comment projection keeps at most 500 characters. | Original text retained; no constraint relaxation. |
+| Flow: unsupported metadata | Existing date/compliance extensions, validation section, publication copyright/license/access fields and short name are omitted where the adapter specifies; an empty class ID alongside category ID is omitted. | Retained in recovery. This revision does not broaden Flow's XSD. |
+| LCIA Method: review | Native local `scope/method` carries both canonical input and legacy `common:scope/common:method`; scope is no longer omitted. | Legacy shape retained; conflicting names rejected. |
+| LCIA Method: geography/sources | Correct `interventionSubLocation`; `referencesToDataSource/referenceToDataSource` wraps direct or historically double-nested sources. | Misspelling/source shape retained; all repeated entries visited. |
+| LCIA Method: revision metadata | Existing unsupported date field omitted. | Unchanged recovery policy. |
+| Lifecycle Model: scaling/parameters | `scalingFactor`; named parameter numeric simple content (`#text`). | Historical plural/nested-value aliases retained. |
+| Lifecycle Model: name/source/review metadata | `flowProperties` maps to `functionalUnitFlowProperties`; existing unsupported status/date/source references and review type are omitted. | Unchanged recoverable projection, including merged language fragments. |
+| Lifecycle Model: compliance | Each outer declaration container survives; inside each container the first compliance remains primary. | Additional inner compliance records retained; deliberate selection policy preserved. |
+| Contact: classification extension | Canonical `common:other` inside classification survives; the old parent extension moves into a single unambiguous classification object. | Parent shape retained; ambiguous multi-system placement rejected. |
+| Source: metadata/citation | Existing unsupported metadata omitted; source citation is limited to 1,000 Unicode characters. | Original citation/metadata retained; deliberate truncation policy preserved. |
+| Flow Property / Unit Group | Shared projection families only; new classification arrays serialize as repeated native classification elements. | No dataset-specific loss policy added. |
+
+Generic family fixtures exercise each retained adaptation identifier and exact
+restoration; they do not establish universal lossless interchange for receivers
+that ignore recovery. XSD validation alone does not prove semantic equivalence.
+Historical May 2025 UUID/version/placeholder, CAS and ordering allegations are
+not current failure counts: current suites reject XML-invalid characters and
+bad identity/version data, prove XSD order independently of JSON insertion order,
+and retain the pinned CAS contract. The historical export corpus was not
+available for replay, so its reported aggregate counts remain unverified;
+production-data correction belongs to its owner.
+
+SDK/product adoption, public binary publication and root integration require
+separate evidence. This toolkit candidate follows the exact public spec source
+commit and digests in `spec_pin.rs`; a local schema/converter pass does not prove
+consumer deployment or independent human review.
