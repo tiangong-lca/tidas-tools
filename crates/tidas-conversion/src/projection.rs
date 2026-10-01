@@ -42,6 +42,9 @@ pub fn project_tidas_to_eilcd(
     let mut projected = document.clone();
     let source_semantic_sha256 = semantic_sha256(document)?;
     let mut builder = RecoveryBuilder::default();
+    if matches!(category, "contacts" | "lciamethods" | "lifecyclemodels") {
+        adapt_legacy_fields(&mut projected, "", category, &mut builder)?;
+    }
     adapt_value(&mut projected, "", category, &mut builder);
     let recovery = (!builder.restorations.is_empty()).then_some(EilcdProjectionRecoveryV1 {
         schema_version: EILCD_PROJECTION_RECOVERY_SCHEMA_V1.to_owned(),
@@ -64,6 +67,7 @@ pub fn restore_tidas_projection(
             recovery.schema_version.clone(),
         ));
     }
+    verify_legacy_projection_fragments(document, recovery)?;
     for restoration in &recovery.restorations {
         set_pointer(document, &restoration.path, restoration.original.clone())?;
     }
@@ -75,6 +79,78 @@ pub fn restore_tidas_projection(
         });
     }
     Ok(())
+}
+
+// An alias restoration replaces an object to remove canonical keys. Check the
+// projected object first so restoring its source cannot mask XML edits.
+fn verify_legacy_projection_fragments(
+    document: &Value,
+    recovery: &EilcdProjectionRecoveryV1,
+) -> Result<(), ConversionError> {
+    if !recovery
+        .adaptations
+        .keys()
+        .any(|key| key.starts_with("map-legacy-"))
+    {
+        return Ok(());
+    }
+    for restoration in &recovery.restorations {
+        let category = match restoration.path.split('/').nth(1) {
+            Some("LCIAMethodDataSet") => "lciamethods",
+            Some("lifeCycleModelDataSet") => "lifecyclemodels",
+            Some("contactDataSet") => "contacts",
+            _ => continue,
+        };
+        let mut expected = restoration.original.clone();
+        let mut probe = RecoveryBuilder::default();
+        adapt_legacy_fields(&mut expected, &restoration.path, category, &mut probe)?;
+        if probe.restorations.is_empty() {
+            continue;
+        }
+        adapt_value(&mut expected, &restoration.path, category, &mut probe);
+        let actual = collapsed_pointer(document, &restoration.path);
+        if actual.is_none_or(|actual| {
+            normalize_xml_shape(normalize(actual.clone(), None))
+                != normalize_xml_shape(normalize(expected.clone(), None))
+        }) {
+            return Err(ConversionError::ProjectionAliasMismatch(
+                restoration.path.clone(),
+            ));
+        }
+    }
+    Ok(())
+}
+
+// XML has no wrapper distinction between plain text and a lone #text member.
+fn normalize_xml_shape(value: Value) -> Value {
+    match value {
+        Value::Object(mut object) => {
+            if object.len() == 1 && object.contains_key("#text") {
+                return normalize_xml_shape(object.remove("#text").expect("text exists"));
+            }
+            Value::Object(
+                object
+                    .into_iter()
+                    .map(|(key, child)| (key, normalize_xml_shape(child)))
+                    .collect(),
+            )
+        }
+        Value::Array(items) => Value::Array(items.into_iter().map(normalize_xml_shape).collect()),
+        other => other,
+    }
+}
+
+fn collapsed_pointer<'a>(document: &'a Value, pointer: &str) -> Option<&'a Value> {
+    let mut current = document;
+    for part in pointer.split('/').skip(1) {
+        let part = part.replace("~1", "/").replace("~0", "~");
+        if let Value::Array(items) = current {
+            current = items.get(part.parse::<usize>().ok()?)?;
+        } else if part != "0" || current.get(&part).is_some() {
+            current = current.get(&part)?;
+        }
+    }
+    Some(current)
 }
 
 /// XML has no JSON scalar/object type tags. Apply only the Process shapes that
@@ -147,6 +223,132 @@ impl RecoveryBuilder {
     fn increment(&mut self, rule: &str) {
         *self.adaptations.entry(rule.to_owned()).or_default() += 1;
     }
+}
+
+fn legacy_field_alias(category: &str, schema_path: &str) -> Option<(&'static str, &'static str)> {
+    match (category, schema_path) {
+        ("lciamethods", "/LCIAMethodDataSet/LCIAMethodInformation/geography") => {
+            Some(("intervensionSubLocation", "interventionSubLocation"))
+        }
+        ("lciamethods", "/LCIAMethodDataSet/modellingAndValidation/validation/review") => {
+            Some(("common:scope", "scope"))
+        }
+        ("lciamethods", "/LCIAMethodDataSet/modellingAndValidation/validation/review/scope") => {
+            Some(("common:method", "method"))
+        }
+        ("lciamethods", "/LCIAMethodDataSet/characterisationFactors/factor") => {
+            Some(("referenceToDataSource", "referencesToDataSource"))
+        }
+        (
+            "lifecyclemodels",
+            "/lifeCycleModelDataSet/lifeCycleModelInformation/technology/processes/processInstance",
+        ) => Some(("scalingFactors", "scalingFactor")),
+        (
+            "lifecyclemodels",
+            "/lifeCycleModelDataSet/lifeCycleModelInformation/technology/processes/processInstance/parameters/parameter",
+        ) => Some(("parameter", "#text")),
+        _ => None,
+    }
+}
+
+// Canonicalize only known historical schema aliases. Record their complete
+// original object so reverse recovery removes newly introduced keys as well.
+fn adapt_legacy_fields(
+    value: &mut Value,
+    path: &str,
+    category: &str,
+    recovery: &mut RecoveryBuilder,
+) -> Result<(), ConversionError> {
+    let schema_path = path
+        .split('/')
+        .filter(|part| part.parse::<usize>().is_err())
+        .collect::<Vec<_>>()
+        .join("/");
+    match value {
+        Value::Object(object) => {
+            let alias = legacy_field_alias(category, &schema_path);
+            if let Some((legacy, canonical)) = alias
+                && object.contains_key(legacy)
+            {
+                if object.contains_key(canonical) {
+                    return Err(ConversionError::ConflictingProjectionFields {
+                        path: path.to_owned(),
+                        legacy: legacy.to_owned(),
+                        canonical: canonical.to_owned(),
+                    });
+                }
+                recovery.record(
+                    path,
+                    &Value::Object(object.clone()),
+                    "map-legacy-ilcd-field",
+                );
+                let mut content = object.remove(legacy).expect("legacy field exists");
+                if canonical == "referencesToDataSource"
+                    && !content
+                        .as_object()
+                        .is_some_and(|source| source.contains_key("referenceToDataSource"))
+                {
+                    content = Value::Object(Map::from_iter([(
+                        "referenceToDataSource".to_owned(),
+                        content,
+                    )]));
+                }
+                object.insert(canonical.to_owned(), content);
+            }
+            if category == "contacts"
+                && schema_path
+                    == "/contactDataSet/contactInformation/dataSetInformation/classificationInformation"
+                && object.contains_key("common:other")
+            {
+                let Some(classification) = object
+                    .get("common:classification")
+                    .and_then(Value::as_object)
+                else {
+                    return Err(ConversionError::InvalidLegacyClassificationExtension(
+                        path.to_owned(),
+                    ));
+                };
+                if classification.contains_key("common:other") {
+                    return Err(ConversionError::ConflictingProjectionFields {
+                        path: path.to_owned(),
+                        legacy: "common:other".to_owned(),
+                        canonical: "common:classification/common:other".to_owned(),
+                    });
+                }
+                recovery.record(
+                    path,
+                    &Value::Object(object.clone()),
+                    "map-legacy-classification-extension",
+                );
+                let extension = object.remove("common:other").expect("extension exists");
+                object
+                    .get_mut("common:classification")
+                    .and_then(Value::as_object_mut)
+                    .expect("classification object verified")
+                    .insert("common:other".to_owned(), extension);
+            }
+            for (key, child) in object.iter_mut() {
+                adapt_legacy_fields(
+                    child,
+                    &join_pointer(path, &escape_pointer(key)),
+                    category,
+                    recovery,
+                )?;
+            }
+        }
+        Value::Array(items) => {
+            for (index, child) in items.iter_mut().enumerate() {
+                adapt_legacy_fields(
+                    child,
+                    &join_pointer(path, &index.to_string()),
+                    category,
+                    recovery,
+                )?;
+            }
+        }
+        _ => {}
+    }
+    Ok(())
 }
 
 fn adapt_value(value: &mut Value, path: &str, category: &str, recovery: &mut RecoveryBuilder) {
@@ -358,12 +560,25 @@ fn adapt_process_object(
         "common:reviewDetails",
         "reviewDetails",
     ] {
-        remove_key(object, path, key, "omit-tidas-process-extension", recovery);
+        let native_field = (key == "LCIAResult" && path == "/processDataSet/LCIAResults")
+            || (key == "common:reviewDetails"
+                && (path == "/processDataSet/modellingAndValidation/validation/review"
+                    || path
+                        .strip_prefix("/processDataSet/modellingAndValidation/validation/review/")
+                        .is_some_and(|index| index.parse::<usize>().is_ok())));
+        if !native_field {
+            remove_key(object, path, key, "omit-tidas-process-extension", recovery);
+        }
     }
     if object.contains_key("variableParameter")
         && object
             .get("variableParameter")
-            .is_some_and(|value| value.get("@name").is_none() && value.get("name").is_none())
+            .is_some_and(|value| match value {
+                Value::Array(items) => items
+                    .iter()
+                    .any(|item| item.get("@name").is_none() && item.get("name").is_none()),
+                item => item.get("@name").is_none() && item.get("name").is_none(),
+            })
     {
         remove_key(
             object,
@@ -547,15 +762,13 @@ fn adapt_lcia_method_object(
     path: &str,
     recovery: &mut RecoveryBuilder,
 ) {
-    for key in ["common:scope", "common:dateOfLastRevision"] {
-        remove_key(
-            object,
-            path,
-            key,
-            "omit-unsupported-lcia-method-metadata",
-            recovery,
-        );
-    }
+    remove_key(
+        object,
+        path,
+        "common:dateOfLastRevision",
+        "omit-unsupported-lcia-method-metadata",
+        recovery,
+    );
 }
 
 fn adapt_source_object(

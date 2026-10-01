@@ -1160,18 +1160,18 @@ fn a_repository_copy_bound_to_a_different_candidate_fails_closed() {
 fn committed_pin_binds_the_qualified_candidate_identity() {
     let pin = SpecPin::qualified_candidate();
     assert_eq!(pin.version, "0.2.3");
-    assert_eq!(pin.revision, "f118660dbcbfbf736be74837cce0bf26cd177245");
+    assert_eq!(pin.revision, "97a3725e6a24886ec1332be61e462e2228ee94fe");
     assert_eq!(pin.archive_file, "tiangong-lca-tidas-spec-0.2.3.tgz");
     assert_eq!(
         pin.archive_sha256,
-        "e28018d2bf6eb4b67ca437225adfc25fe3795cf69f9dcd95698a5214aaea2a29"
+        "57effe04aba1b3450b988853edf6233bc52e09c3f7b55dfe1e88aa4261f39a77"
     );
     assert_eq!(
         pin.manifest_sha256,
-        "5b69ab859e26a253dc51c6aeee68c971d727b1f8db44128143795113fe3eee6a"
+        "2a258b8acc498c02df70d461ecf7cb7063defb7ba4e378606fd143ca3e9f61e7"
     );
-    assert_eq!(pin.imported_file_count, 33);
-    assert_eq!(pin.authored_file_count, 8);
+    assert_eq!(pin.imported_file_count, 21);
+    assert_eq!(pin.authored_file_count, 20);
     assert_eq!(pin.public_file_count, 39);
     assert_eq!(pin.package_file_count, 47);
     assert_eq!(pin.schemas_per_language, 18);
@@ -1213,7 +1213,7 @@ fn the_committed_public_copy_matches_the_pinned_manifest() {
         serde_json::from_slice(&fs::read(root.join("assets/spec/spec-pin.json")).unwrap()).unwrap();
     assert_eq!(
         provenance["publicAssetsSha256"],
-        "5007285e309eca282c3fe8a5d5f0a08135cd5417bc909178288ca400b7010c7c"
+        "c8ff377c1234ed0019a09c19700112fb354799338cc884402b50eb686151076b"
     );
 }
 

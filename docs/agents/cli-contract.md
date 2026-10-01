@@ -27,9 +27,9 @@ checkPaths:
   - contracts/**
   - README.md
   - README_CN.md
-lastReviewedAt: 2026-09-24
-lastReviewedCommit: c9bbb7a3c7da1ad9b2b12a884326a2d166f1ea49
-lastReviewedNote: "Reviewed for Toolkit #232: the installed public Windows verifier exercises existing schema-only indexed issue-spool and exit-74 I/O contracts without changing the tidas CLI or its machine report schema."
+lastReviewedAt: "2026-10-01"
+lastReviewedCommit: "6ede550618b274b8b3044ba8124bc6e9beab3e8e"
+lastReviewedNote: "Reviewed for #234: exact spec #38 adoption and native legacy mappings preserve intentional projection policies; added receiver-visible and recovery evidence, with separate release and root integration boundaries."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -184,11 +184,13 @@ tidas convert <INPUT_DIR> --output <OUTPUT_DIR> --to tidas --format json
 The command never infers direction. It mirrors input under `OUTPUT_DIR/data`,
 copies non-domain package metadata, materializes the locked target assets, and
 publishes the whole directory atomically. TIDAS-to-ILCD conversion orders known
-dataset members from the locked TIDAS schema catalog before XML serialization;
+dataset members from the locked eILCD XSD catalog before XML serialization;
 source JSON object member order therefore cannot change XSD validity. Symlinks,
 malformed JSON/XML, multiple unknown roots, XML 1.0-invalid text, and malformed
 envelope sidecars are data issues; nested output is a usage error; missing
 paths and commit failures use the I/O class; cancellation uses 130.
+
+Canonical and historical spec #38 field names map to native XML before serialization. Conflicting aliases and ambiguous legacy Contact classification extensions fail atomically as data errors. Native Process variables, LCIA results and review details remain XML-visible; intentional compliance selection, citation truncation and recovery semantics are preserved.
 
 The operation report summary contains one `conversion` member conforming to
 `tidas.conversion-report.v1`. Its artifact is the output directory with total
@@ -197,7 +199,7 @@ bytes and a cross-platform tree SHA-256. A deterministic
 cannot appear beside the single eILCD XML root; reverse conversion consumes
 and merges it. `.tidas-recovery.json` preserves source fragments changed by the
 semantic eILCD projection; reverse conversion applies it and verifies the
-source semantic hash. The report next action gives the exact `tidas validate
+source semantic hash. Alias-bearing restorations also verify their XML-visible fragments before replacement, rejecting edits to mapped values. The report next action gives the exact `tidas validate
 OUTPUT/data --input-format ...` command.
 
 Process reverse conversion restores numeric `common:referenceYear` and

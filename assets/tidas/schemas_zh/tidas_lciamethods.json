@@ -40,109 +40,178 @@
                   "description": "数据集的名称。组成如下：“LCIA 方法简称；影响类别；中点/终点；影响指标；来源简称”。不适用的组件被省略。示例：“Impacts2007+；气候变化；中点；全球变暖潜力；IPCC 2001”； “ABC 2006；酸化；终点；物种多样性丧失；John Doe 2006”； “My-indicator2009；组合；终点；生态点；各种”"
                 },
                 "methodology": {
-                  "type": "string",
-                  "description": "数据集所属的 LCIA 方法名称（如果有）"
+                  "description": "数据集所属的 LCIA 方法名称（如果有）",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  ]
                 },
                 "classificationInformation": {
                   "type": "object",
                   "properties": {
                     "common:classification": {
-                      "type": "object",
                       "description": "数据集的可选统计或其他分类。通常也用于构建 LCA 数据库。",
-                      "properties": {
-                        "common:class": {
-                          "anyOf": [
-                            {
-                              "type": "array",
-                              "items": [
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "common:class": {
+                              "anyOf": [
                                 {
-                                  "type": "object",
-                                  "properties": {
-                                    "@level": {
-                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
-                                      "const": "0"
+                                  "type": "array",
+                                  "items": [
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "@level": {
+                                          "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                          "const": "0"
+                                        },
+                                        "@classId": {
+                                          "type": "string"
+                                        },
+                                        "#text": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "@level",
+                                        "@classId",
+                                        "#text"
+                                      ],
+                                      "dependencies": {
+                                        "@level": {
+                                          "$ref": "./tidas_lciamethods_category.json#/$defs/LCIAMethod"
+                                        }
+                                      }
                                     },
-                                    "@classId": {
-                                      "type": "string"
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "@level": {
+                                          "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                          "const": "1"
+                                        },
+                                        "@classId": {
+                                          "type": "string"
+                                        },
+                                        "#text": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "@level",
+                                        "@classId",
+                                        "#text"
+                                      ],
+                                      "dependencies": {
+                                        "@level": {
+                                          "$ref": "./tidas_lciamethods_category.json#/$defs/LCIAMethod"
+                                        }
+                                      }
                                     },
-                                    "#text": {
-                                      "type": "string"
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "@level": {
+                                          "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                          "const": "2"
+                                        },
+                                        "@classId": {
+                                          "type": "string"
+                                        },
+                                        "#text": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "@level",
+                                        "@classId",
+                                        "#text"
+                                      ],
+                                      "dependencies": {
+                                        "@level": {
+                                          "$ref": "./tidas_lciamethods_category.json#/$defs/LCIAMethod"
+                                        }
+                                      }
                                     }
-                                  },
-                                  "required": [
-                                    "@level",
-                                    "@classId",
-                                    "#text"
                                   ],
-                                  "dependencies": {
-                                    "@level": {
-                                      "$ref": "./tidas_lciamethods_category.json#/$defs/LCIAMethod"
-                                    }
-                                  }
-                                },
-                                {
-                                  "type": "object",
-                                  "properties": {
-                                    "@level": {
-                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
-                                      "const": "1"
-                                    },
-                                    "@classId": {
-                                      "type": "string"
-                                    },
-                                    "#text": {
-                                      "type": "string"
-                                    }
-                                  },
-                                  "required": [
-                                    "@level",
-                                    "@classId",
-                                    "#text"
-                                  ],
-                                  "dependencies": {
-                                    "@level": {
-                                      "$ref": "./tidas_lciamethods_category.json#/$defs/LCIAMethod"
-                                    }
-                                  }
-                                },
-                                {
-                                  "type": "object",
-                                  "properties": {
-                                    "@level": {
-                                      "$ref": "tidas_data_types.json#/$defs/LevelType",
-                                      "const": "2"
-                                    },
-                                    "@classId": {
-                                      "type": "string"
-                                    },
-                                    "#text": {
-                                      "type": "string"
-                                    }
-                                  },
-                                  "required": [
-                                    "@level",
-                                    "@classId",
-                                    "#text"
-                                  ],
-                                  "dependencies": {
-                                    "@level": {
-                                      "$ref": "./tidas_lciamethods_category.json#/$defs/LCIAMethod"
-                                    }
-                                  }
+                                  "uniqueItems": true,
+                                  "maxItems": 3,
+                                  "additionalItems": false
                                 }
-                              ],
-                              "uniqueItems": true,
-                              "maxItems": 3,
-                              "additionalItems": false
+                              ]
+                            },
+                            "common:other": {
+                              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                            },
+                            "@name": {
+                              "type": "string"
+                            },
+                            "@classes": {
+                              "type": "string"
                             }
+                          },
+                          "required": [
+                            "common:class"
                           ]
                         },
-                        "common:other": {
-                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        {
+                          "type": "array",
+                          "minItems": 1,
+                          "items": {
+                            "type": "object",
+                            "description": "One named classification system (e.g. CPC or HS). Used in the array form to let multiple systems coexist.",
+                            "properties": {
+                              "@name": {
+                                "type": "string",
+                                "description": "Name of the classification system (e.g. CPC, ISIC, HS). Per ILCD this defaults to 'ILCD' when absent; set it explicitly for non-ILCD systems."
+                              },
+                              "@classes": {
+                                "type": "string",
+                                "description": "Optional URL or identifier of the classification file/system."
+                              },
+                              "common:class": {
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "@level": {
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType"
+                                    },
+                                    "@classId": {
+                                      "type": "string"
+                                    },
+                                    "#text": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "@level",
+                                    "@classId",
+                                    "#text"
+                                  ]
+                                }
+                              },
+                              "common:other": {
+                                "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                              }
+                            },
+                            "required": [
+                              "@name",
+                              "common:class"
+                            ]
+                          }
                         }
-                      },
-                      "required": [
-                        "common:class"
                       ]
                     }
                   },
@@ -151,36 +220,83 @@
                   ]
                 },
                 "impactCategory": {
-                  "type": "string",
                   "description": "LCIA 方法或方法学涵盖的影响类别。",
-                  "enum": [
-                    "Climate change",
-                    "Ozone depletion",
-                    "Terrestrial Eutrophication",
-                    "Aquatic Eutrophication",
-                    "Acidification",
-                    "Photochemical ozone creation",
-                    "Land use",
-                    "Abiotic resource depletion",
-                    "Biotic resource depletion",
-                    "Ionizing radiation",
-                    "Cancer human health effects",
-                    "Non-cancer human health effects",
-                    "Respiratory inorganics",
-                    "Aquatic eco-toxicity",
-                    "Terrestrial eco-toxicity",
-                    "other"
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "Climate change",
+                        "Ozone depletion",
+                        "Terrestrial Eutrophication",
+                        "Aquatic Eutrophication",
+                        "Acidification",
+                        "Photochemical ozone creation",
+                        "Land use",
+                        "Abiotic resource depletion",
+                        "Biotic resource depletion",
+                        "Ionizing radiation",
+                        "Cancer human health effects",
+                        "Non-cancer human health effects",
+                        "Respiratory inorganics",
+                        "Aquatic eco-toxicity",
+                        "Terrestrial eco-toxicity",
+                        "other"
+                      ]
+                    },
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "Climate change",
+                          "Ozone depletion",
+                          "Terrestrial Eutrophication",
+                          "Aquatic Eutrophication",
+                          "Acidification",
+                          "Photochemical ozone creation",
+                          "Land use",
+                          "Abiotic resource depletion",
+                          "Biotic resource depletion",
+                          "Ionizing radiation",
+                          "Cancer human health effects",
+                          "Non-cancer human health effects",
+                          "Respiratory inorganics",
+                          "Aquatic eco-toxicity",
+                          "Terrestrial eco-toxicity",
+                          "other"
+                        ]
+                      }
+                    }
                   ]
                 },
                 "areaOfProtection": {
-                  "type": "string",
                   "description": "仅适用于损害（终点）和单一评分指标：数据集相关的保护区域。",
-                  "enum": [
-                    "Natural resources",
-                    "Natural environment",
-                    "Human health",
-                    "Man-made environment",
-                    "Other"
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "Natural resources",
+                        "Natural environment",
+                        "Human health",
+                        "Man-made environment",
+                        "Other"
+                      ]
+                    },
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "Natural resources",
+                          "Natural environment",
+                          "Human health",
+                          "Man-made environment",
+                          "Other"
+                        ]
+                      }
+                    }
                   ]
                 },
                 "impactIndicator": {
@@ -262,10 +378,97 @@
                           "$ref": "tidas_data_types.json#/$defs/GIS",
                           "description": "“位置”/“子位置”的地理纬度和经度参考。对于区域类型位置（例如国家、大洲），该字段为空。"
                         }
-                      }
+                      },
+                      "required": [
+                        "#text"
+                      ]
                     },
                     {
                       "type": "string"
+                    }
+                  ]
+                },
+                "impactLocation": {
+                  "description": "模拟影响发生的位置或区域。 [注：条目可以是针对国家的“两字母 ISO 3166 国家/地区代码”类型，针对地区或大洲的“七字母区域代码”类型，或针对 ILCD 预定义的“市场区域和市场组织”类型。也是一个名称，例如可以在此处给出特定的流域等，用户定义）。]",
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "#text": {
+                          "type": "string"
+                        },
+                        "@latitudeAndLongitude": {
+                          "$ref": "tidas_data_types.json#/$defs/GIS",
+                          "description": "“位置”/“子位置”的地理纬度和经度参考。对于区域类型位置（例如国家、大洲），该字段为空。"
+                        }
+                      },
+                      "required": [
+                        "#text"
+                      ]
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "geographicalRepresentativenessDescription": {
+                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                  "description": "关于位置的其他方面的进一步解释，包括干预和影响：某些区域是否不受该位置的影响，数据是否仅对指示位置内的某些子位置有效，或者某些基本流的影响指标值是否从指示以外的另一个地理区域推断出来。有关使用通用干预措施和/或影响地点以及其他限制的信息。"
+                },
+                "common:other": {
+                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                },
+                "interventionSubLocation": {
+                  "anyOf": [
+                    {
+                      "description": "“干预位置”的地理子单元，进一步指定具体建模的子位置。这样的子位置可以是例如公司地点、建模的特定流域、大陆国家或国家中的位置。如果适用，应提供有关有限代表性的信息。",
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "#text": {
+                              "type": "string"
+                            },
+                            "@latitudeAndLongitude": {
+                              "$ref": "tidas_data_types.json#/$defs/GIS",
+                              "description": "“位置”/“子位置”的地理纬度和经度参考。对于区域类型位置（例如国家、大洲），该字段为空。"
+                            }
+                          },
+                          "required": [
+                            "#text"
+                          ]
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "description": "“干预位置”的地理子单元，进一步指定具体建模的子位置。这样的子位置可以是例如公司地点、建模的特定流域、大陆国家或国家中的位置。如果适用，应提供有关有限代表性的信息。",
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "#text": {
+                                "type": "string"
+                              },
+                              "@latitudeAndLongitude": {
+                                "$ref": "tidas_data_types.json#/$defs/GIS",
+                                "description": "“位置”/“子位置”的地理纬度和经度参考。对于区域类型位置（例如国家、大洲），该字段为空。"
+                              }
+                            },
+                            "required": [
+                              "#text"
+                            ]
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      }
                     }
                   ]
                 },
@@ -287,36 +490,20 @@
                     {
                       "type": "string"
                     }
-                  ]
-                },
-                "impactLocation": {
-                  "description": "模拟影响发生的位置或区域。 [注：条目可以是针对国家的“两字母 ISO 3166 国家/地区代码”类型，针对地区或大洲的“七字母区域代码”类型，或针对 ILCD 预定义的“市场区域和市场组织”类型。也是一个名称，例如可以在此处给出特定的流域等，用户定义）。]",
-                  "anyOf": [
-                    {
-                      "type": "object",
-                      "properties": {
-                        "#text": {
-                          "type": "string"
-                        },
-                        "@latitudeAndLongitude": {
-                          "$ref": "tidas_data_types.json#/$defs/GIS",
-                          "description": "“位置”/“子位置”的地理纬度和经度参考。对于区域类型位置（例如国家、大洲），该字段为空。"
-                        }
-                      }
-                    },
-                    {
-                      "type": "string"
-                    }
-                  ]
-                },
-                "geographicalRepresentativenessDescription": {
-                  "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
-                  "description": "关于位置的其他方面的进一步解释，包括干预和影响：某些区域是否不受该位置的影响，数据是否仅对指示位置内的某些子位置有效，或者某些基本流的影响指标值是否从指示以外的另一个地理区域推断出来。有关使用通用干预措施和/或影响地点以及其他限制的信息。"
-                },
-                "common:other": {
-                  "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                  ],
+                  "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
                 }
-              }
+              },
+              "allOf": [
+                {
+                  "not": {
+                    "required": [
+                      "interventionSubLocation",
+                      "intervensionSubLocation"
+                    ]
+                  }
+                }
+              ]
             },
             "impactModel": {
               "description": "提供有关数据集的一般代表性及其单个 LCIA 方法的组成的信息。",
@@ -391,16 +578,36 @@
                   ]
                 },
                 "LCIAMethodPrinciple": {
-                  "type": "string",
                   "description": "得出影响因子时遵循的 LCIA 方法原则。",
-                  "enum": [
-                    "Distance-to-target",
-                    "Critical surface-time",
-                    "Effective volumes",
-                    "AoP-Damage model",
-                    "Carrying capacity",
-                    "Resource dissipation",
-                    "other"
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "Distance-to-target",
+                        "Critical surface-time",
+                        "Effective volumes",
+                        "AoP-Damage model",
+                        "Carrying capacity",
+                        "Resource dissipation",
+                        "other"
+                      ]
+                    },
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "Distance-to-target",
+                          "Critical surface-time",
+                          "Effective volumes",
+                          "AoP-Damage model",
+                          "Carrying capacity",
+                          "Resource dissipation",
+                          "other"
+                        ]
+                      }
+                    }
                   ]
                 },
                 "deviationsFromLCIAMethodPrinciple": {
@@ -480,136 +687,66 @@
               "properties": {
                 "review": {
                   "description": "已针对独立性和审核流程类型进行的审核类型。",
-                  "type": "object",
-                  "properties": {
-                    "@type": {
-                      "type": "string",
-                      "enum": [
-                        "Dependent internal review",
-                        "Independent internal review",
-                        "Independent external review",
-                        "Accredited third party review",
-                        "Independent review panel",
-                        "Not reviewed"
-                      ]
-                    },
-                    "common:scope": {
-                      "description": "审查范围，涉及审查或验证数据集的哪些方面和组成部分。如果是聚合的，例如LCI 结果以及进行审查/验证的详细程度（例如仅 LCI 结果，包括单元流程……）。",
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "@name": {
-                              "type": "string",
-                              "enum": [
-                                "Substance properties, physical and chemical",
-                                "Substance properties, biological",
-                                "Model for Transport and Fate",
-                                "Model for Exposure",
-                                "Model for Effect",
-                                "Model for Damage",
-                                "Characterisation factors",
-                                "Application of model",
-                                "Normalisation",
-                                "Weighting",
-                                "Documentation"
-                              ]
-                            },
-                            "common:method": {
-                              "description": "相应“审查范围”中使用的验证方法。",
-                              "anyOf": [
-                                {
-                                  "type": "object",
-                                  "properties": {
-                                    "@name": {
-                                      "type": "string",
-                                      "enum": [
-                                        "Recollection / Validation of data",
-                                        "Recalculation",
-                                        "Cross-check with other source",
-                                        "Cross-check with other LCIA method(ology)",
-                                        "Expert judgement"
-                                      ]
-                                    }
-                                  },
-                                  "required": [
-                                    "@name"
-                                  ]
-                                },
-                                {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "object",
-                                    "properties": {
-                                      "@name": {
-                                        "type": "string",
-                                        "enum": [
-                                          "Recollection / Validation of data",
-                                          "Recalculation",
-                                          "Cross-check with other source",
-                                          "Cross-check with other LCIA method(ology)",
-                                          "Expert judgement"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "@name"
-                                    ]
-                                  }
-                                }
-                              ]
-                            }
-                          },
-                          "required": [
-                            "@name",
-                            "common:method"
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "@type": {
+                          "type": "string",
+                          "enum": [
+                            "Dependent internal review",
+                            "Independent internal review",
+                            "Independent external review",
+                            "Accredited third party review",
+                            "Independent review panel",
+                            "Not reviewed"
                           ]
                         },
-                        {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "@name": {
-                                "type": "string",
-                                "enum": [
-                                  "Substance properties, physical and chemical",
-                                  "Substance properties, biological",
-                                  "Model for Transport and Fate",
-                                  "Model for Exposure",
-                                  "Model for Effect",
-                                  "Model for Damage",
-                                  "Characterisation factors",
-                                  "Application of model",
-                                  "Normalisation",
-                                  "Weighting",
-                                  "Documentation"
-                                ]
-                              },
-                              "common:method": {
-                                "description": "相应“审查范围”中使用的验证方法。",
-                                "anyOf": [
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "@name": {
-                                        "type": "string",
-                                        "enum": [
-                                          "Recollection / Validation of data",
-                                          "Recalculation",
-                                          "Cross-check with other source",
-                                          "Cross-check with other LCIA method(ology)",
-                                          "Expert judgement"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "@name"
-                                    ]
-                                  },
-                                  {
-                                    "type": "array",
-                                    "items": {
+                        "common:reviewDetails": {
+                          "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                          "description": "审查摘要。应明确解决以下所有问题：模型的完整性和适当性、地理和时间覆盖范围和差异、物质数据或其他基础数据的正确性和精确性；标准化和/或加权方案（如果包括）的应用的适当性和连贯性；数据集文档的正确性、适当性、可理解性和完整性；利益相关者对 LCIA 方法的接受程度。可选：审阅者对单个基本流或基本流组的表征因子的评论。应指出由于缺乏透明度或文件而对审查造成的相关限制。此处可能包含总体质量声明。"
+                        },
+                        "common:referenceToNameOfReviewerAndInstitution": {
+                          "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                          "description": "审稿人的“联系数据集”。该联系数据集中应提供审稿人和机构的全名以及联系地址和/或电子邮件。"
+                        },
+                        "common:otherReviewDetails": {
+                          "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                          "description": "来自审核过程的更多信息，特别是数据集发布后从第三方收到的评论或来自其他外部审核的其他审核者评论。"
+                        },
+                        "common:referenceToCompleteReviewReport": {
+                          "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                          "description": "完整审查报告的“源数据集”。"
+                        },
+                        "common:other": {
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        },
+                        "scope": {
+                          "description": "审查范围，涉及审查或验证数据集的哪些方面和组成部分。如果是聚合的，例如LCI 结果以及进行审查/验证的详细程度（例如仅 LCI 结果，包括单元流程……）。",
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "@name": {
+                                  "type": "string",
+                                  "enum": [
+                                    "Substance properties, physical and chemical",
+                                    "Substance properties, biological",
+                                    "Model for Transport and Fate",
+                                    "Model for Exposure",
+                                    "Model for Effect",
+                                    "Model for Damage",
+                                    "Characterisation factors",
+                                    "Application of model",
+                                    "Normalisation",
+                                    "Weighting",
+                                    "Documentation"
+                                  ]
+                                },
+                                "method": {
+                                  "description": "相应“审查范围”中使用的验证方法。",
+                                  "anyOf": [
+                                    {
                                       "type": "object",
                                       "properties": {
                                         "@name": {
@@ -626,57 +763,942 @@
                                       "required": [
                                         "@name"
                                       ]
+                                    },
+                                    {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "@name": {
+                                            "type": "string",
+                                            "enum": [
+                                              "Recollection / Validation of data",
+                                              "Recalculation",
+                                              "Cross-check with other source",
+                                              "Cross-check with other LCIA method(ology)",
+                                              "Expert judgement"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "@name"
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                },
+                                "common:method": {
+                                  "description": "相应“审查范围”中使用的验证方法。",
+                                  "anyOf": [
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "@name": {
+                                          "type": "string",
+                                          "enum": [
+                                            "Recollection / Validation of data",
+                                            "Recalculation",
+                                            "Cross-check with other source",
+                                            "Cross-check with other LCIA method(ology)",
+                                            "Expert judgement"
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "@name"
+                                      ]
+                                    },
+                                    {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "@name": {
+                                            "type": "string",
+                                            "enum": [
+                                              "Recollection / Validation of data",
+                                              "Recalculation",
+                                              "Cross-check with other source",
+                                              "Cross-check with other LCIA method(ology)",
+                                              "Expert judgement"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "@name"
+                                        ]
+                                      }
+                                    }
+                                  ],
+                                  "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
+                                }
+                              },
+                              "required": [
+                                "@name"
+                              ],
+                              "allOf": [
+                                {
+                                  "anyOf": [
+                                    {
+                                      "required": [
+                                        "method"
+                                      ]
+                                    },
+                                    {
+                                      "required": [
+                                        "common:method"
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "not": {
+                                    "required": [
+                                      "method",
+                                      "common:method"
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "@name": {
+                                    "type": "string",
+                                    "enum": [
+                                      "Substance properties, physical and chemical",
+                                      "Substance properties, biological",
+                                      "Model for Transport and Fate",
+                                      "Model for Exposure",
+                                      "Model for Effect",
+                                      "Model for Damage",
+                                      "Characterisation factors",
+                                      "Application of model",
+                                      "Normalisation",
+                                      "Weighting",
+                                      "Documentation"
+                                    ]
+                                  },
+                                  "method": {
+                                    "description": "相应“审查范围”中使用的验证方法。",
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "@name": {
+                                            "type": "string",
+                                            "enum": [
+                                              "Recollection / Validation of data",
+                                              "Recalculation",
+                                              "Cross-check with other source",
+                                              "Cross-check with other LCIA method(ology)",
+                                              "Expert judgement"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "@name"
+                                        ]
+                                      },
+                                      {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "@name": {
+                                              "type": "string",
+                                              "enum": [
+                                                "Recollection / Validation of data",
+                                                "Recalculation",
+                                                "Cross-check with other source",
+                                                "Cross-check with other LCIA method(ology)",
+                                                "Expert judgement"
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "@name"
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  "common:method": {
+                                    "description": "相应“审查范围”中使用的验证方法。",
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "@name": {
+                                            "type": "string",
+                                            "enum": [
+                                              "Recollection / Validation of data",
+                                              "Recalculation",
+                                              "Cross-check with other source",
+                                              "Cross-check with other LCIA method(ology)",
+                                              "Expert judgement"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "@name"
+                                        ]
+                                      },
+                                      {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "@name": {
+                                              "type": "string",
+                                              "enum": [
+                                                "Recollection / Validation of data",
+                                                "Recalculation",
+                                                "Cross-check with other source",
+                                                "Cross-check with other LCIA method(ology)",
+                                                "Expert judgement"
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "@name"
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
+                                  }
+                                },
+                                "required": [
+                                  "@name"
+                                ],
+                                "allOf": [
+                                  {
+                                    "anyOf": [
+                                      {
+                                        "required": [
+                                          "method"
+                                        ]
+                                      },
+                                      {
+                                        "required": [
+                                          "common:method"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "not": {
+                                      "required": [
+                                        "method",
+                                        "common:method"
+                                      ]
                                     }
                                   }
                                 ]
                               }
+                            }
+                          ]
+                        },
+                        "common:scope": {
+                          "description": "审查范围，涉及审查或验证数据集的哪些方面和组成部分。如果是聚合的，例如LCI 结果以及进行审查/验证的详细程度（例如仅 LCI 结果，包括单元流程……）。",
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "@name": {
+                                  "type": "string",
+                                  "enum": [
+                                    "Substance properties, physical and chemical",
+                                    "Substance properties, biological",
+                                    "Model for Transport and Fate",
+                                    "Model for Exposure",
+                                    "Model for Effect",
+                                    "Model for Damage",
+                                    "Characterisation factors",
+                                    "Application of model",
+                                    "Normalisation",
+                                    "Weighting",
+                                    "Documentation"
+                                  ]
+                                },
+                                "common:method": {
+                                  "description": "相应“审查范围”中使用的验证方法。",
+                                  "anyOf": [
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "@name": {
+                                          "type": "string",
+                                          "enum": [
+                                            "Recollection / Validation of data",
+                                            "Recalculation",
+                                            "Cross-check with other source",
+                                            "Cross-check with other LCIA method(ology)",
+                                            "Expert judgement"
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "@name"
+                                      ]
+                                    },
+                                    {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "@name": {
+                                            "type": "string",
+                                            "enum": [
+                                              "Recollection / Validation of data",
+                                              "Recalculation",
+                                              "Cross-check with other source",
+                                              "Cross-check with other LCIA method(ology)",
+                                              "Expert judgement"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "@name"
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "@name",
+                                "common:method"
+                              ]
                             },
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "@name": {
+                                    "type": "string",
+                                    "enum": [
+                                      "Substance properties, physical and chemical",
+                                      "Substance properties, biological",
+                                      "Model for Transport and Fate",
+                                      "Model for Exposure",
+                                      "Model for Effect",
+                                      "Model for Damage",
+                                      "Characterisation factors",
+                                      "Application of model",
+                                      "Normalisation",
+                                      "Weighting",
+                                      "Documentation"
+                                    ]
+                                  },
+                                  "common:method": {
+                                    "description": "相应“审查范围”中使用的验证方法。",
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "@name": {
+                                            "type": "string",
+                                            "enum": [
+                                              "Recollection / Validation of data",
+                                              "Recalculation",
+                                              "Cross-check with other source",
+                                              "Cross-check with other LCIA method(ology)",
+                                              "Expert judgement"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "@name"
+                                        ]
+                                      },
+                                      {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "@name": {
+                                              "type": "string",
+                                              "enum": [
+                                                "Recollection / Validation of data",
+                                                "Recalculation",
+                                                "Cross-check with other source",
+                                                "Cross-check with other LCIA method(ology)",
+                                                "Expert judgement"
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "@name"
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "@name",
+                                  "common:method"
+                                ]
+                              }
+                            }
+                          ],
+                          "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
+                        }
+                      },
+                      "required": [
+                        "@type"
+                      ],
+                      "allOf": [
+                        {
+                          "if": {
+                            "properties": {
+                              "@type": {
+                                "const": "Not reviewed"
+                              }
+                            }
+                          },
+                          "then": {},
+                          "else": {
                             "required": [
-                              "@name",
-                              "common:method"
+                              "common:reviewDetails",
+                              "common:referenceToNameOfReviewerAndInstitution"
+                            ],
+                            "anyOf": [
+                              {
+                                "required": [
+                                  "scope"
+                                ]
+                              },
+                              {
+                                "required": [
+                                  "common:scope"
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "not": {
+                            "required": [
+                              "scope",
+                              "common:scope"
                             ]
                           }
                         }
                       ]
                     },
-                    "common:reviewDetails": {
-                      "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
-                      "description": "审查摘要。应明确解决以下所有问题：模型的完整性和适当性、地理和时间覆盖范围和差异、物质数据或其他基础数据的正确性和精确性；标准化和/或加权方案（如果包括）的应用的适当性和连贯性；数据集文档的正确性、适当性、可理解性和完整性；利益相关者对 LCIA 方法的接受程度。可选：审阅者对单个基本流或基本流组的表征因子的评论。应指出由于缺乏透明度或文件而对审查造成的相关限制。此处可能包含总体质量声明。"
-                    },
-                    "common:referenceToNameOfReviewerAndInstitution": {
-                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                      "description": "审稿人的“联系数据集”。该联系数据集中应提供审稿人和机构的全名以及联系地址和/或电子邮件。"
-                    },
-                    "common:otherReviewDetails": {
-                      "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
-                      "description": "来自审核过程的更多信息，特别是数据集发布后从第三方收到的评论或来自其他外部审核的其他审核者评论。"
-                    },
-                    "common:referenceToCompleteReviewReport": {
-                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                      "description": "完整审查报告的“源数据集”。"
-                    },
-                    "common:other": {
-                      "$ref": "tidas_data_types.json#/$defs/CommonOther"
-                    }
-                  },
-                  "required": [
-                    "@type"
-                  ],
-                  "allOf": [
                     {
-                      "if": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
                         "properties": {
                           "@type": {
-                            "const": "Not reviewed"
+                            "type": "string",
+                            "enum": [
+                              "Dependent internal review",
+                              "Independent internal review",
+                              "Independent external review",
+                              "Accredited third party review",
+                              "Independent review panel",
+                              "Not reviewed"
+                            ]
+                          },
+                          "common:reviewDetails": {
+                            "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                            "description": "审查摘要。应明确解决以下所有问题：模型的完整性和适当性、地理和时间覆盖范围和差异、物质数据或其他基础数据的正确性和精确性；标准化和/或加权方案（如果包括）的应用的适当性和连贯性；数据集文档的正确性、适当性、可理解性和完整性；利益相关者对 LCIA 方法的接受程度。可选：审阅者对单个基本流或基本流组的表征因子的评论。应指出由于缺乏透明度或文件而对审查造成的相关限制。此处可能包含总体质量声明。"
+                          },
+                          "common:referenceToNameOfReviewerAndInstitution": {
+                            "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                            "description": "审稿人的“联系数据集”。该联系数据集中应提供审稿人和机构的全名以及联系地址和/或电子邮件。"
+                          },
+                          "common:otherReviewDetails": {
+                            "$ref": "tidas_data_types.json#/$defs/FTMultiLang",
+                            "description": "来自审核过程的更多信息，特别是数据集发布后从第三方收到的评论或来自其他外部审核的其他审核者评论。"
+                          },
+                          "common:referenceToCompleteReviewReport": {
+                            "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
+                            "description": "完整审查报告的“源数据集”。"
+                          },
+                          "common:other": {
+                            "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                          },
+                          "scope": {
+                            "description": "审查范围，涉及审查或验证数据集的哪些方面和组成部分。如果是聚合的，例如LCI 结果以及进行审查/验证的详细程度（例如仅 LCI 结果，包括单元流程……）。",
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "@name": {
+                                    "type": "string",
+                                    "enum": [
+                                      "Substance properties, physical and chemical",
+                                      "Substance properties, biological",
+                                      "Model for Transport and Fate",
+                                      "Model for Exposure",
+                                      "Model for Effect",
+                                      "Model for Damage",
+                                      "Characterisation factors",
+                                      "Application of model",
+                                      "Normalisation",
+                                      "Weighting",
+                                      "Documentation"
+                                    ]
+                                  },
+                                  "method": {
+                                    "description": "相应“审查范围”中使用的验证方法。",
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "@name": {
+                                            "type": "string",
+                                            "enum": [
+                                              "Recollection / Validation of data",
+                                              "Recalculation",
+                                              "Cross-check with other source",
+                                              "Cross-check with other LCIA method(ology)",
+                                              "Expert judgement"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "@name"
+                                        ]
+                                      },
+                                      {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "@name": {
+                                              "type": "string",
+                                              "enum": [
+                                                "Recollection / Validation of data",
+                                                "Recalculation",
+                                                "Cross-check with other source",
+                                                "Cross-check with other LCIA method(ology)",
+                                                "Expert judgement"
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "@name"
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  "common:method": {
+                                    "description": "相应“审查范围”中使用的验证方法。",
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "@name": {
+                                            "type": "string",
+                                            "enum": [
+                                              "Recollection / Validation of data",
+                                              "Recalculation",
+                                              "Cross-check with other source",
+                                              "Cross-check with other LCIA method(ology)",
+                                              "Expert judgement"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "@name"
+                                        ]
+                                      },
+                                      {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "@name": {
+                                              "type": "string",
+                                              "enum": [
+                                                "Recollection / Validation of data",
+                                                "Recalculation",
+                                                "Cross-check with other source",
+                                                "Cross-check with other LCIA method(ology)",
+                                                "Expert judgement"
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "@name"
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
+                                  }
+                                },
+                                "required": [
+                                  "@name"
+                                ],
+                                "allOf": [
+                                  {
+                                    "anyOf": [
+                                      {
+                                        "required": [
+                                          "method"
+                                        ]
+                                      },
+                                      {
+                                        "required": [
+                                          "common:method"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "not": {
+                                      "required": [
+                                        "method",
+                                        "common:method"
+                                      ]
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "@name": {
+                                      "type": "string",
+                                      "enum": [
+                                        "Substance properties, physical and chemical",
+                                        "Substance properties, biological",
+                                        "Model for Transport and Fate",
+                                        "Model for Exposure",
+                                        "Model for Effect",
+                                        "Model for Damage",
+                                        "Characterisation factors",
+                                        "Application of model",
+                                        "Normalisation",
+                                        "Weighting",
+                                        "Documentation"
+                                      ]
+                                    },
+                                    "method": {
+                                      "description": "相应“审查范围”中使用的验证方法。",
+                                      "anyOf": [
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "@name": {
+                                              "type": "string",
+                                              "enum": [
+                                                "Recollection / Validation of data",
+                                                "Recalculation",
+                                                "Cross-check with other source",
+                                                "Cross-check with other LCIA method(ology)",
+                                                "Expert judgement"
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "@name"
+                                          ]
+                                        },
+                                        {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "object",
+                                            "properties": {
+                                              "@name": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "Recollection / Validation of data",
+                                                  "Recalculation",
+                                                  "Cross-check with other source",
+                                                  "Cross-check with other LCIA method(ology)",
+                                                  "Expert judgement"
+                                                ]
+                                              }
+                                            },
+                                            "required": [
+                                              "@name"
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "common:method": {
+                                      "description": "相应“审查范围”中使用的验证方法。",
+                                      "anyOf": [
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "@name": {
+                                              "type": "string",
+                                              "enum": [
+                                                "Recollection / Validation of data",
+                                                "Recalculation",
+                                                "Cross-check with other source",
+                                                "Cross-check with other LCIA method(ology)",
+                                                "Expert judgement"
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "@name"
+                                          ]
+                                        },
+                                        {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "object",
+                                            "properties": {
+                                              "@name": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "Recollection / Validation of data",
+                                                  "Recalculation",
+                                                  "Cross-check with other source",
+                                                  "Cross-check with other LCIA method(ology)",
+                                                  "Expert judgement"
+                                                ]
+                                              }
+                                            },
+                                            "required": [
+                                              "@name"
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
+                                    }
+                                  },
+                                  "required": [
+                                    "@name"
+                                  ],
+                                  "allOf": [
+                                    {
+                                      "anyOf": [
+                                        {
+                                          "required": [
+                                            "method"
+                                          ]
+                                        },
+                                        {
+                                          "required": [
+                                            "common:method"
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "not": {
+                                        "required": [
+                                          "method",
+                                          "common:method"
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          },
+                          "common:scope": {
+                            "description": "审查范围，涉及审查或验证数据集的哪些方面和组成部分。如果是聚合的，例如LCI 结果以及进行审查/验证的详细程度（例如仅 LCI 结果，包括单元流程……）。",
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "@name": {
+                                    "type": "string",
+                                    "enum": [
+                                      "Substance properties, physical and chemical",
+                                      "Substance properties, biological",
+                                      "Model for Transport and Fate",
+                                      "Model for Exposure",
+                                      "Model for Effect",
+                                      "Model for Damage",
+                                      "Characterisation factors",
+                                      "Application of model",
+                                      "Normalisation",
+                                      "Weighting",
+                                      "Documentation"
+                                    ]
+                                  },
+                                  "common:method": {
+                                    "description": "相应“审查范围”中使用的验证方法。",
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "@name": {
+                                            "type": "string",
+                                            "enum": [
+                                              "Recollection / Validation of data",
+                                              "Recalculation",
+                                              "Cross-check with other source",
+                                              "Cross-check with other LCIA method(ology)",
+                                              "Expert judgement"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "@name"
+                                        ]
+                                      },
+                                      {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "@name": {
+                                              "type": "string",
+                                              "enum": [
+                                                "Recollection / Validation of data",
+                                                "Recalculation",
+                                                "Cross-check with other source",
+                                                "Cross-check with other LCIA method(ology)",
+                                                "Expert judgement"
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "@name"
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "@name",
+                                  "common:method"
+                                ]
+                              },
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "@name": {
+                                      "type": "string",
+                                      "enum": [
+                                        "Substance properties, physical and chemical",
+                                        "Substance properties, biological",
+                                        "Model for Transport and Fate",
+                                        "Model for Exposure",
+                                        "Model for Effect",
+                                        "Model for Damage",
+                                        "Characterisation factors",
+                                        "Application of model",
+                                        "Normalisation",
+                                        "Weighting",
+                                        "Documentation"
+                                      ]
+                                    },
+                                    "common:method": {
+                                      "description": "相应“审查范围”中使用的验证方法。",
+                                      "anyOf": [
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "@name": {
+                                              "type": "string",
+                                              "enum": [
+                                                "Recollection / Validation of data",
+                                                "Recalculation",
+                                                "Cross-check with other source",
+                                                "Cross-check with other LCIA method(ology)",
+                                                "Expert judgement"
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "@name"
+                                          ]
+                                        },
+                                        {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "object",
+                                            "properties": {
+                                              "@name": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "Recollection / Validation of data",
+                                                  "Recalculation",
+                                                  "Cross-check with other source",
+                                                  "Cross-check with other LCIA method(ology)",
+                                                  "Expert judgement"
+                                                ]
+                                              }
+                                            },
+                                            "required": [
+                                              "@name"
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "@name",
+                                    "common:method"
+                                  ]
+                                }
+                              }
+                            ],
+                            "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
                           }
-                        }
-                      },
-                      "then": {},
-                      "else": {
+                        },
                         "required": [
-                          "common:scope",
-                          "common:reviewDetails",
-                          "common:referenceToNameOfReviewerAndInstitution"
+                          "@type"
+                        ],
+                        "allOf": [
+                          {
+                            "if": {
+                              "properties": {
+                                "@type": {
+                                  "const": "Not reviewed"
+                                }
+                              }
+                            },
+                            "then": {},
+                            "else": {
+                              "required": [
+                                "common:reviewDetails",
+                                "common:referenceToNameOfReviewerAndInstitution"
+                              ],
+                              "anyOf": [
+                                {
+                                  "required": [
+                                    "scope"
+                                  ]
+                                },
+                                {
+                                  "required": [
+                                    "common:scope"
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "not": {
+                              "required": [
+                                "scope",
+                                "common:scope"
+                              ]
+                            }
+                          }
                         ]
                       }
                     }
@@ -1126,16 +2148,48 @@
                         "Not recommended"
                       ]
                     },
-                    "referenceToDataSource": {
-                      "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                      "description": "参考用于对该单个 LCIA 因子的值进行建模的数据源的“源数据集”中的“源的UUID”，例如一篇具体的论文、调查问卷、专着等。如果通常使用多个数据源，则可以引用多个数据源。"
-                    },
                     "generalComment": {
                       "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
                       "description": "有关数据集的一般信息，包括例如一般（内部，未经审查）质量声明以及使用的信息来源。 （注意：另请检查更具体的字段，例如“预期应用”、“数据集使用建议”以及“建模和验证”部分中的字段，以避免条目重叠。）"
                     },
                     "common:other": {
                       "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                    },
+                    "referencesToDataSource": {
+                      "type": "object",
+                      "properties": {
+                        "referenceToDataSource": {
+                          "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType"
+                        },
+                        "common:other": {
+                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        }
+                      },
+                      "required": [
+                        "referenceToDataSource"
+                      ]
+                    },
+                    "referenceToDataSource": {
+                      "anyOf": [
+                        {
+                          "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "referenceToDataSource": {
+                              "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType"
+                            },
+                            "common:other": {
+                              "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                            }
+                          },
+                          "required": [
+                            "referenceToDataSource"
+                          ]
+                        }
+                      ],
+                      "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
                     }
                   },
                   "required": [
@@ -1143,6 +2197,16 @@
                     "exchangeDirection",
                     "meanValue",
                     "deviatingRecommendation"
+                  ],
+                  "allOf": [
+                    {
+                      "not": {
+                        "required": [
+                          "referenceToDataSource",
+                          "referencesToDataSource"
+                        ]
+                      }
+                    }
                   ]
                 },
                 {
@@ -1216,17 +2280,48 @@
                           "Not recommended"
                         ]
                       },
-                      "referenceToDataSource": {
-                        "properties": {
-                          "referenceToDataSource": {
-                            "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType",
-                            "description": "参考用于对该单个 LCIA 因子的值进行建模的数据源的“源数据集”中的“源的UUID”，例如一篇具体的论文、调查问卷、专着等。如果通常使用多个数据源，则可以引用多个数据源。"
-                          }
-                        }
-                      },
                       "generalComment": {
                         "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
                         "description": "有关数据集的一般信息，包括例如一般（内部，未经审查）质量声明以及使用的信息来源。 （注意：另请检查更具体的字段，例如“预期应用”、“数据集使用建议”以及“建模和验证”部分中的字段，以避免条目重叠。）"
+                      },
+                      "referencesToDataSource": {
+                        "type": "object",
+                        "properties": {
+                          "referenceToDataSource": {
+                            "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType"
+                          },
+                          "common:other": {
+                            "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                          }
+                        },
+                        "required": [
+                          "referenceToDataSource"
+                        ]
+                      },
+                      "referenceToDataSource": {
+                        "anyOf": [
+                          {
+                            "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "referenceToDataSource": {
+                                "$ref": "tidas_data_types.json#/$defs/GlobalReferenceType"
+                              },
+                              "common:other": {
+                                "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                              }
+                            },
+                            "required": [
+                              "referenceToDataSource"
+                            ]
+                          }
+                        ],
+                        "$comment": "Legacy compatibility representation; prefer the canonical field documented in the specification."
+                      },
+                      "common:other": {
+                        "$ref": "tidas_data_types.json#/$defs/CommonOther"
                       }
                     },
                     "required": [
@@ -1234,6 +2329,16 @@
                       "exchangeDirection",
                       "meanValue",
                       "deviatingRecommendation"
+                    ],
+                    "allOf": [
+                      {
+                        "not": {
+                          "required": [
+                            "referenceToDataSource",
+                            "referencesToDataSource"
+                          ]
+                        }
+                      }
                     ]
                   }
                 }

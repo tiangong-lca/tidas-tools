@@ -44,42 +44,100 @@
                   "description": "Hierachical classification of the Unit groups; foreseen to be used to structure the Unit group content of the database. (Note: This entry is NOT required for the identification of the Unit group data set. It should nevertheless be avoided to use identical names for Unit groups in the same class.",
                   "properties": {
                     "common:classification": {
-                      "type": "object",
                       "description": "Optional statistical or other classification of the data set. Typically also used for structuring LCA databases.",
-                      "properties": {
-                        "common:class": {
+                      "anyOf": [
+                        {
                           "type": "object",
                           "properties": {
-                            "@level": {
-                              "$ref": "tidas_data_types.json#/$defs/LevelType",
-                              "const": "0",
-                              "description": "If more than one class is specified in a hierachical classification system, the hierarchy level (1,2,...) could be specified with this attribute of class."
+                            "common:class": {
+                              "type": "object",
+                              "properties": {
+                                "@level": {
+                                  "$ref": "tidas_data_types.json#/$defs/LevelType",
+                                  "const": "0",
+                                  "description": "If more than one class is specified in a hierachical classification system, the hierarchy level (1,2,...) could be specified with this attribute of class."
+                                },
+                                "@classId": {
+                                  "type": "string",
+                                  "description": "Unique identifier for the class. [Notes: If such identifiers are also defined in the referenced category file, they should be identical. Identifiers can be UUID's, but also other forms are allowed.]"
+                                },
+                                "#text": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "@level",
+                                "@classId",
+                                "#text"
+                              ],
+                              "dependencies": {
+                                "@level": {
+                                  "$ref": "./tidas_unitgroups_category.json#/$defs/UnitGroup"
+                                }
+                              }
                             },
-                            "@classId": {
-                              "type": "string",
-                              "description": "Unique identifier for the class. [Notes: If such identifiers are also defined in the referenced category file, they should be identical. Identifiers can be UUID's, but also other forms are allowed.]"
+                            "common:other": {
+                              "$ref": "tidas_data_types.json#/$defs/CommonOther"
                             },
-                            "#text": {
+                            "@name": {
+                              "type": "string"
+                            },
+                            "@classes": {
                               "type": "string"
                             }
                           },
                           "required": [
-                            "@level",
-                            "@classId",
-                            "#text"
-                          ],
-                          "dependencies": {
-                            "@level": {
-                              "$ref": "./tidas_unitgroups_category.json#/$defs/UnitGroup"
-                            }
-                          }
+                            "common:class"
+                          ]
                         },
-                        "common:other": {
-                          "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                        {
+                          "type": "array",
+                          "minItems": 1,
+                          "items": {
+                            "type": "object",
+                            "description": "One named classification system (e.g. CPC or HS). Used in the array form to let multiple systems coexist.",
+                            "properties": {
+                              "@name": {
+                                "type": "string",
+                                "description": "Name of the classification system (e.g. CPC, ISIC, HS). Per ILCD this defaults to 'ILCD' when absent; set it explicitly for non-ILCD systems."
+                              },
+                              "@classes": {
+                                "type": "string",
+                                "description": "Optional URL or identifier of the classification file/system."
+                              },
+                              "common:class": {
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "@level": {
+                                      "$ref": "tidas_data_types.json#/$defs/LevelType"
+                                    },
+                                    "@classId": {
+                                      "type": "string"
+                                    },
+                                    "#text": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "@level",
+                                    "@classId",
+                                    "#text"
+                                  ]
+                                }
+                              },
+                              "common:other": {
+                                "$ref": "tidas_data_types.json#/$defs/CommonOther"
+                              }
+                            },
+                            "required": [
+                              "@name",
+                              "common:class"
+                            ]
+                          }
                         }
-                      },
-                      "required": [
-                        "common:class"
                       ]
                     }
                   },
@@ -290,7 +348,11 @@
                     "common:other": {
                       "$ref": "tidas_data_types.json#/$defs/CommonOther"
                     }
-                  }
+                  },
+                  "required": [
+                    "name",
+                    "meanValue"
+                  ]
                 },
                 {
                   "type": "array",
@@ -309,8 +371,15 @@
                       "generalComment": {
                         "$ref": "tidas_data_types.json#/$defs/StringMultiLang",
                         "description": "General comment on each single unit, typically giving the long name and unit system from which this unit stems, and (if necessary) referring to specifc data sources used, or for workflow purposes about status of \"finalisation\" of an entry etc."
+                      },
+                      "common:other": {
+                        "$ref": "tidas_data_types.json#/$defs/CommonOther"
                       }
-                    }
+                    },
+                    "required": [
+                      "name",
+                      "meanValue"
+                    ]
                   }
                 }
               ]
@@ -318,7 +387,10 @@
             "common:other": {
               "$ref": "tidas_data_types.json#/$defs/CommonOther"
             }
-          }
+          },
+          "required": [
+            "unit"
+          ]
         },
         "common:other": {
           "$ref": "tidas_data_types.json#/$defs/CommonOther"
@@ -332,7 +404,8 @@
         "@xsi:schemaLocation",
         "unitGroupInformation",
         "modellingAndValidation",
-        "administrativeInformation"
+        "administrativeInformation",
+        "units"
       ]
     }
   },

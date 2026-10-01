@@ -28,9 +28,9 @@ checkPaths:
   - .github/actions/native-xml/**
   - .githooks/pre-push
   - scripts/**
-lastReviewedAt: 2026-09-24
-lastReviewedCommit: c9bbb7a3c7da1ad9b2b12a884326a2d166f1ea49
-lastReviewedNote: "Reviewed for Toolkit #232: published Windows archive replay covers 400 indexed synthetic Process issues at short/deep Unicode paths, byte-equal spools and exit-74 I/O diagnostics; source CI/package smoke stay distinct."
+lastReviewedAt: "2026-10-01"
+lastReviewedCommit: "6ede550618b274b8b3044ba8124bc6e9beab3e8e"
+lastReviewedNote: "Reviewed for #234: exact spec #38 adoption and native legacy mappings preserve intentional projection policies; added receiver-visible and recovery evidence, with separate release and root integration boundaries."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -260,3 +260,5 @@ transfer overhead and all qualification results. Synthetic skipped jobs are not
 timing samples. Default-branch seeding is still pending delivery.
 
 Required-field diagnostic changes must prove that the exact missing property is machine-readable while missing review/compliance fields remain validator errors. Keep schemas, exit class and raw issue counts unchanged; verify bounded context and ordinary non-required issues too.
+
+Toolkit #234 adds `cargo test --locked -p tidas-conversion --test ilcd_compatibility`: native XSD and sidecar-free LCIA/Lifecycle field inspection, legacy reversal, collision rollback, Contact extension placement, standard Process fields and every retained projection family. Generic fragment cases establish projection/recovery behavior only. The historical export corpus is not a current validated fixture set.
