@@ -2,7 +2,7 @@
 //! A budget ledger permits zero remaining bytes but rejects an overdrawn state.
 
 fn remaining_budget(limit: u64, used: u64) -> Option<u64> {
-    Some(limit.saturating_sub(used))
+    limit.checked_sub(used)
 }
 
 #[test]
