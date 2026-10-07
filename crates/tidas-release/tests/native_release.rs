@@ -708,3 +708,60 @@ fn closure_allocation_admission_uses_selected_exact_flow_content() {
         );
     }
 }
+
+#[test]
+fn closure_dense_projections_reserve_cardinality_before_analysis() {
+    for legacy in [false, true] {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path().join("tidas");
+        let flow = json!({"flowDataSet":{"flowInformation":{"dataSetInformation":{"common:UUID":FLOW_ID}},"administrativeInformation":{"publicationAndOwnership":{"common:dataSetVersion":VERSION}},"modellingAndValidation":{"LCIMethod":{"typeOfDataSet":"Waste flow"}}}});
+        let rows=(0..250).map(|i| {
+            let mut row=json!({"@dataSetInternalID":i.to_string(),"exchangeDirection":"Output","referenceToFlowDataSet":reference("flow data set",FLOW_ID,"flows")});
+            if legacy {row["allocations"]=json!({"allocation":{"@allocatedFraction":"0.4"}});}
+            row
+        }).collect::<Vec<_>>();
+        let refs = if legacy {
+            json!("0")
+        } else {
+            json!((0..250).map(|i| i.to_string()).collect::<Vec<_>>())
+        };
+        let process = json!({"processDataSet":{"processInformation":{"quantitativeReference":{"@type":"Reference flow(s)","referenceToReferenceFlow":refs}},"exchanges":{"exchange":rows}}});
+        let entries = vec![
+            write_dataset(&root, "flows/exact.json", &flow, "flow", "support", FLOW_ID),
+            write_dataset(
+                &root,
+                "processes/process.json",
+                &process,
+                "process",
+                "unit_process",
+                UNIT_ID,
+            ),
+        ];
+        let index = temp.path().join("index.json");
+        fs::write(&index,serde_json::to_vec(&json!({"schemaVersion":"tiangong.release.canonical-dataset-index.v1","datasetCount":2,"byteSize":0,"artifactSetHash":"0".repeat(64),"datasets":entries})).unwrap()).unwrap();
+        let mut runtime = runtime();
+        runtime.memory_budget = MemoryBudget::new(32 * 1024 * 1024);
+        assert!(
+            fs::metadata(root.join("processes/process.json"))
+                .unwrap()
+                .len()
+                * 72
+                + 131_072
+                < runtime.memory_budget.limit()
+        );
+        let result = run_release(
+            &ReleaseRequest::ValidateClosure {
+                input_dir: root,
+                dataset_index: index,
+                profile: ReleaseProfile::UnitProcess,
+            },
+            &runtime,
+        );
+        assert!(matches!(
+            result,
+            Err(tidas_release::ReleaseError::Runtime(
+                RuntimeError::BudgetExceeded { .. }
+            ))
+        ));
+    }
+}

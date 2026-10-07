@@ -215,3 +215,90 @@ fn batch_evidence_is_manifest_scoped_and_reports_incomplete_strict_admission() {
         assert_eq!(output.final_event.summary.error_count == 0, include_flow);
     }
 }
+
+#[test]
+fn dense_reference_and_legacy_projections_obey_budget_before_spool_publication() {
+    for legacy in [false, true] {
+        let temp = tempfile::tempdir().unwrap();
+        dense_fixture(temp.path(), legacy);
+        let path = temp.path().join("processes/process.json");
+        let req = request(temp.path());
+        // The old linear guard fits; dense projections still exceed this budget.
+        let linear = fs::metadata(&path).unwrap().len() * 72
+            + fs::metadata(temp.path().join("flows/exact.json"))
+                .unwrap()
+                .len()
+                * 8
+            + 131_072;
+        assert!(linear < req.memory_budget.limit(), "{legacy}: {linear}");
+        let error = validate_tidas_package(&req).unwrap_err();
+        assert!(
+            matches!(
+                error,
+                tidas_validation::ValidationError::Runtime(
+                    tidas_runtime::RuntimeError::BudgetExceeded { .. }
+                )
+            ),
+            "{error}"
+        );
+        assert!(!temp.path().join("issues.jsonl").exists());
+    }
+}
+
+fn dense_fixture(root: &Path, legacy: bool) {
+    fixture(root, "Waste flow", "Output");
+    let path = root.join("processes/process.json");
+    let mut process: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    let prototype = process["processDataSet"]["exchanges"]["exchange"][0].clone();
+    let rows = (0..250)
+        .map(|i| {
+            let mut row = prototype.clone();
+            row["@dataSetInternalID"] = json!(i.to_string());
+            if legacy {
+                row["allocations"] = json!({"allocation":{"@allocatedFraction":"0.4"}});
+            }
+            row
+        })
+        .collect::<Vec<_>>();
+    process["processDataSet"]["exchanges"]["exchange"] = json!(rows);
+    if !legacy {
+        process["processDataSet"]["processInformation"]["quantitativeReference"]["referenceToReferenceFlow"] =
+            json!((0..250).map(|i| i.to_string()).collect::<Vec<_>>());
+    }
+    fs::write(&path, serde_json::to_vec(&process).unwrap()).unwrap();
+}
+
+#[test]
+fn batch_dense_projections_fail_budget_without_success_events() {
+    use sha2::{Digest, Sha256};
+    use std::fmt::Write;
+    use tidas_validation::{
+        BatchValidationRequest, DOCUMENT_VALIDATION_PROFILE, run_document_validation_batch,
+    };
+    for legacy in [false, true] {
+        let temp = tempfile::tempdir().unwrap();
+        dense_fixture(temp.path(), legacy);
+        let bytes = fs::read(temp.path().join("processes/process.json")).unwrap();
+        let mut hash = String::new();
+        for byte in Sha256::digest(&bytes) {
+            write!(&mut hash, "{byte:02x}").unwrap();
+        }
+        let manifest = temp.path().join("manifest.jsonl");
+        let item = json!({"document_key":"process:dense:00.00.001","category":"processes","relative_path":"processes/process.json","content_sha256":hash,"identity":{"dataset_type":"process","dataset_id":"d1dcaaee-0412-41ab-bd2d-a193f2b5e553","dataset_version":"00.00.001"}});
+        fs::write(&manifest, format!("{item}\n")).unwrap();
+        let events = temp.path().join("events.jsonl");
+        let result = run_document_validation_batch(&BatchValidationRequest {
+            validation: request(temp.path()),
+            input_manifest: manifest,
+            event_spool: Some(events.clone()),
+            profile: DOCUMENT_VALIDATION_PROFILE.to_owned(),
+        });
+        assert!(matches!(
+            result,
+            Err(tidas_validation::ValidationError::Runtime(
+                tidas_runtime::RuntimeError::BudgetExceeded { .. }
+            ))
+        ));
+        assert!(!events.exists());
+    }
+}

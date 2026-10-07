@@ -259,6 +259,10 @@ fn semantic_coverage(
             .ok_or(ReleaseError::SizeOverflow)?;
         let _analysis_memory = runtime.memory_budget.reserve(estimate)?;
         let (document, _document_memory) = read_bound_document(input_dir, entry, runtime)?;
+        let projection_bytes =
+            tidas_validation::process_semantic_projection_memory_bytes(&document)
+                .ok_or(ReleaseError::SizeOverflow)?;
+        let _projection_memory = runtime.memory_budget.reserve(projection_bytes)?;
         let analysis = tidas_validation::analyze_process_semantics(&document, &flows);
         runtime.cancellation.check()?;
         append_diagnostics(

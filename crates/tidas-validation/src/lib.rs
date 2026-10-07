@@ -36,5 +36,5 @@ pub use semantic::SemanticError;
 pub mod process_semantics;
 pub use process_semantics::{
     ALLOCATION_SUM_TOLERANCE, ExactFlowEvidence, PROCESS_SEMANTIC_PROFILE, ProcessSemanticAnalysis,
-    analyze_process_semantics,
+    analyze_process_semantics, process_semantic_projection_memory_bytes,
 };

@@ -28,7 +28,7 @@ checkPaths:
   - .githooks/pre-push
   - scripts/**
 lastReviewedAt: 2026-10-07
-lastReviewedCommit: 271e3fec7825f64f170472d591726fc00b35c9e6
+lastReviewedCommit: d9124f2fe64fb4b662b8a57c6c43345481c9f816
 lastReviewedNote: "Reviewed for Toolkit #240: shared allocation/reference consumer policy, exact Flow evidence, strict coverage admission and native release/adoption boundaries."
 related:
   - ../../AGENTS.md
@@ -331,3 +331,11 @@ Reference-closure admission analyzes only selected exact closure members and
 rechecks their frozen index hashes. Evidence and analysis use the shared memory
 budget and cancellation checks; no ambient resolver or latest-version fallback
 is available.
+
+Bounded callers reserve dense projections before invoking the pure analyzer using
+`process_semantic_projection_memory_bytes`: checked exchange × reference and
+exchange × legacy-share cardinalities include transient projection copying.
+Linear input-size reservations are separate and cannot bound these products.
+Overflow/budget failure prevents successful package/batch/closure publication.
+Numeric IDs use finite integer JSON-number semantics in 0–999999, including
+parsed `1.0`, `1e0` and negative zero, matching the SDK consumer profile.

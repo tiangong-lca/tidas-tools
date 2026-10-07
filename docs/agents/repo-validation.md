@@ -29,7 +29,7 @@ checkPaths:
   - .githooks/pre-push
   - scripts/**
 lastReviewedAt: 2026-10-07
-lastReviewedCommit: 271e3fec7825f64f170472d591726fc00b35c9e6
+lastReviewedCommit: d9124f2fe64fb4b662b8a57c6c43345481c9f816
 lastReviewedNote: "Reviewed for Toolkit #240: shared allocation/reference consumer policy, exact Flow evidence, strict coverage admission and native release/adoption boundaries."
 related:
   - ../../AGENTS.md
@@ -286,3 +286,10 @@ findings with explicit truncation. Direct release validation and every build
 validation/profile coverage preserve unresolved partial completeness. Semantic
 analysis uses conservative additional memory reservation for its finding and
 coverage projections; exhausted budgets fail before successful publication.
+
+Additional native wire tests cover float-encoded integer IDs independently in
+exchange, qref and allocation-target positions. Dense 250-row reference/share
+fixtures prove the previous linear estimate fits the small test budget while
+checked projection cardinality rejects before success evidence in package,
+batch and selected closure paths. The pure API has no runtime budget; bounded
+callers must reserve its dense projections as well as linear input/analysis.

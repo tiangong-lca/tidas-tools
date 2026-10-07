@@ -77,9 +77,13 @@ fn id(value: &Value) -> Option<String> {
         return Some(s.to_owned());
     }
     value
-        .as_u64()
-        .filter(|v| *v <= 999_999)
-        .map(|v| v.to_string())
+        .as_f64()
+        .filter(|n| {
+            n.is_finite()
+                && (0.0..=999_999.0).contains(n)
+                && n.fract().abs().to_bits() == 0.0_f64.to_bits()
+        })
+        .map(|n| format!("{:.0}", n.abs()))
 }
 fn decimal(s: &str) -> bool {
     let s = s.strip_prefix(['+', '-']).unwrap_or(s);
@@ -544,4 +548,64 @@ pub fn analyze_process_semantics(
         );
     }
     r
+}
+
+/// Conservative budget for dense coefficient and legacy-share projections.
+/// Includes transient replacement/copying; linear parsing/findings need separate
+/// input-size accounting. Returns `None` on unrepresentable cardinality.
+#[must_use]
+pub fn process_semantic_projection_memory_bytes(process: &Value) -> Option<u64> {
+    let dataset = &process["processDataSet"];
+    let exchanges = &dataset["exchanges"]["exchange"];
+    let count = |value: &Value| match value {
+        Value::Null => 0,
+        Value::Array(rows) => rows.len(),
+        _ => 1,
+    };
+    let exchange_count = u64::try_from(count(exchanges)).ok()?;
+    let reference = &dataset["processInformation"]["quantitativeReference"];
+    let reference_count = if reference["@type"] == "Reference flow(s)" {
+        u64::try_from(count(&reference["referenceToReferenceFlow"])).ok()?
+    } else {
+        0
+    };
+    let mut legacy_count = 0_u64;
+    let mut output_share = false;
+    let mut inspect = |exchange: &Value| -> Option<()> {
+        let raw = &exchange["allocations"]["allocation"];
+        let declaration = match raw {
+            Value::Object(_) => Some(raw),
+            Value::Array(rows) if rows.len() == 1 => rows.first(),
+            _ => None,
+        };
+        if let Some(value) = declaration
+            && value.as_object().is_some_and(|v| !v.is_empty())
+            && value.get("@internalReferenceToCoProduct").is_none()
+        {
+            legacy_count = legacy_count.checked_add(1)?;
+            output_share |= exchange["exchangeDirection"] == "Output";
+        }
+        Some(())
+    };
+    match exchanges {
+        Value::Array(rows) => {
+            for row in rows {
+                inspect(row)?;
+            }
+        }
+        Value::Null => {}
+        row => {
+            inspect(row)?;
+        }
+    }
+    let coefficients = exchange_count.checked_mul(reference_count)?;
+    let shares = if output_share {
+        exchange_count.checked_mul(legacy_count)?
+    } else {
+        0
+    };
+    // Each cell has two bounded keys, a six-digit ID and one numeric value.
+    // 1024 bytes covers the JSON map/string/vector allocation; 2 covers copies
+    // retained while replacing existing interpretation projections.
+    coefficients.checked_add(shares)?.checked_mul(2048)
 }

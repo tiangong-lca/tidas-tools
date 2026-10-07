@@ -100,3 +100,33 @@ fn normalize_numbers(value: Value) -> Value {
         other => other,
     }
 }
+
+#[test]
+fn json_float_integer_ids_match_sdk_in_exchange_qref_and_target() {
+    for (encoding, expected_id) in [("1.0", "1"), ("1e0", "1"), ("-0.0", "0")] {
+        let text = r#"{"processDataSet":{"processInformation":{"quantitativeReference":{"@type":"Reference flow(s)","referenceToReferenceFlow":NUMERIC_ID}},"exchanges":{"exchange":[{"@dataSetInternalID":NUMERIC_ID,"exchangeDirection":"Input","referenceToFlowDataSet":{"@refObjectId":"flow","@version":"1"}},{"@dataSetInternalID":2,"exchangeDirection":"Output","allocations":{"allocation":{"@internalReferenceToCoProduct":NUMERIC_ID,"@allocatedFraction":100}}}]}}}"#.replace("NUMERIC_ID",encoding);
+        let process: Value = serde_json::from_str(&text).unwrap();
+        let result = serde_json::to_value(analyze_process_semantics(
+            &process,
+            &[ExactFlowEvidence {
+                uuid: "flow".to_owned(),
+                version: "1".to_owned(),
+                r#type: "Waste flow".to_owned(),
+                content_hash: None,
+            }],
+        ))
+        .unwrap();
+        assert_eq!(result["valid"], true, "{encoding}");
+        assert_eq!(result["complete"], true, "{encoding}");
+        assert_eq!(result["reference"]["ids"], serde_json::json!([expected_id]));
+        assert_eq!(result["interpretations"][0]["exchangeId"], expected_id);
+        assert_eq!(
+            result["interpretations"][1]["allocations"][0]["targetId"],
+            expected_id
+        );
+        assert_eq!(
+            result["interpretations"][1]["coefficients"][0]["coefficient"],
+            1.0
+        );
+    }
+}

@@ -336,6 +336,9 @@ fn validate_documents(
         } else {
             None
         };
+        let projection_bytes = crate::process_semantic_projection_memory_bytes(&instance)
+            .ok_or(ValidationError::SizeOverflow)?;
+        let _projection_memory = request.validation.memory_budget.reserve(projection_bytes)?;
         let analysis = semantic.validate_with_flows(
             &instance,
             document.category,
