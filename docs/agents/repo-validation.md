@@ -29,8 +29,8 @@ checkPaths:
   - .githooks/pre-push
   - scripts/**
 lastReviewedAt: 2026-10-07
-lastReviewedCommit: 938d92483190912c109485ce03560654e61bb5ea
-lastReviewedNote: "Reviewed Toolkit #242 coherent version-only 0.3.4 projection. Executable assets, specification pin, allocation profile, dependencies and immutable request history stay unchanged; official publication and consumer adoption remain pending."
+lastReviewedCommit: 0f14b48c70a56ecf6a6c036930585a18a2e8728f
+lastReviewedNote: "Reviewed Toolkit #242 append-only 0.3.4 release request bound to the exact qualified source merge. Native/crate publication and downstream qualification remain pending; executable release contracts are unchanged."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
