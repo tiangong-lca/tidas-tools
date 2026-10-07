@@ -29,7 +29,7 @@ checkPaths:
   - .githooks/pre-push
   - scripts/**
 lastReviewedAt: 2026-10-07
-lastReviewedCommit: 6ede550618b274b8b3044ba8124bc6e9beab3e8e
+lastReviewedCommit: 271e3fec7825f64f170472d591726fc00b35c9e6
 lastReviewedNote: "Reviewed for Toolkit #240: shared allocation/reference consumer policy, exact Flow evidence, strict coverage admission and native release/adoption boundaries."
 related:
   - ../../AGENTS.md
@@ -279,3 +279,10 @@ Closure tests prove selected exact Product/Waste passes and Elementary rejects.
 Keep this source proof distinct from a published native artifact and downstream
 version/fingerprint adoption; no production calculation or dataset repair is part
 of these checks.
+
+Selected closure reports also expose `semantic_diagnostics` with precise Process
+file/field paths and profile context, an exact total issue count, and up to 256
+findings with explicit truncation. Direct release validation and every build
+validation/profile coverage preserve unresolved partial completeness. Semantic
+analysis uses conservative additional memory reservation for its finding and
+coverage projections; exhausted budgets fail before successful publication.

@@ -131,6 +131,17 @@ pub struct ReferenceClosureReportV1 {
     pub dataset_keys_truncated: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub semantic_coverage: Option<tidas_validation::SemanticCoverageV1>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub semantic_diagnostics: Option<ClosureSemanticDiagnosticsV1>,
+}
+
+/// Bounded path-specific findings for selected exact Process members.
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct ClosureSemanticDiagnosticsV1 {
+    pub issue_count: u64,
+    pub issues: Vec<tidas_validation::ValidationIssueV1>,
+    pub truncated: bool,
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]

@@ -630,11 +630,19 @@ fn hex(bytes: impl AsRef<[u8]>) -> String {
 
 #[test]
 fn closure_allocation_admission_uses_selected_exact_flow_content() {
-    for kind in ["Product flow", "Waste flow", "Elementary flow"] {
+    for (kind, count) in [
+        ("Product flow", 1),
+        ("Waste flow", 1),
+        ("Elementary flow", 1),
+        ("Elementary flow", 300),
+    ] {
         let temporary = tempfile::tempdir().unwrap();
         let root = temporary.path().join("tidas");
         let flow = json!({"flowDataSet":{"flowInformation":{"dataSetInformation":{"common:UUID":FLOW_ID}},"administrativeInformation":{"publicationAndOwnership":{"common:dataSetVersion":VERSION}},"modellingAndValidation":{"LCIMethod":{"typeOfDataSet":kind}}}});
-        let process = json!({"processDataSet":{"processInformation":{"quantitativeReference":{"@type":"Reference flow(s)","referenceToReferenceFlow":"0"}},"exchanges":{"exchange":[{"@dataSetInternalID":"0","exchangeDirection":"Input","referenceToFlowDataSet":reference("flow data set",FLOW_ID,"flows")},{"@dataSetInternalID":"1","exchangeDirection":"Output","allocations":{"allocation":{"@internalReferenceToCoProduct":"0","@allocatedFraction":"100"}}}]}}});
+        let mut process = json!({"processDataSet":{"processInformation":{"quantitativeReference":{"@type":"Reference flow(s)","referenceToReferenceFlow":"0"}},"exchanges":{"exchange":[{"@dataSetInternalID":"0","exchangeDirection":"Input","referenceToFlowDataSet":reference("flow data set",FLOW_ID,"flows")},{"@dataSetInternalID":"1","exchangeDirection":"Output","allocations":{"allocation":{"@internalReferenceToCoProduct":"0","@allocatedFraction":"100"}}}]}}});
+        if count > 1 {
+            process["processDataSet"]["exchanges"]["exchange"][1]["allocations"]["allocation"] = json!((0..count).map(|i|json!({"@internalReferenceToCoProduct":"0","@allocatedFraction":if i + 1 == count {100} else {0}})).collect::<Vec<_>>());
+        }
         let entries = vec![
             write_dataset(&root, "flows/exact.json", &flow, "flow", "support", FLOW_ID),
             write_dataset(
@@ -664,11 +672,39 @@ fn closure_allocation_admission_uses_selected_exact_flow_content() {
                 .is_valid(&serde_json::to_value(&report).unwrap())
         );
         assert_eq!(report.ok, kind != "Elementary flow");
-        let coverage = report.closure.unwrap().semantic_coverage.unwrap();
+        let closure = report.closure.unwrap();
+        let diagnostics = closure.semantic_diagnostics.unwrap();
+        assert_eq!(diagnostics.truncated, count > 256);
+        assert_eq!(
+            diagnostics.issues.len(),
+            if kind == "Elementary flow" {
+                count.min(256)
+            } else {
+                0
+            }
+        );
+        if kind == "Elementary flow" {
+            assert!(diagnostics.issue_count >= u64::try_from(count).unwrap());
+            assert_eq!(diagnostics.issues[0].file_path, "processes/process.json");
+            assert!(
+                diagnostics.issues[0]
+                    .location
+                    .ends_with("@internalReferenceToCoProduct")
+            );
+            assert_eq!(
+                diagnostics.issues[0].issue_code,
+                "allocation_target_flow_type_invalid"
+            );
+        }
+        let coverage = closure.semantic_coverage.unwrap();
         assert!(coverage.complete);
         assert_eq!(
             coverage.checks["allocation-target-type"].invalid,
-            u64::from(kind == "Elementary flow")
+            if kind == "Elementary flow" {
+                u64::try_from(count).unwrap()
+            } else {
+                0
+            }
         );
     }
 }

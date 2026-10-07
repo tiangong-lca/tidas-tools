@@ -282,6 +282,7 @@ mod tests {
             dataset_keys: vec![entry.key()],
             dataset_keys_truncated: false,
             semantic_coverage: None,
+            semantic_diagnostics: None,
         };
         let runtime = ReleaseRuntime {
             cancellation: CancellationToken::default(),
@@ -372,6 +373,7 @@ mod tests {
             dataset_keys: vec![entry.key()],
             dataset_keys_truncated: false,
             semantic_coverage: None,
+            semantic_diagnostics: None,
         };
         let runtime = ReleaseRuntime {
             cancellation: CancellationToken::default(),

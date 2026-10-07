@@ -168,7 +168,24 @@ fn completed_release_report(release: tidas_release::ReleaseReportV1) -> Operatio
         .closure
         .as_ref()
         .and_then(|c| c.semantic_coverage.as_ref())
-        .is_some_and(|c| !c.complete);
+        .is_some_and(|c| !c.complete)
+        || release.validation.as_ref().is_some_and(|v| {
+            v.summary
+                .semantic_coverage
+                .as_ref()
+                .is_some_and(|c| !c.complete)
+        })
+        || release.build.as_ref().is_some_and(|b| {
+            [&b.tidas_validation, &b.ilcd_validation].iter().any(|v| {
+                v.summary
+                    .semantic_coverage
+                    .as_ref()
+                    .is_some_and(|c| !c.complete)
+            }) || b
+                .profiles
+                .iter()
+                .any(|p| p.semantic_coverage.as_ref().is_some_and(|c| !c.complete))
+        });
     let has_issues = !release.ok;
     let artifacts = release
         .build

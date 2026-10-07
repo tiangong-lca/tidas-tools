@@ -235,7 +235,13 @@ fn validate_file(
     }
     let (flows, _flow_memory) = flow_index.for_process(&instance, request)?;
     let _analysis_memory = if category == TidasCategory::Processes {
-        Some(request.memory_budget.reserve(estimated_bytes)?)
+        Some(
+            request.memory_budget.reserve(
+                estimated_bytes
+                    .checked_mul(8)
+                    .ok_or(ValidationError::SizeOverflow)?,
+            )?,
+        )
     } else {
         None
     };

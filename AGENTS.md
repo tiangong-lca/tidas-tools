@@ -32,7 +32,7 @@ checkPaths:
   - .github/actions/native-xml/**
   - .githooks/pre-push
 lastReviewedAt: 2026-10-07
-lastReviewedCommit: 6ede550618b274b8b3044ba8124bc6e9beab3e8e
+lastReviewedCommit: 271e3fec7825f64f170472d591726fc00b35c9e6
 lastReviewedNote: "Reviewed for Toolkit #240: shared allocation/reference consumer policy, exact Flow evidence, strict coverage admission and native release/adoption boundaries."
 related:
   - .docpact/config.yaml

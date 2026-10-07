@@ -1072,3 +1072,46 @@ fn migration_parity_fixture_matches_the_rust_surface() {
         );
     }
 }
+
+#[test]
+fn release_validation_unresolved_is_partial_and_known_invalid_is_complete() {
+    use serde_json::json;
+    for resolved in [false, true] {
+        let directory = tempfile::tempdir().unwrap();
+        fs::create_dir(directory.path().join("processes")).unwrap();
+        let flow_id = "22222222-2222-4222-8222-222222222222";
+        let process = json!({"processDataSet":{"processInformation":{"quantitativeReference":{"@type":"Reference flow(s)","referenceToReferenceFlow":"0"}},"exchanges":{"exchange":[{"@dataSetInternalID":"0","exchangeDirection":"Input","referenceToFlowDataSet":{"@type":"flow data set","@refObjectId":flow_id,"@version":"01.00.000"}},{"@dataSetInternalID":"1","exchangeDirection":"Output","allocations":{"allocation":{"@internalReferenceToCoProduct":"0","@allocatedFraction":"100"}}}]}}});
+        fs::write(
+            directory.path().join("processes/process.json"),
+            serde_json::to_vec(&process).unwrap(),
+        )
+        .unwrap();
+        if resolved {
+            fs::create_dir(directory.path().join("flows")).unwrap();
+            let flow = json!({"flowDataSet":{"flowInformation":{"dataSetInformation":{"common:UUID":flow_id}},"administrativeInformation":{"publicationAndOwnership":{"common:dataSetVersion":"01.00.000"}},"modellingAndValidation":{"LCIMethod":{"typeOfDataSet":"Elementary flow"}}}});
+            fs::write(
+                directory.path().join("flows/exact.json"),
+                serde_json::to_vec(&flow).unwrap(),
+            )
+            .unwrap();
+        }
+        let (output, payload) = json_output(&[
+            "release",
+            "validate-tidas",
+            "--input-dir",
+            directory.path().to_str().unwrap(),
+            "--format",
+            "json",
+        ]);
+        assert_eq!(output.status.code(), Some(2));
+        assert_eq!(payload["exit_class"], "data-issues");
+        assert_eq!(
+            payload["completeness"],
+            if resolved { "complete" } else { "partial" }
+        );
+        let coverage = &payload["summary"]["release"]["validation"]["summary"]["semantic_coverage"];
+        assert_eq!(coverage["complete"], resolved);
+        let report: OperationReportV1 = serde_json::from_value(payload).unwrap();
+        assert_eq!(report.exit_class.code(), 2);
+    }
+}
