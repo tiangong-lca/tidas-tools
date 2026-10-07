@@ -281,6 +281,8 @@ mod tests {
             closure_sha256: "0".repeat(64),
             dataset_keys: vec![entry.key()],
             dataset_keys_truncated: false,
+            semantic_coverage: None,
+            semantic_diagnostics: None,
         };
         let runtime = ReleaseRuntime {
             cancellation: CancellationToken::default(),
@@ -370,6 +372,8 @@ mod tests {
             closure_sha256: "0".repeat(64),
             dataset_keys: vec![entry.key()],
             dataset_keys_truncated: false,
+            semantic_coverage: None,
+            semantic_diagnostics: None,
         };
         let runtime = ReleaseRuntime {
             cancellation: CancellationToken::default(),

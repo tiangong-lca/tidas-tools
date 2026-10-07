@@ -1,0 +1,3049 @@
+{
+  "profile": "tidas.process-allocation-reference.v1",
+  "tolerance": 0.0010000001,
+  "cases": [
+    {
+      "name": "Input Product flow",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Input",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "100"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": []
+      }
+    },
+    {
+      "name": "Input Waste flow",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Input",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "100"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Waste flow"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": []
+      }
+    },
+    {
+      "name": "Input Elementary flow",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Input",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "100"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Elementary flow"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_target_flow_type_invalid"
+        ]
+      }
+    },
+    {
+      "name": "Input Other flow",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Input",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "100"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Other flow"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_target_flow_type_invalid"
+        ]
+      }
+    },
+    {
+      "name": "Output Product flow",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "100"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": []
+      }
+    },
+    {
+      "name": "Output Waste flow",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "100"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Waste flow"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": []
+      }
+    },
+    {
+      "name": "Output Elementary flow",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "100"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Elementary flow"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_target_flow_type_invalid"
+        ]
+      }
+    },
+    {
+      "name": "Output Other flow",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "100"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Other flow"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_target_flow_type_invalid"
+        ]
+      }
+    },
+    {
+      "name": "missing evidence",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": 100
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [],
+      "expected": {
+        "valid": false,
+        "complete": false,
+        "codes": [
+          "allocation_flow_evidence_unavailable"
+        ]
+      }
+    },
+    {
+      "name": "version mismatch",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": 100
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "02.00.000",
+          "type": "Product flow"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": false,
+        "codes": [
+          "allocation_flow_version_mismatch"
+        ]
+      }
+    },
+    {
+      "name": "invalid evidence",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": 100
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "invalid"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": false,
+        "codes": [
+          "allocation_flow_evidence_invalid"
+        ]
+      }
+    },
+    {
+      "name": "ambiguous evidence",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": 100
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow"
+        },
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": false,
+        "codes": [
+          "allocation_flow_evidence_ambiguous"
+        ]
+      }
+    },
+    {
+      "name": "undeclared",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              }
+            }
+          }
+        }
+      },
+      "flows": [],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": [],
+        "modes": [
+          "undeclared"
+        ],
+        "coefficients": [
+          1
+        ]
+      }
+    },
+    {
+      "name": "scalar empty",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": {}
+              }
+            }
+          }
+        }
+      },
+      "flows": [],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": [],
+        "modes": [
+          "legacy-scalar-empty"
+        ],
+        "coefficients": [
+          1
+        ]
+      }
+    },
+    {
+      "name": "empty vector",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": []
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_vector_malformed"
+        ]
+      }
+    },
+    {
+      "name": "empty element",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {}
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_vector_malformed"
+        ]
+      }
+    },
+    {
+      "name": "targetless full",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Input",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": {
+                  "@allocatedFraction": "100"
+                }
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": [],
+        "modes": [
+          "legacy-targetless-full"
+        ],
+        "coefficients": [
+          1
+        ],
+        "allocationVectors": [
+          [
+            {
+              "targetId": "0",
+              "fraction": 100
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "legacy shares",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "70"
+                  }
+                }
+              },
+              {
+                "@dataSetInternalID": "1",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "30"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": [],
+        "modes": [
+          "legacy-output-share",
+          "legacy-output-share"
+        ],
+        "coefficients": [
+          0.7,
+          0.7
+        ],
+        "allocationVectors": [
+          [
+            {
+              "targetId": "0",
+              "fraction": 70
+            },
+            {
+              "targetId": "1",
+              "fraction": 30
+            }
+          ],
+          [
+            {
+              "targetId": "0",
+              "fraction": 70
+            },
+            {
+              "targetId": "1",
+              "fraction": 30
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "sparse zero",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": [
+                    {
+                      "@internalReferenceToCoProduct": "1",
+                      "@allocatedFraction": 100
+                    }
+                  ]
+                }
+              },
+              {
+                "@dataSetInternalID": "1",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": [],
+        "modes": [
+          "explicit-vector",
+          "undeclared"
+        ],
+        "coefficients": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "name": "multiple targets",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": [
+                    {
+                      "@internalReferenceToCoProduct": "0",
+                      "@allocatedFraction": "70"
+                    },
+                    {
+                      "@internalReferenceToCoProduct": "1",
+                      "@allocatedFraction": "30"
+                    }
+                  ]
+                }
+              },
+              {
+                "@dataSetInternalID": "1",
+                "exchangeDirection": "Input",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": [],
+        "modes": [
+          "explicit-vector",
+          "undeclared"
+        ],
+        "coefficients": [
+          0.7,
+          1
+        ]
+      }
+    },
+    {
+      "name": "dangling target",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "7",
+                    "@allocatedFraction": 100
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_coproduct_reference_missing"
+        ]
+      }
+    },
+    {
+      "name": "duplicate IDs",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": [
+                    {
+                      "@internalReferenceToCoProduct": "0",
+                      "@allocatedFraction": 100
+                    }
+                  ]
+                }
+              },
+              {
+                "@dataSetInternalID": "0",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "exchange_internal_id_ambiguous",
+          "exchange_internal_id_ambiguous",
+          "quantitative_reference_ambiguous",
+          "allocation_target_ambiguous"
+        ]
+      }
+    },
+    {
+      "name": "duplicate targets",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": 50
+                  },
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": 50
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_target_duplicate"
+        ]
+      }
+    },
+    {
+      "name": "unclosed",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": 99
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_vector_sum_invalid"
+        ]
+      }
+    },
+    {
+      "name": "invalid fraction -1",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "-1"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_fraction_invalid"
+        ]
+      }
+    },
+    {
+      "name": "invalid fraction 101",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "101"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_fraction_invalid"
+        ]
+      }
+    },
+    {
+      "name": "invalid fraction NaN",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "NaN"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_fraction_invalid"
+        ]
+      }
+    },
+    {
+      "name": "invalid fraction Infinity",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "Infinity"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_fraction_invalid"
+        ]
+      }
+    },
+    {
+      "name": "invalid fraction 100%",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "100%"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_fraction_invalid"
+        ]
+      }
+    },
+    {
+      "name": "trimmed explicit fraction",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": " 100"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": []
+      }
+    },
+    {
+      "name": "invalid fraction 0x64",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "0x64"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_fraction_invalid"
+        ]
+      }
+    },
+    {
+      "name": "invalid fraction ",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": ""
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_fraction_invalid"
+        ]
+      }
+    },
+    {
+      "name": "invalid fraction None",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": null
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_fraction_invalid"
+        ]
+      }
+    },
+    {
+      "name": "qref dangling",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "7"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "quantitative_reference_missing"
+        ]
+      }
+    },
+    {
+      "name": "qref repeated valid",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": [
+                "0",
+                "1"
+              ]
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "exchangeDirection": "Input",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                }
+              },
+              {
+                "@dataSetInternalID": "1",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": []
+      }
+    },
+    {
+      "name": "qref duplicate",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": [
+                "0",
+                "0"
+              ]
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "quantitative_reference_duplicate"
+        ]
+      }
+    },
+    {
+      "name": "Functional unit",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Functional unit",
+              "functionalUnitOrOther": {
+                "@xml:lang": "en",
+                "#text": "one unit"
+              }
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": []
+      }
+    },
+    {
+      "name": "Other parameter",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Other parameter",
+              "functionalUnitOrOther": {
+                "@xml:lang": "en",
+                "#text": "one unit"
+              }
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": []
+      }
+    },
+    {
+      "name": "Production period",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Production period",
+              "functionalUnitOrOther": {
+                "@xml:lang": "en",
+                "#text": "one unit"
+              }
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": []
+      }
+    },
+    {
+      "name": "mixed vector entries",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "70"
+                  },
+                  {
+                    "@allocatedFraction": "30"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_mixed_modes"
+        ]
+      }
+    },
+    {
+      "name": "mixed process modes",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": [
+                    {
+                      "@internalReferenceToCoProduct": "0",
+                      "@allocatedFraction": 100
+                    }
+                  ]
+                }
+              },
+              {
+                "@dataSetInternalID": "1",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "100"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_mixed_modes"
+        ]
+      }
+    },
+    {
+      "name": "legacy shares unclosed",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "70"
+                  }
+                }
+              },
+              {
+                "@dataSetInternalID": "1",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "29"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_legacy_sum_invalid",
+          "allocation_legacy_sum_invalid"
+        ]
+      }
+    },
+    {
+      "name": "legacy full input",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Input",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": {
+                  "@allocatedFraction": "100"
+                }
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": [],
+        "modes": [
+          "legacy-targetless-full"
+        ],
+        "coefficients": [
+          1
+        ]
+      }
+    },
+    {
+      "name": "elementary untargeted qref",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Elementary flow"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": []
+      }
+    },
+    {
+      "name": "missing exact version",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": 100
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": false,
+        "codes": [
+          "allocation_flow_reference_inexact"
+        ]
+      }
+    },
+    {
+      "name": "sum tolerance boundary",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Input",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "99.999"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": []
+      }
+    },
+    {
+      "name": "outside tolerance",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Input",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "99.998"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_vector_sum_invalid"
+        ]
+      }
+    },
+    {
+      "name": "decimal projection",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Input",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": [
+                  {
+                    "@internalReferenceToCoProduct": "0",
+                    "@allocatedFraction": "100.000"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": []
+      }
+    },
+    {
+      "name": "legacy percent output shares",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "70%"
+                  }
+                }
+              },
+              {
+                "@dataSetInternalID": "1",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "30%"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": [],
+        "modes": [
+          "legacy-output-share",
+          "legacy-output-share"
+        ],
+        "coefficients": [
+          0.7,
+          0.7
+        ],
+        "allocationVectors": [
+          [
+            {
+              "targetId": "0",
+              "fraction": 70
+            },
+            {
+              "targetId": "1",
+              "fraction": 30
+            }
+          ],
+          [
+            {
+              "targetId": "0",
+              "fraction": 70
+            },
+            {
+              "targetId": "1",
+              "fraction": 30
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "legacy shares include undeclared inventory",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "70"
+                  }
+                }
+              },
+              {
+                "@dataSetInternalID": "1",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "30"
+                  }
+                }
+              },
+              {
+                "@dataSetInternalID": "2",
+                "exchangeDirection": "Input"
+              }
+            ]
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": [],
+        "modes": [
+          "legacy-output-share",
+          "legacy-output-share",
+          "legacy-output-share"
+        ],
+        "coefficients": [
+          0.7,
+          0.7,
+          0.7
+        ],
+        "allocationVectors": [
+          [
+            {
+              "targetId": "0",
+              "fraction": 70
+            },
+            {
+              "targetId": "1",
+              "fraction": 30
+            }
+          ],
+          [
+            {
+              "targetId": "0",
+              "fraction": 70
+            },
+            {
+              "targetId": "1",
+              "fraction": 30
+            }
+          ],
+          [
+            {
+              "targetId": "0",
+              "fraction": 70
+            },
+            {
+              "targetId": "1",
+              "fraction": 30
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "legacy shares include scalar-empty inventory",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "70"
+                  }
+                }
+              },
+              {
+                "@dataSetInternalID": "1",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "30"
+                  }
+                }
+              },
+              {
+                "@dataSetInternalID": "2",
+                "exchangeDirection": "Input",
+                "allocations": {
+                  "allocation": {}
+                }
+              }
+            ]
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": [],
+        "modes": [
+          "legacy-output-share",
+          "legacy-output-share",
+          "legacy-output-share"
+        ],
+        "coefficients": [
+          0.7,
+          0.7,
+          0.7
+        ]
+      }
+    },
+    {
+      "name": "legacy shares reference-default absent share",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "2"
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "70"
+                  }
+                }
+              },
+              {
+                "@dataSetInternalID": "1",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "30"
+                  }
+                }
+              },
+              {
+                "@dataSetInternalID": "2",
+                "exchangeDirection": "Input"
+              }
+            ]
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": [],
+        "coefficients": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "single legacy output share",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Output",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": {
+                  "@allocatedFraction": "100"
+                }
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": [],
+        "modes": [
+          "legacy-output-share"
+        ],
+        "coefficients": [
+          1
+        ],
+        "allocationVectors": [
+          [
+            {
+              "targetId": "0",
+              "fraction": 100
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "legacy percent full input",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Input",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": {
+                  "@allocatedFraction": "100%"
+                }
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": [],
+        "modes": [
+          "legacy-targetless-full"
+        ],
+        "coefficients": [
+          1
+        ]
+      }
+    },
+    {
+      "name": "legacy mixed input output rejected",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "100"
+                  }
+                }
+              },
+              {
+                "@dataSetInternalID": "1",
+                "exchangeDirection": "Input",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "100"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_mixed_modes",
+          "allocation_mixed_modes"
+        ]
+      }
+    },
+    {
+      "name": "legacy full multiple qrefs rejected",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": [
+                "0",
+                "1"
+              ]
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "exchangeDirection": "Input",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "100"
+                  }
+                }
+              },
+              {
+                "@dataSetInternalID": "1",
+                "exchangeDirection": "Input"
+              }
+            ]
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_legacy_reference_ambiguous"
+        ]
+      }
+    },
+    {
+      "name": "legacy full nonflow qref rejected",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Functional unit",
+              "referenceToReferenceFlow": "0",
+              "functionalUnitOrOther": {
+                "@xml:lang": "en",
+                "#text": "one unit"
+              }
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Input",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": {
+                  "@allocatedFraction": "100"
+                }
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_legacy_reference_ambiguous"
+        ]
+      }
+    },
+    {
+      "name": "legacy full exact boundary",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Input",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": {
+                  "@allocatedFraction": "99.999"
+                }
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_legacy_full_invalid"
+        ]
+      }
+    },
+    {
+      "name": "legacy full alternate percent spelling rejected",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "exchanges": {
+            "exchange": {
+              "@dataSetInternalID": "0",
+              "exchangeDirection": "Input",
+              "referenceToFlowDataSet": {
+                "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                "@version": "01.00.000"
+              },
+              "allocations": {
+                "allocation": {
+                  "@allocatedFraction": "100.0%"
+                }
+              }
+            }
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": false,
+        "complete": true,
+        "codes": [
+          "allocation_legacy_full_invalid"
+        ]
+      }
+    },
+    {
+      "name": "legacy shares repeated qref projections",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": [
+                "0",
+                "1"
+              ]
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "70"
+                  }
+                }
+              },
+              {
+                "@dataSetInternalID": "1",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "30"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": [],
+        "coefficientVectors": [
+          [
+            0.7,
+            0.3
+          ],
+          [
+            0.7,
+            0.3
+          ]
+        ]
+      }
+    },
+    {
+      "name": "legacy shares second qref projection",
+      "process": {
+        "processDataSet": {
+          "processInformation": {
+            "quantitativeReference": {
+              "@type": "Reference flow(s)",
+              "referenceToReferenceFlow": "1"
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "70"
+                  }
+                }
+              },
+              {
+                "@dataSetInternalID": "1",
+                "exchangeDirection": "Output",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "11111111-1111-4111-8111-111111111111",
+                  "@version": "01.00.000"
+                },
+                "allocations": {
+                  "allocation": {
+                    "@allocatedFraction": "30"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "flows": [
+        {
+          "uuid": "11111111-1111-4111-8111-111111111111",
+          "version": "01.00.000",
+          "type": "Product flow",
+          "contentHash": "sha256:fixture"
+        }
+      ],
+      "expected": {
+        "valid": true,
+        "complete": true,
+        "codes": [],
+        "coefficients": [
+          0.3,
+          0.3
+        ]
+      }
+    }
+  ]
+}

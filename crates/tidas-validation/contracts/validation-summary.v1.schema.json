@@ -24,7 +24,10 @@
       "const": "tidas.validation-summary.v1"
     },
     "input_format": {
-      "enum": ["tidas-json", "ilcd-xml"]
+      "enum": [
+        "tidas-json",
+        "ilcd-xml"
+      ]
     },
     "ok": {
       "type": "boolean"
@@ -76,6 +79,59 @@
     "peak_accounted_memory_bytes": {
       "type": "integer",
       "minimum": 0
+    },
+    "semantic_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile",
+        "complete",
+        "process_count",
+        "checks"
+      ],
+      "properties": {
+        "profile": {
+          "const": "tidas.process-allocation-reference.v1"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "process_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "checks": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "passed",
+              "invalid",
+              "unresolved",
+              "not_applicable"
+            ],
+            "properties": {
+              "passed": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "invalid": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "unresolved": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "not_applicable": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
     }
   },
   "$defs": {
@@ -120,7 +176,12 @@
     "spool": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["schema_version", "event_count", "bytes", "sha256"],
+      "required": [
+        "schema_version",
+        "event_count",
+        "bytes",
+        "sha256"
+      ],
       "properties": {
         "schema_version": {
           "const": "tidas.spool-summary.v1"

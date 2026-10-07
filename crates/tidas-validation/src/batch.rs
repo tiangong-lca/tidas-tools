@@ -116,6 +116,8 @@ pub struct ValidationFinalSummaryV1 {
     pub error_count: u64,
     pub warning_count: u64,
     pub info_count: u64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub semantic_coverage: Option<crate::SemanticCoverageV1>,
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -256,6 +258,7 @@ pub fn run_document_validation_batch(
     })
 }
 
+#[allow(clippy::too_many_lines)] // Atomic per-document spool, hash and evidence lifecycle.
 fn validate_documents(
     documents: &[BatchDocument],
     catalog: &SchemaCatalog,
@@ -264,6 +267,15 @@ fn validate_documents(
     global_spool: &mut EventSpool,
 ) -> Result<(ValidationFinalSummaryV1, String), ValidationError> {
     let validators = compile_batch_validators(documents, catalog)?;
+    let mut flow_index = crate::flow_evidence::FlowEvidenceIndex::default();
+    for document in documents
+        .iter()
+        .filter(|d| d.category == TidasCategory::Flows)
+    {
+        assert_document_hash(document, request)?;
+        flow_index.add(&document.path, &request.validation)?;
+        assert_document_hash(document, request)?;
+    }
     let mut logical_hasher = Sha256::new();
     let mut summary = ValidationFinalSummaryV1 {
         document_count: u64::try_from(documents.len())
@@ -272,6 +284,7 @@ fn validate_documents(
         error_count: 0,
         warning_count: 0,
         info_count: 0,
+        semantic_coverage: None,
     };
     for (document_ordinal, document) in documents.iter().enumerate() {
         request.validation.cancellation.check()?;
@@ -311,10 +324,26 @@ fn validate_documents(
                 .checked_add(1)
                 .ok_or(ValidationError::SizeOverflow)?;
         }
-        semantic.validate(
+        let (flows, _flow_memory) = flow_index.for_process(&instance, &request.validation)?;
+        let _analysis_memory = if document.category == TidasCategory::Processes {
+            Some(
+                request.validation.memory_budget.reserve(
+                    estimated_bytes
+                        .checked_mul(8)
+                        .ok_or(ValidationError::SizeOverflow)?,
+                )?,
+            )
+        } else {
+            None
+        };
+        let projection_bytes = crate::process_semantic_projection_memory_bytes(&instance)
+            .ok_or(ValidationError::SizeOverflow)?;
+        let _projection_memory = request.validation.memory_budget.reserve(projection_bytes)?;
+        let analysis = semantic.validate_with_flows(
             &instance,
             document.category,
             &document.relative_path,
+            &flows,
             &mut |issue| {
                 request.validation.cancellation.check()?;
                 spool_batch_issue(
@@ -332,6 +361,12 @@ fn validate_documents(
                 Ok(())
             },
         )?;
+        if let Some(analysis) = analysis {
+            summary
+                .semantic_coverage
+                .get_or_insert_with(Default::default)
+                .record(&analysis);
+        }
         let (mut document_events, _) = document_spool.finish()?;
         assert_document_hash(document, request)?;
         document_events.rewind()?;
@@ -356,6 +391,7 @@ fn validate_documents(
             false,
         );
     }
+    flow_index.verify(&request.validation)?;
     Ok((summary, digest_hex(&logical_hasher.finalize())))
 }
 

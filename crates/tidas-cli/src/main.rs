@@ -164,6 +164,28 @@ fn release_report(arguments: &ReleaseArgs, execution: &ExecutionContext) -> Oper
 }
 
 fn completed_release_report(release: tidas_release::ReleaseReportV1) -> OperationReportV1 {
+    let incomplete = release
+        .closure
+        .as_ref()
+        .and_then(|c| c.semantic_coverage.as_ref())
+        .is_some_and(|c| !c.complete)
+        || release.validation.as_ref().is_some_and(|v| {
+            v.summary
+                .semantic_coverage
+                .as_ref()
+                .is_some_and(|c| !c.complete)
+        })
+        || release.build.as_ref().is_some_and(|b| {
+            [&b.tidas_validation, &b.ilcd_validation].iter().any(|v| {
+                v.summary
+                    .semantic_coverage
+                    .as_ref()
+                    .is_some_and(|c| !c.complete)
+            }) || b
+                .profiles
+                .iter()
+                .any(|p| p.semantic_coverage.as_ref().is_some_and(|c| !c.complete))
+        });
     let has_issues = !release.ok;
     let artifacts = release
         .build
@@ -192,6 +214,9 @@ fn completed_release_report(release: tidas_release::ReleaseReportV1) -> Operatio
     } else {
         OperationReportV1::succeeded(CommandNameV1::Release)
     };
+    if incomplete {
+        report.completeness = tidas_contracts::Completeness::Partial;
+    }
     report.summary.insert("release".to_owned(), value);
     report
         .artifacts
@@ -1162,6 +1187,10 @@ fn completed_validation_report(
     issue_spool_path: Option<std::path::PathBuf>,
 ) -> OperationReportV1 {
     let has_issues = !summary.ok;
+    let semantic_complete = summary
+        .semantic_coverage
+        .as_ref()
+        .is_none_or(|coverage| coverage.complete);
     let issue_spool = summary.issue_spool.clone();
     let summary_value = match serde_json::to_value(summary) {
         Ok(value) => value,
@@ -1185,6 +1214,9 @@ fn completed_validation_report(
     } else {
         OperationReportV1::succeeded(CommandNameV1::Validate)
     };
+    if !semantic_complete {
+        report.completeness = tidas_contracts::Completeness::Partial;
+    }
     report
         .summary
         .insert("validation".to_owned(), summary_value);
@@ -1205,6 +1237,7 @@ fn failed_validation_report(error: &ValidationError) -> OperationReportV1 {
         | ValidationError::SpoolParentMissing(_)
         | ValidationError::PersistSpool { .. }
         | ValidationError::Io(_) => (ExitClass::Io, "validation_io_failed"),
+        ValidationError::FlowEvidenceDrift(_) => (ExitClass::DataIssues, "flow_evidence_drift"),
         ValidationError::BatchProtocol(_) => (ExitClass::DataIssues, "batch_protocol_failed"),
         ValidationError::Runtime(RuntimeError::BudgetExceeded { .. }) => {
             (ExitClass::Internal, "memory_budget_exceeded")

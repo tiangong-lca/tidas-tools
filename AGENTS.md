@@ -31,9 +31,9 @@ checkPaths:
   - .github/workflows/**
   - .github/actions/native-xml/**
   - .githooks/pre-push
-lastReviewedAt: 2026-09-24
-lastReviewedCommit: c9bbb7a3c7da1ad9b2b12a884326a2d166f1ea49
-lastReviewedNote: "Reviewed for Toolkit #232: a separate read-only Windows archive verifier tests the immutable public v0.3.3 binary with synthetic high-volume Process issues and a real I/O failure; product/release authority and supported platform contract remain unchanged."
+lastReviewedAt: 2026-10-07
+lastReviewedCommit: d9124f2fe64fb4b662b8a57c6c43345481c9f816
+lastReviewedNote: "Reviewed for Toolkit #240: shared allocation/reference consumer policy, exact Flow evidence, strict coverage admission and native release/adoption boundaries."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md

@@ -129,6 +129,19 @@ pub struct ReferenceClosureReportV1 {
     pub closure_sha256: String,
     pub dataset_keys: Vec<String>,
     pub dataset_keys_truncated: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub semantic_coverage: Option<tidas_validation::SemanticCoverageV1>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub semantic_diagnostics: Option<ClosureSemanticDiagnosticsV1>,
+}
+
+/// Bounded path-specific findings for selected exact Process members.
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct ClosureSemanticDiagnosticsV1 {
+    pub issue_count: u64,
+    pub issues: Vec<tidas_validation::ValidationIssueV1>,
+    pub truncated: bool,
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -237,6 +250,12 @@ pub fn run_release(
         } => {
             let index = index::DatasetIndex::load(dataset_index, input_dir, runtime)?;
             let (_, closure) = closure::resolve(input_dir, &index, *profile, runtime)?;
+            report.ok = closure.semantic_coverage.as_ref().is_none_or(|c| {
+                c.complete
+                    && c.checks
+                        .values()
+                        .all(|v| v.invalid == 0 && v.unresolved == 0)
+            });
             report.closure = Some(closure);
         }
         ReleaseRequest::ConvertIlcd {

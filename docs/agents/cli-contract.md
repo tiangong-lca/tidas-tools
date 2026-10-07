@@ -27,9 +27,9 @@ checkPaths:
   - contracts/**
   - README.md
   - README_CN.md
-lastReviewedAt: 2026-09-24
-lastReviewedCommit: c9bbb7a3c7da1ad9b2b12a884326a2d166f1ea49
-lastReviewedNote: "Reviewed for Toolkit #232: the installed public Windows verifier exercises existing schema-only indexed issue-spool and exit-74 I/O contracts without changing the tidas CLI or its machine report schema."
+lastReviewedAt: 2026-10-07
+lastReviewedCommit: d9124f2fe64fb4b662b8a57c6c43345481c9f816
+lastReviewedNote: "Reviewed for Toolkit #240: shared allocation/reference consumer policy, exact Flow evidence, strict coverage admission and native release/adoption boundaries."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -468,3 +468,28 @@ Public CLI changes must prove:
 - Rust 1.98.1 fmt, clippy, tests, and the four-platform CI matrix
 
 `required_property` is additive diagnostic context. Missing Process/LifecycleModel validation or complianceDeclarations still produces ordinary schema errors; downstream import-result filtering does not change this validator, its schemas, severities, counts or pass/fail rules.
+
+## Allocation/reference coverage
+
+TIDAS package, document-batch and selected reference-closure reports include
+optional `semantic_coverage` for `tidas.process-allocation-reference.v1` when
+Processes were analyzed. Counts distinguish passed, invalid, unresolved and
+not applicable checks. Unresolved applicable Flow evidence emits an error,
+prevents strict success, and marks the CLI operation's completeness partial.
+Known invalid evidence is a complete negative result. Schema-only validation
+also runs this consumer policy; absence of applicable evidence cannot satisfy it.
+
+The field is absent when no Process was analyzed and in historical reports;
+absence proves no profile coverage. Updated native schemas accept historical
+reports. Older strict readers may reject the new field, so native release and
+consumer adoption must qualify the new contract/profile and exact package/asset
+fingerprint together. This source change does not publish a Toolkit release or
+change the Worker's `TIDAS_EXPECTED_VERSION`; those require explicit release and
+consumer qualification. Authored reference IDs and allocation data are preserved.
+
+Selected closure reports also expose `semantic_diagnostics` with precise Process
+file/field paths and profile context, an exact total issue count, and up to 256
+findings with explicit truncation. Direct release validation and every build
+validation/profile coverage preserve unresolved partial completeness. Semantic
+analysis uses conservative additional memory reservation for its finding and
+coverage projections; exhausted budgets fail before successful publication.

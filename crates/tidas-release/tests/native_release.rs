@@ -627,3 +627,141 @@ fn hex(bytes: impl AsRef<[u8]>) -> String {
         },
     )
 }
+
+#[test]
+fn closure_allocation_admission_uses_selected_exact_flow_content() {
+    for (kind, count) in [
+        ("Product flow", 1),
+        ("Waste flow", 1),
+        ("Elementary flow", 1),
+        ("Elementary flow", 300),
+    ] {
+        let temporary = tempfile::tempdir().unwrap();
+        let root = temporary.path().join("tidas");
+        let flow = json!({"flowDataSet":{"flowInformation":{"dataSetInformation":{"common:UUID":FLOW_ID}},"administrativeInformation":{"publicationAndOwnership":{"common:dataSetVersion":VERSION}},"modellingAndValidation":{"LCIMethod":{"typeOfDataSet":kind}}}});
+        let mut process = json!({"processDataSet":{"processInformation":{"quantitativeReference":{"@type":"Reference flow(s)","referenceToReferenceFlow":"0"}},"exchanges":{"exchange":[{"@dataSetInternalID":"0","exchangeDirection":"Input","referenceToFlowDataSet":reference("flow data set",FLOW_ID,"flows")},{"@dataSetInternalID":"1","exchangeDirection":"Output","allocations":{"allocation":{"@internalReferenceToCoProduct":"0","@allocatedFraction":"100"}}}]}}});
+        if count > 1 {
+            process["processDataSet"]["exchanges"]["exchange"][1]["allocations"]["allocation"] = json!((0..count).map(|i|json!({"@internalReferenceToCoProduct":"0","@allocatedFraction":if i + 1 == count {100} else {0}})).collect::<Vec<_>>());
+        }
+        let entries = vec![
+            write_dataset(&root, "flows/exact.json", &flow, "flow", "support", FLOW_ID),
+            write_dataset(
+                &root,
+                "processes/process.json",
+                &process,
+                "process",
+                "unit_process",
+                UNIT_ID,
+            ),
+        ];
+        let index = temporary.path().join("index.json");
+        fs::write(&index,serde_json::to_vec(&json!({"schemaVersion":"tiangong.release.canonical-dataset-index.v1","datasetCount":2,"byteSize":0,"artifactSetHash":"0".repeat(64),"datasets":entries})).unwrap()).unwrap();
+        let report = run_release(
+            &ReleaseRequest::ValidateClosure {
+                input_dir: root,
+                dataset_index: index,
+                profile: ReleaseProfile::UnitProcess,
+            },
+            &runtime(),
+        )
+        .unwrap();
+        let schema: Value = serde_json::from_str(RELEASE_REPORT_JSON_SCHEMA_V1).unwrap();
+        assert!(
+            jsonschema::validator_for(&schema)
+                .unwrap()
+                .is_valid(&serde_json::to_value(&report).unwrap())
+        );
+        assert_eq!(report.ok, kind != "Elementary flow");
+        let closure = report.closure.unwrap();
+        let diagnostics = closure.semantic_diagnostics.unwrap();
+        assert_eq!(diagnostics.truncated, count > 256);
+        assert_eq!(
+            diagnostics.issues.len(),
+            if kind == "Elementary flow" {
+                count.min(256)
+            } else {
+                0
+            }
+        );
+        if kind == "Elementary flow" {
+            assert!(diagnostics.issue_count >= u64::try_from(count).unwrap());
+            assert_eq!(diagnostics.issues[0].file_path, "processes/process.json");
+            assert!(
+                diagnostics.issues[0]
+                    .location
+                    .ends_with("@internalReferenceToCoProduct")
+            );
+            assert_eq!(
+                diagnostics.issues[0].issue_code,
+                "allocation_target_flow_type_invalid"
+            );
+        }
+        let coverage = closure.semantic_coverage.unwrap();
+        assert!(coverage.complete);
+        assert_eq!(
+            coverage.checks["allocation-target-type"].invalid,
+            if kind == "Elementary flow" {
+                u64::try_from(count).unwrap()
+            } else {
+                0
+            }
+        );
+    }
+}
+
+#[test]
+fn closure_dense_projections_reserve_cardinality_before_analysis() {
+    for legacy in [false, true] {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path().join("tidas");
+        let flow = json!({"flowDataSet":{"flowInformation":{"dataSetInformation":{"common:UUID":FLOW_ID}},"administrativeInformation":{"publicationAndOwnership":{"common:dataSetVersion":VERSION}},"modellingAndValidation":{"LCIMethod":{"typeOfDataSet":"Waste flow"}}}});
+        let rows=(0..250).map(|i| {
+            let mut row=json!({"@dataSetInternalID":i.to_string(),"exchangeDirection":"Output","referenceToFlowDataSet":reference("flow data set",FLOW_ID,"flows")});
+            if legacy {row["allocations"]=json!({"allocation":{"@allocatedFraction":"0.4"}});}
+            row
+        }).collect::<Vec<_>>();
+        let refs = if legacy {
+            json!("0")
+        } else {
+            json!((0..250).map(|i| i.to_string()).collect::<Vec<_>>())
+        };
+        let process = json!({"processDataSet":{"processInformation":{"quantitativeReference":{"@type":"Reference flow(s)","referenceToReferenceFlow":refs}},"exchanges":{"exchange":rows}}});
+        let entries = vec![
+            write_dataset(&root, "flows/exact.json", &flow, "flow", "support", FLOW_ID),
+            write_dataset(
+                &root,
+                "processes/process.json",
+                &process,
+                "process",
+                "unit_process",
+                UNIT_ID,
+            ),
+        ];
+        let index = temp.path().join("index.json");
+        fs::write(&index,serde_json::to_vec(&json!({"schemaVersion":"tiangong.release.canonical-dataset-index.v1","datasetCount":2,"byteSize":0,"artifactSetHash":"0".repeat(64),"datasets":entries})).unwrap()).unwrap();
+        let mut runtime = runtime();
+        runtime.memory_budget = MemoryBudget::new(32 * 1024 * 1024);
+        assert!(
+            fs::metadata(root.join("processes/process.json"))
+                .unwrap()
+                .len()
+                * 72
+                + 131_072
+                < runtime.memory_budget.limit()
+        );
+        let result = run_release(
+            &ReleaseRequest::ValidateClosure {
+                input_dir: root,
+                dataset_index: index,
+                profile: ReleaseProfile::UnitProcess,
+            },
+            &runtime,
+        );
+        assert!(matches!(
+            result,
+            Err(tidas_release::ReleaseError::Runtime(
+                RuntimeError::BudgetExceeded { .. }
+            ))
+        ));
+    }
+}

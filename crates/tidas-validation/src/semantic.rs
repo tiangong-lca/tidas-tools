@@ -57,6 +57,7 @@ impl SemanticCatalog {
         })
     }
 
+    #[cfg(test)]
     pub(crate) fn validate(
         &self,
         instance: &Value,
@@ -64,6 +65,18 @@ impl SemanticCatalog {
         file_path: &str,
         emit: &mut impl FnMut(ValidationIssueV1) -> Result<(), crate::ValidationError>,
     ) -> Result<(), crate::ValidationError> {
+        self.validate_with_flows(instance, category, file_path, &[], emit)
+            .map(|_| ())
+    }
+
+    pub(crate) fn validate_with_flows(
+        &self,
+        instance: &Value,
+        category: TidasCategory,
+        file_path: &str,
+        flows: &[crate::ExactFlowEvidence],
+        emit: &mut impl FnMut(ValidationIssueV1) -> Result<(), crate::ValidationError>,
+    ) -> Result<Option<crate::ProcessSemanticAnalysis>, crate::ValidationError> {
         self.validate_localized(instance, category, file_path, "", emit)?;
         match category {
             TidasCategory::Flows => self.validate_flows(instance, file_path, emit),
@@ -82,7 +95,6 @@ impl SemanticCatalog {
                     category,
                     emit,
                 )?;
-                Self::validate_process_allocations(instance, file_path, emit)?;
                 Self::validate_process_variable_references(instance, file_path, emit)
             }
             TidasCategory::Lifecyclemodels => Self::validate_process_like(
@@ -101,7 +113,48 @@ impl SemanticCatalog {
             ),
             TidasCategory::Sources => Self::validate_sources(instance, file_path, emit),
             _ => Ok(()),
+        }?;
+        if category != TidasCategory::Processes {
+            return Ok(None);
         }
+        let analysis = crate::analyze_process_semantics(instance, flows);
+        for raw in &analysis.validation_issues {
+            let canonical_code = raw["code"].as_str().unwrap_or("process_semantics_invalid");
+            let code = if canonical_code == "allocation_target_missing" {
+                "allocation_coproduct_reference_missing"
+            } else {
+                canonical_code
+            };
+            let location = raw["path"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|part| {
+                    part.as_str()
+                        .map_or_else(|| part.to_string(), str::to_owned)
+                })
+                .collect::<Vec<_>>()
+                .join("/");
+            let mut issue = ValidationIssueV1::error(
+                code,
+                category.as_str(),
+                file_path,
+                location,
+                canonical_code,
+            );
+            issue
+                .context
+                .insert("profile".to_owned(), serde_json::json!(analysis.profile));
+            issue.context.insert(
+                "check_complete".to_owned(),
+                serde_json::json!(analysis.complete),
+            );
+            issue
+                .context
+                .insert("params".to_owned(), raw["params"].clone());
+            emit(issue)?;
+        }
+        Ok(Some(analysis))
     }
 
     fn validate_localized(
@@ -525,61 +578,6 @@ impl SemanticCatalog {
         Ok(())
     }
 
-    fn validate_process_allocations(
-        instance: &Value,
-        file_path: &str,
-        emit: &mut impl FnMut(ValidationIssueV1) -> Result<(), crate::ValidationError>,
-    ) -> Result<(), crate::ValidationError> {
-        let Some(exchanges) = value_at(instance, &["processDataSet", "exchanges", "exchange"])
-        else {
-            return Ok(());
-        };
-        let exchanges: Vec<&Value> = match exchanges {
-            Value::Array(items) => items.iter().collect(),
-            Value::Object(_) => vec![exchanges],
-            _ => return Ok(()),
-        };
-        let ids: BTreeSet<&str> = exchanges
-            .iter()
-            .filter_map(|exchange| exchange.get("@dataSetInternalID").and_then(Value::as_str))
-            .collect();
-        for (exchange_index, exchange) in exchanges.iter().enumerate() {
-            let Some(allocations) = exchange
-                .get("allocations")
-                .and_then(|value| value.get("allocation"))
-            else {
-                continue;
-            };
-            let allocations: Vec<&Value> = match allocations {
-                Value::Array(items) => items.iter().collect(),
-                Value::Object(_) => vec![allocations],
-                _ => continue,
-            };
-            for (allocation_index, allocation) in allocations.iter().enumerate() {
-                let Some(reference) = allocation
-                    .get("@internalReferenceToCoProduct")
-                    .and_then(Value::as_str)
-                else {
-                    continue;
-                };
-                if !ids.contains(reference) {
-                    emit(ValidationIssueV1::error(
-                        "allocation_coproduct_reference_missing",
-                        TidasCategory::Processes.as_str(),
-                        file_path,
-                        format!(
-                            "processDataSet/exchanges/exchange/{exchange_index}/allocations/allocation/{allocation_index}/@internalReferenceToCoProduct"
-                        ),
-                        format!(
-                            "Allocation references co-product exchange internal id '{reference}', but no exchange with that @dataSetInternalID exists"
-                        ),
-                    ))?;
-                }
-            }
-        }
-        Ok(())
-    }
-
     fn validate_process_variable_references(
         instance: &Value,
         file_path: &str,
@@ -860,8 +858,8 @@ mod tests {
     fn dangling_allocation_coproduct_is_a_tidas_semantic_error() {
         let catalog = SemanticCatalog::load().unwrap();
         let instance = serde_json::json!({
-            "processDataSet": {"exchanges": {"exchange": {
-                "@dataSetInternalID": "0",
+            "processDataSet": {"processInformation":{"quantitativeReference":{"@type":"Reference flow(s)","referenceToReferenceFlow":"0"}},"exchanges": {"exchange": {
+                "@dataSetInternalID": "0", "exchangeDirection":"Input",
                 "allocations": {"allocation": {
                     "@allocatedFraction": "100",
                     "@internalReferenceToCoProduct": "1"
@@ -893,8 +891,9 @@ mod tests {
         let catalog = SemanticCatalog::load().unwrap();
         let instance = serde_json::json!({
             "processDataSet": {
+                "processInformation":{"quantitativeReference":{"@type":"Reference flow(s)","referenceToReferenceFlow":"0"}},
                 "exchanges": {"exchange": {
-                    "@dataSetInternalID": "0",
+                    "@dataSetInternalID": "0", "exchangeDirection":"Input",
                     "referenceToVariable": "missing-variable"
                 }}
             }
