@@ -103,6 +103,14 @@ pub fn validate_tidas_package(
 
     let catalog = SchemaCatalog::load()?;
     let semantic = SemanticCatalog::load()?;
+    let mut flow_index = crate::flow_evidence::FlowEvidenceIndex::default();
+    let flow_dir = request.input_dir.join("flows");
+    if flow_dir.is_dir() {
+        let (files, _paths) = sorted_json_files(&flow_dir, &request.memory_budget)?;
+        for path in files {
+            flow_index.add(&path, request)?;
+        }
+    }
     let mut summary = ValidationSummaryV1::new("tidas-json", asset_fingerprint()?);
     let mut sink = IssueSink::new(request.issue_spool.as_deref())?;
     report_progress(request, &summary, "started", None, None, true);
@@ -129,6 +137,7 @@ pub fn validate_tidas_package(
                 category,
                 &validator,
                 &semantic,
+                &flow_index,
                 request,
                 &mut summary,
                 &mut category_summary,
@@ -146,6 +155,7 @@ pub fn validate_tidas_package(
         summary.categories.push(category_summary);
     }
 
+    flow_index.verify(request)?;
     summary.category_count =
         u64::try_from(summary.categories.len()).map_err(|_| ValidationError::SizeOverflow)?;
     summary.ok = summary.issue_count == 0;
@@ -191,6 +201,7 @@ fn validate_file(
     category: TidasCategory,
     validator: &crate::schema::TidasValidator,
     semantic: &SemanticCatalog,
+    flow_index: &crate::flow_evidence::FlowEvidenceIndex,
     request: &ValidationRequest,
     summary: &mut ValidationSummaryV1,
     category_summary: &mut CategorySummaryV1,
@@ -222,10 +233,28 @@ fn validate_file(
         request.cancellation.check()?;
         record_issue(summary, category_summary, sink, issue)?;
     }
-    semantic.validate(&instance, category, &relative_path, &mut |issue| {
-        request.cancellation.check()?;
-        record_issue(summary, category_summary, sink, issue)
-    })?;
+    let (flows, _flow_memory) = flow_index.for_process(&instance, request)?;
+    let _analysis_memory = if category == TidasCategory::Processes {
+        Some(request.memory_budget.reserve(estimated_bytes)?)
+    } else {
+        None
+    };
+    let analysis = semantic.validate_with_flows(
+        &instance,
+        category,
+        &relative_path,
+        &flows,
+        &mut |issue| {
+            request.cancellation.check()?;
+            record_issue(summary, category_summary, sink, issue)
+        },
+    )?;
+    if let Some(analysis) = analysis {
+        summary
+            .semantic_coverage
+            .get_or_insert_with(Default::default)
+            .record(&analysis);
+    }
     Ok(())
 }
 
@@ -370,6 +399,8 @@ pub enum ValidationError {
     InvalidXml(String),
     #[error("document validation batch protocol failed: {0}")]
     BatchProtocol(String),
+    #[error("exact Flow evidence changed during validation: {0}")]
+    FlowEvidenceDrift(PathBuf),
     #[error(transparent)]
     Asset(#[from] AssetError),
     #[error(transparent)]

@@ -88,6 +88,52 @@ pub struct CategorySummaryV1 {
     pub info_count: u64,
 }
 
+#[derive(Clone, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct SemanticCheckCoverageV1 {
+    pub passed: u64,
+    pub invalid: u64,
+    pub unresolved: u64,
+    pub not_applicable: u64,
+}
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct SemanticCoverageV1 {
+    pub profile: String,
+    pub complete: bool,
+    pub process_count: u64,
+    pub checks: BTreeMap<String, SemanticCheckCoverageV1>,
+}
+impl Default for SemanticCoverageV1 {
+    fn default() -> Self {
+        Self {
+            profile: crate::PROCESS_SEMANTIC_PROFILE.to_owned(),
+            complete: true,
+            process_count: 0,
+            checks: BTreeMap::new(),
+        }
+    }
+}
+impl SemanticCoverageV1 {
+    /// Accumulate this consumer profile's per-check evidence without changing validity.
+    pub fn record(&mut self, analysis: &crate::ProcessSemanticAnalysis) {
+        self.process_count += 1;
+        self.complete &= analysis.complete;
+        for check in &analysis.coverage {
+            let entry = self
+                .checks
+                .entry(check["check"].as_str().unwrap_or("unknown").to_owned())
+                .or_default();
+            match check["status"].as_str() {
+                Some("passed") => entry.passed += 1,
+                Some("invalid") => entry.invalid += 1,
+                Some("unresolved") => entry.unresolved += 1,
+                _ => entry.not_applicable += 1,
+            }
+        }
+    }
+}
+
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct ValidationSummaryV1 {
@@ -104,6 +150,9 @@ pub struct ValidationSummaryV1 {
     pub asset_fingerprint: String,
     pub issue_spool: Option<SpoolSummaryV1>,
     pub peak_accounted_memory_bytes: u64,
+    /// Optional additive coverage: absent historical reports never prove this profile ran.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub semantic_coverage: Option<SemanticCoverageV1>,
 }
 
 impl ValidationSummaryV1 {
@@ -123,6 +172,7 @@ impl ValidationSummaryV1 {
             asset_fingerprint,
             issue_spool: None,
             peak_accounted_memory_bytes: 0,
+            semantic_coverage: None,
         }
     }
 

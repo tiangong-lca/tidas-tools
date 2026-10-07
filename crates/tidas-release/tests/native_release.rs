@@ -627,3 +627,48 @@ fn hex(bytes: impl AsRef<[u8]>) -> String {
         },
     )
 }
+
+#[test]
+fn closure_allocation_admission_uses_selected_exact_flow_content() {
+    for kind in ["Product flow", "Waste flow", "Elementary flow"] {
+        let temporary = tempfile::tempdir().unwrap();
+        let root = temporary.path().join("tidas");
+        let flow = json!({"flowDataSet":{"flowInformation":{"dataSetInformation":{"common:UUID":FLOW_ID}},"administrativeInformation":{"publicationAndOwnership":{"common:dataSetVersion":VERSION}},"modellingAndValidation":{"LCIMethod":{"typeOfDataSet":kind}}}});
+        let process = json!({"processDataSet":{"processInformation":{"quantitativeReference":{"@type":"Reference flow(s)","referenceToReferenceFlow":"0"}},"exchanges":{"exchange":[{"@dataSetInternalID":"0","exchangeDirection":"Input","referenceToFlowDataSet":reference("flow data set",FLOW_ID,"flows")},{"@dataSetInternalID":"1","exchangeDirection":"Output","allocations":{"allocation":{"@internalReferenceToCoProduct":"0","@allocatedFraction":"100"}}}]}}});
+        let entries = vec![
+            write_dataset(&root, "flows/exact.json", &flow, "flow", "support", FLOW_ID),
+            write_dataset(
+                &root,
+                "processes/process.json",
+                &process,
+                "process",
+                "unit_process",
+                UNIT_ID,
+            ),
+        ];
+        let index = temporary.path().join("index.json");
+        fs::write(&index,serde_json::to_vec(&json!({"schemaVersion":"tiangong.release.canonical-dataset-index.v1","datasetCount":2,"byteSize":0,"artifactSetHash":"0".repeat(64),"datasets":entries})).unwrap()).unwrap();
+        let report = run_release(
+            &ReleaseRequest::ValidateClosure {
+                input_dir: root,
+                dataset_index: index,
+                profile: ReleaseProfile::UnitProcess,
+            },
+            &runtime(),
+        )
+        .unwrap();
+        let schema: Value = serde_json::from_str(RELEASE_REPORT_JSON_SCHEMA_V1).unwrap();
+        assert!(
+            jsonschema::validator_for(&schema)
+                .unwrap()
+                .is_valid(&serde_json::to_value(&report).unwrap())
+        );
+        assert_eq!(report.ok, kind != "Elementary flow");
+        let coverage = report.closure.unwrap().semantic_coverage.unwrap();
+        assert!(coverage.complete);
+        assert_eq!(
+            coverage.checks["allocation-target-type"].invalid,
+            u64::from(kind == "Elementary flow")
+        );
+    }
+}

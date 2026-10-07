@@ -2,6 +2,7 @@
 
 mod batch;
 mod contracts;
+mod flow_evidence;
 mod ilcd;
 mod pipeline;
 mod schema;
@@ -19,9 +20,10 @@ pub use batch::{
     run_document_validation_batch,
 };
 pub use contracts::{
-    CategorySummaryV1, SeverityV1, VALIDATION_ISSUE_EVENT_JSON_SCHEMA_V1,
-    VALIDATION_ISSUE_EVENT_SCHEMA_V1, VALIDATION_SUMMARY_JSON_SCHEMA_V1,
-    VALIDATION_SUMMARY_SCHEMA_V1, ValidationIssueEventV1, ValidationIssueV1, ValidationSummaryV1,
+    CategorySummaryV1, SemanticCheckCoverageV1, SemanticCoverageV1, SeverityV1,
+    VALIDATION_ISSUE_EVENT_JSON_SCHEMA_V1, VALIDATION_ISSUE_EVENT_SCHEMA_V1,
+    VALIDATION_SUMMARY_JSON_SCHEMA_V1, VALIDATION_SUMMARY_SCHEMA_V1, ValidationIssueEventV1,
+    ValidationIssueV1, ValidationSummaryV1,
 };
 pub use ilcd::validate_ilcd_package;
 pub use pipeline::{
@@ -30,3 +32,9 @@ pub use pipeline::{
 };
 pub use schema::{SUPPORTED_TIDAS_CATEGORIES, SchemaError, TidasCategory, is_valid_cas_number};
 pub use semantic::SemanticError;
+
+pub mod process_semantics;
+pub use process_semantics::{
+    ALLOCATION_SUM_TOLERANCE, ExactFlowEvidence, PROCESS_SEMANTIC_PROFILE, ProcessSemanticAnalysis,
+    analyze_process_semantics,
+};

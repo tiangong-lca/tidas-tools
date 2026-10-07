@@ -28,9 +28,9 @@ checkPaths:
   - .github/actions/native-xml/**
   - .githooks/pre-push
   - scripts/**
-lastReviewedAt: 2026-09-24
-lastReviewedCommit: c9bbb7a3c7da1ad9b2b12a884326a2d166f1ea49
-lastReviewedNote: "Reviewed for Toolkit #232: published Windows archive replay covers 400 indexed synthetic Process issues at short/deep Unicode paths, byte-equal spools and exit-74 I/O diagnostics; source CI/package smoke stay distinct."
+lastReviewedAt: 2026-10-07
+lastReviewedCommit: 6ede550618b274b8b3044ba8124bc6e9beab3e8e
+lastReviewedNote: "Reviewed for Toolkit #240: shared allocation/reference consumer policy, exact Flow evidence, strict coverage admission and native release/adoption boundaries."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -260,3 +260,22 @@ transfer overhead and all qualification results. Synthetic skipped jobs are not
 timing samples. Default-branch seeding is still pending delivery.
 
 Required-field diagnostic changes must prove that the exact missing property is machine-readable while missing review/compliance fields remain validator errors. Keep schemas, exit class and raw issue counts unchanged; verify bounded context and ordinary non-required issues too.
+
+## Allocation/reference regression proof
+
+Run `cargo test --locked -p tidas-validation --test process_semantics --test
+allocation_pipeline` and `cargo test --locked -p tidas-release --test
+native_release`. The shared 61-case fixture checks native/SDK validity,
+completeness, findings, modes, allocation vectors and coefficients. It includes
+legacy processwide Output shares, bounded targetless full-allocation fallback,
+scalar-empty compatibility, sparse zero, repeated/Input/non-flow references,
+exact metadata failures and decimal preservation. Percentage-point sum tolerance
+is `0.0010000001`; the bounded legacy full fallback requires exactly 100.
+
+Full-schema package fixtures cover Input/Output × Product/Waste, exact duplicate,
+missing/wrong-version/Elementary evidence, content drift, cancellation and budget
+failure. Batch tests prove unlisted neighboring Flow files cannot supply evidence.
+Closure tests prove selected exact Product/Waste passes and Elementary rejects.
+Keep this source proof distinct from a published native artifact and downstream
+version/fingerprint adoption; no production calculation or dataset repair is part
+of these checks.

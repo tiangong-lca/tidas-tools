@@ -27,9 +27,9 @@ checkPaths:
   - .github/actions/native-xml/**
   - .githooks/pre-push
   - scripts/**
-lastReviewedAt: 2026-09-24
-lastReviewedCommit: c9bbb7a3c7da1ad9b2b12a884326a2d166f1ea49
-lastReviewedNote: "Reviewed for Toolkit #232: public Windows archive qualification reads exact tag/source/checksum and runs the extracted executable; canonical tag publication and data ownership remain separate."
+lastReviewedAt: 2026-10-07
+lastReviewedCommit: 6ede550618b274b8b3044ba8124bc6e9beab3e8e
+lastReviewedNote: "Reviewed for Toolkit #240: shared allocation/reference consumer policy, exact Flow evidence, strict coverage admission and native release/adoption boundaries."
 related:
   - ../../AGENTS.md
   - ../../.docpact/config.yaml
@@ -312,3 +312,22 @@ seeding through `.github/actions/native-xml`. Reuse is limited to vcpkg binary
 archives; installed native inputs and final product/notice outputs remain fresh.
 Cache seeding owns no release, registry or attestation action. Package archive
 location comes from existing Cargo metadata, preserving portable isolated builds.
+
+## Process allocation consumer profile
+
+`tidas-validation::analyze_process_semantics` implements the Toolkit consumer
+profile `tidas.process-allocation-reference.v1`. It is pure: callers provide
+exact UUID/version Flow evidence and it never changes the Process or resolves
+files/network resources. It separates authored quantitative-reference validity
+from calculation applicability and exposes deterministic per-check coverage,
+findings, complete allocation vectors and per-reference coefficients.
+
+Package validation indexes only its explicit `flows` directory; document batches
+index only manifest-listed Flow documents. Exact duplicates and unavailable or
+wrong-version evidence stay unresolved. Product and Waste Flow targets accept
+Input and Output exchanges; Elementary Flow is excluded only from allocation
+targets. Indexed content hashes are rechecked before successful publication.
+Reference-closure admission analyzes only selected exact closure members and
+rechecks their frozen index hashes. Evidence and analysis use the shared memory
+budget and cancellation checks; no ambient resolver or latest-version fallback
+is available.

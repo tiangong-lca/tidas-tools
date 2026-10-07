@@ -96,6 +96,7 @@ pub(crate) fn resolve(
     }
 
     let entries: Vec<DatasetEntry> = selected.into_values().collect();
+    let semantic_coverage = semantic_coverage(input_dir, &entries, runtime)?;
     let dataset_count = u64::try_from(entries.len()).map_err(|_| ReleaseError::SizeOverflow)?;
     let all_keys: Vec<String> = entries.iter().map(DatasetEntry::key).collect();
     let closure_sha256 = hash_strings(&all_keys)?;
@@ -111,6 +112,7 @@ pub(crate) fn resolve(
             closure_sha256,
             dataset_keys,
             dataset_keys_truncated: truncated,
+            semantic_coverage,
         },
     ))
 }
@@ -199,4 +201,86 @@ fn reference_dataset_type(value: &str) -> Option<&'static str> {
 fn hash_strings(values: &[String]) -> Result<String, ReleaseError> {
     let bytes = serde_json::to_vec(values)?;
     Ok(hex_digest(Sha256::digest(bytes)))
+}
+
+// Admission uses only frozen members of the selected, exact reference closure.
+fn semantic_coverage(
+    input_dir: &Path,
+    entries: &[DatasetEntry],
+    runtime: &ReleaseRuntime,
+) -> Result<Option<tidas_validation::SemanticCoverageV1>, ReleaseError> {
+    let mut flows = Vec::new();
+    let mut reservations = Vec::new();
+    for entry in entries.iter().filter(|e| e.dataset_type == "flow") {
+        runtime.cancellation.check()?;
+        let (document, _document_memory) = read_bound_document(input_dir, entry, runtime)?;
+        let Some(uuid) = document
+            .pointer("/flowDataSet/flowInformation/dataSetInformation/common:UUID")
+            .and_then(Value::as_str)
+        else {
+            continue;
+        };
+        let Some(version) = document.pointer("/flowDataSet/administrativeInformation/publicationAndOwnership/common:dataSetVersion").and_then(Value::as_str) else { continue; };
+        let kind = document
+            .pointer("/flowDataSet/modellingAndValidation/LCIMethod/typeOfDataSet")
+            .and_then(Value::as_str)
+            .unwrap_or("");
+        let cost = u64::try_from(256 + uuid.len() + version.len() + kind.len())
+            .map_err(|_| ReleaseError::SizeOverflow)?;
+        reservations.push(runtime.memory_budget.reserve(cost)?);
+        flows.push(tidas_validation::ExactFlowEvidence {
+            uuid: uuid.to_owned(),
+            version: version.to_owned(),
+            r#type: kind.to_owned(),
+            content_hash: Some(entry.sha256.clone()),
+        });
+    }
+    let mut coverage = None;
+    for entry in entries.iter().filter(|e| e.dataset_type == "process") {
+        runtime.cancellation.check()?;
+        let path = contained(input_dir, &entry.relative_path)?;
+        let estimate = fs::metadata(&path)?
+            .len()
+            .checked_mul(16)
+            .and_then(|v| v.checked_add(4096))
+            .ok_or(ReleaseError::SizeOverflow)?;
+        let _analysis_memory = runtime.memory_budget.reserve(estimate)?;
+        let (document, _document_memory) = read_bound_document(input_dir, entry, runtime)?;
+        let analysis = tidas_validation::analyze_process_semantics(&document, &flows);
+        runtime.cancellation.check()?;
+        coverage
+            .get_or_insert_with(tidas_validation::SemanticCoverageV1::default)
+            .record(&analysis);
+    }
+    for entry in entries {
+        let path = contained(input_dir, &entry.relative_path)?;
+        if crate::index::sha256_file(&path, runtime)? != entry.sha256 {
+            return Err(ReleaseError::DatasetFileHashMismatch(
+                entry.relative_path.clone(),
+            ));
+        }
+    }
+    Ok(coverage)
+}
+fn read_bound_document(
+    input_dir: &Path,
+    entry: &DatasetEntry,
+    runtime: &ReleaseRuntime,
+) -> Result<(Value, tidas_runtime::MemoryReservation), ReleaseError> {
+    let path = contained(input_dir, &entry.relative_path)?;
+    let estimate = fs::metadata(&path)?
+        .len()
+        .checked_mul(8)
+        .and_then(|v| v.checked_add(4096))
+        .ok_or(ReleaseError::SizeOverflow)?;
+    let memory = runtime.memory_budget.reserve(estimate)?;
+    let bytes = fs::read(&path)?;
+    if hex_digest(Sha256::digest(&bytes)) != entry.sha256 {
+        return Err(ReleaseError::DatasetFileHashMismatch(
+            entry.relative_path.clone(),
+        ));
+    }
+    let document = serde_json::from_slice(&bytes)
+        .map_err(|source| ReleaseError::DatasetJson { path, source })?;
+    Ok((document, memory))
 }
