@@ -32,8 +32,8 @@ checkPaths:
   - .github/actions/native-xml/**
   - .githooks/pre-push
 lastReviewedAt: 2026-10-07
-lastReviewedCommit: d9124f2fe64fb4b662b8a57c6c43345481c9f816
-lastReviewedNote: "Reviewed for Toolkit #240: shared allocation/reference consumer policy, exact Flow evidence, strict coverage admission and native release/adoption boundaries."
+lastReviewedCommit: 938d92483190912c109485ce03560654e61bb5ea
+lastReviewedNote: "Reviewed Toolkit #242 coherent version-only 0.3.4 projection. Executable assets, specification pin, allocation profile, dependencies and immutable request history stay unchanged; official publication and consumer adoption remain pending."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md
